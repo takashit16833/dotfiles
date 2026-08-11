@@ -54,7 +54,7 @@ config.colors = {
   },
 
   -- Retro tab bar の配色。
-  -- タブバー全体の背景を Terminal 本体と同じ色にし、上端を一体化して見せる。
+  -- タブバー全体の背景を Terminal 本体と同じ色にして一体感を保つ。
   tab_bar = {
     background = background,
 
@@ -89,11 +89,14 @@ config.colors = {
 -- 元テーマのレトロな雰囲気と、単純なタブ表示を優先して Retro tab bar を使う。
 config.use_fancy_tab_bar = false
 
--- macOS の独立したタイトルバーをなくし、ウィンドウ操作ボタンをタブバーへ統合する。
--- これにより、タイトルバー相当の領域も Terminal と同じ background 色になる。
--- RESIZE は残しているため、通常どおりウィンドウサイズを変更できる。
-config.window_decorations = 'INTEGRATED_BUTTONS|RESIZE'
-config.integrated_title_button_style = 'MacOsNative'
-config.integrated_title_button_alignment = 'Left'
+-- タブは Terminal 上部を圧迫しないよう、画面下部へ配置する。
+-- macOS のタイトルバーとタブバーを分離することで、ウィンドウ操作ボタンは上部に残す。
+config.tab_bar_at_bottom = true
+
+-- Nightly 限定機能を使い、macOS 標準タイトルバーの背景色を
+-- Terminal の background と同じ色にする。
+-- TITLE と RESIZE は残すため、macOS 標準のウィンドウ操作とリサイズはそのまま利用できる。
+config.window_decorations =
+  'TITLE|RESIZE|MACOS_USE_BACKGROUND_COLOR_AS_TITLEBAR_COLOR'
 
 return config
