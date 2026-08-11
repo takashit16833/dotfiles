@@ -68,6 +68,12 @@ main() {
     "$DOTFILES_DIR/.config/starship.toml" \
     "$CONFIG_HOME/starship.toml"
 
+  # zsh は interactive shell の起動時に ~/.zshrc を読む。
+  # shell 設定も repository 側を正本にし、HOME 側にはリンクだけ置く。
+  ensure_symlink \
+    "$DOTFILES_DIR/.zshrc" \
+    "$HOME/.zshrc"
+
   info 'install complete'
 }
 
