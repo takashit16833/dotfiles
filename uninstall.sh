@@ -56,6 +56,11 @@ main() {
     "$DOTFILES_DIR/.config/wezterm" \
     "$CONFIG_HOME/wezterm"
 
+  # Starship の設定本体も repository 側に残し、HOME 側のリンクだけ解除する。
+  remove_symlink \
+    "$DOTFILES_DIR/.config/starship.toml" \
+    "$CONFIG_HOME/starship.toml"
+
   info 'uninstall complete'
 }
 
