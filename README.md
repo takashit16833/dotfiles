@@ -18,6 +18,8 @@ The installer is idempotent:
 - Existing real files/directories are never overwritten.
 - Symlinks pointing somewhere else are never replaced automatically.
 
+If an old configuration file already exists, move or remove it explicitly after reviewing it, then run the installer again. The installer never overwrites it automatically.
+
 ## Uninstall
 
 ```bash
@@ -32,5 +34,6 @@ The uninstaller is also idempotent and removes only symlinks that point to this 
 Currently managed:
 
 - `~/.config/wezterm` -> `~/dotfiles/.config/wezterm`
+- `~/.config/starship.toml` -> `~/dotfiles/.config/starship.toml`
 
 More configuration will be added only when it is actually needed.
