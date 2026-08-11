@@ -62,6 +62,12 @@ main() {
     "$DOTFILES_DIR/.config/wezterm" \
     "$CONFIG_HOME/wezterm"
 
+  # Starship は ~/.config/starship.toml を標準の設定ファイルとして読む。
+  # 設定本体は repository 側を正本にし、HOME 側にはファイルのリンクだけ置く。
+  ensure_symlink \
+    "$DOTFILES_DIR/.config/starship.toml" \
+    "$CONFIG_HOME/starship.toml"
+
   info 'install complete'
 }
 
