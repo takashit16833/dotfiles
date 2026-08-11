@@ -99,4 +99,7 @@ config.tab_bar_at_bottom = true
 config.window_decorations =
   'TITLE|RESIZE|MACOS_USE_BACKGROUND_COLOR_AS_TITLEBAR_COLOR'
 
+-- Terminal の基本フォントサイズ。
+config.font_size = 13.5
+
 return config
