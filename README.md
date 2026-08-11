@@ -35,5 +35,8 @@ Currently managed:
 
 - `~/.config/wezterm` -> `~/dotfiles/.config/wezterm`
 - `~/.config/starship.toml` -> `~/dotfiles/.config/starship.toml`
+- `~/.zshrc` -> `~/dotfiles/.zshrc`
+
+The zsh configuration intentionally starts small. New shell settings are added only when they are actually needed during the environment refresh.
 
 More configuration will be added only when it is actually needed.
