@@ -61,6 +61,11 @@ main() {
     "$DOTFILES_DIR/.config/starship.toml" \
     "$CONFIG_HOME/starship.toml"
 
+  # zsh の設定本体は repository 側に残し、~/.zshrc のリンクだけ解除する。
+  remove_symlink \
+    "$DOTFILES_DIR/.zshrc" \
+    "$HOME/.zshrc"
+
   info 'uninstall complete'
 }
 
