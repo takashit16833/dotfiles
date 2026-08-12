@@ -10,6 +10,9 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # install.sh / .zshenv と同じく、設定ファイルは ~/.config 配下に統一する。
 XDG_CONFIG_HOME="$HOME/.config"
 
+# VS Code の macOS 標準 User directory。
+VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
+
 # 通常の進捗メッセージを統一した形式で表示する。
 info() {
   printf '[dotfiles] %s\n' "$*"
@@ -79,6 +82,16 @@ main() {
   remove_symlink \
     "$DOTFILES_DIR/.config/zsh" \
     "$XDG_CONFIG_HOME/zsh"
+
+  # VS Code の user settings / keybindings は repository 側に残し、symlink だけ解除する。
+  # extensions.txt から導入した extension 自体は uninstall.sh では削除しない。
+  remove_symlink \
+    "$DOTFILES_DIR/.config/vscode/settings.json" \
+    "$VSCODE_USER_DIR/settings.json"
+
+  remove_symlink \
+    "$DOTFILES_DIR/.config/vscode/keybindings.json" \
+    "$VSCODE_USER_DIR/keybindings.json"
 
   # Hammerspoon の設定本体も repository 側に残し、~/.hammerspoon のリンクだけ解除する。
   remove_symlink \
