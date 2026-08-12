@@ -24,9 +24,6 @@ brew "zoxide"
 # Git 操作のメイン UI として利用する。
 brew "lazygit"
 
-# Lazygit で構文構造を理解した diff を表示する。
-brew "difftastic"
-
 # Lazygit で通常の Git diff を syntax highlight 付きで読みやすく表示する。
 brew "git-delta"
 
