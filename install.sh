@@ -11,6 +11,9 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # zsh の .zshenv でも同じ値を export し、設定ファイルの配置規則を統一する。
 XDG_CONFIG_HOME="$HOME/.config"
 
+# VS Code の macOS 標準 User directory。
+VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
+
 # 通常の進捗メッセージを統一した形式で表示する。
 info() {
   printf '[dotfiles] %s\n' "$*"
@@ -78,6 +81,44 @@ ensure_symlink() {
   info "linked: $target -> $source"
 }
 
+# extensions.txt に宣言した VS Code extension を導入する。
+# 空行と # で始まるコメント行は無視する。
+install_vscode_extensions() {
+  local extensions_file="$DOTFILES_DIR/.config/vscode/extensions.txt"
+  local vscode_cli=''
+  local extension
+  local has_extensions=false
+
+  if [[ ! -f "$extensions_file" ]]; then
+    fail "$extensions_file does not exist"
+  fi
+
+  while IFS= read -r extension || [[ -n "$extension" ]]; do
+    if [[ -z "$extension" || "$extension" == \#* ]]; then
+      continue
+    fi
+
+    has_extensions=true
+
+    if [[ -z "$vscode_cli" ]]; then
+      if command -v code >/dev/null 2>&1; then
+        vscode_cli="$(command -v code)"
+      elif [[ -x '/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code' ]]; then
+        vscode_cli='/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code'
+      else
+        fail 'VS Code CLI was not found after installing Visual Studio Code'
+      fi
+    fi
+
+    info "installing VS Code extension: $extension"
+    "$vscode_cli" --install-extension "$extension"
+  done < "$extensions_file"
+
+  if [[ "$has_extensions" == false ]]; then
+    info 'no VS Code extensions declared'
+  fi
+}
+
 main() {
   info "installing from $DOTFILES_DIR"
 
@@ -118,6 +159,19 @@ main() {
   ensure_symlink \
     "$DOTFILES_DIR/.config/zsh" \
     "$XDG_CONFIG_HOME/zsh"
+
+  # VS Code の Default Profile の user settings / keybindings は repository を正本にする。
+  # User directory 全体は管理せず、宣言的に管理したいファイルだけをリンクする。
+  ensure_symlink \
+    "$DOTFILES_DIR/.config/vscode/settings.json" \
+    "$VSCODE_USER_DIR/settings.json"
+
+  ensure_symlink \
+    "$DOTFILES_DIR/.config/vscode/keybindings.json" \
+    "$VSCODE_USER_DIR/keybindings.json"
+
+  # VS Code extension はファイルをリンクせず、extensions.txt の宣言から復元する。
+  install_vscode_extensions
 
   # Hammerspoon は ~/.hammerspoon/init.lua を設定として読むため、
   # 設定ディレクトリ全体を dotfiles 側へリンクする。
