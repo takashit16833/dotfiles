@@ -44,6 +44,19 @@
         "[Retro Hacker Blue]": {
             // カーソル。
             "editorCursor.foreground": "#FF4DE1",
+            // 範囲選択は Retro Hacker Blue 本来の Blue を濃くして視認性を上げる。
+            "editor.selectionBackground": "#3670BD8F",
+            "editor.inactiveSelectionBackground": "#3670BD55",
+            "editor.selectionHighlightBackground": "#3670BD40",
+            // 検索結果は Retro Hacker Blue 本来の Gold を使い、
+            // 現在の一致箇所を強く、その他の一致箇所を控えめに表示する。
+            "editor.findMatchBackground": "#FFD70055",
+            "editor.findMatchBorder": "#FFD700D0",
+            "editor.findMatchHighlightBackground": "#FFD7002E",
+            "editor.findMatchHighlightBorder": "#FFD70070",
+            "editor.findRangeHighlightBackground": "#FFD7001A",
+            "minimap.findMatchHighlight": "#FFD700A0",
+            "editorOverviewRuler.findMatchForeground": "#FFD700A0",
             // カーソル位置のシンボルと同じ単語を見つけやすくする。
             // Retro Hacker Blue 本家の Cyan (#00CED1) / Bright Cyan (#00FFFF) を使い、
             // 背景は薄く透かし、枠線だけ少し明るくして視認性を確保する。
