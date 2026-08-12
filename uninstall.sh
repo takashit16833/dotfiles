@@ -61,6 +61,11 @@ main() {
     "$DOTFILES_DIR/.config/starship.toml" \
     "$CONFIG_HOME/starship.toml"
 
+  # Homebrew の login shell 設定は repository 側に残し、~/.zprofile のリンクだけ解除する。
+  remove_symlink \
+    "$DOTFILES_DIR/.zprofile" \
+    "$HOME/.zprofile"
+
   # zsh の設定本体は repository 側に残し、~/.zshrc のリンクだけ解除する。
   remove_symlink \
     "$DOTFILES_DIR/.zshrc" \
