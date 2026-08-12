@@ -110,6 +110,12 @@ main() {
     "$DOTFILES_DIR/.config/lazygit/config.yml" \
     "$LAZYGIT_CONFIG_HOME/config.yml"
 
+  # Git の portable な global 設定を repository 側で管理する。
+  # user.name / user.email / 認証は ~/.gitconfig.local など Mac 側へ分離する。
+  ensure_symlink \
+    "$DOTFILES_DIR/.gitconfig" \
+    "$HOME/.gitconfig"
+
   # login zsh の環境設定も repository 側を正本にする。
   # Homebrew の shell environment は ~/.zprofile から読み込む。
   ensure_symlink \
