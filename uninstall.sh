@@ -66,6 +66,11 @@ main() {
     "$DOTFILES_DIR/.zshrc" \
     "$HOME/.zshrc"
 
+  # Hammerspoon の設定本体も repository 側に残し、~/.hammerspoon のリンクだけ解除する。
+  remove_symlink \
+    "$DOTFILES_DIR/.hammerspoon" \
+    "$HOME/.hammerspoon"
+
   info 'uninstall complete'
 }
 
