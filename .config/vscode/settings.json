@@ -1,21 +1,17 @@
 {
     // WezTerm と見た目を揃えるため、Retro Hacker の Blue variant を利用する。
     "workbench.colorTheme": "Retro Hacker Blue",
-
     // エディタのフォントサイズ
     "editor.fontSize": 12.5,
-
     // スムースアニメーション
     "editor.smoothScrolling": true,
     "editor.cursorSmoothCaretAnimation": "on",
     "workbench.list.smoothScrolling": true,
     "terminal.integrated.smoothScrolling": true,
-
     // 複数行のペースト時に警告を出さない
     "terminal.integrated.enableMultiLinePasteWarning": "never",
     // カレントコマンドがエリア上部に固定されるのを止める
     "terminal.integrated.stickyScroll.enabled": false,
-
     // JSON / JSONC は保存時に VS Code 標準フォーマッタで整形する。
     "[json]": {
         "editor.formatOnSave": true,
@@ -25,14 +21,12 @@
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "vscode.json-language-features"
     },
-
     // Retro Hacker Blue を利用している場合だけ、UI カラーを Cyber Pink へ上書きする。
     // 他のテーマへ切り替えた場合には、ここで指定した色は適用されない。
     "workbench.colorCustomizations": {
         "[Retro Hacker Blue]": {
             // カーソル。
             "editorCursor.foreground": "#FF4DE1",
-
             // カーソル位置のシンボルと同じ単語を見つけやすくする。
             // Retro Hacker Blue 本家の Cyan (#00CED1) / Bright Cyan (#00FFFF) を使い、
             // 背景は薄く透かし、枠線だけ少し明るくして視認性を確保する。
@@ -45,7 +39,6 @@
             // 言語サーバーがシンボルとして分類しない単純な文字列一致
             "editor.wordHighlightTextBackground": "#00CED120",
             "editor.wordHighlightTextBorder": "#00FFFF60",
-
             // Retro Hacker Blue で赤 (#FF5A5A / #FF8080) が使われている箇所を
             // Cyber Pink (#FF4DE1) に置き換える。
             // 末尾の 80 / 40 / 20 は元テーマと同じ透明度を維持するための alpha 値。
@@ -64,7 +57,6 @@
             "gitDecoration.deletedResourceForeground": "#FF4DE1"
         }
     },
-
     // Retro Hacker Blue のコメント色は本家の色相を維持しつつ、
     // alpha を少し上げて背景に埋もれにくくする。
     "editor.tokenColorCustomizations": {
@@ -97,7 +89,6 @@
             ]
         }
     },
-
     // Semantic Highlighting を使う言語のコメントも同じ方針で少し明るくする。
     "editor.semanticTokenColorCustomizations": {
         "[Retro Hacker Blue]": {
