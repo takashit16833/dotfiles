@@ -28,11 +28,13 @@
 
 ## VS Code
 
-- VS Code Settings Sync は使用せず、この repository を設定の正本とする。
-- Default Profile の user settings は `.config/vscode/settings.json` で管理する。
-- Default Profile の keybindings は `.config/vscode/keybindings.json` で管理する。
+- VS Code Settings Sync は使用しない。
+- Default Profile の user settings は `.config/vscode/settings.json` を正本とし、VS Code 側から symlink で参照する。
+- Default Profile の keybindings は `.config/vscode/keybindings.json` を正本とし、VS Code 側から symlink で参照する。
 - VS Code の `User` directory 全体は symlink せず、管理対象ファイルだけを個別に symlink する。
-- extension は `.config/vscode/extensions.txt` に extension ID を1行ずつ宣言し、`install.sh` から導入する。
+- extension は VS Code 側で自由に install / uninstall し、`.config/vscode/extensions.txt` は新しい環境へ復元するための snapshot として扱う。
+- `sync.sh` は `code --list-extensions` から現在の extension 状態を `.config/vscode/extensions.txt` へ保存する。
+- `install.sh` は `.config/vscode/extensions.txt` に記録された extension を復元する。
 - extension 本体や VS Code が管理する内部データは repository に含めない。
 - `uninstall.sh` は VS Code の設定 symlink だけを解除し、導入済み extension は削除しない。
 - snippets や Profiles は必要になった時点で追加し、先回りして空の管理対象を増やさない。
