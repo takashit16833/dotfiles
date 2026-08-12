@@ -102,4 +102,16 @@ config.window_decorations =
 -- Terminal の基本フォントサイズ。
 config.font_size = 13.5
 
+-- macOS では Option + Z が Ω という composed character になる場合がある。
+-- zsh 側では ESC + z を zoxide の zi widget に割り当てているため、
+-- この組み合わせだけ明示的に ESC + z へ変換する。
+-- Option 全体の文字入力挙動は変更せず、必要な shortcut だけを端末向けに扱う。
+config.keys = {
+  {
+    key = 'z',
+    mods = 'OPT',
+    action = wezterm.action.SendString '\x1bz',
+  },
+}
+
 return config
