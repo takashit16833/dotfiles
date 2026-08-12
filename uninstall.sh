@@ -74,6 +74,11 @@ main() {
     "$DOTFILES_DIR/.config/lazygit/config.yml" \
     "$LAZYGIT_CONFIG_HOME/config.yml"
 
+  # Git の portable な global 設定本体は repository 側に残し、~/.gitconfig のリンクだけ解除する。
+  remove_symlink \
+    "$DOTFILES_DIR/.gitconfig" \
+    "$HOME/.gitconfig"
+
   # Homebrew の login shell 設定は repository 側に残し、~/.zprofile のリンクだけ解除する。
   remove_symlink \
     "$DOTFILES_DIR/.zprofile" \
