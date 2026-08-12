@@ -2,13 +2,50 @@
     // WezTerm と見た目を揃えるため、Retro Hacker の Blue variant を利用する。
     "workbench.colorTheme": "Retro Hacker Blue",
 
-    // Retro Hacker Blue を利用している場合だけ、カーソル色を Cyber Pink へ上書きする。
-    // 他のテーマへ切り替えた場合には、この色指定は適用されない。
-    // VS Code の theme-specific color customization では schema 警告が出ることがあるが、
-    // この構文と editorCursor.foreground はどちらも VS Code の公式仕様。
+    // Retro Hacker Blue を利用している場合だけ、UI カラーを Cyber Pink へ上書きする。
+    // 他のテーマへ切り替えた場合には、ここで指定した色は適用されない。
     "workbench.colorCustomizations": {
         "[Retro Hacker Blue]": {
-            "editorCursor.foreground": "#FF4DE1"
+            // カーソル。
+            "editorCursor.foreground": "#FF4DE1",
+
+            // Retro Hacker Blue で赤 (#FF5A5A / #FF8080) が使われている箇所を
+            // Cyber Pink (#FF4DE1) に置き換える。
+            // 末尾の 80 / 40 / 20 は元テーマと同じ透明度を維持するための alpha 値。
+            "errorForeground": "#FF4DE1",
+            "editorGutter.deletedBackground": "#FF4DE1",
+            "editorError.foreground": "#FF4DE1",
+            "editorError.border": "#FF4DE180",
+            "minimap.errorHighlight": "#FF4DE1",
+            "list.errorForeground": "#FF4DE1",
+            "terminal.ansiRed": "#FF4DE1",
+            "terminal.ansiBrightRed": "#FF4DE1",
+            "terminalCommandDecoration.errorBackground": "#FF4DE140",
+            "inputValidation.errorBackground": "#FF4DE120",
+            "inputValidation.errorBorder": "#FF4DE1",
+            "debugIcon.breakpointForeground": "#FF4DE1",
+            "gitDecoration.deletedResourceForeground": "#FF4DE1"
+        }
+    },
+
+    // ソースコード中の invalid / illegal / deprecated は UI カラーではなく
+    // TextMate token color として赤が指定されているため、こちらで個別に上書きする。
+    "editor.tokenColorCustomizations": {
+        "[Retro Hacker Blue]": {
+            "textMateRules": [
+                {
+                    "name": "Retro Hacker Blue: Cyber Pink invalid tokens",
+                    "scope": [
+                        "invalid",
+                        "invalid.illegal",
+                        "invalid.deprecated"
+                    ],
+                    "settings": {
+                        "foreground": "#FF4DE1",
+                        "fontStyle": "bold underline"
+                    }
+                }
+            ]
         }
     }
 }
