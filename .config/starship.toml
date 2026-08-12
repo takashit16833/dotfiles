@@ -1,2 +1,29 @@
-# Starship はデフォルト設定をそのまま利用する。
-# 表示を調整するときは、標準表示を基準に必要な項目だけ変更する。
+# Starship の標準表示はそのまま利用し、色と directory 表示だけを調整する。
+# Git status などの標準モジュールは無効化・再定義せず、そのまま残す。
+
+# WezTerm の Retro Hacker Blue + Cyber Pink と色を揃える。
+palette = "retro_hacker"
+
+[palettes.retro_hacker]
+blue = "#5EAFFF"
+cyber_pink = "#FF4DE1"
+
+[directory]
+# 現在地は Retro Hacker Blue の明るい青で表示する。
+style = "bold blue"
+
+# ~/dotfiles のように HOME からのパスを省略せず表示する。
+# 0 で階層数による切り詰めを無効化し、Git repository の root にも切り詰めない。
+truncation_length = 0
+truncate_to_repo = false
+
+[git_branch]
+# Git branch は Cyber Pink で表示する。
+# symbol や format は Starship 標準のまま利用する。
+style = "bold cyber_pink"
+
+[character]
+# 入力記号は Cyber Pink に統一する。
+# 記号そのものは Starship 標準の ❯ を維持する。
+success_symbol = "[❯](bold cyber_pink)"
+error_symbol = "[❯](bold cyber_pink)"
