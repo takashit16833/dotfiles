@@ -1,0 +1,17 @@
+# Portable Git settings shared across Macs.
+# Machine-specific identity and authentication are intentionally kept out of this file.
+
+[core]
+    quotepath = false
+
+[init]
+    defaultBranch = main
+
+[pull]
+    ff = only
+
+[user]
+    useConfigOnly = true
+
+[include]
+    path = ~/.gitconfig.local
