@@ -56,7 +56,10 @@ brew "docker-credential-helper"
 # macOS のアプリ切り替えなどを Lua で自動化する。
 cask "hammerspoon"
 
-# --- Editor -----------------------------------------------------------------
+# --- Applications -----------------------------------------------------------
+
+# Markdown ベースのノート・知識管理に利用する。
+cask "obsidian"
 
 # 開発のメイン editor。
 cask "visual-studio-code"
