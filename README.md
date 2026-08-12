@@ -28,10 +28,12 @@ bash ./uninstall.sh
 ### CLI
 
 - Colima
+- difftastic
 - Docker CLI
 - Docker Compose
 - fzf
 - gh
+- git-delta
 - jq
 - lazygit
 - ripgrep
