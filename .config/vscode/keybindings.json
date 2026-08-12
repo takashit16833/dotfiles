@@ -5,12 +5,12 @@
         "when": "editorTextFocus"
     },
     {
-        "key": "f6",
+        "key": "cmd+f6",
         "command": "textmarker.goToNextHighlight",
         "when": "editorTextFocus"
     },
     {
-        "key": "shift+f6",
+        "key": "shift+cmd+f6",
         "command": "textmarker.goToPreviousHighlight",
         "when": "editorTextFocus"
     },
