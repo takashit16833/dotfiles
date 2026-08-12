@@ -12,8 +12,9 @@ local foreground = '#5EAFFF'
 -- 元テーマの赤系アクセントとカーソル色は Cyber Pink に置き換える。
 local cyber_pink = '#FF4DE1'
 
--- Terminal 本体よりわずかに明るい青で、下部のタブバーを独立した UI 領域として見せる。
-local tab_bar_background = '#00143A'
+-- 本家の footer / status bar を意識し、タブバーは明確な青い UI 帯として見せる。
+local tab_bar_background = '#003B73'
+local active_tab_background = '#0057A3'
 
 -- Terminal 本体、ANSI 16 色、カーソル、選択範囲、タブの配色。
 config.colors = {
@@ -57,24 +58,24 @@ config.colors = {
   },
 
   -- Retro tab bar の配色。
-  -- タブバー全体を薄い青の帯にし、アクティブタブだけさらに一段明るく浮かせる。
+  -- 本家の footer のように、Terminal 本体から明確に分離した青い帯として見せる。
   tab_bar = {
     background = tab_bar_background,
 
     active_tab = {
-      bg_color = '#000E2F',
+      bg_color = active_tab_background,
       fg_color = cyber_pink,
       intensity = 'Bold',
     },
 
     inactive_tab = {
       bg_color = tab_bar_background,
-      fg_color = '#4C9EEB',
+      fg_color = '#9CCFFF',
     },
 
     inactive_tab_hover = {
-      bg_color = '#000040',
-      fg_color = foreground,
+      bg_color = '#004A8F',
+      fg_color = '#D6ECFF',
     },
   },
 }
