@@ -96,6 +96,12 @@ main() {
     "$DOTFILES_DIR/.config/starship.toml" \
     "$CONFIG_HOME/starship.toml"
 
+  # login zsh の環境設定も repository 側を正本にする。
+  # Homebrew の shell environment は ~/.zprofile から読み込む。
+  ensure_symlink \
+    "$DOTFILES_DIR/.zprofile" \
+    "$HOME/.zprofile"
+
   # zsh は interactive shell の起動時に ~/.zshrc を読む。
   # shell 設定も repository 側を正本にし、HOME 側にはリンクだけ置く。
   ensure_symlink \
