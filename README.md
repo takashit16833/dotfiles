@@ -16,6 +16,12 @@ bash ./install.sh
 
 Hammerspoon は初回起動時にアクセシビリティ権限を許可する。
 
+Colima は RAGScope の Dev Container build に必要なリソースを設定して起動する。
+
+```bash
+colima start --cpu 4 --memory 8
+```
+
 ## Git identity
 
 各 Mac で `~/.gitconfig.local` を作成する。
