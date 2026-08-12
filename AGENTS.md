@@ -15,6 +15,7 @@
 - 対応するアプリケーションの設定は、可能な限り XDG Base Directory 配下へ集約する。
 - zsh の startup file は `.config/zsh` に集約する。
 - zsh が `ZDOTDIR` を知る前に `.zshenv` を読めるよう、`~/.zshenv` だけは `.config/zsh/.zshenv` への bootstrap symlink として配置する。
+- 設定ファイルには、設定の目的や採用理由が後から分かるよう簡潔なコメントを基本的に付ける。設定名をそのまま言い換えるだけの自明なコメントは増やさない。
 
 ## Source of truth
 
