@@ -51,6 +51,11 @@ brew "docker-buildx"
 # Docker Desktop の credential helper には依存しない。
 brew "docker-credential-helper"
 
+# --- Desktop automation -----------------------------------------------------
+
+# macOS のアプリ切り替えなどを Lua で自動化する。
+cask "hammerspoon"
+
 # --- Editor -----------------------------------------------------------------
 
 # 開発のメイン editor。
