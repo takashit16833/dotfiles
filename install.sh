@@ -102,6 +102,12 @@ main() {
     "$DOTFILES_DIR/.zshrc" \
     "$HOME/.zshrc"
 
+  # Hammerspoon は ~/.hammerspoon/init.lua を設定として読むため、
+  # 設定ディレクトリ全体を dotfiles 側へリンクする。
+  ensure_symlink \
+    "$DOTFILES_DIR/.hammerspoon" \
+    "$HOME/.hammerspoon"
+
   info 'install complete'
 }
 
