@@ -1,1 +1,3 @@
 # VS Code extension IDs, one per line.
+devxi.retro-hacker-theme
+ms-vscode-remote.remote-containers
