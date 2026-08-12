@@ -1,1 +1,22 @@
-[]
+[
+    {
+        "key": "cmd+k cmd+h",
+        "command": "textmarker.toggleHighlight",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "f6",
+        "command": "textmarker.goToNextHighlight",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "shift+f6",
+        "command": "textmarker.goToPreviousHighlight",
+        "when": "editorTextFocus"
+    },
+    {
+        "key": "cmd+k shift+cmd+h",
+        "command": "textmarker.clearAllHighlight",
+        "when": "editorTextFocus"
+    }
+]
