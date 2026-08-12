@@ -27,6 +27,20 @@
         "command": "textmarker.clearAllHighlight",
         "when": "editorTextFocus"
     },
+    // Explorer: Cmd+Shift+E を開閉トグルとして使う。
+    // Explorer が表示中なら Sidebar を閉じる。
+    {
+        "key": "cmd+shift+e",
+        "command": "workbench.action.toggleSidebarVisibility",
+        "when": "explorerViewletVisible"
+    },
+    // Explorer が表示されていなければ、Explorer を開いてツリーへ切り替える。
+    // Search など別の Sidebar が開いている場合も Explorer に切り替わる。
+    {
+        "key": "cmd+shift+e",
+        "command": "workbench.view.explorer",
+        "when": "!explorerViewletVisible"
+    },
     // Explorer: 選択中のファイルを開いたあと、そのまま Sidebar を閉じる。
     // フォルダ上では発火しないため、ツリーを辿っている途中では Sidebar は残る。
     // Cmd+Shift+E で Explorer を開く → Cmd+Down でファイルを開く → Explorer が消える、という流れにする。
