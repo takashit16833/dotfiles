@@ -31,7 +31,7 @@
         "#FF8080",
         "#FFFF00"
     ],
-    "textmarker.defaultHighlightColor": "#A6CAFF",
+    "textmarker.defaultHighlightColor": "#8A5EC0",
     "textmarker.defaultHighlightOpacity": 0.28,
     "textmarker.enableWholeMatch": true,
     "textmarker.autoSelectDistinctiveTextColor": false,
