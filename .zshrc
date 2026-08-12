@@ -2,6 +2,9 @@
 #
 # 過去の大きな設定は持ち込まず、普段使う機能だけを明示的に初期化する。
 
+# よく使う ls の詳細表示。
+alias ll='ls -lahG'
+
 # fzf の zsh integration。
 # Ctrl-R の履歴検索、Ctrl-T のファイル選択、**<Tab> の fuzzy completion を有効にする。
 if command -v fzf >/dev/null 2>&1; then
@@ -22,6 +25,17 @@ if command -v zoxide >/dev/null 2>&1; then
   }
   zle -N zoxide-zi-widget
   bindkey '^[z' zoxide-zi-widget
+fi
+
+# WezTerm 側で Option + G を ESC + g に変換し、現在のディレクトリで lazygit を起動する。
+if command -v lazygit >/dev/null 2>&1; then
+  lazygit-widget() {
+    zle -I
+    lazygit
+    zle reset-prompt
+  }
+  zle -N lazygit-widget
+  bindkey '^[g' lazygit-widget
 fi
 
 # Starship をプロンプトとして初期化する。
