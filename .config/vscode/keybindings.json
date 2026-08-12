@@ -1,4 +1,27 @@
 [
+    // 補完を表示させる
+    {
+        "key": "alt+space",
+        "command": "editor.action.triggerSuggest",
+        "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
+    },
+    {
+        "key": "alt+escape",
+        "command": "-editor.action.triggerSuggest",
+        "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
+    },
+    // エディタを上のグループへ移動する。
+    // Ctrl+Cmd+←/→ の上下版として使う想定。
+    {
+        "key": "ctrl+cmd+up",
+        "command": "workbench.action.moveEditorToAboveGroup"
+    },
+    // エディタを下のグループへ移動する。
+    // Open Definition to the Side で横に開いた定義元を下へ送る時に便利。
+    {
+        "key": "ctrl+cmd+down",
+        "command": "workbench.action.moveEditorToBelowGroup"
+    },
     // Text Marker: カーソル下の単語、または選択範囲をマーク / 解除する。
     // Cmd+K H は VS Code 標準の macOS キーバインドと競合しない。
     {
