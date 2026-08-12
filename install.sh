@@ -10,6 +10,14 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # XDG_CONFIG_HOME が設定されていれば尊重し、未設定なら ~/.config を利用する。
 CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 
+# Lazygit は macOS では ~/Library/Application Support/lazygit を標準で利用する。
+# XDG_CONFIG_HOME が明示されている場合だけ、その配下の lazygit を利用する。
+if [[ -n "${XDG_CONFIG_HOME:-}" ]]; then
+  LAZYGIT_CONFIG_HOME="$XDG_CONFIG_HOME/lazygit"
+else
+  LAZYGIT_CONFIG_HOME="$HOME/Library/Application Support/lazygit"
+fi
+
 # 通常の進捗メッセージを統一した形式で表示する。
 info() {
   printf '[dotfiles] %s\n' "$*"
@@ -95,6 +103,12 @@ main() {
   ensure_symlink \
     "$DOTFILES_DIR/.config/starship.toml" \
     "$CONFIG_HOME/starship.toml"
+
+  # Lazygit の diff pager 設定も repository 側を正本にする。
+  # macOS 標準の config.yml の位置へファイル単位でリンクする。
+  ensure_symlink \
+    "$DOTFILES_DIR/.config/lazygit/config.yml" \
+    "$LAZYGIT_CONFIG_HOME/config.yml"
 
   # login zsh の環境設定も repository 側を正本にする。
   # Homebrew の shell environment は ~/.zprofile から読み込む。
