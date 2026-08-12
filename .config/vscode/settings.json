@@ -12,6 +12,8 @@
     "terminal.integrated.enableMultiLinePasteWarning": "never",
     // カレントコマンドがエリア上部に固定されるのを止める
     "terminal.integrated.stickyScroll.enabled": false,
+    // Enterでは補完を確定しない
+    "editor.acceptSuggestionOnEnter": "off",
     // JSON / JSONC は保存時に VS Code 標準フォーマッタで整形する。
     "[json]": {
         "editor.formatOnSave": true,
