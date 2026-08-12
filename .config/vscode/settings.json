@@ -16,6 +16,16 @@
     // カレントコマンドがエリア上部に固定されるのを止める
     "terminal.integrated.stickyScroll.enabled": false,
 
+    // JSON / JSONC は保存時に VS Code 標準フォーマッタで整形する。
+    "[json]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[jsonc]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+
     // Retro Hacker Blue を利用している場合だけ、UI カラーを Cyber Pink へ上書きする。
     // 他のテーマへ切り替えた場合には、ここで指定した色は適用されない。
     "workbench.colorCustomizations": {
@@ -42,11 +52,23 @@
         }
     },
 
-    // ソースコード中の invalid / illegal / deprecated は UI カラーではなく
-    // TextMate token color として赤が指定されているため、こちらで個別に上書きする。
+    // Retro Hacker Blue のコメント色は本家の色相を維持しつつ、
+    // alpha を少し上げて背景に埋もれにくくする。
     "editor.tokenColorCustomizations": {
         "[Retro Hacker Blue]": {
             "textMateRules": [
+                {
+                    "name": "Retro Hacker Blue: Brighter comments",
+                    "scope": [
+                        "comment",
+                        "punctuation.definition.comment",
+                        "string.comment"
+                    ],
+                    "settings": {
+                        "foreground": "#7C8DD9C0",
+                        "fontStyle": "italic"
+                    }
+                },
                 {
                     "name": "Retro Hacker Blue: Cyber Pink invalid tokens",
                     "scope": [
@@ -60,6 +82,15 @@
                     }
                 }
             ]
+        }
+    },
+
+    // Semantic Highlighting を使う言語のコメントも同じ方針で少し明るくする。
+    "editor.semanticTokenColorCustomizations": {
+        "[Retro Hacker Blue]": {
+            "rules": {
+                "comment": "#6A9FC5C0"
+            }
         }
     }
 }
