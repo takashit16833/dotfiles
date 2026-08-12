@@ -1,12 +1,11 @@
 {
-    // dotfiles 配下で直接開いても VS Code の User Settings として検証・補完できるようにする。
-    "$schema": "vscode://schemas/settings/user",
-
     // WezTerm と見た目を揃えるため、Retro Hacker の Blue variant を利用する。
     "workbench.colorTheme": "Retro Hacker Blue",
 
     // Retro Hacker Blue を利用している場合だけ、カーソル色を Cyber Pink へ上書きする。
     // 他のテーマへ切り替えた場合には、この色指定は適用されない。
+    // VS Code の theme-specific color customization では schema 警告が出ることがあるが、
+    // この構文と editorCursor.foreground はどちらも VS Code の公式仕様。
     "workbench.colorCustomizations": {
         "[Retro Hacker Blue]": {
             "editorCursor.foreground": "#FF4DE1"
