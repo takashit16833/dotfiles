@@ -2,10 +2,8 @@
     // WezTerm と見た目を揃えるため、Retro Hacker の Blue variant を利用する。
     "workbench.colorTheme": "Retro Hacker Blue",
 
-    // Retro Hacker Blue の配色をベースに、カーソルだけ Cyber Pink へ上書きする。
+    // Retro Hacker Blue を固定で利用するため、カーソル色だけを直接 Cyber Pink へ上書きする。
     "workbench.colorCustomizations": {
-        "[Retro Hacker Blue]": {
-            "editorCursor.foreground": "#FF4DE1"
-        }
+        "editorCursor.foreground": "#FF4DE1"
     }
 }
