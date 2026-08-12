@@ -13,7 +13,7 @@ local foreground = '#5EAFFF'
 local cyber_pink = '#FF4DE1'
 
 -- Terminal 本体よりわずかに明るい青で、下部のタブバーを独立した UI 領域として見せる。
-local tab_bar_background = '#00081F'
+local tab_bar_background = '#00143A'
 
 -- Terminal 本体、ANSI 16 色、カーソル、選択範囲、タブの配色。
 config.colors = {
