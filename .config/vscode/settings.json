@@ -1,3 +1,8 @@
 {
-    "workbench.colorTheme": "Retro Hacker Blue"
+    "workbench.colorTheme": "Retro Hacker Blue",
+    "workbench.colorCustomizations": {
+        "[Retro Hacker Blue]": {
+            "editorCursor.foreground": "#FF4DE1"
+        }
+    }
 }
