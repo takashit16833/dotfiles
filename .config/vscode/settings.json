@@ -34,16 +34,17 @@
             "editorCursor.foreground": "#FF4DE1",
 
             // カーソル位置のシンボルと同じ単語を見つけやすくする。
-            // 背景は半透明の Cyber Pink、枠線を少し強めにして視認性を確保する。
+            // Retro Hacker Blue 本家の Cyan (#00CED1) / Bright Cyan (#00FFFF) を使い、
+            // 背景は薄く透かし、枠線だけ少し明るくして視認性を確保する。
             // read-access（参照）
-            "editor.wordHighlightBackground": "#FF4DE124",
-            "editor.wordHighlightBorder": "#FF4DE170",
+            "editor.wordHighlightBackground": "#00CED126",
+            "editor.wordHighlightBorder": "#00FFFF70",
             // write-access（代入・変更）
-            "editor.wordHighlightStrongBackground": "#FF4DE138",
-            "editor.wordHighlightStrongBorder": "#FF4DE1B0",
+            "editor.wordHighlightStrongBackground": "#00CED13D",
+            "editor.wordHighlightStrongBorder": "#00FFFFB0",
             // 言語サーバーがシンボルとして分類しない単純な文字列一致
-            "editor.wordHighlightTextBackground": "#FF4DE120",
-            "editor.wordHighlightTextBorder": "#FF4DE160",
+            "editor.wordHighlightTextBackground": "#00CED120",
+            "editor.wordHighlightTextBorder": "#00FFFF60",
 
             // Retro Hacker Blue で赤 (#FF5A5A / #FF8080) が使われている箇所を
             // Cyber Pink (#FF4DE1) に置き換える。
