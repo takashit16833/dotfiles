@@ -14,9 +14,8 @@ fi
 if command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init zsh)"
 
-  # Option + Z で zi を呼び出し、fzf から移動先ディレクトリを選択する。
-  # macOS の Terminal / WezTerm では Option を Meta (ESC prefix) として扱うため、
-  # bindkey では ESC + z を表す ^[z に割り当てる。
+  # WezTerm 側で Option + Z を ESC + z に変換し、ここで zi widget に割り当てる。
+  # bindkey の ^[z は ESC + z を表す。
   zoxide-zi-widget() {
     zi
     zle reset-prompt
