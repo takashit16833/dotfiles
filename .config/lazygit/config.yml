@@ -3,14 +3,14 @@
 # diff 表示は Difftastic と git-delta の2種類を用意し、
 # Lazygit 標準の `|` キーで用途に応じて切り替える。
 git:
-  pagers:
+  diffRenderers:
     # Difftastic は構文木を利用してコードの構造的な差分を表示する。
     # 最初に定義することで、Lazygit 起動時のデフォルト pager として利用する。
     - name: difftastic
-      externalDiffCommand: difft --color=always
-
+      command: difft --color=always
+      type: extDiff
     # git-delta は通常の Git diff を保ったまま、syntax highlight などで読みやすくする。
     # Lazygit 自身が画面を管理するため、delta 側の pager は無効にする。
     - name: delta
       colorArg: always
-      pager: delta --dark --paging=never
+      command: delta --dark --paging=never
