@@ -12,6 +12,8 @@ cd ~/dotfiles
 bash ./install.sh
 ```
 
+Hammerspoon は初回起動時にアクセシビリティ権限を許可する。
+
 ## Uninstall
 
 ```bash
@@ -38,5 +40,6 @@ bash ./uninstall.sh
 
 ### Applications
 
+- Hammerspoon
 - Visual Studio Code
 - WezTerm Nightly
