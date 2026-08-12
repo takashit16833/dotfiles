@@ -41,8 +41,15 @@ brew "docker"
 brew "colima"
 
 # Compose file を Docker CLI から扱うための plugin。
-# Homebrew 版は Docker 側から plugin directory を認識させる設定が別途必要になる。
 brew "docker-compose"
+
+# Docker image の build を担う Buildx plugin。
+# Docker Desktop に同梱されていたものへ依存せず、Homebrew で明示的に管理する。
+brew "docker-buildx"
+
+# Docker registry の認証情報を macOS Keychain に保存するための helper。
+# Docker Desktop の credential helper には依存しない。
+brew "docker-credential-helper"
 
 # --- Editor -----------------------------------------------------------------
 
