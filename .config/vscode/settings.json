@@ -2,6 +2,20 @@
     // WezTerm と見た目を揃えるため、Retro Hacker の Blue variant を利用する。
     "workbench.colorTheme": "Retro Hacker Blue",
 
+    // エディタのフォントサイズ
+    "editor.fontSize": 12.5,
+
+    // スムースアニメーション
+    "editor.smoothScrolling": true,
+    "editor.cursorSmoothCaretAnimation": "on",
+    "workbench.list.smoothScrolling": true,
+    "terminal.integrated.smoothScrolling": true,
+
+    // 複数行のペースト時に警告を出さない
+    "terminal.integrated.enableMultiLinePasteWarning": "never",
+    // カレントコマンドがエリア上部に固定されるのを止める
+    "terminal.integrated.stickyScroll.enabled": false,
+
     // Retro Hacker Blue を利用している場合だけ、UI カラーを Cyber Pink へ上書きする。
     // 他のテーマへ切り替えた場合には、ここで指定した色は適用されない。
     "workbench.colorCustomizations": {
