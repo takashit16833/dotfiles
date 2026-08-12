@@ -41,5 +41,6 @@ bash ./uninstall.sh
 ### Applications
 
 - Hammerspoon
+- Obsidian
 - Visual Studio Code
 - WezTerm Nightly
