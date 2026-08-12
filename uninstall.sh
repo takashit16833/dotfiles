@@ -7,16 +7,8 @@ set -euo pipefail
 # ~/dotfiles 以外へ clone しても動作するよう、HOME にパスを固定しない。
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# XDG_CONFIG_HOME が設定されていれば尊重し、未設定なら ~/.config を利用する。
-CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-
-# Lazygit は macOS では ~/Library/Application Support/lazygit を標準で利用する。
-# XDG_CONFIG_HOME が明示されている場合だけ、その配下の lazygit を利用する。
-if [[ -n "${XDG_CONFIG_HOME:-}" ]]; then
-  LAZYGIT_CONFIG_HOME="$XDG_CONFIG_HOME/lazygit"
-else
-  LAZYGIT_CONFIG_HOME="$HOME/Library/Application Support/lazygit"
-fi
+# install.sh / .zshenv と同じく、設定ファイルは ~/.config 配下に統一する。
+XDG_CONFIG_HOME="$HOME/.config"
 
 # 通常の進捗メッセージを統一した形式で表示する。
 info() {
@@ -59,35 +51,34 @@ remove_symlink() {
 main() {
   info "uninstalling links created from $DOTFILES_DIR"
 
-  # WezTerm の設定本体は dotfiles 側に残し、HOME 側のリンクだけ解除する。
+  # WezTerm の設定本体は dotfiles 側に残し、XDG_CONFIG_HOME 側のリンクだけ解除する。
   remove_symlink \
     "$DOTFILES_DIR/.config/wezterm" \
-    "$CONFIG_HOME/wezterm"
+    "$XDG_CONFIG_HOME/wezterm"
 
-  # Starship の設定本体も repository 側に残し、HOME 側のリンクだけ解除する。
+  # Starship の設定本体も repository 側に残し、リンクだけ解除する。
   remove_symlink \
     "$DOTFILES_DIR/.config/starship.toml" \
-    "$CONFIG_HOME/starship.toml"
+    "$XDG_CONFIG_HOME/starship.toml"
 
-  # Lazygit の設定本体も repository 側に残し、macOS 側の config.yml のリンクだけ解除する。
+  # Lazygit の設定本体も repository 側に残し、XDG_CONFIG_HOME 側のリンクだけ解除する。
   remove_symlink \
     "$DOTFILES_DIR/.config/lazygit/config.yml" \
-    "$LAZYGIT_CONFIG_HOME/config.yml"
+    "$XDG_CONFIG_HOME/lazygit/config.yml"
 
   # Git の portable な global 設定本体は repository 側に残し、~/.gitconfig のリンクだけ解除する。
   remove_symlink \
     "$DOTFILES_DIR/.gitconfig" \
     "$HOME/.gitconfig"
 
-  # Homebrew の login shell 設定は repository 側に残し、~/.zprofile のリンクだけ解除する。
+  # zsh の bootstrap link と XDG_CONFIG_HOME 配下の設定ディレクトリを解除する。
   remove_symlink \
-    "$DOTFILES_DIR/.zprofile" \
-    "$HOME/.zprofile"
+    "$DOTFILES_DIR/.config/zsh/.zshenv" \
+    "$HOME/.zshenv"
 
-  # zsh の設定本体は repository 側に残し、~/.zshrc のリンクだけ解除する。
   remove_symlink \
-    "$DOTFILES_DIR/.zshrc" \
-    "$HOME/.zshrc"
+    "$DOTFILES_DIR/.config/zsh" \
+    "$XDG_CONFIG_HOME/zsh"
 
   # Hammerspoon の設定本体も repository 側に残し、~/.hammerspoon のリンクだけ解除する。
   remove_symlink \
