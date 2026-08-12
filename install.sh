@@ -21,6 +21,30 @@ fail() {
   exit 1
 }
 
+# Brewfile に宣言した macOS 用ツールを Homebrew で揃える。
+#
+# 方針:
+# - Homebrew 自体は事前に導入済みであることを前提にする。
+# - package の一覧は install.sh に直書きせず、Brewfile を正本にする。
+# - --no-upgrade により、install.sh 実行のたびに既存 package を
+#   むやみに upgrade しない。不足している package だけを導入する。
+install_homebrew_packages() {
+  if [[ "$(uname -s)" != "Darwin" ]]; then
+    fail 'this installer currently supports macOS only'
+  fi
+
+  if ! command -v brew >/dev/null 2>&1; then
+    fail 'Homebrew is not installed; install Homebrew before running this script'
+  fi
+
+  if [[ ! -f "$DOTFILES_DIR/Brewfile" ]]; then
+    fail "$DOTFILES_DIR/Brewfile does not exist"
+  fi
+
+  info 'installing Homebrew packages from Brewfile'
+  brew bundle --file="$DOTFILES_DIR/Brewfile" --no-upgrade
+}
+
 # source を target から参照するシンボリックリンクを冪等に作成する。
 #
 # 方針:
@@ -55,6 +79,10 @@ ensure_symlink() {
 
 main() {
   info "installing from $DOTFILES_DIR"
+
+  # まず実行に必要な CLI / application を揃え、その後に設定ファイルをリンクする。
+  # これにより、新しい Mac でも install.sh ひとつで同じ順序で環境を構築できる。
+  install_homebrew_packages
 
   # WezTerm は ~/.config/wezterm/wezterm.lua を読むため、
   # ディレクトリ単位で dotfiles 側の設定へリンクする。
