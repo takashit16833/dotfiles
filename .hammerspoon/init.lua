@@ -3,12 +3,12 @@
 hs.autoLaunch(true)
 
 -- アプリ切り替え用の設定。
--- Cmd + Option + Fn で、普段使うアプリへ直接フォーカスを移す。
+-- Ctrl + Cmd + Option + 数字キーで、普段使うアプリへ直接フォーカスを移す。
 local apps = {
-  F1 = "Google Chrome",
-  F2 = "Obsidian",
-  F3 = "WezTerm",
-  F4 = "Visual Studio Code",
+  ["3"] = "Google Chrome",
+  ["4"] = "Obsidian",
+  ["5"] = "WezTerm",
+  ["6"] = "Visual Studio Code",
 }
 
 -- 指定したアプリを前面へ出す。
@@ -33,12 +33,12 @@ local function activateApp(appName)
   hs.application.launchOrFocus(appName)
 end
 
--- Cmd + Option + F1: Google Chrome
--- Cmd + Option + F2: Obsidian
--- Cmd + Option + F3: WezTerm
--- Cmd + Option + F4: Visual Studio Code
+-- Ctrl + Cmd + Option + 3: Google Chrome
+-- Ctrl + Cmd + Option + 4: Obsidian
+-- Ctrl + Cmd + Option + 5: WezTerm
+-- Ctrl + Cmd + Option + 6: Visual Studio Code
 for key, appName in pairs(apps) do
-  hs.hotkey.bind({ "cmd", "alt" }, key, function()
+  hs.hotkey.bind({ "ctrl", "cmd", "alt" }, key, function()
     activateApp(appName)
   end)
 end
