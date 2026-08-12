@@ -54,18 +54,18 @@ config.colors = {
   },
 
   -- Retro tab bar の配色。
-  -- タブバー全体の背景を Terminal 本体と同じ色にして一体感を保つ。
+  -- 通常時は Terminal 本体と一体化させ、アクティブタブだけ濃い青で浮かせる。
   tab_bar = {
     background = background,
 
     active_tab = {
-      bg_color = background,
-      fg_color = foreground,
+      bg_color = '#000E2F',
+      fg_color = cyber_pink,
       intensity = 'Bold',
     },
 
     inactive_tab = {
-      bg_color = '#000E2F',
+      bg_color = background,
       fg_color = '#4C9EEB',
     },
 
@@ -73,21 +73,14 @@ config.colors = {
       bg_color = '#000040',
       fg_color = foreground,
     },
-
-    new_tab = {
-      bg_color = background,
-      fg_color = '#4C9EEB',
-    },
-
-    new_tab_hover = {
-      bg_color = '#000040',
-      fg_color = cyber_pink,
-    },
   },
 }
 
 -- 元テーマのレトロな雰囲気と、単純なタブ表示を優先して Retro tab bar を使う。
 config.use_fancy_tab_bar = false
+
+-- タブ追加はキーボード操作を前提にし、常設の + ボタンを消してタブバーをすっきりさせる。
+config.show_new_tab_button_in_tab_bar = false
 
 -- タブは Terminal 上部を圧迫しないよう、画面下部へ配置する。
 -- macOS のタイトルバーとタブバーを分離することで、ウィンドウ操作ボタンは上部に残す。
