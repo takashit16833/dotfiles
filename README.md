@@ -2,6 +2,20 @@
 
 macOS 用の dotfiles。
 
+## Configuration policy
+
+設定ファイルは可能な限り XDG Base Directory に寄せる。
+
+zsh の `.zshenv` で `XDG_CONFIG_HOME=$HOME/.config` を設定し、以降は `XDG_CONFIG_HOME` が存在する前提で構成する。zsh の startup file は `~/.config/zsh` に集約し、zsh が `ZDOTDIR` を知る前に読み込めるよう `~/.zshenv` だけは `~/.config/zsh/.zshenv` への symlink として配置する。
+
+```text
+~/.zshenv -> ~/dotfiles/.config/zsh/.zshenv
+~/.config/zsh -> ~/dotfiles/.config/zsh
+~/.config/wezterm -> ~/dotfiles/.config/wezterm
+~/.config/lazygit/config.yml -> ~/dotfiles/.config/lazygit/config.yml
+~/.config/starship.toml -> ~/dotfiles/.config/starship.toml
+```
+
 ## Install
 
 Homebrew をインストールした状態で実行する。
