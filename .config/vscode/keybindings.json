@@ -26,5 +26,19 @@
         "key": "cmd+k shift+h",
         "command": "textmarker.clearAllHighlight",
         "when": "editorTextFocus"
+    },
+    // Explorer: 選択中のファイルを開いたあと、そのまま Sidebar を閉じる。
+    // フォルダ上では発火しないため、ツリーを辿っている途中では Sidebar は残る。
+    // Cmd+Shift+E で Explorer を開く → Cmd+Down でファイルを開く → Explorer が消える、という流れにする。
+    {
+        "key": "cmd+down",
+        "command": "runCommands",
+        "when": "filesExplorerFocus && !explorerResourceIsFolder",
+        "args": {
+            "commands": [
+                "list.select",
+                "workbench.action.toggleSidebarVisibility"
+            ]
+        }
     }
 ]
