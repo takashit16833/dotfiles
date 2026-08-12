@@ -26,6 +26,17 @@
 - 既存の実ファイルや別の symlink を勝手に上書き・削除しないこと。
 - この repository が作成した symlink だけを安全に解除すること。
 
+## VS Code
+
+- VS Code Settings Sync は使用せず、この repository を設定の正本とする。
+- Default Profile の user settings は `.config/vscode/settings.json` で管理する。
+- Default Profile の keybindings は `.config/vscode/keybindings.json` で管理する。
+- VS Code の `User` directory 全体は symlink せず、管理対象ファイルだけを個別に symlink する。
+- extension は `.config/vscode/extensions.txt` に extension ID を1行ずつ宣言し、`install.sh` から導入する。
+- extension 本体や VS Code が管理する内部データは repository に含めない。
+- `uninstall.sh` は VS Code の設定 symlink だけを解除し、導入済み extension は削除しない。
+- snippets や Profiles は必要になった時点で追加し、先回りして空の管理対象を増やさない。
+
 ## Packages and machine-local settings
 
 - Homebrew package の一覧は `Brewfile` を正本とし、`install.sh` に package 名を重複して列挙しない。
