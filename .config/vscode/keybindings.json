@@ -1,21 +1,32 @@
 [
+    // Text Marker: カーソル下の単語、または選択範囲をマーク / 解除する。
+    // Cmd+K H は VS Code 標準の macOS キーバインドと競合しない。
     {
-        "key": "cmd+k cmd+h",
+        "key": "cmd+k h",
         "command": "textmarker.toggleHighlight",
         "when": "editorTextFocus"
     },
+
+    // Text Marker: 現在のマークの次の出現箇所へ移動する。
+    // bare の F1〜F12 は VS Code 標準で使われているため、Cmd+F6 を利用する。
     {
         "key": "cmd+f6",
         "command": "textmarker.goToNextHighlight",
         "when": "editorTextFocus"
     },
+
+    // Text Marker: 現在のマークの前の出現箇所へ移動する。
+    // Next の Cmd+F6 に Shift を加えた対称なキーバインドにする。
     {
         "key": "shift+cmd+f6",
         "command": "textmarker.goToPreviousHighlight",
         "when": "editorTextFocus"
     },
+
+    // Text Marker: すべてのマークをまとめて解除する。
+    // Cmd+K H に Shift を加えた、覚えやすい対称なキーバインドにする。
     {
-        "key": "cmd+k shift+cmd+h",
+        "key": "cmd+k shift+h",
         "command": "textmarker.clearAllHighlight",
         "when": "editorTextFocus"
     }
