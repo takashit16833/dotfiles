@@ -21,9 +21,21 @@
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "vscode.json-language-features"
     },
-    // Quick Highlight は複数語を色分けするため、背景を塗りつぶさず枠線だけ表示する。
-    // Retro Hacker Blue のコード配色を崩さず、マーキングだけ見分けやすくする。
-    "quick-highlight.borderOnly": true,
+    // Text Marker の色は、カーソル下の単語ハイライトで使っている Cyan 系を避ける。
+    // Retro Hacker Blue に含まれる Gold / Purple / Orange 系と Cyber Pink を低 opacity で使う。
+    "textmarker.highlightColors": [
+        "#FFD700",
+        "#B07CFF",
+        "#FF4DE1",
+        "#FFA500",
+        "#FF8080",
+        "#FFFF00"
+    ],
+    "textmarker.defaultHighlightColor": "#A6CAFF",
+    "textmarker.defaultHighlightOpacity": 0.28,
+    "textmarker.enableWholeMatch": true,
+    "textmarker.autoSelectDistinctiveTextColor": false,
+    "textmarker.useHighlightColorOnRuler": true,
     // Retro Hacker Blue を利用している場合だけ、UI カラーを Cyber Pink へ上書きする。
     // 他のテーマへ切り替えた場合には、ここで指定した色は適用されない。
     "workbench.colorCustomizations": {
