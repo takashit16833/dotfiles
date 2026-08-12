@@ -56,15 +56,15 @@ local function withFocusedWindow(action)
   end
 end
 
--- Ctrl + Cmd + Option + S: 現在のウィンドウを画面の左半分へ配置する。
-hs.hotkey.bind(hyper, "s", function()
+-- Ctrl + Cmd + Option + K: 現在のウィンドウを画面の左半分へ配置する。
+hs.hotkey.bind(hyper, "k", function()
   withFocusedWindow(function(window)
     window:moveToUnit({ x = 0, y = 0, w = 0.5, h = 1 })
   end)
 end)
 
--- Ctrl + Cmd + Option + K: 現在のウィンドウを画面の右半分へ配置する。
-hs.hotkey.bind(hyper, "k", function()
+-- Ctrl + Cmd + Option + S: 現在のウィンドウを画面の右半分へ配置する。
+hs.hotkey.bind(hyper, "s", function()
   withFocusedWindow(function(window)
     window:moveToUnit({ x = 0.5, y = 0, w = 0.5, h = 1 })
   end)
@@ -84,8 +84,8 @@ end)
 hs.hotkey.bind(hyper, "t", function()
   withFocusedWindow(function(window)
     local screenFrame = window:screen():frame()
-    local width = 1920
-    local height = 1080
+    local width = 1600
+    local height = 900
     local frame = {
       x = screenFrame.x + (screenFrame.w - width) / 2,
       y = screenFrame.y + (screenFrame.h - height) / 2,
