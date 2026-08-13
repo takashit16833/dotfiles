@@ -63,5 +63,19 @@
                 "workbench.action.toggleSidebarVisibility"
             ]
         }
+    },
+    // Explorer: 選択中のフォルダ配下（ファイル選択時は同じ階層）に新しいファイルを作成する。
+    // Explorer 以外では VS Code 標準の Cmd+N（Untitled File）をそのまま利用できる。
+    {
+        "key": "cmd+n",
+        "command": "explorer.newFile",
+        "when": "filesExplorerFocus && !inputFocus"
+    },
+    // Explorer: 選択中のフォルダ配下（ファイル選択時は同じ階層）に新しいフォルダを作成する。
+    // Explorer 以外では VS Code 標準の Cmd+Shift+N の挙動を維持する。
+    {
+        "key": "shift+cmd+n",
+        "command": "explorer.newFolder",
+        "when": "filesExplorerFocus && !inputFocus"
     }
 ]
