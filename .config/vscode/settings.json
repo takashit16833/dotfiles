@@ -127,5 +127,9 @@
                 "comment": "#6A9FC5C0"
             }
         }
+    },
+    // ファイル保存時に音を鳴らす
+    "accessibility.signals.save": {
+        "sound": "always"
     }
 }
