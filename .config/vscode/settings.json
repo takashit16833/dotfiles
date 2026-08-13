@@ -23,18 +23,19 @@
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "vscode.json-language-features"
     },
-    // Text Marker の色は、カーソル下の単語ハイライトで使っている Cyan 系を避ける。
-    // Retro Hacker Blue に含まれる Gold / Purple / Orange 系と Cyber Pink を低 opacity で使う。
+    // Text Marker は暗い背景でも色を判別しやすいよう、色相を広く散らす。
+    // Retro Hacker Blue の Gold / Blue / Purple / Orange と Cyber Pink に、
+    // テーマの雰囲気になじむ Hacker Green を加える。Cyan は単語ハイライトと競合するため避ける。
     "textmarker.highlightColors": [
         "#FFD700",
+        "#39FF88",
+        "#5EAFFF",
         "#B07CFF",
         "#FF4DE1",
-        "#FFA500",
-        "#FF8080",
-        "#FFFF00"
+        "#FFA500"
     ],
     "textmarker.defaultHighlightColor": "#8A5EC0",
-    "textmarker.defaultHighlightOpacity": 0.28,
+    "textmarker.defaultHighlightOpacity": 0.36,
     "textmarker.enableWholeMatch": true,
     "textmarker.autoSelectDistinctiveTextColor": false,
     "textmarker.useHighlightColorOnRuler": true,
