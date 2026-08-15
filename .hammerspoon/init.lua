@@ -5,6 +5,7 @@ hs.autoLaunch(true)
 -- この設定で共通して使う修飾キー。
 -- アプリ切り替えとウィンドウ操作を同じ「Ctrl + Cmd + Option」系に揃える。
 local hyper = { "ctrl", "cmd", "alt" }
+local hyperShift = { "ctrl", "cmd", "alt", "shift" }
 
 -- アプリ切り替え用の設定。
 -- Ctrl + Cmd + Option + 数字キーで、普段使うアプリへ直接フォーカスを移す。
@@ -78,14 +79,24 @@ hs.hotkey.bind(hyper, "n", function()
   end)
 end)
 
--- Ctrl + Cmd + Option + T: 現在のウィンドウを 1920x1080 にして画面中央へ配置する。
+-- ウィンドウ操作で共通して使う基準サイズ。
 -- Hammerspoon のウィンドウサイズは macOS の画面座標（point）単位。
--- 画面の利用可能領域より大きい場合は、画面内に収まるよう自動調整する。
+local standardWindowWidth = 1504
+local standardWindowHeight = 940
+
+-- 指定した画面で、基準サイズを超えない範囲のウィンドウサイズを返す。
+-- 小さい画面では利用可能領域に収まるように縮める。
+local function standardWindowSizeForScreen(screen)
+  local screenFrame = screen:frame()
+  return math.min(standardWindowWidth, screenFrame.w), math.min(standardWindowHeight, screenFrame.h)
+end
+
+-- Ctrl + Cmd + Option + T: 現在のウィンドウを基準サイズにして画面中央へ配置する。
 hs.hotkey.bind(hyper, "t", function()
   withFocusedWindow(function(window)
-    local screenFrame = window:screen():frame()
-    local width = 1504
-    local height = 940
+    local screen = window:screen()
+    local screenFrame = screen:frame()
+    local width, height = standardWindowSizeForScreen(screen)
     local frame = {
       x = screenFrame.x + (screenFrame.w - width) / 2,
       y = screenFrame.y + (screenFrame.h - height) / 2,
@@ -95,4 +106,84 @@ hs.hotkey.bind(hyper, "t", function()
 
     window:setFrameInScreenBounds(frame)
   end)
+end)
+
+-- 斜め配置の対象か判定する。
+-- 通常ウィンドウだけを対象とし、Finder は除外する。
+local function isDiagonalArrangeTarget(window)
+  local app = window:application()
+  return window:isStandard() and app and app:name() ~= "Finder"
+end
+
+-- 現在見えている斜め配置対象のウィンドウを、前面から順に取得する。
+local function diagonalArrangeTargets()
+  local windows = {}
+
+  for _, window in ipairs(hs.window.orderedWindows()) do
+    if isDiagonalArrangeTarget(window) then
+      table.insert(windows, window)
+    end
+  end
+
+  return windows
+end
+
+-- 指定した画面上の対象ウィンドウを、左上から右下への対角線に沿って配置する。
+-- 各ウィンドウは基準サイズに揃え、画面内に収まる範囲で中心点を等間隔に並べる。
+local function arrangeWindowsDiagonallyOnScreen(screen, targets)
+  local windows = {}
+  local screenId = screen:id()
+
+  for _, window in ipairs(targets) do
+    local windowScreen = window:screen()
+    if windowScreen and windowScreen:id() == screenId then
+      table.insert(windows, window)
+    end
+  end
+
+  if #windows == 0 then
+    return
+  end
+
+  local screenFrame = screen:frame()
+  local width, height = standardWindowSizeForScreen(screen)
+
+  -- 対角線上の位置を t=0（左上）〜t=1（右下）で表す。
+  -- ウィンドウ全体が画面内に収まる t の範囲だけを使用する。
+  local minT = math.max(width / (2 * screenFrame.w), height / (2 * screenFrame.h))
+  local maxT = math.min(1 - width / (2 * screenFrame.w), 1 - height / (2 * screenFrame.h))
+
+  for index, window in ipairs(windows) do
+    local t
+    if #windows == 1 then
+      t = 0.5
+    else
+      t = minT + (maxT - minT) * (index - 1) / (#windows - 1)
+    end
+
+    local centerX = screenFrame.x + screenFrame.w * t
+    local centerY = screenFrame.y + screenFrame.h * t
+    local frame = {
+      x = centerX - width / 2,
+      y = centerY - height / 2,
+      w = width,
+      h = height,
+    }
+
+    window:setFrameInScreenBounds(frame)
+  end
+end
+
+-- Ctrl + Cmd + Option + H: 現在のモニタだけを斜め配置する。
+hs.hotkey.bind(hyper, "h", function()
+  arrangeWindowsDiagonallyOnScreen(hs.screen.mainScreen(), diagonalArrangeTargets())
+end)
+
+-- Ctrl + Cmd + Option + Shift + H: すべてのモニタを、それぞれ独立して斜め配置する。
+hs.hotkey.bind(hyperShift, "h", function()
+  local targets = diagonalArrangeTargets()
+
+  for _, screen in ipairs(hs.screen.allScreens()) do
+    arrangeWindowsDiagonallyOnScreen(screen, targets)
+  end
 end)
