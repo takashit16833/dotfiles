@@ -130,8 +130,24 @@
             }
         }
     },
-    // ファイル保存時に音を鳴らす
+    "accessibility.signals.format": {
+        "sound": "userGesture",
+        "announcement": "never"
+    },
     "accessibility.signals.save": {
-        "sound": "always"
-    }
+        "sound": "userGesture",
+        "announcement": "never"
+    },
+    "accessibility.signals.voiceRecordingStarted": {
+        "sound": "auto"
+    },
+    "accessibility.signals.positionHasError": {
+        "sound": "off",
+        "announcement": "auto"
+    },
+    "accessibility.signals.positionHasWarning": {
+        "sound": "off",
+        "announcement": "auto"
+    },
+    "editor.accessibilitySupport": "off",
 }

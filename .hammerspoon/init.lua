@@ -38,10 +38,10 @@ local function activateApp(appName)
   hs.application.launchOrFocus(appName)
 end
 
--- Ctrl + Cmd + Option + 3: Google Chrome
--- Ctrl + Cmd + Option + 4: Obsidian
--- Ctrl + Cmd + Option + 5: WezTerm
--- Ctrl + Cmd + Option + 6: Visual Studio Code
+-- Ctrl + Cmd + Option + f: Google Chrome
+-- Ctrl + Cmd + Option + w: Obsidian
+-- Ctrl + Cmd + Option + r: WezTerm
+-- Ctrl + Cmd + Option + y: Visual Studio Code
 for key, appName in pairs(apps) do
   hs.hotkey.bind(hyper, key, function()
     activateApp(appName)
