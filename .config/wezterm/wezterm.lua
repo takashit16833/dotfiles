@@ -27,7 +27,8 @@ config.colors = {
   selection_bg = 'rgba(23, 51, 102, 0.70)',
 
   scrollbar_thumb = '#2759AA',
-  split = foreground,
+  -- ペイン分割の仕切り線は VS Code と同じ暗い青にして主張を抑える。
+  split = '#00184A',
 
   -- 通常の ANSI 8 色。red だけ Cyber Pink に差し替える。
   ansi = {
