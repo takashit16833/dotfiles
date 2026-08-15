@@ -187,3 +187,58 @@ hs.hotkey.bind(hyperShift, "h", function()
     arrangeWindowsDiagonallyOnScreen(screen, targets)
   end
 end)
+
+-- モニタごとに、最大化する直前のウィンドウ配置を保持する。
+-- hyper+p で最大化したあと、同じモニタで再度 hyper+p を押したときに復元する。
+local maximizedWindowFramesByScreen = {}
+
+-- 指定したモニタ上の対象ウィンドウをすべて最大化し、もう一度呼ぶと元の配置へ戻す。
+-- Finder は斜め配置と同じく対象外。macOS の fullscreen モードにはしない。
+local function toggleMaximizeWindowsOnScreen(screen)
+  local screenId = screen:id()
+  local savedFrames = maximizedWindowFramesByScreen[screenId]
+
+  if savedFrames then
+    for windowId, frame in pairs(savedFrames) do
+      local window = hs.window.get(windowId)
+      if window then
+        window:setFrame(frame)
+      end
+    end
+
+    maximizedWindowFramesByScreen[screenId] = nil
+    return
+  end
+
+  local frames = {}
+  local hasTarget = false
+
+  for _, window in ipairs(diagonalArrangeTargets()) do
+    local windowScreen = window:screen()
+    if windowScreen and windowScreen:id() == screenId then
+      local windowId = window:id()
+      if windowId then
+        local frame = window:frame()
+        frames[windowId] = {
+          x = frame.x,
+          y = frame.y,
+          w = frame.w,
+          h = frame.h,
+        }
+
+        window:maximize()
+        hasTarget = true
+      end
+    end
+  end
+
+  if hasTarget then
+    maximizedWindowFramesByScreen[screenId] = frames
+  end
+end
+
+-- Ctrl + Cmd + Option + P: 現在のモニタ上の対象ウィンドウを
+-- 「最大化 ↔ 最大化前の配置」にトグルする。
+hs.hotkey.bind(hyper, "p", function()
+  toggleMaximizeWindowsOnScreen(hs.screen.mainScreen())
+end)
