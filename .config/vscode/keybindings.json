@@ -1,7 +1,7 @@
 [
     // 補完を表示させる
     {
-        "key": "alt+space",
+        "key": "alt+/",
         "command": "editor.action.triggerSuggest",
         "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
     },
