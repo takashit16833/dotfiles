@@ -10,10 +10,10 @@ local hyperShift = { "ctrl", "cmd", "alt", "shift" }
 -- アプリ切り替え用の設定。
 -- Ctrl + Cmd + Option + 数字キーで、普段使うアプリへ直接フォーカスを移す。
 local apps = {
-  ["3"] = "Google Chrome",
-  ["4"] = "Obsidian",
-  ["5"] = "WezTerm",
-  ["6"] = "Visual Studio Code",
+  ["f"] = "Google Chrome",
+  ["w"] = "Obsidian",
+  ["r"] = "WezTerm",
+  ["y"] = "Visual Studio Code",
 }
 
 -- 指定したアプリを前面へ出す。
