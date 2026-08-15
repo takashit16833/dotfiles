@@ -43,6 +43,8 @@
     // 他のテーマへ切り替えた場合には、ここで指定した色は適用されない。
     "workbench.colorCustomizations": {
         "[Retro Hacker Blue]": {
+            // 分割したエディタグループ間の仕切り線は、ステータスバー背景と同じ色にして主張を抑える。
+            "editorGroup.border": "#00184A",
             // カーソル。
             "editorCursor.foreground": "#FF4DE1",
             // 範囲選択は Retro Hacker Blue 本来の Blue を濃くして視認性を上げる。
