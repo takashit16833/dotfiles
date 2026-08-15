@@ -84,8 +84,8 @@ end)
 hs.hotkey.bind(hyper, "t", function()
   withFocusedWindow(function(window)
     local screenFrame = window:screen():frame()
-    local width = 1600
-    local height = 900
+    local width = 1504
+    local height = 940
     local frame = {
       x = screenFrame.x + (screenFrame.w - width) / 2,
       y = screenFrame.y + (screenFrame.h - height) / 2,
