@@ -1,4 +1,5 @@
 local wezterm = require 'wezterm'
+local act = wezterm.action
 
 -- config_builder を使うと、未知の設定キーなどを WezTerm が検出しやすくなる。
 local config = wezterm.config_builder()
@@ -95,20 +96,65 @@ config.window_decorations =
 -- Terminal の基本フォントサイズ。
 config.font_size = 13.5
 
--- macOS では Option を含むキーが composed character になる場合がある。
--- zsh 側では ESC + z / ESC + g をそれぞれ zi / lazygit の widget に割り当てるため、
--- 必要な shortcut だけ明示的に ESC sequence へ変換する。
--- Option 全体の文字入力挙動は変更しない。
+-- macOS 固有の Cmd / Option ショートカットは、標準的な Emacs 系キーへ変換するだけにする。
+-- 行編集の意味は zsh 側に持たせ、Terminal を乗り換えたときの修正範囲をここに限定する。
+--
+-- Cmd + Left / Right      -> Ctrl-A / Ctrl-E
+-- Cmd + Backspace / Delete -> Meta-Ctrl-U / Ctrl-K
+-- Option + Left / Right   -> Meta-B / Meta-F
+-- Option + Backspace / Delete -> Meta-Backspace / Meta-D
+--
+-- Option + Z / G は zsh 側の zi / lazygit widget 用に ESC sequence へ変換する。
 config.keys = {
+  {
+    key = 'LeftArrow',
+    mods = 'CMD',
+    action = act.SendKey { key = 'a', mods = 'CTRL' },
+  },
+  {
+    key = 'RightArrow',
+    mods = 'CMD',
+    action = act.SendKey { key = 'e', mods = 'CTRL' },
+  },
+  {
+    key = 'Backspace',
+    mods = 'CMD',
+    action = act.SendKey { key = 'u', mods = 'CTRL|ALT' },
+  },
+  {
+    key = 'Delete',
+    mods = 'CMD',
+    action = act.SendKey { key = 'k', mods = 'CTRL' },
+  },
+  {
+    key = 'LeftArrow',
+    mods = 'OPT',
+    action = act.SendKey { key = 'b', mods = 'ALT' },
+  },
+  {
+    key = 'RightArrow',
+    mods = 'OPT',
+    action = act.SendKey { key = 'f', mods = 'ALT' },
+  },
+  {
+    key = 'Backspace',
+    mods = 'OPT',
+    action = act.SendKey { key = 'Backspace', mods = 'ALT' },
+  },
+  {
+    key = 'Delete',
+    mods = 'OPT',
+    action = act.SendKey { key = 'd', mods = 'ALT' },
+  },
   {
     key = 'z',
     mods = 'OPT',
-    action = wezterm.action.SendString '\x1bz',
+    action = act.SendString '\x1bz',
   },
   {
     key = 'g',
     mods = 'OPT',
-    action = wezterm.action.SendString '\x1bg',
+    action = act.SendString '\x1bg',
   },
 }
 
