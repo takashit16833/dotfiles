@@ -47,6 +47,8 @@
         "[Retro Hacker Blue]": {
             // 分割したエディタグループ間の仕切り線は、ステータスバー背景と同じ色にして主張を抑える。
             "editorGroup.border": "#00184A",
+            // Minimap の現在表示範囲は、Retro Hacker Blue のホバー時に近い濃さで常時表示する。
+            "minimapSlider.background": "#5EAFFF30",
             // カーソル。
             "editorCursor.foreground": "#FF4DE1",
             // 範囲選択は Retro Hacker Blue 本来の Blue を濃くして視認性を上げる。
