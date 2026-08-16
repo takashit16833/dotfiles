@@ -5,6 +5,16 @@
 # よく使う ls の詳細表示。
 alias ll='ls -lahG'
 
+# 行編集の意味は zsh 側に集約する。
+# Terminal 側は OS 固有のショートカットを標準的な Emacs キーへ変換するだけにし、
+# Terminal を乗り換えても編集操作そのものはここで維持できるようにする。
+bindkey -e
+
+# Cmd + Backspace 用。
+# WezTerm から送る Meta + Ctrl-U は Emacs keymap では未使用なので、
+# カーソル位置から行頭までを削除する操作だけを明示的に割り当てる。
+bindkey '\e^U' backward-kill-line
+
 # fzf の zsh integration。
 # Ctrl-R の履歴検索、Ctrl-T のファイル選択、**<Tab> の fuzzy completion を有効にする。
 if command -v fzf >/dev/null 2>&1; then
