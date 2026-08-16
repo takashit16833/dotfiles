@@ -14,6 +14,8 @@
     "terminal.integrated.stickyScroll.enabled": false,
     // Enterでは補完を確定しない
     "editor.acceptSuggestionOnEnter": "off",
+    // Minimapの現在地ハイライトを常に有効にする
+    "editor.minimap.showSlider": "always",
     // JSON / JSONC は保存時に VS Code 標準フォーマッタで整形する。
     "[json]": {
         "editor.formatOnSave": true,
