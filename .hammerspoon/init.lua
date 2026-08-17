@@ -242,3 +242,37 @@ end
 hs.hotkey.bind(hyper, "p", function()
   toggleMaximizeWindowsOnScreen(hs.screen.mainScreen())
 end)
+
+-- アクティブなウィンドウを隣のモニタへ循環移動する。
+-- hs.screen:next()/previous() の順序は Hammerspoon が決めるため、
+-- 3 画面以上では物理配置上の時計回り・反時計回りとは限らない。
+local function moveFocusedWindowToAdjacentScreen(direction)
+  withFocusedWindow(function(window)
+    local currentScreen = window:screen()
+    if not currentScreen then
+      return
+    end
+
+    local targetScreen
+    if direction == "next" then
+      targetScreen = currentScreen:next()
+    else
+      targetScreen = currentScreen:previous()
+    end
+
+    if targetScreen then
+      -- ウィンドウの絶対サイズを維持しつつ、移動先の画面内に収める。
+      window:moveToScreen(targetScreen, true, true)
+    end
+  end)
+end
+
+-- Ctrl + Cmd + Option + Tab: 次のモニタへ循環移動する。
+hs.hotkey.bind(hyper, "tab", function()
+  moveFocusedWindowToAdjacentScreen("next")
+end)
+
+-- Ctrl + Cmd + Option + Shift + Tab: 前のモニタへ循環移動する。
+hs.hotkey.bind(hyperShift, "tab", function()
+  moveFocusedWindowToAdjacentScreen("previous")
+end)
