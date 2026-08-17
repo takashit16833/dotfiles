@@ -1,5 +1,46 @@
 [
-    // 補完を表示させる
+    // タブグループが1つだけ
+    // → 右に新しいグループを作って Source を開く
+    {
+        "key": "cmd+k v",
+        "command": "runCommands",
+        "when": "activeCustomEditorId == 'vscode.markdown.preview.editor' && !multipleEditorGroups",
+        "args": {
+            "commands": [
+                "workbench.action.splitEditorRight",
+                "markdown.reopenAsSource"
+            ]
+        }
+    },
+    // 複数グループあり ＆ 今いるのが最後ではない
+    // → 右隣の既存グループに Source を開く
+    {
+        "key": "cmd+k v",
+        "command": "runCommands",
+        "when": "activeCustomEditorId == 'vscode.markdown.preview.editor' && multipleEditorGroups && !activeEditorGroupLast",
+        "args": {
+            "commands": [
+                "workbench.action.splitEditorRight",
+                "workbench.action.moveEditorToNextGroup",
+                "markdown.reopenAsSource"
+            ]
+        }
+    },
+    // 複数グループあり ＆ 今いるのが最後
+    // → 左隣の既存グループに Source を開く
+    {
+        "key": "cmd+k v",
+        "command": "runCommands",
+        "when": "activeCustomEditorId == 'vscode.markdown.preview.editor' && multipleEditorGroups && activeEditorGroupLast",
+        "args": {
+            "commands": [
+                "workbench.action.splitEditorLeft",
+                "workbench.action.moveEditorToPreviousGroup",
+                "markdown.reopenAsSource"
+            ]
+        }
+    },
+    // インライン補完を表示させる
     {
         "key": "alt+/",
         "command": "editor.action.triggerSuggest",
@@ -23,28 +64,24 @@
         "command": "workbench.action.moveEditorToBelowGroup"
     },
     // Text Marker: カーソル下の単語、または選択範囲をマーク / 解除する。
-    // Cmd+K H は VS Code 標準の macOS キーバインドと競合しない。
     {
         "key": "cmd+k h",
         "command": "textmarker.toggleHighlight",
         "when": "editorTextFocus"
     },
     // Text Marker: 現在のマークの次の出現箇所へ移動する。
-    // bare の F1〜F12 は VS Code 標準で使われているため、Cmd+F6 を利用する。
     {
         "key": "cmd+f6",
         "command": "textmarker.goToNextHighlight",
         "when": "editorTextFocus"
     },
     // Text Marker: 現在のマークの前の出現箇所へ移動する。
-    // Next の Cmd+F6 に Shift を加えた対称なキーバインドにする。
     {
         "key": "shift+cmd+f6",
         "command": "textmarker.goToPreviousHighlight",
         "when": "editorTextFocus"
     },
     // Text Marker: すべてのマークをまとめて解除する。
-    // Cmd+K H に Shift を加えた、覚えやすい対称なキーバインドにする。
     {
         "key": "cmd+k shift+h",
         "command": "textmarker.clearAllHighlight",
@@ -101,5 +138,14 @@
                 "workbench.action.toggleMaximizeEditorGroup"
             ]
         }
+    },
+    // タブグループ内の移動に変更
+    {
+        "key": "cmd+alt+right",
+        "command": "workbench.action.nextEditorInGroup"
+    },
+    {
+        "key": "cmd+alt+left",
+        "command": "workbench.action.previousEditorInGroup"
     }
 ]

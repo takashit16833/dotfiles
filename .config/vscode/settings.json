@@ -25,6 +25,10 @@
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "vscode.json-language-features"
     },
+    // マークダウンはプレビューで開く
+    "workbench.editorAssociations": {
+        "*.md": "vscode.markdown.preview.editor"
+    },
     // Text Marker は暗い背景でも色を判別しやすいよう、色相を広く散らす。
     // Retro Hacker Blue の Gold / Blue / Purple / Orange と Cyber Pink に、
     // テーマの雰囲気になじむ Hacker Green を加える。Cyan は単語ハイライトと競合するため避ける。
