@@ -91,20 +91,27 @@ local function standardWindowSizeForScreen(screen)
   return math.min(standardWindowWidth, screenFrame.w), math.min(standardWindowHeight, screenFrame.h)
 end
 
+-- 指定したウィンドウを、指定した画面で基準サイズにして中央へ配置する。
+local function centerWindowOnScreen(window, screen)
+  local screenFrame = screen:frame()
+  local width, height = standardWindowSizeForScreen(screen)
+  local frame = {
+    x = screenFrame.x + (screenFrame.w - width) / 2,
+    y = screenFrame.y + (screenFrame.h - height) / 2,
+    w = width,
+    h = height,
+  }
+
+  window:setFrameInScreenBounds(frame)
+end
+
 -- Ctrl + Cmd + Option + T: 現在のウィンドウを基準サイズにして画面中央へ配置する。
 hs.hotkey.bind(hyper, "t", function()
   withFocusedWindow(function(window)
     local screen = window:screen()
-    local screenFrame = screen:frame()
-    local width, height = standardWindowSizeForScreen(screen)
-    local frame = {
-      x = screenFrame.x + (screenFrame.w - width) / 2,
-      y = screenFrame.y + (screenFrame.h - height) / 2,
-      w = width,
-      h = height,
-    }
-
-    window:setFrameInScreenBounds(frame)
+    if screen then
+      centerWindowOnScreen(window, screen)
+    end
   end)
 end)
 
@@ -243,7 +250,8 @@ hs.hotkey.bind(hyper, "p", function()
   toggleMaximizeWindowsOnScreen(hs.screen.mainScreen())
 end)
 
--- アクティブなウィンドウを隣のモニタへ循環移動する。
+-- アクティブなウィンドウを隣のモニタへ循環移動し、
+-- 移動先で基準サイズに揃えて画面中央へ配置する。
 -- hs.screen:next()/previous() の順序は Hammerspoon が決めるため、
 -- 3 画面以上では物理配置上の時計回り・反時計回りとは限らない。
 local function moveFocusedWindowToAdjacentScreen(direction)
@@ -261,18 +269,18 @@ local function moveFocusedWindowToAdjacentScreen(direction)
     end
 
     if targetScreen then
-      -- ウィンドウの絶対サイズを維持しつつ、移動先の画面内に収める。
       window:moveToScreen(targetScreen, true, true)
+      centerWindowOnScreen(window, targetScreen)
     end
   end)
 end
 
--- Ctrl + Cmd + Option + Tab: 次のモニタへ循環移動する。
+-- Ctrl + Cmd + Option + Tab: 次のモニタへ循環移動し、中央へ配置する。
 hs.hotkey.bind(hyper, "tab", function()
   moveFocusedWindowToAdjacentScreen("next")
 end)
 
--- Ctrl + Cmd + Option + Shift + Tab: 前のモニタへ循環移動する。
+-- Ctrl + Cmd + Option + Shift + Tab: 前のモニタへ循環移動し、中央へ配置する。
 hs.hotkey.bind(hyperShift, "tab", function()
   moveFocusedWindowToAdjacentScreen("previous")
 end)
