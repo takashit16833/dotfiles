@@ -28,6 +28,8 @@ cat > ~/.gitconfig.local <<'EOF'
 EOF
 ```
 
+GitHub の HTTPS 認証も `~/.gitconfig.local` で `gh` を使う。
+
 `~/.gitconfig.local` は dotfiles では管理しない。
 
 ## Uninstall
