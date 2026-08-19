@@ -95,6 +95,10 @@ config.window_decorations =
 
 -- Terminal の基本フォントサイズ。
 config.font_size = 13.5
+config.font = wezterm.font_with_fallback {
+  'Menlo',
+  'BIZ UDGothic',
+}
 
 -- macOS 固有の Cmd / Option ショートカットは、標準的な Emacs 系キーへ変換するだけにする。
 -- 行編集の意味は zsh 側に持たせ、Terminal を乗り換えたときの修正範囲をここに限定する。
