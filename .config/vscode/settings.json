@@ -32,6 +32,19 @@
     "workbench.editorAssociations": {
         "*.md": "vscode.markdown.preview.editor"
     },
+    // Jump to Hint: 表示中のすべてのテキストエディタを対象にする。
+    // 分割した左右・上下のタブグループをまたいで検索・ジャンプできるよう、既定値を明示しておく。
+    "jumpToHint.common.targetTextEditorType": "VisibleTextEditors",
+    // Jump to Hint: 入力欄を出さず、起動後のキー入力をそのまま検索文字列・ヒント選択に使う。
+    // 他拡張との競合で入力できない場合は "InputBox" に切り替える。
+    "jumpToHint.common.inputStyle": "TypeEvent",
+    // Jump to Hint: ヒント文字はホームポジション中心に限定し、目標ラベルを押しやすくする。
+    // 候補が多いとラベルが長くなりやすいので、その場合はこの設定を削除して既定値へ戻す。
+    "jumpToHint.common.hintCharacters": "asdfghjkl;",
+    // Jump to Hint: 候補数が少ないときは1文字、多いときだけ複数文字のヒントを使う。
+    "jumpToHint.type.hintLengthType": "Variable",
+    // Jump to Hint: Search の一致箇所は Retro Hacker Blue の Gold で薄く強調する。
+    "jumpToHint.theme.highlightColor": "#FFD70055",
     // Text Marker は暗い背景でも色を判別しやすいよう、色相を広く散らす。
     // Retro Hacker Blue の Gold / Blue / Purple / Orange と Cyber Pink に、
     // テーマの雰囲気になじむ Hacker Green を加える。Cyan は単語ハイライトと競合するため避ける。
