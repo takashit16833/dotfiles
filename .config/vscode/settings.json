@@ -38,10 +38,9 @@
     // Jump to Hint: 入力欄を出さず、起動後のキー入力をそのまま検索文字列・ヒント選択に使う。
     // 他拡張との競合で入力できない場合は "InputBox" に切り替える。
     "jumpToHint.common.inputStyle": "TypeEvent",
-    // Jump to Hint: 大西配列のホームポジションだけをヒント文字に使う。
-    // 左右を交互に、押しやすい人差し指 → 中指 → 薬指 → 小指の順に並べる。
-    // O/T, A/N, I/S, E/H の順なので、短いヒントほどホーム位置から打ちやすい。
-    "jumpToHint.common.hintCharacters": "otaniseh",
+    // Jump to Hint: ヒント文字はホームポジション中心に限定し、目標ラベルを押しやすくする。
+    // 候補が多いとラベルが長くなりやすいので、その場合はこの設定を削除して既定値へ戻す。
+    "jumpToHint.common.hintCharacters": "asdfghjkl;",
     // Jump to Hint: 候補数が少ないときは1文字、多いときだけ複数文字のヒントを使う。
     "jumpToHint.type.hintLengthType": "Variable",
     // Jump to Hint: Search の一致箇所は Retro Hacker Blue の Gold で薄く強調する。
