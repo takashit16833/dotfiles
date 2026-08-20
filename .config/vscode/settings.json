@@ -44,11 +44,7 @@
     "jumpToHint.common.hintCharacters": "otaniseh",
     // Jump to Hint: 候補数が少ないときは1文字、多いときだけ複数文字のヒントを使う。
     "jumpToHint.type.hintLengthType": "Variable",
-    // Jump to Hint: Retro Hacker Blue の主要アクセント色をそのままラベルに使う。
-    // 背景は Bright Blue、文字は Activity Bar Badge などと同じ濃紺で、高コントラストにする。
-    "jumpToHint.theme.backgroundColor": "#5EAFFF",
-    "jumpToHint.theme.fontColor": "#000040",
-    // Search の一致箇所はテーマの Gold で薄く強調し、ラベルの Blue と役割を分ける。
+    // Jump to Hint: Search の一致箇所は Retro Hacker Blue の Gold で薄く強調する。
     "jumpToHint.theme.highlightColor": "#FFD70055",
     // Text Marker は暗い背景でも色を判別しやすいよう、色相を広く散らす。
     // Retro Hacker Blue の Gold / Blue / Purple / Orange と Cyber Pink に、
