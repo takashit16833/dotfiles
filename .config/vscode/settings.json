@@ -1,4 +1,7 @@
 {
+    // ジャンプ後はなるべく上にカーソルを持っていく
+    "quickJump.revealMode": "position",
+    "quickJump.revealPosition": 0,
     // WezTerm と見た目を揃えるため、Retro Hacker の Blue variant を利用する。
     "workbench.colorTheme": "Retro Hacker Blue",
     // エディタのフォントサイズ
@@ -51,6 +54,9 @@
     // Retro Hacker Blue を利用している場合だけ、UI カラーを Cyber Pink へ上書きする。
     // 他のテーマへ切り替えた場合には、ここで指定した色は適用されない。
     "workbench.colorCustomizations": {
+        // ヒントの色
+        "quickJump.hintBackground": "#FFD700",
+        "quickJump.hintForeground": "#0E1117",
         "[Retro Hacker Blue]": {
             // 分割したエディタグループ間の仕切り線は、ステータスバー背景と同じ色にして主張を抑える。
             "editorGroup.border": "#00184A",
