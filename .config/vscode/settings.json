@@ -32,16 +32,6 @@
     "workbench.editorAssociations": {
         "*.md": "vscode.markdown.preview.editor"
     },
-    // Jumpy2: ジャンプ後は移動先の行を画面中央に表示する。
-    // 左右のタブグループをまたいだ移動でも、着地点を見失いにくくする。
-    "jumpy2.revealAfterJump": "center",
-    // Jumpy2: ナビゲーション用途に集中するため、実績ポップアップは無効にする。
-    // 不要ならこの設定を削除すると既定値（有効）に戻る。
-    "jumpy2.achievements.active": false,
-    // Jumpy2: 起動時の装飾用 emoji は表示しない。
-    // ジャンプ機能には影響しないため、好みなら削除して既定値（有効）に戻してよい。
-    "jumpy2.jumperEmojis.active": false,
-    // wordPattern / customKeys は変更せず、まずは既定の単語中心の候補を使う。
     // Text Marker は暗い背景でも色を判別しやすいよう、色相を広く散らす。
     // Retro Hacker Blue の Gold / Blue / Purple / Orange と Cyber Pink に、
     // テーマの雰囲気になじむ Hacker Green を加える。Cyan は単語ハイライトと競合するため避ける。
