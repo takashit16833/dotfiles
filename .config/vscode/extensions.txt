@@ -4,3 +4,4 @@ ms-vscode-remote.remote-containers
 ryu1kn.text-marker
 GitHub.vscode-github-actions
 redhat.vscode-yaml
+DavidLGoldberg.jumpy2
