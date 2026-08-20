@@ -55,8 +55,8 @@
     // 他のテーマへ切り替えた場合には、ここで指定した色は適用されない。
     "workbench.colorCustomizations": {
         // ヒントの色
-        "quickJump.hintBackground": "#FFD700",
-        "quickJump.hintForeground": "#0E1117",
+        "quickJump.hintBackground": "#FF4DE1CC",
+        "quickJump.hintForeground": "#00184A",
         "[Retro Hacker Blue]": {
             // 分割したエディタグループ間の仕切り線は、ステータスバー背景と同じ色にして主張を抑える。
             "editorGroup.border": "#00184A",
