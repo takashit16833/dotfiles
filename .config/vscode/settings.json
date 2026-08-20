@@ -54,7 +54,7 @@
     // Retro Hacker Blue を利用している場合だけ、UI カラーを Cyber Pink へ上書きする。
     // 他のテーマへ切り替えた場合には、ここで指定した色は適用されない。
     "workbench.colorCustomizations": {
-        // ヒントの色
+        // quickJumpのヒントの色
         "quickJump.hintBackground": "#FF4DE1CC",
         "quickJump.hintForeground": "#00184A",
         "[Retro Hacker Blue]": {
