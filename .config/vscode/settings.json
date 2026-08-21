@@ -1,7 +1,7 @@
 {
     // ジャンプ後はなるべく上にカーソルを持っていく
     "quickJump.revealMode": "position",
-    "quickJump.revealPosition": 0,
+    "quickJump.revealPosition": 10,
     // WezTerm と見た目を揃えるため、Retro Hacker の Blue variant を利用する。
     "workbench.colorTheme": "Retro Hacker Blue",
     // エディタのフォントサイズ
