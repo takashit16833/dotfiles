@@ -16,26 +16,39 @@ local apps = {
   ["y"] = "Visual Studio Code",
 }
 
--- 指定したアプリを前面へ出す。
+-- 指定したアプリを、現在見えている Space の範囲内だけで前面へ出す。
 --
 -- 起動済みの場合:
---   activate(true) により、そのアプリのウィンドウをまとめて前面へ出す。
+--   現在見えている Space にあるウィンドウだけをまとめて前面へ出す。
+--   別の Space にしかウィンドウがない場合は何もしない。
 --
 -- 未起動の場合:
 --   launchOrFocus でアプリを起動し、そのままフォーカスする。
---
--- Mission Control の別 Space にあるウィンドウを現在の Space へ移動する処理ではない。
--- macOS の Space / fullscreen の挙動はそのまま尊重する。
 local function activateApp(appName)
   local app = hs.application.get(appName)
 
-  if app then
-    app:unhide()
-    app:activate(true)
+  if not app then
+    hs.application.launchOrFocus(appName)
     return
   end
 
-  hs.application.launchOrFocus(appName)
+  -- appName を指定した filter は、そのアプリの可視ウィンドウだけを対象にする。
+  -- setCurrentSpace(true) により、現在表示中の Space だけへさらに絞り込む。
+  local filter = hs.window.filter.new(appName)
+  filter:setCurrentSpace(true)
+  local windows = filter:getWindows()
+
+  if #windows == 0 then
+    return
+  end
+
+  -- getWindows() は直近でフォーカスされた順なので、逆順に raise することで
+  -- そのアプリ内の重なり順をできるだけ保ちながら、対象ウィンドウをまとめて前面へ出す。
+  for index = #windows, 1, -1 do
+    windows[index]:raise()
+  end
+
+  windows[1]:focus()
 end
 
 -- Ctrl + Cmd + Option + f: Google Chrome
