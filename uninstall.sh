@@ -122,8 +122,20 @@ main() {
     "$XDG_CONFIG_HOME/yazi/keymap.toml"
 
   remove_symlink \
+    "$DOTFILES_DIR/.config/yazi/theme.toml" \
+    "$XDG_CONFIG_HOME/yazi/theme.toml"
+
+  remove_symlink \
+    "$DOTFILES_DIR/.config/yazi/init.lua" \
+    "$XDG_CONFIG_HOME/yazi/init.lua"
+
+  remove_symlink \
     "$DOTFILES_DIR/.gitconfig" \
     "$HOME/.gitconfig"
+
+  remove_symlink \
+    "$DOTFILES_DIR/.hushlogin" \
+    "$HOME/.hushlogin"
 
   remove_symlink \
     "$DOTFILES_DIR/.config/zsh/.zshenv" \
