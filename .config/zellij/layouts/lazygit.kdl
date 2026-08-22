@@ -1,0 +1,14 @@
+// 起動直後は lazygit だけを全面表示し、必要になったら通常の Zellij pane を追加する。
+layout {
+    default_tab_template {
+        children
+
+        pane size=1 borderless=true {
+            plugin location="zjstatus"
+        }
+    }
+
+    tab {
+        pane command="lazygit"
+    }
+}
