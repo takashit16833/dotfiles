@@ -5,7 +5,7 @@
 export XDG_CONFIG_HOME="$HOME/.config"
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 
-# Homebrew 外で管理する local CLI (tdf / Zellij など) を全 zsh から利用できるようにする。
+# Homebrew 外で dotfiles が管理する local CLI を全 zsh から利用できるようにする。
 case ":$PATH:" in
   *":$HOME/.local/bin:"*) ;;
   *) export PATH="$HOME/.local/bin:$PATH" ;;
