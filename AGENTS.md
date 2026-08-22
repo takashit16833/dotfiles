@@ -52,6 +52,7 @@
 - `keybindings.conf` は macOS の Cmd / Option 操作を zsh 側の Emacs 系編集へ橋渡しする。行編集の意味は Terminal ではなく zsh 側に持たせる。
 - Option は `macos_option_as_alt both` で Alt modifier として Terminal application へ渡す。個別の Kitty key mapping はこれより優先される。
 - Option-Z / Option-G は zsh 側の zi / lazygit widget 用 ESC sequence を送る挙動を維持する。
+- Option-Right は zsh の forward-word 用に Alt-f を送る。Zellij の既定 Alt-f は解除し、Zellij 内でもこの shell 操作を優先する。Option-Left の Alt-b は Zellij 既定と衝突しない。
 - Ctrl-PageUp / Ctrl-PageDown は Kitty 自身の前後 tab 移動に使う。
 - Cmd-Option-Left / Cmd-Option-Right は Kitty から Alt-Shift-Left / Alt-Shift-Right として child terminal へ渡し、Zellij 側で前後 tab 移動に割り当てる。Option-Left / Option-Right 単体の zsh word navigation は維持する。
 
