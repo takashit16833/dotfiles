@@ -6,7 +6,6 @@ set -euo pipefail
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 XDG_CONFIG_HOME="$HOME/.config"
 LOCAL_BIN_DIR="$HOME/.local/bin"
-CARGO_INSTALL_ROOT="$HOME/.local"
 ZELLIJ_VERSION="0.45.0"
 ZELLIJ_BIN="$LOCAL_BIN_DIR/zellij"
 ZELLIJ_MANAGED_STATE_DIR="$HOME/.local/share/dotfiles/zellij"
@@ -54,24 +53,6 @@ remove_path() {
   info "removed: $target"
 }
 
-uninstall_tdf() {
-  if command -v cargo >/dev/null 2>&1; then
-    if cargo uninstall --root "$CARGO_INSTALL_ROOT" tdf-viewer >/dev/null 2>&1; then
-      info 'uninstalled tdf'
-      return
-    fi
-  fi
-
-  # cargo が既に無い場合や metadata が失われている場合でも、
-  # install.sh が管理する配置先の binary は残さない。
-  if [[ -e "$LOCAL_BIN_DIR/tdf" || -L "$LOCAL_BIN_DIR/tdf" ]]; then
-    rm -f "$LOCAL_BIN_DIR/tdf"
-    info "removed: $LOCAL_BIN_DIR/tdf"
-  else
-    info 'tdf already absent'
-  fi
-}
-
 uninstall_zellij() {
   local tmp_root="${TMPDIR:-/tmp}"
 
@@ -106,7 +87,6 @@ uninstall_zellij() {
 main() {
   info "uninstalling links and local tools created from $DOTFILES_DIR"
 
-  uninstall_tdf
   uninstall_zellij
 
   remove_symlink \
