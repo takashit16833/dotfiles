@@ -1,0 +1,5 @@
+// Kitty の見た目を邪魔しないよう、Zellij の UI は必要最小限にする。
+// compact layout で上下の bar を 1 行に減らし、simplified_ui で Powerline 風の記号を避ける。
+simplified_ui true
+default_layout "compact"
+pane_frames false
