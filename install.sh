@@ -206,6 +206,10 @@ main() {
   install_zellij
 
   ensure_symlink \
+    "$DOTFILES_DIR/.config/zellij/config.kdl" \
+    "$XDG_CONFIG_HOME/zellij/config.kdl"
+
+  ensure_symlink \
     "$DOTFILES_DIR/.config/kitty/kitty.conf" \
     "$XDG_CONFIG_HOME/kitty/kitty.conf"
 
