@@ -74,38 +74,6 @@ ensure_symlink() {
   info "linked: $target -> $source"
 }
 
-ensure_zellij_config_symlink() {
-  local source="$DOTFILES_DIR/.config/zellij/config.kdl"
-  local target="$XDG_CONFIG_HOME/zellij/config.kdl"
-  local default_config
-
-  mkdir -p "$(dirname "$target")"
-
-  if [[ -L "$target" ]]; then
-    ensure_symlink "$source" "$target"
-    return
-  fi
-
-  if [[ -e "$target" ]]; then
-    default_config="$(mktemp)"
-
-    # Zellij は初回起動時に default config を実ファイルとして自動生成することがある。
-    # 現在の Zellij が出力する default と完全一致する場合だけ自動生成物とみなし、
-    # dotfiles 管理の symlink へ安全に置き換える。変更済みの config は保護する。
-    if "$ZELLIJ_BIN" setup --dump-config > "$default_config" 2>/dev/null \
-      && cmp -s "$target" "$default_config"; then
-      rm -f "$default_config"
-      rm "$target"
-      info "replacing generated Zellij default config: $target"
-    else
-      rm -f "$default_config"
-      fail "$target already exists and differs from the Zellij default; leaving it untouched"
-    fi
-  fi
-
-  ensure_symlink "$source" "$target"
-}
-
 zellij_target_triple() {
   case "$(uname -m)" in
     arm64)
@@ -236,7 +204,10 @@ main() {
 
   install_homebrew_packages
   install_zellij
-  ensure_zellij_config_symlink
+
+  ensure_symlink \
+    "$DOTFILES_DIR/.config/zellij/config.kdl" \
+    "$XDG_CONFIG_HOME/zellij/config.kdl"
 
   ensure_symlink \
     "$DOTFILES_DIR/.config/kitty/kitty.conf" \
