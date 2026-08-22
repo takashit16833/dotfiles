@@ -45,7 +45,8 @@
 
 - Kitty は `.config/kitty/kitty.conf` を薄い entry point とし、`appearance.conf` と `keybindings.conf` を明示的に `include` する。
 - default config 全体を複製せず、意図的に変更する項目だけを repository で管理する。
-- Kitty の directory 全体は symlink せず、上記 3 ファイルだけを個別に symlink する。theme kitten などが生成する local file を repository へ混在させないため。
+- Kitty の directory 全体は symlink せず、`kitty.conf`、`appearance.conf`、`keybindings.conf` だけを個別に symlink する。theme kitten などが生成する local file を repository へ混在させないため。
+- `kitty.conf` は最後に `globinclude local.conf` を読み、`~/.config/kitty/local.conf` が存在するマシンだけ追加設定を適用する。`local.conf` やそこから参照する session file はマシン固有として repository では管理しない。
 - `appearance.conf` は WezTerm の Retro Hacker Blue ベースの配色、右上寄せの上部 tab bar、Menlo + BIZ UDGothic の日本語表示を引き継ぐ。
 - tab bar は `slant` style を使い、active は `#FF4DE1` の背景と `#010111` の文字、inactive は `#4C9EEB` の文字と terminal 背景を使う。Powerline 風の強い装飾にはしない。
 - Kitty の split pane 境界は active / inactive とも通常文字色 `#5EAFFF` に統一し、`draw_minimal_borders` の既定挙動で pane 間の線だけを描画する。
@@ -78,9 +79,12 @@
 - Zellij を `install.sh` が導入したときだけ `$HOME/.local/share/dotfiles/zellij/version` を ownership marker として作る。marker の無い既存 binary は、同じ version であっても dotfiles 管理として採用せず、勝手に上書きしない。
 - Zellij は zsh の `zj` alias から通常の command として起動する。ZLE widget から直接起動しない。
 - Zellij の通常 UI は `.config/zellij/layouts/minimal.kdl` を使い、session 名・mode 表示・Powerline 風装飾を出さず tab だけを 1 行表示する。
+- `.config/zellij/layouts/lazygit.kdl` は同じ UI のまま起動直後の唯一の terminal pane で `lazygit` を実行する。必要になった通常 pane は Zellij 側で後から追加する。
+- `minimal.kdl` と `lazygit.kdl` は `install.sh` が個別に symlink する。
+- `zjstatus` v0.24.0 の URL・表示・配色は `config.kdl` の `zjstatus` plugin alias に集約し、各 layout は alias だけを参照する。active は `#FF4DE1`、inactive は `#4C9EEB`、背景色なしとする。
 - Zellij の startup tip は `show_startup_tips false` で表示しない。
 - Zellij の前後 tab は Kitty から送る Alt-Shift-Left / Alt-Shift-Right を `GoToPreviousTab` / `GoToNextTab` に割り当て、物理キーでは Cmd-Option-Left / Cmd-Option-Right で操作する。
-- tab bar には `zjstatus` v0.24.0 を version 固定で利用し、各 tab は `focused_pane_title` を表示する。配色は Kitty に合わせ、active を `#FF4DE1`、inactive を `#4C9EEB`、背景色なしとする。
+- tab bar の各 tab は `focused_pane_title` を表示する。
 - tab label の理想形は、通常時は `focused_pane_title`、`rename-tab` で明示的な tab 名を付けた場合はその名前を優先すること。zjstatus v0.24.0 にはこの条件付き fallback がないため、現時点では `focused_pane_title` を優先する。表示だけのために zjstatus の fork、独自 WASM の配布、各 command ごとの Zellij 状態問い合わせなどの複雑な仕組みは追加しない。upstream で条件付き fallback が利用可能になったら設定だけで切り替える。
 - Zellij 内の zsh は OSC 2 で pane title を更新し、prompt 待機中は `zsh`、通常の command 実行中は先頭の command 名を表示する。zsh の widget から直接起動する TUI は必要に応じて明示的に title を設定する。
 - pane frame は見た目の主張が強いため常時表示しない。Zellij 0.45.0 では frame を消したまま pane 間の区切り線だけを任意色で描く設定はないため、UI の簡潔さを優先する。
