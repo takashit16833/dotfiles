@@ -4,5 +4,14 @@ simplified_ui true
 default_layout "minimal"
 pane_frames false
 
+// Kitty は Cmd + Option + Left / Right を Alt-Shift-Left / Right として渡す。
+// Option + Left / Right 単体の shell word navigation を残したまま、Zellij tab を直接移動する。
+keybinds {
+    shared_except "locked" {
+        bind "Alt Shift Left" { GoToPreviousTab; }
+        bind "Alt Shift Right" { GoToNextTab; }
+    }
+}
+
 // About Zellij の startup tip は普段使いでは不要なので表示しない。
 show_startup_tips false
