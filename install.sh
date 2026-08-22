@@ -103,16 +103,14 @@ install_zellij() {
     fi
 
     installed_version="$("$ZELLIJ_BIN" --version 2>/dev/null || true)"
-    if [[ "$installed_version" == "zellij $ZELLIJ_VERSION" ]]; then
-      # 事前に同じ公式 binary を手動導入していた場合も、ここから dotfiles 管理として採用する。
-      mkdir -p "$ZELLIJ_MANAGED_STATE_DIR"
-      printf '%s\n' "$ZELLIJ_VERSION" > "$ZELLIJ_MANAGED_VERSION_FILE"
-      info "Zellij already installed: $installed_version"
-      return
-    fi
 
     if [[ ! -f "$ZELLIJ_MANAGED_VERSION_FILE" ]]; then
-      fail "$ZELLIJ_BIN already exists ($installed_version); leaving unmanaged binary untouched"
+      fail "$ZELLIJ_BIN already exists ($installed_version) but is not dotfiles-managed; leaving it untouched"
+    fi
+
+    if [[ "$installed_version" == "zellij $ZELLIJ_VERSION" ]]; then
+      info "Zellij already installed: $installed_version"
+      return
     fi
 
     info "updating dotfiles-managed Zellij from $installed_version to $ZELLIJ_VERSION"
