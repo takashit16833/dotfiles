@@ -12,7 +12,7 @@ local hyperShift = { "ctrl", "cmd", "alt", "shift" }
 local apps = {
   ["f"] = "Google Chrome",
   ["w"] = "Obsidian",
-  ["r"] = "WezTerm",
+  ["r"] = "kitty",
   ["y"] = "Visual Studio Code",
 }
 
@@ -53,7 +53,7 @@ end
 
 -- Ctrl + Cmd + Option + f: Google Chrome
 -- Ctrl + Cmd + Option + w: Obsidian
--- Ctrl + Cmd + Option + r: WezTerm
+-- Ctrl + Cmd + Option + r: kitty
 -- Ctrl + Cmd + Option + y: Visual Studio Code
 for key, appName in pairs(apps) do
   hs.hotkey.bind(hyper, key, function()
