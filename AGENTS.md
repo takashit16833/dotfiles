@@ -40,6 +40,13 @@
 - `uninstall.sh` は VS Code の設定 symlink だけを解除し、導入済み extension は削除しない。
 - snippets や Profiles は必要になった時点で追加し、先回りして空の管理対象を増やさない。
 
+## termscp
+
+- `termscp` 本体は `Brewfile` で管理する。
+- `termscp` の実行時設定は `$HOME/.config/termscp` に置かれるが、bookmark、SSH key、認証情報などのマシン固有・非公開情報を含み得るため、この repository では管理しない。
+- 設定変更は termscp の TUI から行い、生成された設定ファイルを手編集する前提にしない。
+- キーバインドは標準の矢印キー、Tab、Enter、Space、F キー中心の操作を利用し、Vim 風キーバインドへ変更しない。
+
 ## Packages and machine-local settings
 
 - Homebrew package の一覧は `Brewfile` を正本とし、`install.sh` に package 名を重複して列挙しない。
