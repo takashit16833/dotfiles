@@ -1,0 +1,9 @@
+# Retro Hacker Blue に合わせ、Yazi の UI 装飾だけを既定 theme から上書きする。
+
+[mgr]
+# parent / current / preview の仕切りを Terminal の通常文字色と同じ青にする。
+border_style = { fg = "#5EAFFF" }
+
+[indicator]
+# 既定の Powerline 風の丸い端を空白へ置き換え、選択行を四角い背景にする。
+padding = { open = " ", close = " " }
