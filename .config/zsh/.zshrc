@@ -49,7 +49,7 @@ fi
 if command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init zsh)"
 
-  # WezTerm 側で Option + Z を ESC + z に変換し、ここで zi widget に割り当てる。
+  # Kitty 側で Option + Z を ESC + z に変換し、ここで zi widget に割り当てる。
   # bindkey の ^[z は ESC + z を表す。
   zoxide-zi-widget() {
     zi
@@ -59,7 +59,7 @@ if command -v zoxide >/dev/null 2>&1; then
   bindkey '^[z' zoxide-zi-widget
 fi
 
-# WezTerm 側で Option + G を ESC + g に変換し、現在のディレクトリで lazygit を起動する。
+# Kitty 側で Option + G を ESC + g に変換し、現在のディレクトリで lazygit を起動する。
 if command -v lazygit >/dev/null 2>&1; then
   lazygit-widget() {
     zle -I
@@ -70,6 +70,19 @@ if command -v lazygit >/dev/null 2>&1; then
   }
   zle -N lazygit-widget
   bindkey '^[g' lazygit-widget
+fi
+
+# Kitty 側で Option + T を ESC + t に変換し、現在の shell から Zellij を起動する。
+# すでに Zellij 内にいる場合は nested session を作らず何もしない。
+if command -v zellij >/dev/null 2>&1; then
+  zellij-widget() {
+    [[ -z "${ZELLIJ:-}" ]] || return
+    zle -I
+    zellij
+    zle reset-prompt
+  }
+  zle -N zellij-widget
+  bindkey '^[t' zellij-widget
 fi
 
 # Yazi を終了した場所へ、そのまま shell の current directory も移動できる wrapper。
