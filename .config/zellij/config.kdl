@@ -1,8 +1,29 @@
 // Kitty の見た目を邪魔しないよう、Zellij の UI は必要最小限にする。
-// tab 表示は layouts/minimal.kdl 側で管理し、pane frame は表示しない。
+// tab 表示は layout 側で管理し、pane frame は表示しない。
 simplified_ui true
 default_layout "minimal"
 pane_frames false
+
+// 複数 layout から同じ tab bar を再利用できるよう、zjstatus の設定を alias に集約する。
+plugins {
+    zjstatus location="https://github.com/dj95/zjstatus/releases/download/v0.24.0/zjstatus.wasm" {
+        format_left "{tabs}"
+        format_center ""
+        format_right ""
+        format_space ""
+
+        border_enabled "false"
+
+        tab_normal            "#[fg=#4C9EEB] {focused_pane_title} "
+        tab_normal_fullscreen "#[fg=#4C9EEB] {focused_pane_title} "
+        tab_normal_sync       "#[fg=#4C9EEB] {focused_pane_title} "
+        tab_active            "#[fg=#FF4DE1,bold] {focused_pane_title} "
+        tab_active_fullscreen "#[fg=#FF4DE1,bold] {focused_pane_title} "
+        tab_active_sync       "#[fg=#FF4DE1,bold] {focused_pane_title} "
+        tab_rename            "#[fg=#FF4DE1,bold] {name} "
+        tab_separator         "  "
+    }
+}
 
 // Kitty は Cmd + Option + Left / Right を Alt-Shift-Left / Right として渡す。
 // Option + Left / Right 単体の shell word navigation を残したまま、Zellij tab を直接移動する。
