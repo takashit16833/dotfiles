@@ -1,8 +1,29 @@
 // Kitty の見た目を邪魔しないよう、Zellij の UI は必要最小限にする。
-// tab 表示は layouts/minimal.kdl 側で管理し、pane frame は表示しない。
+// tab 表示は layouts/minimal.kdl 側で管理する。
 simplified_ui true
 default_layout "minimal"
-pane_frames false
+
+// pane の境界を Kitty の通常文字色と同じ青で確認できるよう、full frame を使う。
+// Zellij は mode によって accent color を切り替えるため、theme の accent は青へ統一する。
+pane_frames true
+pane_frame_style "full"
+
+themes {
+    kitty {
+        fg 94 175 255
+        bg 1 1 17
+        black 1 1 17
+        red 94 175 255
+        green 94 175 255
+        yellow 94 175 255
+        blue 94 175 255
+        magenta 94 175 255
+        orange 94 175 255
+        cyan 94 175 255
+        white 224 238 255
+    }
+}
+theme "kitty"
 
 // About Zellij の startup tip は普段使いでは不要なので表示しない。
 show_startup_tips false
