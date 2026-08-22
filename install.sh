@@ -146,19 +146,26 @@ install_zellij() {
 }
 
 install_yazi_plugins() {
-  local plugin_dir="$XDG_CONFIG_HOME/yazi/plugins/split-tabs.yazi"
+  local split_tabs_plugin_dir="$XDG_CONFIG_HOME/yazi/plugins/split-tabs.yazi"
+  local no_status_plugin_dir="$XDG_CONFIG_HOME/yazi/plugins/no-status.yazi"
 
   if ! command -v ya >/dev/null 2>&1; then
     fail 'Yazi package manager (ya) was not found after installing Yazi'
   fi
 
-  if [[ -d "$plugin_dir" ]]; then
+  if [[ -d "$split_tabs_plugin_dir" ]]; then
     info 'Yazi plugin already installed: terrakok/split-tabs'
-    return
+  else
+    info 'installing Yazi plugin: terrakok/split-tabs'
+    YAZI_CONFIG_HOME="$XDG_CONFIG_HOME/yazi" ya pkg add terrakok/split-tabs
   fi
 
-  info 'installing Yazi plugin: terrakok/split-tabs'
-  YAZI_CONFIG_HOME="$XDG_CONFIG_HOME/yazi" ya pkg add terrakok/split-tabs
+  if [[ -d "$no_status_plugin_dir" ]]; then
+    info 'Yazi plugin already installed: yazi-rs/plugins:no-status'
+  else
+    info 'installing Yazi plugin: yazi-rs/plugins:no-status'
+    YAZI_CONFIG_HOME="$XDG_CONFIG_HOME/yazi" ya pkg add yazi-rs/plugins:no-status
+  fi
 }
 
 install_vscode_extensions() {
@@ -243,11 +250,23 @@ main() {
     "$DOTFILES_DIR/.config/yazi/keymap.toml" \
     "$XDG_CONFIG_HOME/yazi/keymap.toml"
 
+  ensure_symlink \
+    "$DOTFILES_DIR/.config/yazi/theme.toml" \
+    "$XDG_CONFIG_HOME/yazi/theme.toml"
+
+  ensure_symlink \
+    "$DOTFILES_DIR/.config/yazi/init.lua" \
+    "$XDG_CONFIG_HOME/yazi/init.lua"
+
   install_yazi_plugins
 
   ensure_symlink \
     "$DOTFILES_DIR/.gitconfig" \
     "$HOME/.gitconfig"
+
+  ensure_symlink \
+    "$DOTFILES_DIR/.hushlogin" \
+    "$HOME/.hushlogin"
 
   ensure_symlink \
     "$DOTFILES_DIR/.config/zsh/.zshenv" \
