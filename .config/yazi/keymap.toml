@@ -1,0 +1,27 @@
+# Yazi の標準キー設定を残したまま、Vim を知らなくても使いやすい操作だけを追加する。
+# split-tabs.yazi が 2 つの tab を左右の pane として表示する。
+
+[mgr]
+prepend_keymap = [
+  # 2 pane 表示。Tab は現在操作する pane を切り替える。
+  { on = "\\", run = "plugin split-tabs spl_toggle", desc = "Toggle dual-pane view" },
+  { on = "<Tab>", run = "plugin split-tabs spl_switch_tab", desc = "Switch pane" },
+
+  # ブラウザのアドレスバーに近い感覚で local path / sftp://... を直接入力する。
+  { on = "<C-l>", run = "cd --interactive", desc = "Go to path or remote URL" },
+
+  # Finder / 一般的なファイルマネージャーに近い操作。
+  { on = "<F2>", run = "rename --cursor=before_ext", desc = "Rename" },
+  { on = "<F4>", run = "create", desc = "Create file" },
+  { on = "<F7>", run = "create --dir", desc = "Create directory" },
+  { on = "<F8>", run = "remove", desc = "Move to Trash" },
+  { on = "<Delete>", run = "remove", desc = "Move to Trash" },
+
+  # 2 pane 表示中は、選択中（未選択ならカーソル上）のファイルを反対 pane へ直接送る。
+  { on = "<F5>", run = [ "yank", "plugin split-tabs spl_switch_tab", "paste", "plugin split-tabs spl_switch_tab" ], desc = "Copy to other pane" },
+  { on = "<F6>", run = [ "yank --cut", "plugin split-tabs spl_switch_tab", "paste", "plugin split-tabs spl_switch_tab" ], desc = "Move to other pane" },
+
+  # tab は接続先・作業場所を複数保持するために使う。
+  { on = "<C-t>", run = "tab_create --current", desc = "New tab" },
+  { on = "<C-w>", run = "close", desc = "Close tab" },
+]

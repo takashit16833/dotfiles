@@ -48,6 +48,24 @@ if command -v lazygit >/dev/null 2>&1; then
   bindkey '^[g' lazygit-widget
 fi
 
+# Yazi を終了した場所へ、そのまま shell の current directory も移動できる wrapper。
+# `yazi` は通常起動、`y` は終了後の cd まで含めたいときに使う。
+if command -v yazi >/dev/null 2>&1; then
+  y() {
+    local tmp cwd
+    tmp="$(mktemp -t 'yazi-cwd.XXXXXX')"
+
+    command yazi "$@" --cwd-file="$tmp"
+    IFS= read -r -d '' cwd < "$tmp"
+
+    if [[ -n "$cwd" && "$cwd" != "$PWD" && -d "$cwd" ]]; then
+      builtin cd -- "$cwd"
+    fi
+
+    command rm -f -- "$tmp"
+  }
+fi
+
 # Starship をプロンプトとして初期化する。
 # プロンプト系は他の shell integration の後に置き、最後に見た目を確定させる。
 if command -v starship >/dev/null 2>&1; then

@@ -19,8 +19,13 @@ brew "fzf"
 # 使用履歴を学習してディレクトリ移動を補助する。
 brew "zoxide"
 
-# ローカル / リモート間のファイル操作・転送を 2 ペイン TUI で行う。
-brew "termscp"
+# ローカル / SFTP リモートを同じ操作で扱える TUI ファイルマネージャー。
+brew "yazi"
+
+# Yazi のファイル名検索、アーカイブ、PDF プレビューを有効にする補助ツール。
+brew "fd"
+brew "sevenzip"
+brew "poppler"
 
 # --- Git / data handling ----------------------------------------------------
 
@@ -34,9 +39,11 @@ brew "git-delta"
 brew "gh"
 
 # JSON の確認・加工用。host と Dev Container の双方で利用する方針。
+# Yazi の JSON preview でも利用する。
 brew "jq"
 
 # codebase 内の高速な全文検索に利用する。
+# Yazi のファイル内容検索でも利用する。
 brew "ripgrep"
 
 # --- Containers -------------------------------------------------------------

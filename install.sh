@@ -81,6 +81,24 @@ ensure_symlink() {
   info "linked: $target -> $source"
 }
 
+# Yazi の 2 pane 表示 plugin を不足時だけ導入する。
+# plugin 本体と package metadata は Yazi 側で管理し、repository には含めない。
+install_yazi_plugins() {
+  local plugin_dir="$XDG_CONFIG_HOME/yazi/plugins/split-tabs.yazi"
+
+  if ! command -v ya >/dev/null 2>&1; then
+    fail 'Yazi package manager (ya) was not found after installing Yazi'
+  fi
+
+  if [[ -d "$plugin_dir" ]]; then
+    info 'Yazi plugin already installed: terrakok/split-tabs'
+    return
+  fi
+
+  info 'installing Yazi plugin: terrakok/split-tabs'
+  YAZI_CONFIG_HOME="$XDG_CONFIG_HOME/yazi" ya pkg add terrakok/split-tabs
+}
+
 # extensions.txt に宣言した VS Code extension を導入する。
 # 空行と # で始まるコメント行は無視する。
 install_vscode_extensions() {
@@ -142,6 +160,18 @@ main() {
   ensure_symlink \
     "$DOTFILES_DIR/.config/lazygit/config.yml" \
     "$XDG_CONFIG_HOME/lazygit/config.yml"
+
+  # Yazi は接続情報や plugin の実体をローカルに残せるよう、
+  # directory 全体ではなく portable な設定ファイルだけを個別にリンクする。
+  ensure_symlink \
+    "$DOTFILES_DIR/.config/yazi/yazi.toml" \
+    "$XDG_CONFIG_HOME/yazi/yazi.toml"
+
+  ensure_symlink \
+    "$DOTFILES_DIR/.config/yazi/keymap.toml" \
+    "$XDG_CONFIG_HOME/yazi/keymap.toml"
+
+  install_yazi_plugins
 
   # Git の portable な global 設定を repository 側で管理する。
   # user.name / user.email / 認証は ~/.gitconfig.local など Mac 側へ分離する。

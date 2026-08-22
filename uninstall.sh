@@ -69,6 +69,16 @@ main() {
     "$DOTFILES_DIR/.config/lazygit/config.yml" \
     "$XDG_CONFIG_HOME/lazygit/config.yml"
 
+  # Yazi の portable な設定だけ解除する。
+  # plugin、package.toml、vfs.toml などのローカル状態は削除しない。
+  remove_symlink \
+    "$DOTFILES_DIR/.config/yazi/yazi.toml" \
+    "$XDG_CONFIG_HOME/yazi/yazi.toml"
+
+  remove_symlink \
+    "$DOTFILES_DIR/.config/yazi/keymap.toml" \
+    "$XDG_CONFIG_HOME/yazi/keymap.toml"
+
   # Git の portable な global 設定本体は repository 側に残し、~/.gitconfig のリンクだけ解除する。
   remove_symlink \
     "$DOTFILES_DIR/.gitconfig" \
