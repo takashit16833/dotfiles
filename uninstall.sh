@@ -54,6 +54,19 @@ remove_symlink() {
 main() {
   info "uninstalling links created from $DOTFILES_DIR"
 
+  # Kitty の portable な設定だけを解除し、local/generated file は残す。
+  remove_symlink \
+    "$DOTFILES_DIR/.config/kitty/kitty.conf" \
+    "$XDG_CONFIG_HOME/kitty/kitty.conf"
+
+  remove_symlink \
+    "$DOTFILES_DIR/.config/kitty/appearance.conf" \
+    "$XDG_CONFIG_HOME/kitty/appearance.conf"
+
+  remove_symlink \
+    "$DOTFILES_DIR/.config/kitty/keybindings.conf" \
+    "$XDG_CONFIG_HOME/kitty/keybindings.conf"
+
   # WezTerm の設定本体は dotfiles 側に残し、XDG_CONFIG_HOME 側のリンクだけ解除する。
   remove_symlink \
     "$DOTFILES_DIR/.config/wezterm" \

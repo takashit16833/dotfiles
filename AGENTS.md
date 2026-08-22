@@ -40,6 +40,15 @@
 - `uninstall.sh` は VS Code の設定 symlink だけを解除し、導入済み extension は削除しない。
 - snippets や Profiles は必要になった時点で追加し、先回りして空の管理対象を増やさない。
 
+## Kitty
+
+- Kitty は `.config/kitty/kitty.conf` を薄い entry point とし、`appearance.conf` と `keybindings.conf` を明示的に `include` する。
+- default config 全体を複製せず、意図的に変更する項目だけを repository で管理する。
+- Kitty の directory 全体は symlink せず、上記 3 ファイルだけを個別に symlink する。theme kitten などが生成する local file を repository へ混在させないため。
+- `appearance.conf` は WezTerm の Retro Hacker Blue ベースの配色、下部 tab bar、Menlo + BIZ UDGothic の日本語表示を引き継ぐ。
+- `keybindings.conf` は macOS の Cmd / Option 操作を zsh 側の Emacs 系編集へ橋渡しする。行編集の意味は Terminal ではなく zsh 側に持たせる。
+- Option-Z / Option-G は zsh 側の zi / lazygit widget 用 ESC sequence を送る挙動を維持する。
+
 ## Yazi
 
 - `yazi` 本体と preview / search に使う補助 CLI は `Brewfile` で管理する。

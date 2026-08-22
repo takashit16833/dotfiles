@@ -6,6 +6,9 @@
 
 # --- Terminal / shell -------------------------------------------------------
 
+# Kitty Graphics Protocol をネイティブに利用する TUI / PDF viewer との互換性を優先する Terminal。
+cask "kitty"
+
 # WezTerm は macOS タイトルバーの背景色を Terminal と完全に揃えるため、
 # Nightly 限定機能を利用する。Stable 版ではなく Nightly を明示的に採用する。
 cask "wezterm@nightly"

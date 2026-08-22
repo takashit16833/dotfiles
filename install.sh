@@ -144,6 +144,20 @@ main() {
   # これにより、新しい Mac でも install.sh ひとつで同じ順序で環境を構築できる。
   install_homebrew_packages
 
+  # Kitty は複数の portable な設定ファイルだけを個別にリンクする。
+  # directory 全体をリンクせず、Kitty が生成するローカル設定と共存できるようにする。
+  ensure_symlink \
+    "$DOTFILES_DIR/.config/kitty/kitty.conf" \
+    "$XDG_CONFIG_HOME/kitty/kitty.conf"
+
+  ensure_symlink \
+    "$DOTFILES_DIR/.config/kitty/appearance.conf" \
+    "$XDG_CONFIG_HOME/kitty/appearance.conf"
+
+  ensure_symlink \
+    "$DOTFILES_DIR/.config/kitty/keybindings.conf" \
+    "$XDG_CONFIG_HOME/kitty/keybindings.conf"
+
   # WezTerm は XDG_CONFIG_HOME/wezterm/wezterm.lua を読むため、
   # ディレクトリ単位で dotfiles 側の設定へリンクする。
   ensure_symlink \
