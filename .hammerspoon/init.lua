@@ -7,26 +7,63 @@ hs.autoLaunch(true)
 local hyper = { "ctrl", "cmd", "alt" }
 local hyperShift = { "ctrl", "cmd", "alt", "shift" }
 
+-- Chrome はプロセスだけ残っている状態で launchOrFocus しても新しいウィンドウを作らないため、
+-- AppleScript で明示的に新しいウィンドウを作る。
+local function reopenChrome()
+  local ok = hs.osascript.applescript([[
+tell application "Google Chrome"
+  make new window
+  activate
+end tell
+]])
+
+  if not ok then
+    hs.application.launchOrFocus("Google Chrome")
+  end
+end
+
+-- Kitty はプロセスだけ残っている状態へ launchOrFocus しても startup session を再実行しない。
+-- open -n で新しい Kitty のインスタンスを起動し、通常起動時と同じように local.conf と
+-- そこから参照される session 設定を読み込ませる。
+local function reopenKitty()
+  local _, ok = hs.execute("/usr/bin/open -na kitty", true)
+
+  if not ok then
+    hs.application.launchOrFocus("kitty")
+  end
+end
+
 -- アプリ切り替え用の設定。
--- Ctrl + Cmd + Option + 数字キーで、普段使うアプリへ直接フォーカスを移す。
+-- Space の判定は共通化し、ウィンドウが1枚もない状態からの再オープン方法だけ
+-- 必要なアプリごとに差し替える。
 local apps = {
-  ["f"] = "Google Chrome",
-  ["w"] = "Obsidian",
-  ["r"] = "kitty",
-  ["y"] = "Visual Studio Code",
+  ["f"] = {
+    name = "Google Chrome",
+    reopen = reopenChrome,
+  },
+  ["w"] = {
+    name = "Obsidian",
+  },
+  ["r"] = {
+    name = "kitty",
+    reopen = reopenKitty,
+  },
+  ["y"] = {
+    name = "Visual Studio Code",
+  },
 }
 
 -- 指定したアプリを、現在見えている Space の範囲内だけで前面へ出す。
 --
 -- 未起動の場合:
---   launchOrFocus でアプリを起動し、そのままフォーカスする。
+--   launchOrFocus で通常起動する。
 --
 -- 起動済みの場合:
 --   現在見えている Space にウィンドウがあれば、それらだけをまとめて前面へ出す。
 --   別の Space にだけウィンドウがある場合は何もしない。
---   どの Space にもウィンドウがない場合は launchOrFocus を再度呼び、
---   アプリの再オープン動作によって現在の Space にウィンドウを出す。
-local function activateApp(appName)
+--   どの Space にもウィンドウがない場合は、そのアプリに適した方法で新しいウィンドウを作る。
+local function activateApp(appConfig)
+  local appName = appConfig.name
   local app = hs.application.get(appName)
 
   if not app then
@@ -60,18 +97,23 @@ local function activateApp(appName)
     return
   end
 
-  -- アプリのプロセスだけが残っていてウィンドウが1枚もない場合は、
-  -- 再オープン動作を発生させて現在の Space にウィンドウを出す。
-  hs.application.launchOrFocus(appName)
+  -- アプリのプロセスだけが残っていてウィンドウが1枚もない場合。
+  -- Chrome / Kitty は launchOrFocus では復旧できないため専用処理を使い、
+  -- 専用処理が不要なアプリは従来どおり launchOrFocus に任せる。
+  if appConfig.reopen then
+    appConfig.reopen()
+  else
+    hs.application.launchOrFocus(appName)
+  end
 end
 
 -- Ctrl + Cmd + Option + f: Google Chrome
 -- Ctrl + Cmd + Option + w: Obsidian
 -- Ctrl + Cmd + Option + r: kitty
 -- Ctrl + Cmd + Option + y: Visual Studio Code
-for key, appName in pairs(apps) do
+for key, appConfig in pairs(apps) do
   hs.hotkey.bind(hyper, key, function()
-    activateApp(appName)
+    activateApp(appConfig)
   end)
 end
 
