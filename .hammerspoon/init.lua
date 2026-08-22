@@ -53,6 +53,22 @@ local apps = {
   },
 }
 
+-- 現在見えている Space にある、指定アプリの標準ウィンドウだけを前面順で取得する。
+-- hs.window.filter の Space 状態を使わず、その都度 macOS から見えているウィンドウを取得することで、
+-- Space 切り替え直後に古い判定を使って別の Space へ移動してしまうのを避ける。
+local function visibleWindowsForApp(appName)
+  local windows = {}
+
+  for _, window in ipairs(hs.window.orderedWindows()) do
+    local app = window:application()
+    if app and app:name() == appName and window:isStandard() then
+      table.insert(windows, window)
+    end
+  end
+
+  return windows
+end
+
 -- 指定したアプリを、現在見えている Space の範囲内だけで前面へ出す。
 --
 -- 未起動の場合:
@@ -71,13 +87,10 @@ local function activateApp(appConfig)
     return
   end
 
-  -- 現在表示中の Space にあるウィンドウだけを取得する。
-  local currentSpaceFilter = hs.window.filter.new(appName)
-  currentSpaceFilter:setCurrentSpace(true)
-  local currentSpaceWindows = currentSpaceFilter:getWindows()
+  local currentSpaceWindows = visibleWindowsForApp(appName)
 
   if #currentSpaceWindows > 0 then
-    -- getWindows() は直近でフォーカスされた順なので、逆順に raise することで
+    -- orderedWindows() は前面から順なので、逆順に raise することで
     -- そのアプリ内の重なり順をできるだけ保ちながら、対象ウィンドウをまとめて前面へ出す。
     for index = #currentSpaceWindows, 1, -1 do
       currentSpaceWindows[index]:raise()
