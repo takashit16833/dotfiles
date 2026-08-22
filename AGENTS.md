@@ -71,6 +71,7 @@
 - Zellij の通常 UI は `.config/zellij/layouts/minimal.kdl` を使い、session 名・mode 表示・Powerline 風装飾を出さず tab だけを 1 行表示する。
 - Zellij の startup tip は `show_startup_tips false` で表示しない。
 - tab bar には `zjstatus` v0.24.0 を version 固定で利用し、各 tab は `focused_pane_title` を表示する。配色は Kitty に合わせ、active を `#FF4DE1`、inactive を `#4C9EEB`、背景色なしとする。
+- tab label の理想形は、通常時は `focused_pane_title`、`rename-tab` で明示的な tab 名を付けた場合はその名前を優先すること。zjstatus v0.24.0 にはこの条件付き fallback がないため、現時点では `focused_pane_title` を優先する。表示だけのために zjstatus の fork、独自 WASM の配布、各 command ごとの Zellij 状態問い合わせなどの複雑な仕組みは追加しない。upstream で条件付き fallback が利用可能になったら設定だけで切り替える。
 - Zellij 内の zsh は OSC 2 で pane title を更新し、prompt 待機中は `zsh`、通常の command 実行中は先頭の command 名を表示する。zsh の widget から直接起動する TUI は必要に応じて明示的に title を設定する。
 - pane frame は見た目の主張が強いため常時表示しない。Zellij 0.45.0 では frame を消したまま pane 間の区切り線だけを任意色で描く設定はないため、UI の簡潔さを優先する。
 - Zellij は `uninstall.sh` で完全削除する対象とする。managed binary を消す前に session 停止を試み、`~/.config/zellij`、platform cache/data、XDG fallback、runtime socket directory まで削除する。
