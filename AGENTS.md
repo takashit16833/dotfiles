@@ -52,6 +52,8 @@
 - `keybindings.conf` は macOS の Cmd / Option 操作を zsh 側の Emacs 系編集へ橋渡しする。行編集の意味は Terminal ではなく zsh 側に持たせる。
 - Option は `macos_option_as_alt both` で Alt modifier として Terminal application へ渡す。個別の Kitty key mapping はこれより優先される。
 - Option-Z / Option-G は zsh 側の zi / lazygit widget 用 ESC sequence を送る挙動を維持する。
+- Ctrl-PageUp / Ctrl-PageDown は Kitty 自身の前後 tab 移動に使う。
+- Cmd-Option-Left / Cmd-Option-Right は Kitty から Alt-Shift-Left / Alt-Shift-Right として child terminal へ渡し、Zellij 側で前後 tab 移動に割り当てる。Option-Left / Option-Right 単体の zsh word navigation は維持する。
 
 ## Yazi
 
@@ -76,6 +78,7 @@
 - Zellij は zsh の `zj` alias から通常の command として起動する。ZLE widget から直接起動しない。
 - Zellij の通常 UI は `.config/zellij/layouts/minimal.kdl` を使い、session 名・mode 表示・Powerline 風装飾を出さず tab だけを 1 行表示する。
 - Zellij の startup tip は `show_startup_tips false` で表示しない。
+- Zellij の前後 tab は Kitty から送る Alt-Shift-Left / Alt-Shift-Right を `GoToPreviousTab` / `GoToNextTab` に割り当て、物理キーでは Cmd-Option-Left / Cmd-Option-Right で操作する。
 - tab bar には `zjstatus` v0.24.0 を version 固定で利用し、各 tab は `focused_pane_title` を表示する。配色は Kitty に合わせ、active を `#FF4DE1`、inactive を `#4C9EEB`、背景色なしとする。
 - tab label の理想形は、通常時は `focused_pane_title`、`rename-tab` で明示的な tab 名を付けた場合はその名前を優先すること。zjstatus v0.24.0 にはこの条件付き fallback がないため、現時点では `focused_pane_title` を優先する。表示だけのために zjstatus の fork、独自 WASM の配布、各 command ごとの Zellij 状態問い合わせなどの複雑な仕組みは追加しない。upstream で条件付き fallback が利用可能になったら設定だけで切り替える。
 - Zellij 内の zsh は OSC 2 で pane title を更新し、prompt 待機中は `zsh`、通常の command 実行中は先頭の command 名を表示する。zsh の widget から直接起動する TUI は必要に応じて明示的に title を設定する。
