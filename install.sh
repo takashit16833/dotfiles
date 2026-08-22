@@ -12,10 +12,6 @@ XDG_CONFIG_HOME="$HOME/.config"
 
 # Homebrew 外で管理する CLI の配置先。zsh 側でも PATH に追加する。
 LOCAL_BIN_DIR="$HOME/.local/bin"
-CARGO_INSTALL_ROOT="$HOME/.local"
-
-# tdf は upstream の Git repository から reproducible に導入するため revision を固定する。
-TDF_REV="de0050499e96f2f9d69b3e380fa3dd8de7119b90"
 
 # Kitty Graphics Protocol 対応を含む Zellij を公式 release binary から導入する。
 ZELLIJ_VERSION="0.45.0"
@@ -76,20 +72,6 @@ ensure_symlink() {
 
   ln -s "$source" "$target"
   info "linked: $target -> $source"
-}
-
-install_tdf() {
-  if ! command -v cargo >/dev/null 2>&1; then
-    fail 'cargo was not found after installing the Rust toolchain from Brewfile'
-  fi
-
-  mkdir -p "$LOCAL_BIN_DIR"
-  info "installing tdf from pinned revision ${TDF_REV:0:12}"
-  cargo install \
-    --git https://github.com/itsjunetime/tdf.git \
-    --rev "$TDF_REV" \
-    --locked \
-    --root "$CARGO_INSTALL_ROOT"
 }
 
 zellij_target_triple() {
@@ -221,7 +203,6 @@ main() {
   info "installing from $DOTFILES_DIR"
 
   install_homebrew_packages
-  install_tdf
   install_zellij
 
   ensure_symlink \
