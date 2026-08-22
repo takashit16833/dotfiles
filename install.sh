@@ -219,6 +219,10 @@ main() {
     "$XDG_CONFIG_HOME/zellij/layouts/minimal.kdl"
 
   ensure_symlink \
+    "$DOTFILES_DIR/.config/zellij/layouts/lazygit.kdl" \
+    "$XDG_CONFIG_HOME/zellij/layouts/lazygit.kdl"
+
+  ensure_symlink \
     "$DOTFILES_DIR/.config/kitty/kitty.conf" \
     "$XDG_CONFIG_HOME/kitty/kitty.conf"
 
