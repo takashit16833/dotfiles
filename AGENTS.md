@@ -63,8 +63,7 @@
 ## Local CLI tools
 
 - Homebrew 外で dotfiles が管理する CLI は `$HOME/.local/bin` に置き、`.config/zsh/.zshenv` で同 directory を `PATH` の先頭へ追加する。
-- `tdf` は Homebrew package として扱わず、公式の `cargo install --git` 方式を `install.sh` から利用する。build 用 Rust toolchain は `Brewfile` の `rust` で用意する。
-- `tdf` は upstream の意図しない変更で環境が壊れないよう、`install.sh` 内の revision を固定し、`--root $HOME/.local` で導入する。`uninstall.sh` は `tdf-viewer` を同じ Cargo root から uninstall する。
+- `tdf` は Homebrew core の formula として `Brewfile` で管理する。`cargo install` を直接使わず、Rust toolchain も top-level dependency として追加しない。
 - Zellij は Kitty Graphics Protocol 対応が必要なため、Homebrew の更新タイミングには依存せず、`install.sh` が指定 version の公式 macOS release binary を `$HOME/.local/bin/zellij` へ導入する。
 - Zellij の管理開始時に `$HOME/.local/share/dotfiles/zellij/version` を ownership marker として作る。同じ version の既存 binary は dotfiles 管理として採用してよいが、marker の無い別 version / 別 binary は勝手に上書きしない。
 - Zellij は `uninstall.sh` で完全削除する対象とする。managed binary を消す前に session 停止を試み、`~/.config/zellij`、platform cache/data、XDG fallback、runtime socket directory まで削除する。
