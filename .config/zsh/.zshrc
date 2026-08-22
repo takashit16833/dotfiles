@@ -15,6 +15,28 @@ bindkey -e
 # カーソル位置から行頭までを削除する操作だけを明示的に割り当てる。
 bindkey '\e^U' backward-kill-line
 
+# Zellij 内では pane title を shell / 実行中 command に合わせる。
+# zjstatus はこの title を tab 名として表示するため、Pane #N のような既定名を避けられる。
+set_zellij_pane_title() {
+  [[ -n "${ZELLIJ:-}" ]] || return
+  printf '\e]2;%s\a' "$1"
+}
+
+autoload -Uz add-zsh-hook
+
+zellij_pane_title_preexec() {
+  local -a command_words
+  command_words=(${(z)1})
+  set_zellij_pane_title "${command_words[1]:t}"
+}
+
+zellij_pane_title_precmd() {
+  set_zellij_pane_title 'zsh'
+}
+
+add-zsh-hook preexec zellij_pane_title_preexec
+add-zsh-hook precmd zellij_pane_title_precmd
+
 # fzf の zsh integration。
 # Ctrl-R の履歴検索、Ctrl-T のファイル選択、**<Tab> の fuzzy completion を有効にする。
 if command -v fzf >/dev/null 2>&1; then
@@ -41,7 +63,9 @@ fi
 if command -v lazygit >/dev/null 2>&1; then
   lazygit-widget() {
     zle -I
+    set_zellij_pane_title 'lazygit'
     lazygit
+    set_zellij_pane_title 'zsh'
     zle reset-prompt
   }
   zle -N lazygit-widget
