@@ -5,6 +5,9 @@
 # よく使う ls の詳細表示。
 alias ll='ls -lahG'
 
+# Zellij は zoxide の `z` と衝突しない短い名前で起動する。
+alias zj='zellij'
+
 # 行編集の意味は zsh 側に集約する。
 # Terminal 側は OS 固有のショートカットを標準的な Emacs キーへ変換するだけにし、
 # Terminal を乗り換えても編集操作そのものはここで維持できるようにする。
@@ -70,19 +73,6 @@ if command -v lazygit >/dev/null 2>&1; then
   }
   zle -N lazygit-widget
   bindkey '^[g' lazygit-widget
-fi
-
-# Kitty 側で Option + T を ESC + t に変換し、現在の shell から Zellij を起動する。
-# すでに Zellij 内にいる場合は nested session を作らず何もしない。
-if command -v zellij >/dev/null 2>&1; then
-  zellij-widget() {
-    [[ -z "${ZELLIJ:-}" ]] || return
-    zle -I
-    zellij
-    zle reset-prompt
-  }
-  zle -N zellij-widget
-  bindkey '^[t' zellij-widget
 fi
 
 # Yazi を終了した場所へ、そのまま shell の current directory も移動できる wrapper。
