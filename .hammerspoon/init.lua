@@ -94,11 +94,16 @@ local function openKittyWindow()
   end
 end
 
--- VS Code は launchOrFocus を使わず、既存プロセスへ New Window (Cmd + Shift + N) を直接送る。
--- これにより Mission Control 後でも、別の Space にある既存ウィンドウを activate しない。
-local function openVSCodeWindow(app)
-  hs.eventtap.keyStroke({ "cmd", "shift" }, "n", 0, app)
-  focusVisibleWindowWhenAvailable("Visual Studio Code")
+-- VS Code は非アクティブな既存プロセスへキーストロークを送らず、
+-- アプリに同梱された公式 CLI へ --new-window を渡して新しいウィンドウを要求する。
+-- Hammerspoon の PATH や VS Code のフォーカス状態に依存しないよう、CLI は絶対パスで呼ぶ。
+local function openVSCodeWindow()
+  local vscodeCli = "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
+  local _, ok = hs.execute('"' .. vscodeCli .. '" --new-window', true)
+
+  if ok then
+    focusVisibleWindowWhenAvailable("Visual Studio Code")
+  end
 end
 
 -- アプリ切り替え用の設定。
