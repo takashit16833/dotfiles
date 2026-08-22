@@ -8,30 +8,33 @@ set -euo pipefail
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # この dotfiles では XDG_CONFIG_HOME を ~/.config に固定する。
-# zsh の .zshenv でも同じ値を export し、設定ファイルの配置規則を統一する。
 XDG_CONFIG_HOME="$HOME/.config"
+
+# Homebrew 外で管理する CLI の配置先。zsh 側でも PATH に追加する。
+LOCAL_BIN_DIR="$HOME/.local/bin"
+CARGO_INSTALL_ROOT="$HOME/.local"
+
+# tdf は upstream の Git repository から reproducible に導入するため revision を固定する。
+TDF_REV="de0050499e96f2f9d69b3e380fa3dd8de7119b90"
+
+# Kitty Graphics Protocol 対応を含む Zellij を公式 release binary から導入する。
+ZELLIJ_VERSION="0.45.0"
+ZELLIJ_BIN="$LOCAL_BIN_DIR/zellij"
+ZELLIJ_MANAGED_STATE_DIR="$HOME/.local/share/dotfiles/zellij"
+ZELLIJ_MANAGED_VERSION_FILE="$ZELLIJ_MANAGED_STATE_DIR/version"
 
 # VS Code の macOS 標準 User directory。
 VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
 
-# 通常の進捗メッセージを統一した形式で表示する。
 info() {
   printf '[dotfiles] %s\n' "$*"
 }
 
-# 安全に続行できない場合は理由を表示して終了する。
 fail() {
   printf '[dotfiles] ERROR: %s\n' "$*" >&2
   exit 1
 }
 
-# Brewfile に宣言した macOS 用ツールを Homebrew で揃える。
-#
-# 方針:
-# - Homebrew 自体は事前に導入済みであることを前提にする。
-# - package の一覧は install.sh に直書きせず、Brewfile を正本にする。
-# - --no-upgrade により、install.sh 実行のたびに既存 package を
-#   むやみに upgrade しない。不足している package だけを導入する。
 install_homebrew_packages() {
   if [[ "$(uname -s)" != "Darwin" ]]; then
     fail 'this installer currently supports macOS only'
@@ -49,12 +52,6 @@ install_homebrew_packages() {
   brew bundle --file="$DOTFILES_DIR/Brewfile" --no-upgrade
 }
 
-# source を target から参照するシンボリックリンクを冪等に作成する。
-#
-# 方針:
-# - すでに正しいリンクなら何もしない。
-# - 別のリンクや実ファイルが存在する場合は、勝手に上書きしない。
-# - target の親ディレクトリだけは必要に応じて作成する。
 ensure_symlink() {
   local source="$1"
   local target="$2"
@@ -81,8 +78,93 @@ ensure_symlink() {
   info "linked: $target -> $source"
 }
 
-# Yazi の 2 pane 表示 plugin を不足時だけ導入する。
-# plugin 本体と package metadata は Yazi 側で管理し、repository には含めない。
+install_tdf() {
+  if ! command -v cargo >/dev/null 2>&1; then
+    fail 'cargo was not found after installing the Rust toolchain from Brewfile'
+  fi
+
+  mkdir -p "$LOCAL_BIN_DIR"
+  info "installing tdf from pinned revision ${TDF_REV:0:12}"
+  cargo install \
+    --git https://github.com/itsjunetime/tdf.git \
+    --rev "$TDF_REV" \
+    --locked \
+    --root "$CARGO_INSTALL_ROOT"
+}
+
+zellij_target_triple() {
+  case "$(uname -m)" in
+    arm64)
+      printf '%s\n' 'aarch64-apple-darwin'
+      ;;
+    x86_64)
+      printf '%s\n' 'x86_64-apple-darwin'
+      ;;
+    *)
+      fail "unsupported macOS architecture: $(uname -m)"
+      ;;
+  esac
+}
+
+install_zellij() {
+  local target_triple
+  local installed_version=''
+  local tmp_dir
+  local archive
+
+  target_triple="$(zellij_target_triple)"
+  mkdir -p "$LOCAL_BIN_DIR"
+
+  if [[ -e "$ZELLIJ_BIN" || -L "$ZELLIJ_BIN" ]]; then
+    if [[ ! -x "$ZELLIJ_BIN" ]]; then
+      fail "$ZELLIJ_BIN already exists but is not executable; leaving it untouched"
+    fi
+
+    installed_version="$("$ZELLIJ_BIN" --version 2>/dev/null || true)"
+    if [[ "$installed_version" == "zellij $ZELLIJ_VERSION" ]]; then
+      # 事前に同じ公式 binary を手動導入していた場合も、ここから dotfiles 管理として採用する。
+      mkdir -p "$ZELLIJ_MANAGED_STATE_DIR"
+      printf '%s\n' "$ZELLIJ_VERSION" > "$ZELLIJ_MANAGED_VERSION_FILE"
+      info "Zellij already installed: $installed_version"
+      return
+    fi
+
+    if [[ ! -f "$ZELLIJ_MANAGED_VERSION_FILE" ]]; then
+      fail "$ZELLIJ_BIN already exists ($installed_version); leaving unmanaged binary untouched"
+    fi
+
+    info "updating dotfiles-managed Zellij from $installed_version to $ZELLIJ_VERSION"
+  fi
+
+  tmp_dir="$(mktemp -d)"
+  archive="$tmp_dir/zellij.tar.gz"
+
+  info "installing Zellij $ZELLIJ_VERSION for $target_triple"
+  if ! curl -fL \
+    "https://github.com/zellij-org/zellij/releases/download/v${ZELLIJ_VERSION}/zellij-${target_triple}.tar.gz" \
+    -o "$archive"; then
+    rm -rf "$tmp_dir"
+    fail 'failed to download the Zellij release archive'
+  fi
+
+  if ! tar -xzf "$archive" -C "$tmp_dir"; then
+    rm -rf "$tmp_dir"
+    fail 'failed to extract the Zellij release archive'
+  fi
+
+  if [[ ! -x "$tmp_dir/zellij" ]]; then
+    rm -rf "$tmp_dir"
+    fail 'the Zellij release archive did not contain an executable zellij binary'
+  fi
+
+  install -m 755 "$tmp_dir/zellij" "$ZELLIJ_BIN"
+  rm -rf "$tmp_dir"
+
+  mkdir -p "$ZELLIJ_MANAGED_STATE_DIR"
+  printf '%s\n' "$ZELLIJ_VERSION" > "$ZELLIJ_MANAGED_VERSION_FILE"
+  info "installed: $ZELLIJ_BIN"
+}
+
 install_yazi_plugins() {
   local plugin_dir="$XDG_CONFIG_HOME/yazi/plugins/split-tabs.yazi"
 
@@ -99,8 +181,6 @@ install_yazi_plugins() {
   YAZI_CONFIG_HOME="$XDG_CONFIG_HOME/yazi" ya pkg add terrakok/split-tabs
 }
 
-# extensions.txt に宣言した VS Code extension を導入する。
-# 空行と # で始まるコメント行は無視する。
 install_vscode_extensions() {
   local extensions_file="$DOTFILES_DIR/.config/vscode/extensions.txt"
   local vscode_cli=''
@@ -140,12 +220,10 @@ install_vscode_extensions() {
 main() {
   info "installing from $DOTFILES_DIR"
 
-  # まず実行に必要な CLI / application を揃え、その後に設定ファイルをリンクする。
-  # これにより、新しい Mac でも install.sh ひとつで同じ順序で環境を構築できる。
   install_homebrew_packages
+  install_tdf
+  install_zellij
 
-  # Kitty は複数の portable な設定ファイルだけを個別にリンクする。
-  # directory 全体をリンクせず、Kitty が生成するローカル設定と共存できるようにする。
   ensure_symlink \
     "$DOTFILES_DIR/.config/kitty/kitty.conf" \
     "$XDG_CONFIG_HOME/kitty/kitty.conf"
@@ -158,25 +236,18 @@ main() {
     "$DOTFILES_DIR/.config/kitty/keybindings.conf" \
     "$XDG_CONFIG_HOME/kitty/keybindings.conf"
 
-  # WezTerm は XDG_CONFIG_HOME/wezterm/wezterm.lua を読むため、
-  # ディレクトリ単位で dotfiles 側の設定へリンクする。
   ensure_symlink \
     "$DOTFILES_DIR/.config/wezterm" \
     "$XDG_CONFIG_HOME/wezterm"
 
-  # Starship は XDG_CONFIG_HOME/starship.toml を標準の設定ファイルとして読む。
-  # 設定本体は repository 側を正本にし、HOME 側にはファイルのリンクだけ置く。
   ensure_symlink \
     "$DOTFILES_DIR/.config/starship.toml" \
     "$XDG_CONFIG_HOME/starship.toml"
 
-  # Lazygit も XDG_CONFIG_HOME 配下へ統一する。
   ensure_symlink \
     "$DOTFILES_DIR/.config/lazygit/config.yml" \
     "$XDG_CONFIG_HOME/lazygit/config.yml"
 
-  # Yazi は接続情報や plugin の実体をローカルに残せるよう、
-  # directory 全体ではなく portable な設定ファイルだけを個別にリンクする。
   ensure_symlink \
     "$DOTFILES_DIR/.config/yazi/yazi.toml" \
     "$XDG_CONFIG_HOME/yazi/yazi.toml"
@@ -187,25 +258,18 @@ main() {
 
   install_yazi_plugins
 
-  # Git の portable な global 設定を repository 側で管理する。
-  # user.name / user.email / 認証は ~/.gitconfig.local など Mac 側へ分離する。
   ensure_symlink \
     "$DOTFILES_DIR/.gitconfig" \
     "$HOME/.gitconfig"
 
-  # zsh が ZDOTDIR を知る前にも .zshenv を読めるよう、HOME 直下には
-  # .config/zsh/.zshenv への bootstrap link だけを置く。
   ensure_symlink \
     "$DOTFILES_DIR/.config/zsh/.zshenv" \
     "$HOME/.zshenv"
 
-  # .zprofile / .zshrc を含む zsh の startup file は XDG_CONFIG_HOME 配下へ集約する。
   ensure_symlink \
     "$DOTFILES_DIR/.config/zsh" \
     "$XDG_CONFIG_HOME/zsh"
 
-  # VS Code の Default Profile の user settings / keybindings は repository を正本にする。
-  # User directory 全体は管理せず、宣言的に管理したいファイルだけをリンクする。
   ensure_symlink \
     "$DOTFILES_DIR/.config/vscode/settings.json" \
     "$VSCODE_USER_DIR/settings.json"
@@ -214,11 +278,8 @@ main() {
     "$DOTFILES_DIR/.config/vscode/keybindings.json" \
     "$VSCODE_USER_DIR/keybindings.json"
 
-  # VS Code extension はファイルをリンクせず、extensions.txt の宣言から復元する。
   install_vscode_extensions
 
-  # Hammerspoon は ~/.hammerspoon/init.lua を設定として読むため、
-  # 設定ディレクトリ全体を dotfiles 側へリンクする。
   ensure_symlink \
     "$DOTFILES_DIR/.hammerspoon" \
     "$HOME/.hammerspoon"

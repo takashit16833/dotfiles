@@ -22,6 +22,9 @@ brew "fzf"
 # 使用履歴を学習してディレクトリ移動を補助する。
 brew "zoxide"
 
+# tdf は upstream が cargo install を公式の導入方法としているため、build/install 用に Rust を持つ。
+brew "rust"
+
 # ローカル / SFTP リモートを同じ操作で扱える TUI ファイルマネージャー。
 brew "yazi"
 

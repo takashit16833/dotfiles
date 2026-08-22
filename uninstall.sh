@@ -3,28 +3,20 @@
 # エラー、未定義変数、パイプ途中の失敗を見逃さず、安全側で停止する。
 set -euo pipefail
 
-# このスクリプト自身の配置場所を dotfiles のルートとして扱う。
-# ~/dotfiles 以外へ clone しても動作するよう、HOME にパスを固定しない。
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# install.sh / .zshenv と同じく、設定ファイルは ~/.config 配下に統一する。
 XDG_CONFIG_HOME="$HOME/.config"
-
-# VS Code の macOS 標準 User directory。
+LOCAL_BIN_DIR="$HOME/.local/bin"
+CARGO_INSTALL_ROOT="$HOME/.local"
+ZELLIJ_VERSION="0.45.0"
+ZELLIJ_BIN="$LOCAL_BIN_DIR/zellij"
+ZELLIJ_MANAGED_STATE_DIR="$HOME/.local/share/dotfiles/zellij"
+ZELLIJ_MANAGED_VERSION_FILE="$ZELLIJ_MANAGED_STATE_DIR/version"
 VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
 
-# 通常の進捗メッセージを統一した形式で表示する。
 info() {
   printf '[dotfiles] %s\n' "$*"
 }
 
-# この dotfiles repository が作成したシンボリックリンクだけを冪等に削除する。
-#
-# 方針:
-# - target が存在しなければ何もしない。
-# - target が実ファイル/実ディレクトリなら触らない。
-# - 別の場所を指すシンボリックリンクも触らない。
-# - source を指している場合だけリンクそのものを削除する。
 remove_symlink() {
   local source="$1"
   local target="$2"
@@ -51,10 +43,72 @@ remove_symlink() {
   info "removed: $target"
 }
 
-main() {
-  info "uninstalling links created from $DOTFILES_DIR"
+remove_path() {
+  local target="$1"
 
-  # Kitty の portable な設定だけを解除し、local/generated file は残す。
+  if [[ ! -e "$target" && ! -L "$target" ]]; then
+    return
+  fi
+
+  rm -rf "$target"
+  info "removed: $target"
+}
+
+uninstall_tdf() {
+  if command -v cargo >/dev/null 2>&1; then
+    if cargo uninstall --root "$CARGO_INSTALL_ROOT" tdf-viewer >/dev/null 2>&1; then
+      info 'uninstalled tdf'
+      return
+    fi
+  fi
+
+  # cargo が既に無い場合や metadata が失われている場合でも、
+  # install.sh が管理する配置先の binary は残さない。
+  if [[ -e "$LOCAL_BIN_DIR/tdf" || -L "$LOCAL_BIN_DIR/tdf" ]]; then
+    rm -f "$LOCAL_BIN_DIR/tdf"
+    info "removed: $LOCAL_BIN_DIR/tdf"
+  else
+    info 'tdf already absent'
+  fi
+}
+
+uninstall_zellij() {
+  local tmp_root="${TMPDIR:-/tmp}"
+
+  # session process が残ったまま binary / runtime state を消さないよう、先に停止を試みる。
+  if [[ -x "$ZELLIJ_BIN" ]]; then
+    "$ZELLIJ_BIN" kill-all-sessions --yes >/dev/null 2>&1 || true
+  fi
+
+  if [[ -f "$ZELLIJ_MANAGED_VERSION_FILE" ]]; then
+    remove_path "$ZELLIJ_BIN"
+    remove_path "$ZELLIJ_MANAGED_STATE_DIR"
+  elif [[ -e "$ZELLIJ_BIN" || -L "$ZELLIJ_BIN" ]]; then
+    info "skip: $ZELLIJ_BIN exists but is not marked as dotfiles-managed"
+  else
+    info 'Zellij binary already absent'
+  fi
+
+  # Zellij は binary だけでなく config / cache / data / socket も削除し、
+  # uninstall.sh 後に local state を残さない。
+  remove_path "$XDG_CONFIG_HOME/zellij"
+  remove_path "$HOME/.cache/zellij"
+  remove_path "$HOME/.local/share/zellij"
+  remove_path "$HOME/Library/Caches/org.Zellij-Contributors.Zellij"
+  remove_path "$HOME/Library/Application Support/org.Zellij-Contributors.Zellij"
+  remove_path "${tmp_root%/}/zellij-$(id -u)"
+  remove_path "/tmp/zellij-$(id -u)"
+
+  # dotfiles 用 marker の親 directory は、他の managed tool が無い場合だけ片付ける。
+  rmdir "$HOME/.local/share/dotfiles" 2>/dev/null || true
+}
+
+main() {
+  info "uninstalling links and local tools created from $DOTFILES_DIR"
+
+  uninstall_tdf
+  uninstall_zellij
+
   remove_symlink \
     "$DOTFILES_DIR/.config/kitty/kitty.conf" \
     "$XDG_CONFIG_HOME/kitty/kitty.conf"
@@ -67,23 +121,18 @@ main() {
     "$DOTFILES_DIR/.config/kitty/keybindings.conf" \
     "$XDG_CONFIG_HOME/kitty/keybindings.conf"
 
-  # WezTerm の設定本体は dotfiles 側に残し、XDG_CONFIG_HOME 側のリンクだけ解除する。
   remove_symlink \
     "$DOTFILES_DIR/.config/wezterm" \
     "$XDG_CONFIG_HOME/wezterm"
 
-  # Starship の設定本体も repository 側に残し、リンクだけ解除する。
   remove_symlink \
     "$DOTFILES_DIR/.config/starship.toml" \
     "$XDG_CONFIG_HOME/starship.toml"
 
-  # Lazygit の設定本体も repository 側に残し、XDG_CONFIG_HOME 側のリンクだけ解除する。
   remove_symlink \
     "$DOTFILES_DIR/.config/lazygit/config.yml" \
     "$XDG_CONFIG_HOME/lazygit/config.yml"
 
-  # Yazi の portable な設定だけ解除する。
-  # plugin、package.toml、vfs.toml などのローカル状態は削除しない。
   remove_symlink \
     "$DOTFILES_DIR/.config/yazi/yazi.toml" \
     "$XDG_CONFIG_HOME/yazi/yazi.toml"
@@ -92,12 +141,10 @@ main() {
     "$DOTFILES_DIR/.config/yazi/keymap.toml" \
     "$XDG_CONFIG_HOME/yazi/keymap.toml"
 
-  # Git の portable な global 設定本体は repository 側に残し、~/.gitconfig のリンクだけ解除する。
   remove_symlink \
     "$DOTFILES_DIR/.gitconfig" \
     "$HOME/.gitconfig"
 
-  # zsh の bootstrap link と XDG_CONFIG_HOME 配下の設定ディレクトリを解除する。
   remove_symlink \
     "$DOTFILES_DIR/.config/zsh/.zshenv" \
     "$HOME/.zshenv"
@@ -106,8 +153,6 @@ main() {
     "$DOTFILES_DIR/.config/zsh" \
     "$XDG_CONFIG_HOME/zsh"
 
-  # VS Code の user settings / keybindings は repository 側に残し、symlink だけ解除する。
-  # extensions.txt から導入した extension 自体は uninstall.sh では削除しない。
   remove_symlink \
     "$DOTFILES_DIR/.config/vscode/settings.json" \
     "$VSCODE_USER_DIR/settings.json"
@@ -116,10 +161,12 @@ main() {
     "$DOTFILES_DIR/.config/vscode/keybindings.json" \
     "$VSCODE_USER_DIR/keybindings.json"
 
-  # Hammerspoon の設定本体も repository 側に残し、~/.hammerspoon のリンクだけ解除する。
   remove_symlink \
     "$DOTFILES_DIR/.hammerspoon" \
     "$HOME/.hammerspoon"
+
+  # ~/.local/bin 自体は他の local CLI と共有するため、空のときだけ削除する。
+  rmdir "$LOCAL_BIN_DIR" 2>/dev/null || true
 
   info 'uninstall complete'
 }
