@@ -72,7 +72,7 @@
 - Zellij の startup tip は `show_startup_tips false` で表示しない。
 - tab bar には `zjstatus` v0.24.0 を version 固定で利用し、各 tab は `focused_pane_title` を表示する。配色は Kitty に合わせ、active を `#FF4DE1`、inactive を `#4C9EEB`、背景色なしとする。
 - Zellij 内の zsh は OSC 2 で pane title を更新し、prompt 待機中は `zsh`、通常の command 実行中は先頭の command 名を表示する。zsh の widget から直接起動する TUI は必要に応じて明示的に title を設定する。
-- pane の境界色を確認できるよう、現在は `pane_frame_style "full"` を使い、Zellij theme の accent color を Kitty の通常文字色 `#5EAFFF` に統一している。見た目が過剰なら frame 方針を再検討する。
+- pane frame は見た目の主張が強いため常時表示しない。Zellij 0.45.0 では frame を消したまま pane 間の区切り線だけを任意色で描く設定はないため、UI の簡潔さを優先する。
 - Zellij は `uninstall.sh` で完全削除する対象とする。managed binary を消す前に session 停止を試み、`~/.config/zellij`、platform cache/data、XDG fallback、runtime socket directory まで削除する。
 
 ## Packages and machine-local settings
