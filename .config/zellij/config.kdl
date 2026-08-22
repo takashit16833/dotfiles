@@ -3,3 +3,6 @@
 simplified_ui true
 default_layout "minimal"
 pane_frames false
+
+// About Zellij の startup tip は普段使いでは不要なので表示しない。
+show_startup_tips false
