@@ -79,7 +79,7 @@
 - Zellij を `install.sh` が導入したときだけ `$HOME/.local/share/dotfiles/zellij/version` を ownership marker として作る。marker の無い既存 binary は、同じ version であっても dotfiles 管理として採用せず、勝手に上書きしない。
 - Zellij は zsh の `zj` alias から通常の command として起動する。ZLE widget から直接起動しない。
 - Zellij の通常 UI は `.config/zellij/layouts/minimal.kdl` を使い、session 名・mode 表示・Powerline 風装飾を出さず tab だけを 1 行表示する。
-- `.config/zellij/layouts/lazygit.kdl` は同じ UI のまま起動直後の唯一の terminal pane で `lazygit` を実行する。必要になった通常 pane は Zellij 側で後から追加する。
+- `.config/zellij/layouts/lazygit.kdl` は同じ UI のまま起動直後の唯一の terminal pane で `lazygit` を実行する。Homebrew の PATH は login zsh の `.zprofile` で設定されるため、layout から Homebrew CLI を直接 command 指定せず `/bin/zsh -lc` 経由で起動する。必要になった通常 pane は Zellij 側で後から追加する。
 - `minimal.kdl` と `lazygit.kdl` は `install.sh` が個別に symlink する。
 - `zjstatus` v0.24.0 の URL・表示・配色は `config.kdl` の `zjstatus` plugin alias に集約し、各 layout は alias だけを参照する。active は `#FF4DE1`、inactive は `#4C9EEB`、背景色なしとする。
 - Zellij の startup tip は `show_startup_tips false` で表示しない。
