@@ -7,6 +7,10 @@ pane_frames false
 // Kitty は Cmd + Option + Left / Right を Alt-Shift-Left / Right として渡す。
 // Option + Left / Right 単体の shell word navigation を残したまま、Zellij tab を直接移動する。
 keybinds {
+    // Kitty の Option + Right は zsh の forward-word 用に Alt-f を送る。
+    // Zellij 既定の Alt-f (floating pane toggle) を外し、shell へそのまま通す。
+    unbind "Alt f"
+
     shared_except "locked" {
         bind "Alt Shift Left" { GoToPreviousTab; }
         bind "Alt Shift Right" { GoToNextTab; }
