@@ -208,6 +208,10 @@ main() {
     "$XDG_CONFIG_HOME/zellij/config.kdl"
 
   ensure_symlink \
+    "$DOTFILES_DIR/.config/zellij/layouts/minimal.kdl" \
+    "$XDG_CONFIG_HOME/zellij/layouts/minimal.kdl"
+
+  ensure_symlink \
     "$DOTFILES_DIR/.config/kitty/kitty.conf" \
     "$XDG_CONFIG_HOME/kitty/kitty.conf"
 
