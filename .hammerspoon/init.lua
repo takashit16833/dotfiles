@@ -7,52 +7,6 @@ hs.autoLaunch(true)
 local hyper = { "ctrl", "cmd", "alt" }
 local hyperShift = { "ctrl", "cmd", "alt", "shift" }
 
--- Chrome はプロセスだけ残っている状態で launchOrFocus しても新しいウィンドウを作らないため、
--- AppleScript で明示的に新しいウィンドウを作る。
-local function reopenChrome()
-  local ok = hs.osascript.applescript([[
-tell application "Google Chrome"
-  make new window
-  activate
-end tell
-]])
-
-  if not ok then
-    hs.application.launchOrFocus("Google Chrome")
-  end
-end
-
--- Kitty はプロセスだけ残っている状態へ launchOrFocus しても startup session を再実行しない。
--- open -n で新しい Kitty のインスタンスを起動し、通常起動時と同じように local.conf と
--- そこから参照される session 設定を読み込ませる。
-local function reopenKitty()
-  local _, ok = hs.execute("/usr/bin/open -na kitty", true)
-
-  if not ok then
-    hs.application.launchOrFocus("kitty")
-  end
-end
-
--- アプリ切り替え用の設定。
--- Space の判定は共通化し、ウィンドウが1枚もない状態からの再オープン方法だけ
--- 必要なアプリごとに差し替える。
-local apps = {
-  ["f"] = {
-    name = "Google Chrome",
-    reopen = reopenChrome,
-  },
-  ["w"] = {
-    name = "Obsidian",
-  },
-  ["r"] = {
-    name = "kitty",
-    reopen = reopenKitty,
-  },
-  ["y"] = {
-    name = "Visual Studio Code",
-  },
-}
-
 -- 現在見えている Space にある、指定アプリの標準ウィンドウだけを前面順で取得する。
 -- hs.window.filter の Space 状態を使わず、その都度 macOS から見えているウィンドウを取得することで、
 -- Space 切り替え直後に古い判定を使って別の Space へ移動してしまうのを避ける。
@@ -69,15 +23,115 @@ local function visibleWindowsForApp(appName)
   return windows
 end
 
--- 指定したアプリを、現在見えている Space の範囲内だけで前面へ出す。
+-- 現在見えている Space に対象アプリのウィンドウがあれば、まとめて前面へ出す。
+-- 別の Space にしか存在しないウィンドウは一切触らない。
+local function focusVisibleWindowsForApp(appName)
+  local windows = visibleWindowsForApp(appName)
+
+  if #windows == 0 then
+    return false
+  end
+
+  -- orderedWindows() は前面から順なので、逆順に raise することで
+  -- そのアプリ内の重なり順をできるだけ保つ。
+  for index = #windows, 1, -1 do
+    windows[index]:raise()
+  end
+
+  windows[1]:focus()
+  return true
+end
+
+-- 新しいウィンドウの生成は非同期なアプリがあるため、短時間だけ現在の Space を確認し、
+-- 新しいウィンドウが見えるようになった時点で前面へ出す。
+-- 確認対象は常に現在見えている Space だけなので、別の Space へ移動することはない。
+local function focusVisibleWindowWhenAvailable(appName)
+  local attemptsRemaining = 5
+
+  local function attemptFocus()
+    if focusVisibleWindowsForApp(appName) or attemptsRemaining <= 0 then
+      return
+    end
+
+    attemptsRemaining = attemptsRemaining - 1
+    hs.timer.doAfter(0.1, attemptFocus)
+  end
+
+  hs.timer.doAfter(0.05, attemptFocus)
+end
+
+-- Chrome は既存プロセスへ新しいウィンドウの生成だけを依頼する。
+-- activate は使わず、生成後に現在の Space から見えるウィンドウだけをフォーカスする。
+local function openChromeWindow()
+  local ok = hs.osascript.applescript([[
+tell application "Google Chrome"
+  make new window
+end tell
+]])
+
+  if ok then
+    focusVisibleWindowWhenAvailable("Google Chrome")
+  end
+end
+
+-- Obsidian は新しいインスタンスをバックグラウンドで起動する。
+-- 既存ウィンドウを activate しないため、別の Space へ移動せず現在の Space に新しいウィンドウを作れる。
+local function openObsidianWindow()
+  local _, ok = hs.execute('/usr/bin/open -g -n -a "Obsidian"', true)
+
+  if ok then
+    focusVisibleWindowWhenAvailable("Obsidian")
+  end
+end
+
+-- Kitty は新しいインスタンスを起動して、通常起動時と同じように local.conf と
+-- そこから参照される startup session を読み込ませる。
+local function openKittyWindow()
+  local _, ok = hs.execute('/usr/bin/open -g -n -a "kitty"', true)
+
+  if ok then
+    focusVisibleWindowWhenAvailable("kitty")
+  end
+end
+
+-- VS Code は launchOrFocus を使わず、既存プロセスへ New Window (Cmd + Shift + N) を直接送る。
+-- これにより Mission Control 後でも、別の Space にある既存ウィンドウを activate しない。
+local function openVSCodeWindow(app)
+  hs.eventtap.keyStroke({ "cmd", "shift" }, "n", 0, app)
+  focusVisibleWindowWhenAvailable("Visual Studio Code")
+end
+
+-- アプリ切り替え用の設定。
+-- 現在の Space に対象アプリのウィンドウが無ければ、別の Space の状態には関係なく
+-- そのアプリに適した方法で新しいウィンドウを現在の Space に作る。
+local apps = {
+  ["f"] = {
+    name = "Google Chrome",
+    openWindow = openChromeWindow,
+  },
+  ["w"] = {
+    name = "Obsidian",
+    openWindow = openObsidianWindow,
+  },
+  ["r"] = {
+    name = "kitty",
+    openWindow = openKittyWindow,
+  },
+  ["y"] = {
+    name = "Visual Studio Code",
+    openWindow = openVSCodeWindow,
+  },
+}
+
+-- 指定したアプリを、現在見えている Space の範囲内だけで扱う。
 --
 -- 未起動の場合:
 --   launchOrFocus で通常起動する。
 --
 -- 起動済みの場合:
 --   現在見えている Space にウィンドウがあれば、それらだけをまとめて前面へ出す。
---   別の Space にだけウィンドウがある場合は何もしない。
---   どの Space にもウィンドウがない場合は、そのアプリに適した方法で新しいウィンドウを作る。
+--   現在の Space にウィンドウがなければ、別の Space に既存ウィンドウがあっても触らず、
+--   現在の Space に新しいウィンドウを作る。
 local function activateApp(appConfig)
   local appName = appConfig.name
   local app = hs.application.get(appName)
@@ -87,37 +141,11 @@ local function activateApp(appConfig)
     return
   end
 
-  local currentSpaceWindows = visibleWindowsForApp(appName)
-
-  if #currentSpaceWindows > 0 then
-    -- orderedWindows() は前面から順なので、逆順に raise することで
-    -- そのアプリ内の重なり順をできるだけ保ちながら、対象ウィンドウをまとめて前面へ出す。
-    for index = #currentSpaceWindows, 1, -1 do
-      currentSpaceWindows[index]:raise()
-    end
-
-    currentSpaceWindows[1]:focus()
+  if focusVisibleWindowsForApp(appName) then
     return
   end
 
-  -- 現在の Space にウィンドウがなくても、別の Space に存在するなら何もしない。
-  -- setCurrentSpace(nil) により Space を絞り込まずに確認する。
-  local allSpacesFilter = hs.window.filter.new(appName)
-  allSpacesFilter:setCurrentSpace(nil)
-  local allWindows = allSpacesFilter:getWindows()
-
-  if #allWindows > 0 then
-    return
-  end
-
-  -- アプリのプロセスだけが残っていてウィンドウが1枚もない場合。
-  -- Chrome / Kitty は launchOrFocus では復旧できないため専用処理を使い、
-  -- 専用処理が不要なアプリは従来どおり launchOrFocus に任せる。
-  if appConfig.reopen then
-    appConfig.reopen()
-  else
-    hs.application.launchOrFocus(appName)
-  end
+  appConfig.openWindow(app)
 end
 
 -- Ctrl + Cmd + Option + f: Google Chrome
