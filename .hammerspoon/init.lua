@@ -18,12 +18,14 @@ local apps = {
 
 -- 指定したアプリを、現在見えている Space の範囲内だけで前面へ出す。
 --
--- 起動済みの場合:
---   現在見えている Space にあるウィンドウだけをまとめて前面へ出す。
---   別の Space にしかウィンドウがない場合は何もしない。
---
 -- 未起動の場合:
 --   launchOrFocus でアプリを起動し、そのままフォーカスする。
+--
+-- 起動済みの場合:
+--   現在見えている Space にウィンドウがあれば、それらだけをまとめて前面へ出す。
+--   別の Space にだけウィンドウがある場合は何もしない。
+--   どの Space にもウィンドウがない場合は launchOrFocus を再度呼び、
+--   アプリの再オープン動作によって現在の Space にウィンドウを出す。
 local function activateApp(appName)
   local app = hs.application.get(appName)
 
@@ -32,23 +34,35 @@ local function activateApp(appName)
     return
   end
 
-  -- appName を指定した filter は、そのアプリの可視ウィンドウだけを対象にする。
-  -- setCurrentSpace(true) により、現在表示中の Space だけへさらに絞り込む。
-  local filter = hs.window.filter.new(appName)
-  filter:setCurrentSpace(true)
-  local windows = filter:getWindows()
+  -- 現在表示中の Space にあるウィンドウだけを取得する。
+  local currentSpaceFilter = hs.window.filter.new(appName)
+  currentSpaceFilter:setCurrentSpace(true)
+  local currentSpaceWindows = currentSpaceFilter:getWindows()
 
-  if #windows == 0 then
+  if #currentSpaceWindows > 0 then
+    -- getWindows() は直近でフォーカスされた順なので、逆順に raise することで
+    -- そのアプリ内の重なり順をできるだけ保ちながら、対象ウィンドウをまとめて前面へ出す。
+    for index = #currentSpaceWindows, 1, -1 do
+      currentSpaceWindows[index]:raise()
+    end
+
+    currentSpaceWindows[1]:focus()
     return
   end
 
-  -- getWindows() は直近でフォーカスされた順なので、逆順に raise することで
-  -- そのアプリ内の重なり順をできるだけ保ちながら、対象ウィンドウをまとめて前面へ出す。
-  for index = #windows, 1, -1 do
-    windows[index]:raise()
+  -- 現在の Space にウィンドウがなくても、別の Space に存在するなら何もしない。
+  -- setCurrentSpace(nil) により Space を絞り込まずに確認する。
+  local allSpacesFilter = hs.window.filter.new(appName)
+  allSpacesFilter:setCurrentSpace(nil)
+  local allWindows = allSpacesFilter:getWindows()
+
+  if #allWindows > 0 then
+    return
   end
 
-  windows[1]:focus()
+  -- アプリのプロセスだけが残っていてウィンドウが1枚もない場合は、
+  -- 再オープン動作を発生させて現在の Space にウィンドウを出す。
+  hs.application.launchOrFocus(appName)
 end
 
 -- Ctrl + Cmd + Option + f: Google Chrome
