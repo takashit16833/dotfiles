@@ -15,6 +15,7 @@
 - 対応するアプリケーションの設定は、可能な限り XDG Base Directory 配下へ集約する。
 - zsh の startup file は `.config/zsh` に集約する。
 - zsh が `ZDOTDIR` を知る前に `.zshenv` を読めるよう、`~/.zshenv` だけは `.config/zsh/.zshenv` への bootstrap symlink として配置する。
+- macOS の login shell 起動時に出る `Last login:` は repository の `.hushlogin` を `~/.hushlogin` へ symlink して非表示にする。
 - 設定ファイルには、設定の目的や採用理由が後から分かるよう簡潔なコメントを基本的に付ける。設定名をそのまま言い換えるだけの自明なコメントは増やさない。
 
 ## Source of truth
@@ -55,10 +56,13 @@
 ## Yazi
 
 - `yazi` 本体と preview / search に使う補助 CLI は `Brewfile` で管理する。
-- portable な設定は `.config/yazi/yazi.toml` と `.config/yazi/keymap.toml` を正本とし、`install.sh` が個別に symlink する。
+- portable な設定は `.config/yazi/yazi.toml`、`keymap.toml`、`theme.toml`、`init.lua` を正本とし、`install.sh` が個別に symlink する。
 - Yazi の directory 全体は symlink しない。`package.toml`、`plugins/`、`vfs.toml` など、Yazi 自身やマシンごとに変わる状態を repository から分離するため。
 - SFTP 接続先は `vfs.toml` に host / user / key / password などのマシン固有・非公開情報を含み得るため、この repository では管理しない。
-- 2 pane 表示には `terrakok/split-tabs.yazi` を使い、`install.sh` が未導入時だけ `ya pkg add terrakok/split-tabs` を実行する。plugin 本体と lock 情報は Yazi 側で管理する。
+- 2 pane 表示には `terrakok/split-tabs.yazi` を使い、`install.sh` が未導入時だけ `ya pkg add terrakok/split-tabs` を実行する。
+- status bar は公式 `yazi-rs/plugins:no-status` で非表示にし、`init.lua` から `require("no-status"):setup()` を呼ぶ。`install.sh` は未導入時だけ plugin を追加する。
+- plugin 本体と `package.toml` の lock 情報は Yazi 側で管理し、repository には含めない。
+- `theme.toml` では manager の仕切りを通常文字色 `#5EAFFF` にし、indicator の丸い Powerline 端を空白へ置き換えて選択行を四角い背景にする。
 - `dawsers/dual-pane.yazi` は archived repository のため採用しない。
 - ユーザーは Vim 操作を前提にしない。標準の矢印キー / Enter / Space に加え、Tab、F2、F4〜F8、Delete、Ctrl-L で主要操作を完結できる設定を優先する。
 - F5 / F6 は、Yazi 標準の yank / paste と split-tabs の pane 切替を組み合わせて、反対 pane への copy / move として提供する。
