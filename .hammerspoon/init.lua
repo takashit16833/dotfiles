@@ -7,15 +7,30 @@ hs.autoLaunch(true)
 local hyper = { "ctrl", "cmd", "alt" }
 local hyperShift = { "ctrl", "cmd", "alt", "shift" }
 
+-- bundle ID が分かっているアプリは bundle ID で識別する。
+-- VS Code は表示名が "Code" で、"Visual Studio Code" を hs.application.get() に渡すと
+-- Hammerspoon 1.1.1 ではウィンドウタイトル検索へフォールバックすることがあるため、名前に頼らない。
+local function matchesApp(app, appName, bundleID)
+  if not app then
+    return false
+  end
+
+  if bundleID then
+    return app:bundleID() == bundleID
+  end
+
+  return app:name() == appName
+end
+
 -- 現在見えている Space にある、指定アプリの標準ウィンドウだけを取得する。
 -- hs.window.allWindows() は呼び出すたびに現在の Mission Control Space を問い合わせるため、
 -- Space 切り替え直後の古い状態を使わず、他アプリの背面にあるウィンドウも拾える。
-local function visibleWindowsForApp(appName)
+local function visibleWindowsForApp(appName, bundleID)
   local windows = {}
 
   for _, window in ipairs(hs.window.allWindows()) do
     local app = window:application()
-    if app and app:name() == appName and window:isStandard() and window:isVisible() then
+    if matchesApp(app, appName, bundleID) and window:isStandard() and window:isVisible() then
       table.insert(windows, window)
     end
   end
@@ -25,8 +40,8 @@ end
 
 -- 現在見えている Space に対象アプリのウィンドウがあれば、まとめて前面へ出す。
 -- 別の Space にしか存在しないウィンドウは一切触らない。
-local function focusVisibleWindowsForApp(appName)
-  local windows = visibleWindowsForApp(appName)
+local function focusVisibleWindowsForApp(appName, bundleID)
+  local windows = visibleWindowsForApp(appName, bundleID)
 
   if #windows == 0 then
     return false
@@ -43,11 +58,11 @@ end
 -- 新しいウィンドウの生成は非同期なアプリがあるため、短時間だけ現在の Space を確認し、
 -- 新しいウィンドウが見えるようになった時点で前面へ出す。
 -- 確認対象は常に現在見えている Space だけなので、別の Space へ移動することはない。
-local function focusVisibleWindowWhenAvailable(appName)
+local function focusVisibleWindowWhenAvailable(appName, bundleID)
   local attemptsRemaining = 5
 
   local function attemptFocus()
-    if focusVisibleWindowsForApp(appName) or attemptsRemaining <= 0 then
+    if focusVisibleWindowsForApp(appName, bundleID) or attemptsRemaining <= 0 then
       return
     end
 
@@ -111,6 +126,7 @@ local apps = {
   },
   ["y"] = {
     name = "Visual Studio Code",
+    bundleID = "com.microsoft.VSCode",
   },
 }
 
@@ -125,14 +141,15 @@ local apps = {
 --   VS Code のように openWindow を持たないアプリは何もしない。
 local function activateApp(appConfig)
   local appName = appConfig.name
-  local app = hs.application.get(appName)
+  local appIdentifier = appConfig.bundleID or appName
+  local app = hs.application.get(appIdentifier)
 
   if not app then
     hs.application.launchOrFocus(appName)
     return
   end
 
-  if focusVisibleWindowsForApp(appName) then
+  if focusVisibleWindowsForApp(appName, appConfig.bundleID) then
     return
   end
 
