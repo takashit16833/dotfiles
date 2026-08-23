@@ -94,21 +94,10 @@ local function openKittyWindow()
   end
 end
 
--- VS Code は非アクティブな既存プロセスへキーストロークを送らず、
--- アプリに同梱された公式 CLI へ --new-window を渡して新しいウィンドウを要求する。
--- Hammerspoon の PATH や VS Code のフォーカス状態に依存しないよう、CLI は絶対パスで呼ぶ。
-local function openVSCodeWindow()
-  local vscodeCli = "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
-  local _, ok = hs.execute('"' .. vscodeCli .. '" --new-window', true)
-
-  if ok then
-    focusVisibleWindowWhenAvailable("Visual Studio Code")
-  end
-end
-
 -- アプリ切り替え用の設定。
--- 現在の Space に対象アプリのウィンドウが無ければ、別の Space の状態には関係なく
--- そのアプリに適した方法で新しいウィンドウを現在の Space に作る。
+-- Chrome / Obsidian / Kitty は現在の Space にウィンドウが無ければ新しいウィンドウを作る。
+-- VS Code は macOS Spaces とのフォーカス挙動が不安定なため、起動済みで現在の Space に
+-- ウィンドウが無い場合は何もしない。
 local apps = {
   ["f"] = {
     name = "Google Chrome",
@@ -124,7 +113,6 @@ local apps = {
   },
   ["y"] = {
     name = "Visual Studio Code",
-    openWindow = openVSCodeWindow,
   },
 }
 
@@ -135,8 +123,8 @@ local apps = {
 --
 -- 起動済みの場合:
 --   現在見えている Space にウィンドウがあれば、それらだけをまとめて前面へ出す。
---   現在の Space にウィンドウがなければ、別の Space に既存ウィンドウがあっても触らず、
---   現在の Space に新しいウィンドウを作る。
+--   現在の Space にウィンドウが無ければ、openWindow があるアプリだけ新しいウィンドウを作る。
+--   VS Code のように openWindow を持たないアプリは何もしない。
 local function activateApp(appConfig)
   local appName = appConfig.name
   local app = hs.application.get(appName)
@@ -150,7 +138,9 @@ local function activateApp(appConfig)
     return
   end
 
-  appConfig.openWindow(app)
+  if appConfig.openWindow then
+    appConfig.openWindow()
+  end
 end
 
 -- Ctrl + Cmd + Option + f: Google Chrome
