@@ -7,15 +7,15 @@ hs.autoLaunch(true)
 local hyper = { "ctrl", "cmd", "alt" }
 local hyperShift = { "ctrl", "cmd", "alt", "shift" }
 
--- 現在見えている Space にある、指定アプリの標準ウィンドウだけを前面順で取得する。
--- hs.window.filter の Space 状態を使わず、その都度 macOS から見えているウィンドウを取得することで、
--- Space 切り替え直後に古い判定を使って別の Space へ移動してしまうのを避ける。
+-- 現在見えている Space にある、指定アプリの標準ウィンドウだけを取得する。
+-- hs.window.allWindows() は呼び出すたびに現在の Mission Control Space を問い合わせるため、
+-- Space 切り替え直後の古い状態を使わず、他アプリの背面にあるウィンドウも拾える。
 local function visibleWindowsForApp(appName)
   local windows = {}
 
-  for _, window in ipairs(hs.window.orderedWindows()) do
+  for _, window in ipairs(hs.window.allWindows()) do
     local app = window:application()
-    if app and app:name() == appName and window:isStandard() then
+    if app and app:name() == appName and window:isStandard() and window:isVisible() then
       table.insert(windows, window)
     end
   end
@@ -32,10 +32,8 @@ local function focusVisibleWindowsForApp(appName)
     return false
   end
 
-  -- orderedWindows() は前面から順なので、逆順に raise することで
-  -- そのアプリ内の重なり順をできるだけ保つ。
-  for index = #windows, 1, -1 do
-    windows[index]:raise()
+  for _, window in ipairs(windows) do
+    window:raise()
   end
 
   windows[1]:focus()
