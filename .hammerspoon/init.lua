@@ -7,15 +7,20 @@ hs.autoLaunch(true)
 local hyper = { "ctrl", "cmd", "alt" }
 local hyperShift = { "ctrl", "cmd", "alt", "shift" }
 
--- 現在見えている Space にある、指定アプリの標準ウィンドウだけを取得する。
+-- 現在見えている Space にある、指定アプリのウィンドウだけを取得する。
 -- hs.window.allWindows() は呼び出すたびに現在の Mission Control Space を問い合わせるため、
 -- Space 切り替え直後の古い状態を使わず、他アプリの背面にあるウィンドウも拾える。
+-- VS Code はタブが1つもない空ウィンドウを非 standard として返すことがあるため、
+-- VS Code だけは可視ウィンドウであれば standard 判定なしで対象にする。
 local function visibleWindowsForApp(appName)
   local windows = {}
 
   for _, window in ipairs(hs.window.allWindows()) do
     local app = window:application()
-    if app and app:name() == appName and window:isStandard() and window:isVisible() then
+    local isTargetApp = app and app:name() == appName
+    local isTargetWindow = window:isStandard() or appName == "Visual Studio Code"
+
+    if isTargetApp and isTargetWindow and window:isVisible() then
       table.insert(windows, window)
     end
   end
