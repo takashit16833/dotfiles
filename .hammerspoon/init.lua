@@ -83,8 +83,13 @@ end
 
 -- 新しいアプリインスタンスをバックグラウンドで起動する。
 -- 名前ではなく bundle ID で指定し、既存の別 Space のウィンドウを activate しない。
-local function openAppInstanceInBackground(bundleID)
-  local _, ok = hs.execute(string.format('/usr/bin/open -g -n -b "%s"', bundleID), true)
+local function openAppInstanceInBackground(bundleID, appArguments)
+  local command = string.format('/usr/bin/open -g -n -b "%s"', bundleID)
+  if appArguments then
+    command = command .. " --args " .. appArguments
+  end
+
+  local _, ok = hs.execute(command, true)
 
   if ok then
     focusVisibleWindowWhenAvailable(bundleID)
@@ -101,10 +106,14 @@ local function openKittyWindow()
   openAppInstanceInBackground(appBundleIDs.kitty)
 end
 
+-- VS Code は --new-window を明示して、既存ウィンドウを別 Space から呼び戻さず
+-- 現在の Space に新しいウィンドウを作る。
+local function openVSCodeWindow()
+  openAppInstanceInBackground(appBundleIDs.vscode, "--new-window")
+end
+
 -- アプリ切り替え用の設定。
--- Chrome / Obsidian / Kitty は現在の Space にウィンドウが無ければ新しいウィンドウを作る。
--- VS Code は macOS Spaces とのフォーカス挙動が不安定なため、起動済みで現在の Space に
--- ウィンドウが無い場合は何もしない。
+-- 現在の Space にウィンドウが無ければ、各アプリ固有の方法で新しいウィンドウを作る。
 local apps = {
   ["f"] = {
     bundleID = appBundleIDs.chrome,
@@ -120,6 +129,7 @@ local apps = {
   },
   ["y"] = {
     bundleID = appBundleIDs.vscode,
+    openWindow = openVSCodeWindow,
   },
 }
 
@@ -130,8 +140,7 @@ local apps = {
 --
 -- 起動済みの場合:
 --   現在見えている Space にウィンドウがあれば、それらだけをまとめて前面へ出す。
---   現在の Space にウィンドウが無ければ、openWindow があるアプリだけ新しいウィンドウを作る。
---   VS Code のように openWindow を持たないアプリは何もしない。
+--   現在の Space にウィンドウが無ければ、各アプリの openWindow で新しいウィンドウを作る。
 local function activateApp(appConfig)
   local bundleID = appConfig.bundleID
   local runningApps = hs.application.applicationsForBundleID(bundleID)
