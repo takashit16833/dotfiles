@@ -1,5 +1,6 @@
 // 起動直後は lazygit だけを全面表示し、必要になったら通常の Zellij pane を追加する。
 // Homebrew の PATH は zsh の login startup で設定されるため、login zsh 経由で lazygit を起動する。
+// lazygit 終了後は同じ pane を設定済みの interactive login zsh として使い続ける。
 layout {
     default_tab_template {
         children
@@ -11,7 +12,7 @@ layout {
 
     tab {
         pane name="lazygit" command="/bin/zsh" {
-            args "-lc" "exec lazygit"
+            args "-lc" "lazygit; exec /bin/zsh -il"
         }
     }
 }
