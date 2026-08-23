@@ -7,30 +7,24 @@ hs.autoLaunch(true)
 local hyper = { "ctrl", "cmd", "alt" }
 local hyperShift = { "ctrl", "cmd", "alt", "shift" }
 
--- bundle ID が分かっているアプリは bundle ID で識別する。
--- VS Code は表示名が "Code" で、"Visual Studio Code" を hs.application.get() に渡すと
--- Hammerspoon 1.1.1 ではウィンドウタイトル検索へフォールバックすることがあるため、名前に頼らない。
-local function matchesApp(app, appName, bundleID)
-  if not app then
-    return false
-  end
-
-  if bundleID then
-    return app:bundleID() == bundleID
-  end
-
-  return app:name() == appName
-end
+-- アプリ切り替えでは表示名ではなく bundle ID を唯一の識別子として使う。
+-- 表示名やウィンドウタイトルはアプリや状態によって変わり得るため、判定には使わない。
+local appBundleIDs = {
+  chrome = "com.google.Chrome",
+  obsidian = "md.obsidian",
+  kitty = "net.kovidgoyal.kitty",
+  vscode = "com.microsoft.VSCode",
+}
 
 -- 現在見えている Space にある、指定アプリの標準ウィンドウだけを取得する。
 -- hs.window.allWindows() は呼び出すたびに現在の Mission Control Space を問い合わせるため、
 -- Space 切り替え直後の古い状態を使わず、他アプリの背面にあるウィンドウも拾える。
-local function visibleWindowsForApp(appName, bundleID)
+local function visibleWindowsForApp(bundleID)
   local windows = {}
 
   for _, window in ipairs(hs.window.allWindows()) do
     local app = window:application()
-    if matchesApp(app, appName, bundleID) and window:isStandard() and window:isVisible() then
+    if app and app:bundleID() == bundleID and window:isStandard() and window:isVisible() then
       table.insert(windows, window)
     end
   end
@@ -40,8 +34,8 @@ end
 
 -- 現在見えている Space に対象アプリのウィンドウがあれば、まとめて前面へ出す。
 -- 別の Space にしか存在しないウィンドウは一切触らない。
-local function focusVisibleWindowsForApp(appName, bundleID)
-  local windows = visibleWindowsForApp(appName, bundleID)
+local function focusVisibleWindowsForApp(bundleID)
+  local windows = visibleWindowsForApp(bundleID)
 
   if #windows == 0 then
     return false
@@ -58,11 +52,11 @@ end
 -- 新しいウィンドウの生成は非同期なアプリがあるため、短時間だけ現在の Space を確認し、
 -- 新しいウィンドウが見えるようになった時点で前面へ出す。
 -- 確認対象は常に現在見えている Space だけなので、別の Space へ移動することはない。
-local function focusVisibleWindowWhenAvailable(appName, bundleID)
+local function focusVisibleWindowWhenAvailable(bundleID)
   local attemptsRemaining = 5
 
   local function attemptFocus()
-    if focusVisibleWindowsForApp(appName, bundleID) or attemptsRemaining <= 0 then
+    if focusVisibleWindowsForApp(bundleID) or attemptsRemaining <= 0 then
       return
     end
 
@@ -76,35 +70,35 @@ end
 -- Chrome は既存プロセスへ新しいウィンドウの生成だけを依頼する。
 -- activate は使わず、生成後に現在の Space から見えるウィンドウだけをフォーカスする。
 local function openChromeWindow()
-  local ok = hs.osascript.applescript([[
-tell application "Google Chrome"
+  local ok = hs.osascript.applescript(string.format([[
+tell application id "%s"
   make new window
 end tell
-]])
+]], appBundleIDs.chrome))
 
   if ok then
-    focusVisibleWindowWhenAvailable("Google Chrome")
+    focusVisibleWindowWhenAvailable(appBundleIDs.chrome)
   end
 end
 
--- Obsidian は新しいインスタンスをバックグラウンドで起動する。
--- 既存ウィンドウを activate しないため、別の Space へ移動せず現在の Space に新しいウィンドウを作れる。
+-- 新しいアプリインスタンスをバックグラウンドで起動する。
+-- 名前ではなく bundle ID で指定し、既存の別 Space のウィンドウを activate しない。
+local function openAppInstanceInBackground(bundleID)
+  local _, ok = hs.execute(string.format('/usr/bin/open -g -n -b "%s"', bundleID), true)
+
+  if ok then
+    focusVisibleWindowWhenAvailable(bundleID)
+  end
+end
+
 local function openObsidianWindow()
-  local _, ok = hs.execute('/usr/bin/open -g -n -a "Obsidian"', true)
-
-  if ok then
-    focusVisibleWindowWhenAvailable("Obsidian")
-  end
+  openAppInstanceInBackground(appBundleIDs.obsidian)
 end
 
--- Kitty は新しいインスタンスを起動して、通常起動時と同じように local.conf と
+-- Kitty は新しいインスタンスを起動することで、通常起動時と同じように local.conf と
 -- そこから参照される startup session を読み込ませる。
 local function openKittyWindow()
-  local _, ok = hs.execute('/usr/bin/open -g -n -a "kitty"', true)
-
-  if ok then
-    focusVisibleWindowWhenAvailable("kitty")
-  end
+  openAppInstanceInBackground(appBundleIDs.kitty)
 end
 
 -- アプリ切り替え用の設定。
@@ -113,43 +107,41 @@ end
 -- ウィンドウが無い場合は何もしない。
 local apps = {
   ["f"] = {
-    name = "Google Chrome",
+    bundleID = appBundleIDs.chrome,
     openWindow = openChromeWindow,
   },
   ["w"] = {
-    name = "Obsidian",
+    bundleID = appBundleIDs.obsidian,
     openWindow = openObsidianWindow,
   },
   ["r"] = {
-    name = "kitty",
+    bundleID = appBundleIDs.kitty,
     openWindow = openKittyWindow,
   },
   ["y"] = {
-    name = "Visual Studio Code",
-    bundleID = "com.microsoft.VSCode",
+    bundleID = appBundleIDs.vscode,
   },
 }
 
 -- 指定したアプリを、現在見えている Space の範囲内だけで扱う。
 --
 -- 未起動の場合:
---   launchOrFocus で通常起動する。
+--   bundle ID で通常起動する。
 --
 -- 起動済みの場合:
 --   現在見えている Space にウィンドウがあれば、それらだけをまとめて前面へ出す。
 --   現在の Space にウィンドウが無ければ、openWindow があるアプリだけ新しいウィンドウを作る。
 --   VS Code のように openWindow を持たないアプリは何もしない。
 local function activateApp(appConfig)
-  local appName = appConfig.name
-  local appIdentifier = appConfig.bundleID or appName
-  local app = hs.application.get(appIdentifier)
+  local bundleID = appConfig.bundleID
+  local runningApps = hs.application.applicationsForBundleID(bundleID)
 
-  if not app then
-    hs.application.launchOrFocus(appName)
+  if #runningApps == 0 then
+    hs.application.launchOrFocusByBundleID(bundleID)
     return
   end
 
-  if focusVisibleWindowsForApp(appName, appConfig.bundleID) then
+  if focusVisibleWindowsForApp(bundleID) then
     return
   end
 
