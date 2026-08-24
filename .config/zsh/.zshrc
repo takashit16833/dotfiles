@@ -18,6 +18,16 @@ bindkey -e
 # カーソル位置から行頭までを削除する操作だけを明示的に割り当てる。
 bindkey '\e^U' backward-kill-line
 
+# Zellij 内では Kitty の自動 shell integration が注入されないため、明示的に読み込む。
+# OSC 133 により command / output の境界を Zellij が認識できるようになり、
+# Scroll mode で command 単位の移動や直前の出力コピーを利用できる。
+if [[ -n "${ZELLIJ:-}" && -n "${KITTY_INSTALLATION_DIR:-}" ]]; then
+  export KITTY_SHELL_INTEGRATION="enabled"
+  autoload -Uz -- "$KITTY_INSTALLATION_DIR"/shell-integration/zsh/kitty-integration
+  kitty-integration
+  unfunction kitty-integration
+fi
+
 # Zellij 内では pane title を shell / 実行中 command に合わせる。
 # zjstatus はこの title を tab 名として表示するため、Pane #N のような既定名を避けられる。
 set_zellij_pane_title() {
