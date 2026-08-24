@@ -6,7 +6,7 @@ gui:
   language: en
 
   # Nerd Fonts v3 のアイコンを使用する。
-  nerdFontsVersion: "3"
+  # nerdFontsVersion: "3"
 
   # Files 画面で各ファイルの追加・削除行数を表示する。
   showNumstatInFilesView: true
