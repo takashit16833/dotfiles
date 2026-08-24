@@ -2,7 +2,81 @@
 #
 # diff 表示は git-delta の縦並び / 横並びの2種類を用意し、
 # Lazygit 標準の `|` キーで用途に応じて切り替える。
+gui:
+  language: en
+
+  # Nerd Fonts v3 のアイコンを使用する。
+  nerdFontsVersion: "3"
+
+  # Files 画面で各ファイルの追加・削除行数を表示する。
+  showNumstatInFilesView: true
+
+  # ブランチが基準ブランチから何コミット進んでいる / 遅れているか表示する。
+  showDivergenceFromBaseBranch: arrowAndNumber
+
+  # `/` 検索を部分一致ではなく、あいまい検索にする。
+  filterMode: fuzzy
+
+  theme:
+    # 現在操作しているペイン。
+    # Retro Hacker Blue の focusBorder と同じ明るい青で強調する。
+    activeBorderColor:
+      - '#5EAFFF'
+      - bold
+
+    # 非アクティブなペイン。
+    # 視認性は残しつつ、アクティブなペインより一段控えめにする。
+    inactiveBorderColor:
+      - '#316CBD'
+
+    # 検索中のペイン。
+    # 通常のフォーカスとは区別できるよう、鮮やかな Cyan を使う。
+    searchingActiveBorderColor:
+      - '#00FFFF'
+      - bold
+
+    # 画面下部のキーバインド案内。
+    # 主役色より少し柔らかい青にする。
+    optionsTextColor:
+      - '#83B9FF'
+
+    # カーソルがある行。
+    # 背景との差をしっかり出しつつ、文字を邪魔しない濃い青にする。
+    selectedLineBgColor:
+      - '#173366'
+
+    # フォーカスがないペイン内の選択行。
+    # カーソル位置は分かるが、アクティブな選択行より控えめにする。
+    inactiveViewSelectedLineBgColor:
+      - '#0B1737'
+
+    # Cherry-pick したコミット。
+    cherryPickedCommitFgColor:
+      - '#BFD7FF'
+    cherryPickedCommitBgColor:
+      - '#2759AA'
+
+    # rebase の基準としてマークしたコミット。
+    # 警告・注意を表す黄色をアクセントとして使う。
+    markedBaseCommitFgColor:
+      - '#010111'
+    markedBaseCommitBgColor:
+      - '#FFD700'
+
+    # ステージされていない変更。
+    # 青系の画面内でも変更箇所が一目で分かるマゼンタを使う。
+    unstagedChangesColor:
+      - '#FF4DE1'
+
+    # Lazygit の基本文字色。
+    # Retro Hacker Blue の主役となる明るい青に合わせる。
+    defaultFgColor:
+      - '#5EAFFF'
 git:
+  # コミット一覧で現在のブランチだけでなく、
+  # 他のブランチを含むリポジトリ全体の履歴グラフを表示する。
+  log:
+    showWholeGraph: true
   diffRenderers:
     # 通常の縦並び diff。情報量を抑え、普段の変更確認で使いやすくする。
     - name: delta-vertical
