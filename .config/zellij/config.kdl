@@ -32,13 +32,15 @@ keybinds {
     // Zellij の既定 Scroll mode キーから外す。
     unbind "Ctrl s"
 
-    // Ctrl+T は fzf の file / directory 検索を shell 側で利用するため、
-    // Zellij の既定 Tab mode キーから外して Alt+T へ移す。
-    unbind "Ctrl t"
-
     // Kitty の Option + Right は zsh の forward-word 用に Alt-f を送る。
     // Zellij 既定の Alt-f (floating pane toggle) を外し、shell へそのまま通す。
     unbind "Alt f"
+
+    tab {
+        // Tab mode 中も Ctrl+T を shell 用に空け、Alt+T で Normal mode へ戻る。
+        unbind "Ctrl t"
+        bind "Alt t" { SwitchToMode "Normal"; }
+    }
 
     shared_except "scroll" "locked" {
         // Scroll mode は Ctrl+S の代わりに Alt+S で開く。
@@ -46,7 +48,8 @@ keybinds {
     }
 
     shared_except "tab" "locked" {
-        // zsh の transpose-words より Zellij の Tab mode を優先する。
+        // 既定の Ctrl+T と同じ mode 群で解除し、zsh の transpose-words より Alt+T を優先する。
+        unbind "Ctrl t"
         bind "Alt t" { SwitchToMode "Tab"; }
     }
 
