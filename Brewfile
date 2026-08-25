@@ -44,6 +44,9 @@ brew "git-delta"
 # GitHub の認証や repository 操作に利用する。
 brew "gh"
 
+# Git の変更ファイル一覧など、パスの階層構造をツリー表示する。
+brew "tree"
+
 # JSON の確認・加工用。host と Dev Container の双方で利用する方針。
 # Yazi の JSON preview でも利用する。
 brew "jq"
