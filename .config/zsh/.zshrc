@@ -18,6 +18,13 @@ bindkey -e
 # カーソル位置から行頭までを削除する操作だけを明示的に割り当てる。
 bindkey '\e^U' backward-kill-line
 
+# zsh 標準の補完を有効にし、候補一覧を矢印キーで選択できるようにする。
+# Git の branch / ref なども command の文脈に応じて補完される。
+zmodload zsh/complist
+autoload -Uz compinit
+compinit
+zstyle ':completion:*' menu select
+
 # Zellij 内では Kitty の自動 shell integration が注入されないため、明示的に読み込む。
 # OSC 133 により command / output の境界を Zellij が認識できるようになり、
 # Scroll mode で command 単位の移動や直前の出力コピーを利用できる。
