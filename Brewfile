@@ -16,12 +16,6 @@ cask "wezterm@nightly"
 # zsh のプロンプト。表示内容は starship.toml 側で最小構成に絞る。
 brew "starship"
 
-# 入力中のコマンドに履歴から候補を薄く表示する。
-brew "zsh-autosuggestions"
-
-# 入力中のコマンドを構文に応じて色分けし、誤入力に気づきやすくする。
-brew "zsh-syntax-highlighting"
-
 # fuzzy finder。zsh や各 CLI から必要になった場面で利用する。
 brew "fzf"
 
