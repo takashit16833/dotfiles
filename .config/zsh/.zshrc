@@ -8,6 +8,17 @@ alias ll='ls -lahG'
 # Zellij は zoxide の `z` と衝突しない短い名前で起動する。
 alias zj='zellij'
 
+# コマンド履歴をセッションをまたいで保存し、複数の zsh で共有する。
+HISTFILE="$ZDOTDIR/.zsh_history"
+HISTSIZE=100000
+SAVEHIST=100000
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_FIND_NO_DUPS
+
+# 対話中でも `#` 以降をコメントとして扱えるようにする。
+setopt INTERACTIVE_COMMENTS
+
 # 行編集の意味は zsh 側に集約する。
 # Terminal 側は OS 固有のショートカットを標準的な Emacs キーへ変換するだけにし、
 # Terminal を乗り換えても編集操作そのものはここで維持できるようにする。
@@ -24,6 +35,7 @@ zmodload zsh/complist
 autoload -Uz compinit
 compinit
 zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 
 # Zellij 内では Kitty の自動 shell integration が注入されないため、明示的に読み込む。
 # OSC 133 により command / output の境界を Zellij が認識できるようになり、
