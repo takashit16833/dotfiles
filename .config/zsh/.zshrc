@@ -127,3 +127,14 @@ fi
 if command -v starship >/dev/null 2>&1; then
   eval "$(starship init zsh)"
 fi
+
+# 入力中のコマンドに、履歴から一致する候補を薄く表示する。
+if [[ -r "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+  source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+fi
+
+# 入力中のコマンドを構文に応じて色分けする。
+# 独自 ZLE widget を含むすべての行編集設定を認識させるため、必ず .zshrc の最後で読み込む。
+if [[ -r "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+  source "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
