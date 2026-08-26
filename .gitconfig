@@ -24,21 +24,22 @@
     syntax-theme = "Retro Hacker Blue"
 
     # True Retro Hacker Blue Diff:
-    # VS Code 標準の赤 / 緑 Diff 色には寄せず、テーマ自身の色体系だけで表現する。
-    # 追加 = Blue、削除 = Cyber Pink。どちらもコード本来の構文色は維持する。
-    # 行内で実際に変わった部分だけ、同系色の一段濃い背景で強調する。
-    minus-style = syntax "#1F0A2A"
-    minus-emph-style = syntax "#401445"
-    plus-style = syntax "#0C162E"
-    plus-emph-style = syntax "#182C4C"
+    # 通常 = Blue、追加 = Cyan、削除 = Cyber Pink、変更 / hunk = Gold。
+    # Git の慣習的な赤 / 緑には寄せず、Retro Hacker Blue 自身の色体系だけで表現する。
+    # 背景は editor.background (#010111) に各アクセント色を薄く重ねた相当色。
+    # コード本来の構文色は維持し、行内で実際に変わった部分だけ一段濃くする。
+    minus-style = syntax "#250C2E"
+    minus-emph-style = syntax "#3E1343"
+    plus-style = syntax "#011E2C"
+    plus-emph-style = syntax "#01323F"
     zero-style = syntax
 
     # side-by-side 表示などで使われる行番号。
-    # 追加は主役の Blue、削除は Cyber Pink、通常行は控えめな Blue。
+    # 追加は Cyan、削除は Cyber Pink、通常行は控えめな Blue。
     line-numbers-left-style = "#153A75"
     line-numbers-right-style = "#153A75"
     line-numbers-minus-style = "#FF4DE1"
-    line-numbers-plus-style = "#5EAFFF"
+    line-numbers-plus-style = "#00CED1"
     line-numbers-zero-style = "#316CBD"
 
     # ファイル見出し。横線は増やさず、文字色だけで区切る。
