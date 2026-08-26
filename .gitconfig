@@ -23,12 +23,13 @@
     # VS Code 本家の tokenColors を移植した bat theme を構文色に使う。
     syntax-theme = "Retro Hacker Blue"
 
-    # 追加 / 削除は巨大な色面にせず、ごく薄い背景差で示す。
-    # 行内で実際に変わった部分だけ一段濃くして判別しやすくする。
-    minus-style = syntax "#150722"
-    minus-emph-style = syntax "#34103B"
-    plus-style = syntax "#04081D"
-    plus-emph-style = syntax "#012230"
+    # VS Code の Retro Hacker Blue で実際に表示される diff 背景へ合わせる。
+    # テーマ自身は diffEditor.* を定義していないため、VS Code 側の diff 色が
+    # editor.background (#010111) に重なった最終表示色をキャプチャから実測して使う。
+    minus-style = syntax "#370313"
+    minus-emph-style = syntax "#620415"
+    plus-style = syntax "#1F2620"
+    plus-emph-style = syntax "#374727"
     zero-style = syntax
 
     # side-by-side 表示などで使われる行番号。
