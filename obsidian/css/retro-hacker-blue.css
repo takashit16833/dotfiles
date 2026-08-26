@@ -706,10 +706,19 @@
 }
 
 .theme-dark .mermaid text.actor,
+.theme-dark .mermaid text.actor-box,
+.theme-dark .mermaid text.actor-man,
+.theme-dark .mermaid text.actor tspan,
+.theme-dark .mermaid text.actor-box tspan,
+.theme-dark .mermaid text.actor-man tspan,
+.theme-dark .mermaid .actor text,
+.theme-dark .mermaid .actor tspan,
 .theme-dark .mermaid .messageText,
 .theme-dark .mermaid .labelText,
 .theme-dark .mermaid .loopText {
   fill: var(--rhb-blue) !important;
+  color: var(--rhb-blue) !important;
+  stroke: none !important;
 }
 
 .theme-dark .mermaid .activation0,
