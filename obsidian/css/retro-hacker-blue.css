@@ -1,0 +1,644 @@
+/*
+ * Retro Hacker Blue for Obsidian
+ * --------------------------------
+ * Based on the palette and UI roles of:
+ * https://github.com/elmersh/retro-hacker-theme
+ *
+ * User customization:
+ *   Original red/error colors are replaced with #FF4DE1.
+ *
+ * Recommended:
+ *   - Obsidian: Default theme
+ *   - Appearance: Dark
+ *   - Enable this file as a CSS snippet
+ */
+
+.theme-dark {
+  /* =========================================================
+   * Retro Hacker Blue palette
+   * ======================================================= */
+  --rhb-editor: #010111;
+  --rhb-sidebar: #010114;
+  --rhb-deep: #000040;
+  --rhb-titlebar-inactive: #000E2F;
+  --rhb-panel: #001E4A;
+  --rhb-ribbon: #001E47;
+  --rhb-status: #00184A;
+  --rhb-section: #001947;
+  --rhb-section-strong: #0A2D63;
+  --rhb-command-active: #002C52;
+  --rhb-quick-focus: #052A59;
+
+  --rhb-blue: #5EAFFF;
+  --rhb-blue-fg: #4C9EEB;
+  --rhb-blue-soft: #7CBEFF;
+  --rhb-blue-pale: #A6CAFF;
+  --rhb-blue-string: #BFD7FF;
+  --rhb-blue-string-semantic: #B0E0FF;
+  --rhb-blue-function: #87CEEB;
+  --rhb-blue-operator: #83B9FF;
+  --rhb-blue-punctuation: #6694CA;
+  --rhb-blue-line-number: #316CBD;
+  --rhb-blue-deep: #2759AA;
+  --rhb-blue-border-dark: #153A75;
+
+  --rhb-purple: #8A5EC0;
+  --rhb-purple-bright: #B07CFF;
+  --rhb-yellow: #FFD700;
+  --rhb-orange: #FFA500;
+
+  /* Requested replacement for all original red/error roles. */
+  --rhb-error: #FF4DE1;
+
+  --rhb-white: #FFFFFF;
+  --rhb-white-soft: #DDF0FF;
+  --rhb-comment: #7C8DD990;
+
+  /* =========================================================
+   * Obsidian foundation colors
+   * ======================================================= */
+  --color-base-00: var(--rhb-editor);
+  --color-base-05: var(--rhb-editor);
+  --color-base-10: var(--rhb-sidebar);
+  --color-base-20: var(--rhb-panel);
+  --color-base-25: var(--rhb-section);
+  --color-base-30: var(--rhb-section-strong);
+  --color-base-35: #12397E;
+  --color-base-40: #1C6DD7;
+  --color-base-50: var(--rhb-blue-line-number);
+  --color-base-60: var(--rhb-blue-fg);
+  --color-base-70: var(--rhb-blue-soft);
+  --color-base-100: var(--rhb-blue);
+
+  --color-red: var(--rhb-error);
+  --color-orange: var(--rhb-orange);
+  --color-yellow: var(--rhb-yellow);
+  --color-green: #4682B4;
+  --color-cyan: #00CED1;
+  --color-blue: var(--rhb-blue);
+  --color-purple: var(--rhb-purple);
+  --color-pink: var(--rhb-error);
+
+  /* =========================================================
+   * Main surfaces
+   * VS Code:
+   * editor.background  -> #010111
+   * sideBar.background -> #010114
+   * panel.background   -> #001E4A
+   * ======================================================= */
+  --background-primary: var(--rhb-editor);
+  --background-primary-alt: var(--rhb-deep);
+  --background-secondary: var(--rhb-sidebar);
+  --background-secondary-alt: var(--rhb-section);
+  --background-modifier-form-field: var(--rhb-panel);
+  --background-modifier-form-field-highlighted: var(--rhb-command-active);
+  --background-modifier-box-shadow: #0040AA20;
+
+  --background-modifier-hover: #2759AA20;
+  --background-modifier-active-hover: #2759AA40;
+  --background-modifier-border: var(--rhb-blue);
+  --background-modifier-border-hover: var(--rhb-blue);
+  --background-modifier-border-focus: var(--rhb-blue);
+  --background-modifier-message: var(--rhb-panel);
+
+  --background-modifier-error: color-mix(in oklch, var(--rhb-error) 20%, transparent);
+  --background-modifier-error-hover: color-mix(in oklch, var(--rhb-error) 30%, transparent);
+  --background-modifier-success: #2759AA40;
+
+  /* =========================================================
+   * Text
+   * ======================================================= */
+  --text-normal: var(--rhb-blue);
+  --text-muted: var(--rhb-blue-fg);
+  --text-faint: color-mix(in oklch, var(--rhb-blue) 50%, transparent);
+  --text-on-accent: #000000;
+  --text-on-accent-inverted: var(--rhb-deep);
+
+  --text-accent: var(--rhb-blue);
+  --text-accent-hover: var(--rhb-white);
+  --text-success: var(--rhb-blue);
+  --text-warning: var(--rhb-yellow);
+  --text-error: var(--rhb-error);
+
+  --text-selection: #3670BD56;
+  --text-highlight-bg: #2759AA40;
+  --text-highlight-bg-active: #2759AA50;
+  --caret-color: var(--rhb-blue);
+
+  /* =========================================================
+   * Interactive controls
+   * ======================================================= */
+  --interactive-normal: var(--rhb-panel);
+  --interactive-hover: #2759AA40;
+  --interactive-accent: var(--rhb-blue);
+  --interactive-accent-hover: var(--rhb-blue);
+  --interactive-success: var(--rhb-blue);
+
+  --icon-color: var(--rhb-blue);
+  --icon-color-hover: var(--rhb-white);
+  --icon-color-active: var(--rhb-blue);
+  --icon-color-focused: var(--rhb-blue);
+
+  /* =========================================================
+   * Title bar / ribbon / status bar
+   * ======================================================= */
+  --titlebar-background: var(--rhb-sidebar);
+  --titlebar-background-focused: var(--rhb-sidebar);
+  --titlebar-text-color: #5EAFFF80;
+  --titlebar-text-color-focused: var(--rhb-blue);
+
+  --ribbon-background: var(--rhb-ribbon);
+  --ribbon-background-collapsed: var(--rhb-ribbon);
+
+  --status-bar-background: var(--rhb-status);
+  --status-bar-text-color: var(--rhb-blue);
+  --status-bar-border-color: var(--rhb-blue);
+
+  /* =========================================================
+   * Tabs
+   * ======================================================= */
+  --tab-container-background: #2759AA1C;
+  --tab-background-active: var(--rhb-editor);
+  --tab-text-color: #4C9EEB80;
+  --tab-text-color-active: var(--rhb-blue);
+  --tab-text-color-focused: var(--rhb-blue-fg);
+  --tab-text-color-focused-active: var(--rhb-blue);
+  --tab-text-color-focused-highlighted: var(--rhb-white);
+  --tab-text-color-focused-active-current: var(--rhb-blue);
+  --tab-divider-color: var(--rhb-blue);
+  --tab-outline-color: var(--rhb-blue);
+
+  /* =========================================================
+   * Navigation / file explorer
+   * ======================================================= */
+  --nav-item-color: var(--rhb-blue-fg);
+  --nav-item-color-hover: var(--rhb-white);
+  --nav-item-color-active: var(--rhb-white);
+  --nav-item-color-selected: var(--rhb-white-soft);
+  --nav-item-background-hover: #2759AA20;
+  --nav-item-background-active: #2759AA40;
+  --nav-item-background-selected: #2759AA30;
+
+  --nav-collapse-icon-color: var(--rhb-blue-line-number);
+  --nav-collapse-icon-color-collapsed: var(--rhb-blue);
+  --nav-indentation-guide-color: #2759AA40;
+
+  /* =========================================================
+   * Modal / prompt / menus
+   * ======================================================= */
+  --modal-background: var(--rhb-panel);
+  --modal-border-color: var(--rhb-blue);
+
+  --prompt-background: var(--rhb-panel);
+  --prompt-border-color: var(--rhb-blue);
+
+  --menu-background: var(--rhb-panel);
+
+  /* =========================================================
+   * Scrollbars
+   * ======================================================= */
+  --scrollbar-bg: transparent;
+  --scrollbar-thumb-bg: #5EAFFF40;
+  --scrollbar-active-thumb-bg: #5EAFFF80;
+
+  /* =========================================================
+   * Markdown editor
+   * Source theme gives Markdown markup the main blue.
+   * ======================================================= */
+  --inline-title-color: var(--rhb-blue);
+
+  --h1-color: var(--rhb-blue);
+  --h2-color: var(--rhb-blue);
+  --h3-color: var(--rhb-blue);
+  --h4-color: var(--rhb-blue);
+  --h5-color: var(--rhb-blue);
+  --h6-color: var(--rhb-blue);
+
+  --bold-color: var(--rhb-blue);
+  --italic-color: var(--rhb-blue);
+
+  --link-color: var(--rhb-blue);
+  --link-color-hover: var(--rhb-white);
+  --link-unresolved-color: #5EAFFF80;
+  --link-unresolved-decoration-color: #5EAFFF60;
+  --link-external-color: var(--rhb-blue-soft);
+  --link-external-color-hover: var(--rhb-white);
+
+  --tag-color: var(--rhb-blue);
+  --tag-color-hover: var(--rhb-white);
+  --tag-background: #2759AA30;
+  --tag-background-hover: #2759AA50;
+
+  --blockquote-color: var(--rhb-blue-fg);
+  --blockquote-background-color: #2759AA20;
+  --blockquote-border-color: var(--rhb-blue);
+
+  --hr-color: #5EAFFF80;
+
+  --list-marker-color: var(--rhb-blue-line-number);
+  --list-marker-color-hover: var(--rhb-blue);
+  --list-marker-color-collapsed: var(--rhb-blue);
+
+  --checkbox-color: var(--rhb-blue);
+  --checkbox-color-hover: var(--rhb-white);
+  --checkbox-border-color: var(--rhb-blue);
+  --checkbox-border-color-hover: var(--rhb-white);
+  --checklist-done-color: #5EAFFF80;
+
+  /* =========================================================
+   * Code syntax
+   * Mapped from retro-hacker-blue tokenColors.
+   * ======================================================= */
+  --code-background: var(--rhb-editor);
+  --code-normal: var(--rhb-blue);
+  --code-comment: var(--rhb-comment);
+  --code-function: var(--rhb-blue-function);
+  --code-important: var(--rhb-blue-string-semantic);
+  --code-keyword: var(--rhb-blue-pale);
+  --code-operator: var(--rhb-blue-operator);
+  --code-property: var(--rhb-blue-pale);
+  --code-punctuation: var(--rhb-blue-punctuation);
+  --code-string: var(--rhb-blue-string);
+  --code-tag: var(--rhb-blue);
+  --code-value: var(--rhb-yellow);
+
+  /* =========================================================
+   * Tables / metadata / embeds
+   * ======================================================= */
+  --table-background: transparent;
+  --table-header-background: #001947;
+  --table-header-background-hover: #0A2D63;
+  --table-row-background-hover: #2759AA20;
+  --table-border-color: #5EAFFF80;
+  --table-text-color: var(--rhb-blue);
+
+  --metadata-background: transparent;
+  --metadata-border-color: #5EAFFF80;
+  --metadata-label-text-color: #5EAFFF80;
+  --metadata-input-text-color: var(--rhb-blue);
+  --metadata-input-background-active: #2759AA20;
+
+  --embed-block-shadow-hover: 0 0 0 1px var(--rhb-blue);
+  --embed-border-start: 2px solid var(--rhb-blue);
+
+  /* =========================================================
+   * Graph
+   * ======================================================= */
+  --graph-line: #2759AA60;
+  --graph-node: var(--rhb-blue-line-number);
+  --graph-node-unresolved: #5EAFFF60;
+  --graph-node-focused: var(--rhb-white);
+  --graph-node-tag: var(--rhb-yellow);
+  --graph-node-attachment: var(--rhb-purple-bright);
+}
+
+
+/* ===========================================================
+ * Workspace structure
+ * ========================================================= */
+
+.theme-dark .workspace-ribbon {
+  background-color: var(--rhb-ribbon);
+  border-color: var(--rhb-blue-border-dark);
+}
+
+.theme-dark .workspace-sidedock-vault-profile,
+.theme-dark .workspace-sidedock-vault-profile:hover {
+  background-color: var(--rhb-sidebar);
+}
+
+.theme-dark .workspace-split.mod-left-split,
+.theme-dark .workspace-split.mod-right-split {
+  background-color: var(--rhb-sidebar);
+}
+
+.theme-dark .workspace-split.mod-root {
+  background-color: var(--rhb-editor);
+}
+
+.theme-dark .workspace-leaf-resize-handle,
+.theme-dark .workspace-split.mod-vertical > * > .workspace-leaf-resize-handle {
+  border-color: var(--rhb-blue);
+}
+
+.theme-dark .workspace-tab-header-container {
+  border-color: var(--rhb-blue);
+}
+
+.theme-dark .workspace-tab-header {
+  border-color: var(--rhb-blue);
+}
+
+.theme-dark .workspace-tab-header:hover {
+  background-color: var(--rhb-deep);
+}
+
+.theme-dark .workspace-tab-header.is-active {
+  background-color: var(--rhb-editor);
+  box-shadow: inset 0 2px 0 var(--rhb-blue);
+}
+
+
+/* ===========================================================
+ * File explorer / lists
+ * ========================================================= */
+
+.theme-dark .nav-files-container,
+.theme-dark .workspace-leaf-content[data-type="file-explorer"] {
+  background-color: var(--rhb-sidebar);
+}
+
+.theme-dark .nav-folder-title:hover,
+.theme-dark .nav-file-title:hover,
+.theme-dark .tree-item-self:hover {
+  background-color: #2759AA20;
+  color: var(--rhb-white);
+}
+
+.theme-dark .nav-file-title.is-active,
+.theme-dark .tree-item-self.is-active {
+  background-color: #2759AA40;
+  color: var(--rhb-white);
+}
+
+
+/* ===========================================================
+ * Editor: current line, selection, search
+ * ========================================================= */
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-line.cm-active,
+.theme-dark .markdown-source-view.mod-cm6 .cm-activeLine {
+  background-color: #0C2B5E7A;
+  box-shadow:
+    inset 1px 0 0 #12397E7C,
+    inset -1px 0 0 #12397E7C;
+}
+
+.theme-dark .markdown-source-view.mod-cm6 .cm-selectionBackground,
+.theme-dark .markdown-source-view.mod-cm6.cm-focused .cm-selectionBackground,
+.theme-dark .markdown-source-view.mod-cm6 .cm-content ::selection,
+.theme-dark .markdown-rendered ::selection {
+  background-color: #3670BD56;
+}
+
+.theme-dark .cm-searchMatch {
+  background-color: #2759AA40;
+  outline: 1px solid #5EAFFF40;
+}
+
+.theme-dark .cm-searchMatch.cm-searchMatch-selected {
+  background-color: #2759AA50;
+  outline-color: var(--rhb-blue);
+}
+
+
+/* ===========================================================
+ * Quick switcher / command palette / suggestion lists
+ * VS Code quickInput.*
+ * ========================================================= */
+
+.theme-dark .prompt,
+.theme-dark .suggestion-container {
+  background-color: var(--rhb-panel);
+  border: 1px solid var(--rhb-blue);
+  box-shadow: 0 8px 30px #0040AA20;
+}
+
+.theme-dark .prompt-input,
+.theme-dark .search-input-container input,
+.theme-dark input[type="text"],
+.theme-dark input[type="search"] {
+  background-color: var(--rhb-panel);
+  color: var(--rhb-blue);
+  border-color: var(--rhb-blue);
+}
+
+.theme-dark input::placeholder,
+.theme-dark textarea::placeholder {
+  color: #5EAFFF80;
+}
+
+.theme-dark .suggestion-item.is-selected,
+.theme-dark .suggestion-item.is-selected:hover {
+  background-color: var(--rhb-quick-focus);
+  color: var(--rhb-white);
+}
+
+.theme-dark .suggestion-item:hover {
+  background-color: #2759AA20;
+  color: var(--rhb-white);
+}
+
+
+/* ===========================================================
+ * Buttons / toggles / settings
+ * ========================================================= */
+
+.theme-dark button.mod-cta {
+  background-color: var(--rhb-blue);
+  color: #000000;
+  border-color: var(--rhb-blue);
+}
+
+.theme-dark button.mod-cta:hover {
+  background-color: var(--rhb-blue);
+  color: #000000;
+}
+
+.theme-dark .checkbox-container.is-enabled {
+  background-color: var(--rhb-blue);
+}
+
+.theme-dark .modal,
+.theme-dark .modal-container .modal {
+  background-color: var(--rhb-panel);
+  border: 1px solid var(--rhb-blue);
+}
+
+.theme-dark .vertical-tab-header,
+.theme-dark .vertical-tab-content {
+  background-color: var(--rhb-panel);
+}
+
+.theme-dark .vertical-tab-nav-item:hover {
+  background-color: #2759AA20;
+}
+
+.theme-dark .vertical-tab-nav-item.is-active {
+  background-color: #2759AA40;
+  color: var(--rhb-white);
+}
+
+
+/* ===========================================================
+ * Markdown details
+ * ========================================================= */
+
+.theme-dark .markdown-rendered mark,
+.theme-dark .cm-highlight {
+  background-color: #2759AA40;
+  color: var(--rhb-white);
+}
+
+.theme-dark .markdown-rendered code:not(pre code),
+.theme-dark .cm-inline-code:not(.cm-formatting) {
+  background-color: #2759AA30;
+  color: var(--rhb-blue-string);
+  border: 1px solid #5EAFFF40;
+}
+
+.theme-dark .markdown-rendered pre,
+.theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  border-color: #5EAFFF40;
+}
+
+.theme-dark .markdown-rendered blockquote {
+  border-color: var(--rhb-blue);
+}
+
+
+/* ===========================================================
+ * Extra syntax fidelity
+ * Prism (Reading view) + common CodeMirror token classes
+ * ========================================================= */
+
+/* Types / classes */
+.theme-dark .markdown-rendered pre code .token.class-name,
+.theme-dark .markdown-rendered pre code .token.builtin,
+.theme-dark .markdown-rendered pre code .token.namespace,
+.theme-dark .markdown-source-view .cm-type,
+.theme-dark .markdown-source-view .cm-className {
+  color: var(--rhb-purple);
+  font-weight: 700;
+}
+
+/* Functions */
+.theme-dark .markdown-rendered pre code .token.function,
+.theme-dark .markdown-source-view .cm-function,
+.theme-dark .markdown-source-view .cm-variableName.function {
+  color: var(--rhb-blue-function);
+  font-weight: 700;
+}
+
+/* Keywords */
+.theme-dark .markdown-rendered pre code .token.keyword,
+.theme-dark .markdown-source-view .cm-keyword {
+  color: var(--rhb-blue-pale);
+  font-weight: 700;
+}
+
+/* Numbers / booleans / constants */
+.theme-dark .markdown-rendered pre code .token.number,
+.theme-dark .markdown-rendered pre code .token.boolean,
+.theme-dark .markdown-rendered pre code .token.constant,
+.theme-dark .markdown-source-view .cm-number,
+.theme-dark .markdown-source-view .cm-bool {
+  color: var(--rhb-yellow);
+}
+
+/* Strings / regex */
+.theme-dark .markdown-rendered pre code .token.string,
+.theme-dark .markdown-rendered pre code .token.regex,
+.theme-dark .markdown-source-view .cm-string,
+.theme-dark .markdown-source-view .cm-string2 {
+  color: var(--rhb-blue-string);
+}
+
+/* Comments */
+.theme-dark .markdown-rendered pre code .token.comment,
+.theme-dark .markdown-rendered pre code .token.prolog,
+.theme-dark .markdown-rendered pre code .token.doctype,
+.theme-dark .markdown-source-view .cm-comment {
+  color: var(--rhb-comment);
+  font-style: italic;
+}
+
+/* Operators */
+.theme-dark .markdown-rendered pre code .token.operator,
+.theme-dark .markdown-source-view .cm-operator {
+  color: var(--rhb-blue-operator);
+}
+
+/* Punctuation / delimiters */
+.theme-dark .markdown-rendered pre code .token.punctuation,
+.theme-dark .markdown-source-view .cm-punctuation {
+  color: var(--rhb-blue-punctuation);
+}
+
+/* Tags / attributes */
+.theme-dark .markdown-rendered pre code .token.tag,
+.theme-dark .markdown-rendered pre code .token.attr-name,
+.theme-dark .markdown-source-view .cm-tagName,
+.theme-dark .markdown-source-view .cm-attributeName {
+  color: var(--rhb-blue);
+  font-weight: 700;
+}
+
+/* Invalid / deleted / error-like syntax: requested magenta */
+.theme-dark .markdown-rendered pre code .token.deleted,
+.theme-dark .markdown-rendered pre code .token.error,
+.theme-dark .cm-invalidchar {
+  color: var(--rhb-error);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+
+/* ===========================================================
+ * Error / warning states
+ * ========================================================= */
+
+.theme-dark .mod-error,
+.theme-dark .setting-item.mod-warning .setting-item-name,
+.theme-dark .notice.mod-error {
+  color: var(--rhb-error);
+}
+
+.theme-dark .notice {
+  background-color: var(--rhb-panel);
+  color: var(--rhb-blue);
+  border: 1px solid var(--rhb-blue);
+}
+
+.theme-dark .notice.mod-error {
+  border-color: var(--rhb-error);
+}
+
+.theme-dark .notice.mod-warning {
+  border-color: var(--rhb-yellow);
+  color: var(--rhb-yellow);
+}
+
+
+/* ===========================================================
+ * Scrollbars — mirrors VS Code scrollbarSlider.*
+ * ========================================================= */
+
+.theme-dark ::-webkit-scrollbar {
+  background-color: transparent;
+}
+
+.theme-dark ::-webkit-scrollbar-thumb {
+  background-color: #5EAFFF40;
+}
+
+.theme-dark ::-webkit-scrollbar-thumb:hover {
+  background-color: #5EAFFF60;
+}
+
+.theme-dark ::-webkit-scrollbar-thumb:active {
+  background-color: #5EAFFF80;
+}
+
+
+/* ===========================================================
+ * Focus
+ * ========================================================= */
+
+.theme-dark :focus-visible {
+  outline-color: var(--rhb-blue);
+}
+
+.theme-dark .is-flashing {
+  background-color: #2759AA40;
+}
