@@ -2,6 +2,9 @@
 .theme-dark {
   --file-line-width: 900px !important;
   --mermaid-wide-width: 1400px;
+
+  /* Keep inactive tabs dim even while the Obsidian window is focused. */
+  --tab-text-color-focused: var(--tab-text-color) !important;
 }
 
 /*
