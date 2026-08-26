@@ -98,14 +98,5 @@
       ],
       "key": "ArrowRight"
     }
-  ],
-  "dynamic-outline:toggle-dynamic-outline": [
-    {
-      "modifiers": [
-        "Mod",
-        "Shift"
-      ],
-      "key": "O"
-    }
   ]
 }
