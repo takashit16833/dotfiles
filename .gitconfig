@@ -23,23 +23,21 @@
     # VS Code 本家の tokenColors を移植した bat theme を構文色に使う。
     syntax-theme = "Retro Hacker Blue"
 
-    # True Retro Hacker Blue Diff:
-    # 通常 = Blue、追加 = Cyan、削除 = Cyber Pink、変更 / hunk = Gold。
-    # Git の慣習的な赤 / 緑には寄せず、Retro Hacker Blue 自身の色体系だけで表現する。
-    # 背景は editor.background (#010111) に各アクセント色を薄く重ねた相当色。
-    # コード本来の構文色は維持し、行内で実際に変わった部分だけ一段濃くする。
-    minus-style = syntax "#250C2E"
-    minus-emph-style = syntax "#3E1343"
-    plus-style = syntax "#011E2C"
-    plus-emph-style = syntax "#01323F"
+    # VS Code の Retro Hacker Blue で実際に表示される diff 背景へ合わせる。
+    # テーマ自身は diffEditor.* を定義していないため、VS Code 側の diff 色が
+    # editor.background (#010111) に重なった最終表示色をキャプチャから実測して使う。
+    # 削除行は VS Code の実表示に合わせ、構文色を残さず主役色の青で統一する。
+    minus-style = "#5EAFFF" "#370313"
+    minus-emph-style = "#5EAFFF" "#620415"
+    plus-style = syntax "#1F2620"
+    plus-emph-style = syntax "#374727"
     zero-style = syntax
 
     # side-by-side 表示などで使われる行番号。
-    # 追加は Cyan、削除は Cyber Pink、通常行は控えめな Blue。
     line-numbers-left-style = "#153A75"
     line-numbers-right-style = "#153A75"
     line-numbers-minus-style = "#FF4DE1"
-    line-numbers-plus-style = "#00CED1"
+    line-numbers-plus-style = "#5EAFFF"
     line-numbers-zero-style = "#316CBD"
 
     # ファイル見出し。横線は増やさず、文字色だけで区切る。
@@ -47,7 +45,7 @@
     file-decoration-style = none
 
     # @@ ... @@ の hunk 見出し。
-    # modified の役割を持つ Gold を行番号に使い、背景はテーマの暗い Section Blue にする。
+    # sideBarSectionHeader 相当の暗い青だけを背景に使い、枠線は付けない。
     hunk-header-style = file line-number syntax "#001947"
     hunk-header-file-style = "#7CBEFF"
     hunk-header-line-number-style = "#FFD700"
