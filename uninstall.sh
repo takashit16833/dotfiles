@@ -84,6 +84,25 @@ uninstall_zellij() {
   rmdir "$HOME/.local/share/dotfiles" 2>/dev/null || true
 }
 
+uninstall_bat_theme() {
+  local theme_source="$DOTFILES_DIR/.config/bat/themes/Retro Hacker Blue.tmTheme"
+  local theme_target="$XDG_CONFIG_HOME/bat/themes/Retro Hacker Blue.tmTheme"
+
+  remove_symlink "$theme_source" "$theme_target"
+
+  # custom theme を cache に残さないよう、bat が存在するときだけ再構築する。
+  if command -v bat >/dev/null 2>&1; then
+    info 'rebuilding bat cache after removing Retro Hacker Blue'
+    if ! BAT_CONFIG_DIR="$XDG_CONFIG_HOME/bat" bat cache --build >/dev/null; then
+      info 'warning: failed to rebuild bat cache; existing bat cache was left untouched'
+    fi
+  fi
+
+  # 他の user asset が無い場合だけ空 directory を片付ける。
+  rmdir "$XDG_CONFIG_HOME/bat/themes" 2>/dev/null || true
+  rmdir "$XDG_CONFIG_HOME/bat" 2>/dev/null || true
+}
+
 main() {
   info "uninstalling links and local tools created from $DOTFILES_DIR"
 
@@ -128,6 +147,8 @@ main() {
   remove_symlink \
     "$DOTFILES_DIR/.config/yazi/init.lua" \
     "$XDG_CONFIG_HOME/yazi/init.lua"
+
+  uninstall_bat_theme
 
   remove_symlink \
     "$DOTFILES_DIR/.gitconfig" \
