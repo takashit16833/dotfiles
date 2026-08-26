@@ -98,5 +98,22 @@
       ],
       "key": "ArrowRight"
     }
+  ],
+  "obsidian-another-quick-switcher:search-command_recent-search": [
+    {
+      "modifiers": [
+        "Ctrl"
+      ],
+      "key": "O"
+    }
+  ],
+  "obsidian-another-quick-switcher:header-floating-search-in-file": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "O"
+    }
   ]
 }
