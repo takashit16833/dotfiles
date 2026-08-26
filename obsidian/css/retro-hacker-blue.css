@@ -125,8 +125,8 @@
   --text-error: var(--rhb-error);
 
   --text-selection: #3670BD56;
-  --text-highlight-bg: #FFA50040;
-  --text-highlight-bg-active: #FFA50055;
+  --text-highlight-bg: #FFA50026;
+  --text-highlight-bg-active: #FFA50036;
   --caret-color: var(--rhb-blue);
 
   /* =========================================================
@@ -490,13 +490,13 @@
 
 .theme-dark .markdown-rendered mark,
 .theme-dark .cm-highlight {
-  background-color: #FFA50040;
+  background-color: #FFA50026;
   color: #FFE0A3;
 }
 
 .theme-dark .markdown-rendered code:not(pre code),
 .theme-dark .cm-inline-code:not(.cm-formatting) {
-  background-color: #00CED118;
+  background-color: #00CED126;
   color: var(--rhb-cyan);
   border: none;
 }
