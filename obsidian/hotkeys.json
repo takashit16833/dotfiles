@@ -80,5 +80,23 @@
       ],
       "key": "E"
     }
+  ],
+  "tab-shifter:move-tab-prev": [
+    {
+      "modifiers": [
+        "Ctrl",
+        "Mod"
+      ],
+      "key": "ArrowLeft"
+    }
+  ],
+  "tab-shifter:move-tab-next": [
+    {
+      "modifiers": [
+        "Ctrl",
+        "Mod"
+      ],
+      "key": "ArrowRight"
+    }
   ]
 }
