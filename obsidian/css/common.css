@@ -1,10 +1,27 @@
 .theme-light,
 .theme-dark {
   --file-line-width: 900px !important;
+  --mermaid-wide-width: 1400px;
+}
+
+/*
+ * Keep normal Markdown at the readable 900px width, but let Mermaid diagrams
+ * break out of that column when they need more horizontal space.
+ * On narrower windows the diagram follows the available viewport width and,
+ * if Mermaid still needs more room, the container can scroll horizontally.
+ */
+.mermaid {
+  width: min(var(--mermaid-wide-width), calc(100vw - 96px));
+  max-width: none;
+  margin-inline-start: 50%;
+  transform: translateX(-50%);
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .mermaid svg {
   display: block;
   max-width: 100%;
   height: auto;
+  margin-inline: auto;
 }
