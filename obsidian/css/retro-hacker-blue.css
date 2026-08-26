@@ -48,6 +48,7 @@
   --rhb-purple-bright: #B07CFF;
   --rhb-yellow: #FFD700;
   --rhb-orange: #FFA500;
+  --rhb-cyan: #00CED1;
 
   /* Requested replacement for all original red/error roles. */
   --rhb-error: #FF4DE1;
@@ -76,7 +77,7 @@
   --color-orange: var(--rhb-orange);
   --color-yellow: var(--rhb-yellow);
   --color-green: #4682B4;
-  --color-cyan: #00CED1;
+  --color-cyan: var(--rhb-cyan);
   --color-blue: var(--rhb-blue);
   --color-purple: var(--rhb-purple);
   --color-pink: var(--rhb-error);
@@ -124,8 +125,8 @@
   --text-error: var(--rhb-error);
 
   --text-selection: #3670BD56;
-  --text-highlight-bg: #2759AA40;
-  --text-highlight-bg-active: #2759AA50;
+  --text-highlight-bg: #FFA50040;
+  --text-highlight-bg-active: #FFA50055;
   --caret-color: var(--rhb-blue);
 
   /* =========================================================
@@ -236,7 +237,7 @@
   --tag-background-hover: #2759AA50;
 
   --blockquote-color: var(--rhb-blue-fg);
-  --blockquote-background-color: #2759AA20;
+  --blockquote-background-color: var(--rhb-section);
   --blockquote-border-color: var(--rhb-blue);
 
   --hr-color: #5EAFFF80;
@@ -255,7 +256,7 @@
    * Code syntax
    * Mapped from retro-hacker-blue tokenColors.
    * ======================================================= */
-  --code-background: var(--rhb-editor);
+  --code-background: var(--rhb-section);
   --code-normal: var(--rhb-blue);
   --code-comment: var(--rhb-comment);
   --code-function: var(--rhb-blue-function);
@@ -489,23 +490,25 @@
 
 .theme-dark .markdown-rendered mark,
 .theme-dark .cm-highlight {
-  background-color: #2759AA40;
-  color: var(--rhb-white);
+  background-color: #FFA50040;
+  color: #FFE0A3;
 }
 
 .theme-dark .markdown-rendered code:not(pre code),
 .theme-dark .cm-inline-code:not(.cm-formatting) {
-  background-color: #2759AA30;
-  color: var(--rhb-blue-string);
-  border: 1px solid #5EAFFF40;
+  background-color: #00CED118;
+  color: var(--rhb-cyan);
+  border: none;
 }
 
 .theme-dark .markdown-rendered pre,
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock {
+  background-color: var(--rhb-section);
   border-color: #5EAFFF40;
 }
 
 .theme-dark .markdown-rendered blockquote {
+  background-color: var(--rhb-section);
   border-color: var(--rhb-blue);
 }
 
