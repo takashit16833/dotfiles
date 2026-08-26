@@ -13,5 +13,57 @@
 [user]
     useConfigOnly = true
 
+# git-delta の表示色を Retro Hacker Blue に統一する。
+#
+# Delta の端末色には透明度がないため、本家テーマの半透明背景色は
+# terminal.background (#010111) に重ねた見た目と同等の不透明色へ変換している。
+# 元テーマの赤系 (#FF5A5A) は、この dotfiles 全体の方針に合わせて #FF4DE1 に置換する。
+[delta]
+    dark = true
+    features = retro-hacker-blue
+
+[delta "retro-hacker-blue"]
+    # 削除行。
+    # #FF4DE1 を薄く重ねた暗いマゼンタ背景で、構文色は維持する。
+    minus-style = syntax "#270C30"
+    minus-emph-style = syntax bold "#511952"
+
+    # 追加行。
+    # Retro Hacker Blue の word highlight 系の青を背景にし、
+    # 行内で実際に追加された箇所だけ Cyan で一段強く見せる。
+    plus-style = syntax "#08122E"
+    plus-emph-style = syntax bold "#013441"
+
+    # 変更のない行は通常の構文色をそのまま使う。
+    zero-style = syntax
+
+    # side-by-side 表示などで使われる行番号。
+    line-numbers-left-style = "#153A75"
+    line-numbers-right-style = "#153A75"
+    line-numbers-minus-style = "#FF4DE1"
+    line-numbers-plus-style = "#5EAFFF"
+    line-numbers-zero-style = "#316CBD"
+
+    # ファイル見出し。
+    file-style = "#5EAFFF" bold
+    file-decoration-style = "#153A75" ul
+
+    # @@ ... @@ の hunk 見出し。
+    # 背景は sideBarSectionHeader、ファイル名は柔らかい青、行番号は警告色の黄色。
+    hunk-header-style = file line-number syntax "#001947"
+    hunk-header-file-style = "#7CBEFF"
+    hunk-header-line-number-style = "#FFD700"
+    hunk-header-decoration-style = "#153A75" ul
+
+    # git log -p などで表示される commit 見出し。
+    commit-style = "#7CBEFF" bold
+    commit-decoration-style = "#153A75" ul
+
+    # 折り返しやタブなど、Delta が追加する補助表示。
+    inline-hint-style = "#83B9FF"
+
+    # 空白エラーは、元テーマの error/deleted 色を置換したマゼンタで明示する。
+    whitespace-error-style = "#FF4DE1" reverse
+
 [include]
     path = ~/.gitconfig.local
