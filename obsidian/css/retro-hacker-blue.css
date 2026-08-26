@@ -41,6 +41,8 @@
   --rhb-blue-line-number: #316CBD;
   --rhb-blue-deep: #2759AA;
   --rhb-blue-border-dark: #153A75;
+  --rhb-border-subtle: #153A7566;
+  --rhb-border-soft: #5EAFFF41;
 
   --rhb-purple: #8A5EC0;
   --rhb-purple-bright: #B07CFF;
@@ -96,8 +98,9 @@
 
   --background-modifier-hover: #2759AA20;
   --background-modifier-active-hover: #2759AA40;
-  --background-modifier-border: var(--rhb-blue);
-  --background-modifier-border-hover: var(--rhb-blue);
+  /* Keep ordinary separators quiet; reserve the bright blue for focus. */
+  --background-modifier-border: var(--rhb-border-subtle);
+  --background-modifier-border-hover: #2759AA80;
   --background-modifier-border-focus: var(--rhb-blue);
   --background-modifier-message: var(--rhb-panel);
 
@@ -152,7 +155,10 @@
 
   --status-bar-background: var(--rhb-status);
   --status-bar-text-color: var(--rhb-blue);
-  --status-bar-border-color: var(--rhb-blue);
+  --status-bar-border-color: var(--rhb-border-subtle);
+  --titlebar-border-color: var(--rhb-border-subtle);
+  --divider-color: var(--rhb-border-subtle);
+  --divider-color-hover: #2759AA80;
 
   /* =========================================================
    * Tabs
@@ -165,8 +171,8 @@
   --tab-text-color-focused-active: var(--rhb-blue);
   --tab-text-color-focused-highlighted: var(--rhb-white);
   --tab-text-color-focused-active-current: var(--rhb-blue);
-  --tab-divider-color: var(--rhb-blue);
-  --tab-outline-color: var(--rhb-blue);
+  --tab-divider-color: var(--rhb-border-subtle);
+  --tab-outline-color: transparent;
 
   /* =========================================================
    * Navigation / file explorer
@@ -187,10 +193,10 @@
    * Modal / prompt / menus
    * ======================================================= */
   --modal-background: var(--rhb-panel);
-  --modal-border-color: var(--rhb-blue);
+  --modal-border-color: var(--rhb-border-soft);
 
   --prompt-background: var(--rhb-panel);
-  --prompt-border-color: var(--rhb-blue);
+  --prompt-border-color: var(--rhb-border-soft);
 
   --menu-background: var(--rhb-panel);
 
@@ -299,7 +305,7 @@
 
 .theme-dark .workspace-ribbon {
   background-color: var(--rhb-ribbon);
-  border-color: var(--rhb-blue-border-dark);
+  border-color: var(--rhb-border-subtle);
 }
 
 .theme-dark .workspace-sidedock-vault-profile,
@@ -318,15 +324,15 @@
 
 .theme-dark .workspace-leaf-resize-handle,
 .theme-dark .workspace-split.mod-vertical > * > .workspace-leaf-resize-handle {
-  border-color: var(--rhb-blue);
+  border-color: var(--rhb-border-subtle);
 }
 
 .theme-dark .workspace-tab-header-container {
-  border-color: var(--rhb-blue);
+  border-color: var(--rhb-border-subtle);
 }
 
 .theme-dark .workspace-tab-header {
-  border-color: var(--rhb-blue);
+  border-color: transparent;
 }
 
 .theme-dark .workspace-tab-header:hover {
@@ -335,7 +341,7 @@
 
 .theme-dark .workspace-tab-header.is-active {
   background-color: var(--rhb-editor);
-  box-shadow: inset 0 2px 0 var(--rhb-blue);
+  box-shadow: none;
 }
 
 
@@ -400,7 +406,7 @@
 .theme-dark .prompt,
 .theme-dark .suggestion-container {
   background-color: var(--rhb-panel);
-  border: 1px solid var(--rhb-blue);
+  border: 1px solid var(--rhb-border-soft);
   box-shadow: 0 8px 30px #0040AA20;
 }
 
@@ -410,6 +416,13 @@
 .theme-dark input[type="search"] {
   background-color: var(--rhb-panel);
   color: var(--rhb-blue);
+  border-color: var(--rhb-border-subtle);
+}
+
+.theme-dark .prompt-input:focus,
+.theme-dark .search-input-container input:focus,
+.theme-dark input[type="text"]:focus,
+.theme-dark input[type="search"]:focus {
   border-color: var(--rhb-blue);
 }
 
@@ -452,7 +465,7 @@
 .theme-dark .modal,
 .theme-dark .modal-container .modal {
   background-color: var(--rhb-panel);
-  border: 1px solid var(--rhb-blue);
+  border: 1px solid var(--rhb-border-soft);
 }
 
 .theme-dark .vertical-tab-header,
