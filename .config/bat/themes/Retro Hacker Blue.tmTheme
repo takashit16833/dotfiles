@@ -23,7 +23,7 @@
       <key>scope</key><string>comment, punctuation.definition.comment, string.comment</string>
       <key>settings</key>
       <dict>
-        <key>foreground</key><string>#465077</string>
+        <key>foreground</key><string>#6574AB</string>
         <key>fontStyle</key><string>italic</string>
       </dict>
     </dict>
