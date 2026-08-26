@@ -26,8 +26,9 @@
     # VS Code の Retro Hacker Blue で実際に表示される diff 背景へ合わせる。
     # テーマ自身は diffEditor.* を定義していないため、VS Code 側の diff 色が
     # editor.background (#010111) に重なった最終表示色をキャプチャから実測して使う。
-    minus-style = syntax "#370313"
-    minus-emph-style = syntax "#620415"
+    # 削除行は VS Code の実表示に合わせ、構文色を残さず主役色の青で統一する。
+    minus-style = "#5EAFFF" "#370313"
+    minus-emph-style = "#5EAFFF" "#620415"
     plus-style = syntax "#1F2620"
     plus-emph-style = syntax "#374727"
     zero-style = syntax
