@@ -601,6 +601,214 @@
 
 
 /* ===========================================================
+ * Mermaid diagrams
+ * Keep the same mature, low-border look as the rest of the UI.
+ * Mermaid injects its own scoped styles, so overrides use
+ * !important intentionally.
+ * ========================================================= */
+
+.theme-dark .mermaid {
+  background: transparent !important;
+  color: var(--rhb-blue) !important;
+}
+
+.theme-dark .mermaid > svg {
+  background: transparent !important;
+  filter: none !important;
+}
+
+/* Shared text */
+.theme-dark .mermaid text,
+.theme-dark .mermaid .label,
+.theme-dark .mermaid .nodeLabel,
+.theme-dark .mermaid .edgeLabel,
+.theme-dark .mermaid .messageText,
+.theme-dark .mermaid .loopText,
+.theme-dark .mermaid .labelText,
+.theme-dark .mermaid .noteText,
+.theme-dark .mermaid .classText,
+.theme-dark .mermaid .stateLabel,
+.theme-dark .mermaid foreignObject div,
+.theme-dark .mermaid foreignObject span,
+.theme-dark .mermaid foreignObject p {
+  fill: var(--rhb-blue) !important;
+  color: var(--rhb-blue) !important;
+}
+
+/* Flowchart / generic nodes */
+.theme-dark .mermaid .node rect,
+.theme-dark .mermaid .node polygon,
+.theme-dark .mermaid .node circle,
+.theme-dark .mermaid .node ellipse,
+.theme-dark .mermaid .node path,
+.theme-dark .mermaid g.classGroup rect,
+.theme-dark .mermaid .statediagram-state rect,
+.theme-dark .mermaid .er.entityBox {
+  fill: var(--rhb-section) !important;
+  stroke: var(--rhb-blue-border-dark) !important;
+  stroke-width: 1px !important;
+}
+
+/* Subgraphs / namespaces / compound states */
+.theme-dark .mermaid .cluster rect,
+.theme-dark .mermaid .statediagram-cluster rect,
+.theme-dark .mermaid .classGroup .namespace rect {
+  fill: #001E4A99 !important;
+  stroke: var(--rhb-border-subtle) !important;
+  stroke-width: 1px !important;
+}
+
+.theme-dark .mermaid .cluster-label text,
+.theme-dark .mermaid .cluster-label span,
+.theme-dark .mermaid .cluster-label p {
+  fill: var(--rhb-blue-soft) !important;
+  color: var(--rhb-blue-soft) !important;
+}
+
+/* Connections and arrow heads */
+.theme-dark .mermaid .flowchart-link,
+.theme-dark .mermaid .edgePath path,
+.theme-dark .mermaid path.relationshipLine,
+.theme-dark .mermaid path.relation,
+.theme-dark .mermaid path.transition,
+.theme-dark .mermaid .classRelation,
+.theme-dark .mermaid .messageLine0,
+.theme-dark .mermaid .messageLine1,
+.theme-dark .mermaid .actor-line {
+  stroke: #5EAFFFAA !important;
+  stroke-width: 1.25px !important;
+}
+
+.theme-dark .mermaid marker path,
+.theme-dark .mermaid .arrowheadPath,
+.theme-dark .mermaid .marker {
+  fill: var(--rhb-blue) !important;
+  stroke: var(--rhb-blue) !important;
+}
+
+/* Labels sit on the editor background so crossed lines remain readable. */
+.theme-dark .mermaid .edgeLabel,
+.theme-dark .mermaid .edgeLabel rect,
+.theme-dark .mermaid .edgeLabel div,
+.theme-dark .mermaid .edgeLabel span,
+.theme-dark .mermaid .edgeLabel p {
+  background-color: var(--rhb-editor) !important;
+  fill: var(--rhb-editor) !important;
+  color: var(--rhb-blue-soft) !important;
+}
+
+/* Sequence diagrams */
+.theme-dark .mermaid rect.actor,
+.theme-dark .mermaid .labelBox {
+  fill: var(--rhb-section) !important;
+  stroke: var(--rhb-blue-border-dark) !important;
+  stroke-width: 1px !important;
+}
+
+.theme-dark .mermaid text.actor,
+.theme-dark .mermaid .messageText,
+.theme-dark .mermaid .labelText,
+.theme-dark .mermaid .loopText {
+  fill: var(--rhb-blue) !important;
+}
+
+.theme-dark .mermaid .activation0,
+.theme-dark .mermaid .activation1,
+.theme-dark .mermaid .activation2 {
+  fill: #00CED126 !important;
+  stroke: var(--rhb-cyan) !important;
+}
+
+.theme-dark .mermaid .loopLine {
+  stroke: var(--rhb-border-soft) !important;
+}
+
+.theme-dark .mermaid rect.note,
+.theme-dark .mermaid polygon.note {
+  fill: #FFA50020 !important;
+  stroke: #FFA50088 !important;
+}
+
+.theme-dark .mermaid .noteText,
+.theme-dark .mermaid .noteText tspan {
+  fill: #FFE0A3 !important;
+  color: #FFE0A3 !important;
+}
+
+/* Class diagrams: class names use the source theme's type/class purple. */
+.theme-dark .mermaid g.classGroup line,
+.theme-dark .mermaid .divider {
+  stroke: var(--rhb-border-subtle) !important;
+}
+
+.theme-dark .mermaid .classTitle,
+.theme-dark .mermaid .classGroup .title,
+.theme-dark .mermaid .classGroup .title text {
+  fill: var(--rhb-purple-bright) !important;
+  color: var(--rhb-purple-bright) !important;
+  font-weight: 700 !important;
+}
+
+.theme-dark .mermaid .composition,
+.theme-dark .mermaid .aggregation,
+.theme-dark .mermaid .dependency {
+  stroke: var(--rhb-blue) !important;
+  fill: var(--rhb-editor) !important;
+}
+
+/* State diagrams */
+.theme-dark .mermaid circle.state-start {
+  fill: var(--rhb-blue) !important;
+  stroke: var(--rhb-blue) !important;
+}
+
+.theme-dark .mermaid circle.state-end {
+  fill: var(--rhb-editor) !important;
+  stroke: var(--rhb-blue) !important;
+  stroke-width: 2px !important;
+}
+
+.theme-dark .mermaid .statediagram-state .state-title,
+.theme-dark .mermaid .stateLabel {
+  fill: var(--rhb-blue) !important;
+  color: var(--rhb-blue) !important;
+}
+
+/* ER diagrams */
+.theme-dark .mermaid .er.entityBox {
+  fill: var(--rhb-section) !important;
+  stroke: var(--rhb-blue-border-dark) !important;
+}
+
+.theme-dark .mermaid .er.attributeBoxOdd {
+  fill: #001947 !important;
+}
+
+.theme-dark .mermaid .er.attributeBoxEven {
+  fill: #001E4A !important;
+}
+
+.theme-dark .mermaid .er.relationshipLine {
+  stroke: #5EAFFFAA !important;
+}
+
+.theme-dark .mermaid .er.entityLabel {
+  fill: var(--rhb-purple-bright) !important;
+  color: var(--rhb-purple-bright) !important;
+  font-weight: 700 !important;
+}
+
+.theme-dark .mermaid .er.relationshipLabelBox {
+  fill: var(--rhb-editor) !important;
+}
+
+.theme-dark .mermaid .er.relationshipLabel {
+  fill: var(--rhb-yellow) !important;
+  color: var(--rhb-yellow) !important;
+}
+
+
+/* ===========================================================
  * Error / warning states
  * ========================================================= */
 
