@@ -99,10 +99,11 @@
       "key": "ArrowRight"
     }
   ],
+  "switcher:open": [],
   "obsidian-another-quick-switcher:search-command_recent-search": [
     {
       "modifiers": [
-        "Ctrl"
+        "Mod"
       ],
       "key": "O"
     }
