@@ -818,6 +818,212 @@
 
 
 /* ===========================================================
+ * Mermaid Zoom plugin
+ * The plugin clones the rendered SVG outside the original .mermaid element,
+ * so mirror the Retro Hacker Blue Mermaid rules in its fullscreen wrapper.
+ * ========================================================= */
+
+.theme-dark .mermaid-zoom-modal {
+  background: var(--rhb-editor) !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper > svg {
+  background: transparent !important;
+  filter: none !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper text,
+.theme-dark .mermaid-zoom-modal-wrapper .label,
+.theme-dark .mermaid-zoom-modal-wrapper .nodeLabel,
+.theme-dark .mermaid-zoom-modal-wrapper .edgeLabel,
+.theme-dark .mermaid-zoom-modal-wrapper .messageText,
+.theme-dark .mermaid-zoom-modal-wrapper .loopText,
+.theme-dark .mermaid-zoom-modal-wrapper .labelText,
+.theme-dark .mermaid-zoom-modal-wrapper .noteText,
+.theme-dark .mermaid-zoom-modal-wrapper .classText,
+.theme-dark .mermaid-zoom-modal-wrapper .stateLabel,
+.theme-dark .mermaid-zoom-modal-wrapper foreignObject div,
+.theme-dark .mermaid-zoom-modal-wrapper foreignObject span,
+.theme-dark .mermaid-zoom-modal-wrapper foreignObject p {
+  fill: var(--rhb-blue) !important;
+  color: var(--rhb-blue) !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .node rect,
+.theme-dark .mermaid-zoom-modal-wrapper .node polygon,
+.theme-dark .mermaid-zoom-modal-wrapper .node circle,
+.theme-dark .mermaid-zoom-modal-wrapper .node ellipse,
+.theme-dark .mermaid-zoom-modal-wrapper .node path,
+.theme-dark .mermaid-zoom-modal-wrapper g.classGroup rect,
+.theme-dark .mermaid-zoom-modal-wrapper .statediagram-state rect,
+.theme-dark .mermaid-zoom-modal-wrapper .er.entityBox {
+  fill: var(--rhb-section) !important;
+  stroke: var(--rhb-blue-border-dark) !important;
+  stroke-width: 1px !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .cluster rect,
+.theme-dark .mermaid-zoom-modal-wrapper .statediagram-cluster rect,
+.theme-dark .mermaid-zoom-modal-wrapper .classGroup .namespace rect {
+  fill: #001E4A99 !important;
+  stroke: var(--rhb-border-subtle) !important;
+  stroke-width: 1px !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .cluster-label text,
+.theme-dark .mermaid-zoom-modal-wrapper .cluster-label span,
+.theme-dark .mermaid-zoom-modal-wrapper .cluster-label p {
+  fill: var(--rhb-blue-soft) !important;
+  color: var(--rhb-blue-soft) !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .flowchart-link,
+.theme-dark .mermaid-zoom-modal-wrapper .edgePath path,
+.theme-dark .mermaid-zoom-modal-wrapper path.relationshipLine,
+.theme-dark .mermaid-zoom-modal-wrapper path.relation,
+.theme-dark .mermaid-zoom-modal-wrapper path.transition,
+.theme-dark .mermaid-zoom-modal-wrapper .classRelation,
+.theme-dark .mermaid-zoom-modal-wrapper .messageLine0,
+.theme-dark .mermaid-zoom-modal-wrapper .messageLine1,
+.theme-dark .mermaid-zoom-modal-wrapper .actor-line {
+  stroke: #5EAFFFAA !important;
+  stroke-width: 1.25px !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper marker path,
+.theme-dark .mermaid-zoom-modal-wrapper .arrowheadPath,
+.theme-dark .mermaid-zoom-modal-wrapper .marker {
+  fill: var(--rhb-blue) !important;
+  stroke: var(--rhb-blue) !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .edgeLabel,
+.theme-dark .mermaid-zoom-modal-wrapper .edgeLabel rect,
+.theme-dark .mermaid-zoom-modal-wrapper .edgeLabel div,
+.theme-dark .mermaid-zoom-modal-wrapper .edgeLabel span,
+.theme-dark .mermaid-zoom-modal-wrapper .edgeLabel p {
+  background-color: var(--rhb-editor) !important;
+  fill: var(--rhb-editor) !important;
+  color: var(--rhb-blue-soft) !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper rect.actor,
+.theme-dark .mermaid-zoom-modal-wrapper .labelBox {
+  fill: var(--rhb-section) !important;
+  stroke: var(--rhb-blue-border-dark) !important;
+  stroke-width: 1px !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper text.actor,
+.theme-dark .mermaid-zoom-modal-wrapper text.actor-box,
+.theme-dark .mermaid-zoom-modal-wrapper text.actor-man,
+.theme-dark .mermaid-zoom-modal-wrapper text.actor tspan,
+.theme-dark .mermaid-zoom-modal-wrapper text.actor-box tspan,
+.theme-dark .mermaid-zoom-modal-wrapper text.actor-man tspan,
+.theme-dark .mermaid-zoom-modal-wrapper .actor text,
+.theme-dark .mermaid-zoom-modal-wrapper .actor tspan,
+.theme-dark .mermaid-zoom-modal-wrapper .messageText,
+.theme-dark .mermaid-zoom-modal-wrapper .labelText,
+.theme-dark .mermaid-zoom-modal-wrapper .loopText {
+  fill: var(--rhb-blue) !important;
+  color: var(--rhb-blue) !important;
+  stroke: none !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .activation0,
+.theme-dark .mermaid-zoom-modal-wrapper .activation1,
+.theme-dark .mermaid-zoom-modal-wrapper .activation2 {
+  fill: #00CED126 !important;
+  stroke: var(--rhb-cyan) !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .loopLine {
+  stroke: var(--rhb-border-soft) !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper rect.note,
+.theme-dark .mermaid-zoom-modal-wrapper polygon.note {
+  fill: #FFA50020 !important;
+  stroke: #FFA50088 !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .noteText,
+.theme-dark .mermaid-zoom-modal-wrapper .noteText tspan {
+  fill: #FFE0A3 !important;
+  color: #FFE0A3 !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper g.classGroup line,
+.theme-dark .mermaid-zoom-modal-wrapper .divider {
+  stroke: var(--rhb-border-subtle) !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .classTitle,
+.theme-dark .mermaid-zoom-modal-wrapper .classGroup .title,
+.theme-dark .mermaid-zoom-modal-wrapper .classGroup .title text {
+  fill: var(--rhb-purple-bright) !important;
+  color: var(--rhb-purple-bright) !important;
+  font-weight: 700 !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .composition,
+.theme-dark .mermaid-zoom-modal-wrapper .aggregation,
+.theme-dark .mermaid-zoom-modal-wrapper .dependency {
+  stroke: var(--rhb-blue) !important;
+  fill: var(--rhb-editor) !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper circle.state-start {
+  fill: var(--rhb-blue) !important;
+  stroke: var(--rhb-blue) !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper circle.state-end {
+  fill: var(--rhb-editor) !important;
+  stroke: var(--rhb-blue) !important;
+  stroke-width: 2px !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .statediagram-state .state-title,
+.theme-dark .mermaid-zoom-modal-wrapper .stateLabel {
+  fill: var(--rhb-blue) !important;
+  color: var(--rhb-blue) !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .er.entityBox {
+  fill: var(--rhb-section) !important;
+  stroke: var(--rhb-blue-border-dark) !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .er.attributeBoxOdd {
+  fill: #001947 !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .er.attributeBoxEven {
+  fill: #001E4A !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .er.relationshipLine {
+  stroke: #5EAFFFAA !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .er.entityLabel {
+  fill: var(--rhb-purple-bright) !important;
+  color: var(--rhb-purple-bright) !important;
+  font-weight: 700 !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .er.relationshipLabelBox {
+  fill: var(--rhb-editor) !important;
+}
+
+.theme-dark .mermaid-zoom-modal-wrapper .er.relationshipLabel {
+  fill: var(--rhb-yellow) !important;
+  color: var(--rhb-yellow) !important;
+}
+
+
+/* ===========================================================
  * Error / warning states
  * ========================================================= */
 
