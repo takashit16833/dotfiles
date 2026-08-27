@@ -49,7 +49,8 @@
 - `kitty.conf` は最後に `globinclude local.conf` を読み、`~/.config/kitty/local.conf` が存在するマシンだけ追加設定を適用する。`local.conf` やそこから参照する session file はマシン固有として repository では管理しない。
 - `appearance.conf` は WezTerm の Retro Hacker Blue ベースの配色、右上寄せの上部 tab bar、Menlo + BIZ UDGothic の日本語表示を引き継ぐ。
 - tab bar は `slant` style を使い、active は `#FF4DE1` の背景と `#010111` の文字、inactive は `#4C9EEB` の文字と terminal 背景を使う。Powerline 風の強い装飾にはしない。
-- Kitty の split pane 境界は active / inactive とも通常文字色 `#5EAFFF` に統一し、`draw_minimal_borders` の既定挙動で pane 間の線だけを描画する。
+- Kitty の pane layout は `splits` を使い、Cmd-Enter で左右分割、Cmd-Shift-Enter で上下分割する。
+- Kitty の split pane 境界は active / inactive とも `#00184A` に統一し、`draw_minimal_borders` の既定挙動で pane 間の線だけを描画する。
 - `keybindings.conf` は macOS の Cmd / Option 操作を zsh 側の Emacs 系編集へ橋渡しする。行編集の意味は Terminal ではなく zsh 側に持たせる。
 - Option は `macos_option_as_alt both` で Alt modifier として Terminal application へ渡す。個別の Kitty key mapping はこれより優先される。
 - Option-Z / Option-G は zsh 側の zi / lazygit widget 用 ESC sequence を送る挙動を維持する。
