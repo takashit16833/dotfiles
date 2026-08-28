@@ -7,10 +7,14 @@ hs.autoLaunch(true)
 local hyper = { "ctrl", "cmd", "alt" }
 local hyperShift = { "ctrl", "cmd", "alt", "shift" }
 
+-- Chrome が ChatGPT の Web アプリに割り当てた App ID。
+-- bundle ID と --app-id の両方で同じ識別子を使う。
+local chatGPTAppID = "cadlkienfkclaiaibeoongdcgmdikeeg"
+
 -- アプリ切り替えでは表示名ではなく bundle ID を唯一の識別子として使う。
 -- 表示名やウィンドウタイトルはアプリや状態によって変わり得るため、判定には使わない。
 local appBundleIDs = {
-  chatgpt = "com.google.Chrome.app.cadlkienfkclaiaibeoongdcgmdikeeg",
+  chatgpt = "com.google.Chrome.app." .. chatGPTAppID,
   chrome = "com.google.Chrome",
   obsidian = "md.obsidian",
   kitty = "net.kovidgoyal.kitty",
@@ -97,9 +101,19 @@ local function openAppInstanceInBackground(bundleID, appArguments)
   end
 end
 
--- Chrome アプリ版 ChatGPT は独立した bundle ID を使い、通常の Chrome と分けて扱う。
+-- ChatGPT.app 自体を open すると、別 Space にある既存ウィンドウへ移動してしまう。
+-- Chrome 本体へ --app-id を直接渡すと現在の Space に ChatGPT の新規ウィンドウが作られるため、
+-- ChatGPT だけはこの起動経路を使う。
 local function openChatGPTWindow()
-  openAppInstanceInBackground(appBundleIDs.chatgpt)
+  local command = string.format(
+    '"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --app-id=%s',
+    chatGPTAppID
+  )
+  local _, ok = hs.execute(command, true)
+
+  if ok then
+    focusVisibleWindowWhenAvailable(appBundleIDs.chatgpt)
+  end
 end
 
 local function openObsidianWindow()
