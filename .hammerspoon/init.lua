@@ -144,7 +144,7 @@ end
 -- アプリ切り替え用の設定。
 -- 現在の Space にウィンドウが無ければ、各アプリ固有の方法で新しいウィンドウを作る。
 local apps = {
-  ["d"] = {
+  ["g"] = {
     bundleID = appBundleIDs.chatgpt,
     openWindow = openChatGPTWindow,
   },
@@ -192,7 +192,7 @@ local function activateApp(appConfig)
   end
 end
 
--- Ctrl + Cmd + Option + d: ChatGPT
+-- Ctrl + Cmd + Option + g: ChatGPT
 -- Ctrl + Cmd + Option + f: Google Chrome
 -- Ctrl + Cmd + Option + w: Obsidian
 -- Ctrl + Cmd + Option + r: kitty
