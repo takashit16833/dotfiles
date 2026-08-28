@@ -215,12 +215,11 @@ local function withFocusedWindow(action)
   end
 end
 
--- setFrame* / moveToUnit / maximize などの高水準 API を使わず、
--- 実測でアニメーションなしだった setSize と setTopLeft だけで配置する。
--- 同じモニタ内では先にサイズを変え、最後に位置を合わせることで端への配置もずれにくくする。
+-- フレームを一度に設定する。
+-- animationDuration = 0 と組み合わせ、移動・サイズ変更をアニメーションなしで行う。
+-- setFrameWithWorkarounds は画面端などでフレームが反映されにくい場合も補正する。
 local function setWindowFrameImmediately(window, frame)
-  window:setSize({ w = frame.w, h = frame.h })
-  window:setTopLeft({ x = frame.x, y = frame.y })
+  window:setFrameWithWorkarounds(frame, 0)
 end
 
 -- 画面に対する比率指定から実座標のフレームを作る。
@@ -408,9 +407,8 @@ end
 
 -- 指定したモニタ上の全ウィンドウを、macOS の fullscreen モードにはせず最大化する。
 local function maximizeWindowsOnScreen(screen)
-  local frame = screen:frame()
   for _, window in ipairs(arrangeTargetsOnScreen(screen)) do
-    setWindowFrameImmediately(window, frame)
+    window:maximize(0)
   end
 end
 
