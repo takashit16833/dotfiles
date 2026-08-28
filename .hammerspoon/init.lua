@@ -14,7 +14,7 @@ local hyperShift = { "ctrl", "cmd", "alt", "shift" }
 -- 表示名やウィンドウタイトルはアプリや状態によって変わり得るため、判定には使わない。
 local appBundleIDs = {
   chrome = "com.google.Chrome",
-  safari = "com.apple.Safari",
+  brave = "com.brave.Browser",
   obsidian = "md.obsidian",
   kitty = "net.kovidgoyal.kitty",
   vscode = "com.microsoft.VSCode",
@@ -85,18 +85,19 @@ end tell
   end
 end
 
--- Safari は ChatGPT を開いた新しいブラウザウィンドウを作る。
--- Safari が未起動でも AppleScript から起動し、同じ処理でウィンドウを生成する。
+-- Brave は ChatGPT を開いた新しいブラウザウィンドウを作る。
+-- Brave が未起動でも AppleScript から起動し、同じ処理でウィンドウを生成する。
 -- activate は使わず、生成後に現在の Space から見えるウィンドウだけをフォーカスする。
-local function openSafariWindow()
+local function openBraveWindow()
   local ok = hs.osascript.applescript(string.format([[
 tell application id "%s"
-  make new document with properties {URL:"https://chatgpt.com/"}
+  set newWindow to make new window
+  set URL of active tab of newWindow to "https://chatgpt.com/"
 end tell
-]], appBundleIDs.safari))
+]], appBundleIDs.brave))
 
   if ok then
-    focusVisibleWindowWhenAvailable(appBundleIDs.safari)
+    focusVisibleWindowWhenAvailable(appBundleIDs.brave)
   end
 end
 
@@ -139,9 +140,9 @@ local apps = {
     openWindow = openChromeWindow,
   },
   ["s"] = {
-    bundleID = appBundleIDs.safari,
-    launch = openSafariWindow,
-    openWindow = openSafariWindow,
+    bundleID = appBundleIDs.brave,
+    launch = openBraveWindow,
+    openWindow = openBraveWindow,
   },
   ["w"] = {
     bundleID = appBundleIDs.obsidian,
@@ -188,7 +189,7 @@ local function activateApp(appConfig)
 end
 
 -- Ctrl + Cmd + Option + f: Google Chrome
--- Ctrl + Cmd + Option + s: Safari
+-- Ctrl + Cmd + Option + s: Brave Browser
 -- Ctrl + Cmd + Option + w: Obsidian
 -- Ctrl + Cmd + Option + r: kitty
 -- Ctrl + Cmd + Option + y: Visual Studio Code
