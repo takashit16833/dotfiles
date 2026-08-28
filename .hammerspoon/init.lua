@@ -14,6 +14,7 @@ local hyperShift = { "ctrl", "cmd", "alt", "shift" }
 -- 表示名やウィンドウタイトルはアプリや状態によって変わり得るため、判定には使わない。
 local appBundleIDs = {
   chrome = "com.google.Chrome",
+  safari = "com.apple.Safari",
   obsidian = "md.obsidian",
   kitty = "net.kovidgoyal.kitty",
   vscode = "com.microsoft.VSCode",
@@ -122,6 +123,9 @@ local apps = {
     bundleID = appBundleIDs.chrome,
     openWindow = openChromeWindow,
   },
+  ["s"] = {
+    bundleID = appBundleIDs.safari,
+  },
   ["w"] = {
     bundleID = appBundleIDs.obsidian,
     openWindow = openObsidianWindow,
@@ -163,6 +167,7 @@ local function activateApp(appConfig)
 end
 
 -- Ctrl + Cmd + Option + f: Google Chrome
+-- Ctrl + Cmd + Option + s: Safari
 -- Ctrl + Cmd + Option + w: Obsidian
 -- Ctrl + Cmd + Option + r: kitty
 -- Ctrl + Cmd + Option + y: Visual Studio Code
