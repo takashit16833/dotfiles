@@ -364,8 +364,7 @@ local function tileWindowsOnScreen(screen)
   end
 
   local screenFrame = screen:frame()
-  local aspect = screenFrame.w / screenFrame.h
-  local columns = math.max(1, math.ceil(math.sqrt(count * aspect)))
+  local columns = math.max(1, math.ceil(math.sqrt(count)))
   local rows = math.ceil(count / columns)
   local tileHeight = screenFrame.h / rows
 
