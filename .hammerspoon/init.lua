@@ -270,19 +270,33 @@ hs.hotkey.bind(hyper, "t", function()
   end)
 end)
 
--- 斜め配置の対象か判定する。
--- 通常ウィンドウだけを対象とし、Finder は除外する。
-local function isDiagonalArrangeTarget(window)
-  local app = window:application()
-  return window:isStandard() and app and app:name() ~= "Finder"
+-- 配置操作の対象か判定する。
+-- デスクトップなどを除き、通常のアプリウィンドウだけを対象にする。
+local function isArrangeTarget(window)
+  return window:isStandard()
 end
 
--- 現在見えている斜め配置対象のウィンドウを、前面から順に取得する。
-local function diagonalArrangeTargets()
+-- 現在見えている配置対象のウィンドウを、前面から順に取得する。
+local function arrangeTargets()
   local windows = {}
 
   for _, window in ipairs(hs.window.orderedWindows()) do
-    if isDiagonalArrangeTarget(window) then
+    if isArrangeTarget(window) then
+      table.insert(windows, window)
+    end
+  end
+
+  return windows
+end
+
+-- 指定したモニタ上の配置対象ウィンドウだけを取得する。
+local function arrangeTargetsOnScreen(screen)
+  local windows = {}
+  local screenId = screen:id()
+
+  for _, window in ipairs(arrangeTargets()) do
+    local windowScreen = window:screen()
+    if windowScreen and windowScreen:id() == screenId then
       table.insert(windows, window)
     end
   end
@@ -291,7 +305,7 @@ local function diagonalArrangeTargets()
 end
 
 -- 指定した画面上の対象ウィンドウを、左上から右下への対角線に沿って配置する。
--- 各ウィンドウは基準サイズに揃え、画面内に収まる範囲で中心点を等間隔に並べる。
+-- Ctrl + Cmd + Option + Shift + H 用に残している。
 local function arrangeWindowsDiagonallyOnScreen(screen, targets)
   local windows = {}
   local screenId = screen:id()
@@ -309,9 +323,6 @@ local function arrangeWindowsDiagonallyOnScreen(screen, targets)
 
   local screenFrame = screen:frame()
   local width, height = standardWindowSizeForScreen(screen)
-
-  -- 対角線上の位置を t=0（左上）〜t=1（右下）で表す。
-  -- ウィンドウ全体が画面内に収まる t の範囲だけを使用する。
   local minT = math.max(width / (2 * screenFrame.w), height / (2 * screenFrame.h))
   local maxT = math.min(1 - width / (2 * screenFrame.w), 1 - height / (2 * screenFrame.h))
 
@@ -325,84 +336,82 @@ local function arrangeWindowsDiagonallyOnScreen(screen, targets)
 
     local centerX = screenFrame.x + screenFrame.w * t
     local centerY = screenFrame.y + screenFrame.h * t
-    local frame = {
+    window:setFrameInScreenBounds({
       x = centerX - width / 2,
       y = centerY - height / 2,
       w = width,
       h = height,
-    }
-
-    window:setFrameInScreenBounds(frame)
+    })
   end
 end
 
--- Ctrl + Cmd + Option + H: 現在のモニタだけを斜め配置する。
-hs.hotkey.bind(hyper, "h", function()
-  arrangeWindowsDiagonallyOnScreen(hs.screen.mainScreen(), diagonalArrangeTargets())
-end)
-
 -- Ctrl + Cmd + Option + Shift + H: すべてのモニタを、それぞれ独立して斜め配置する。
 hs.hotkey.bind(hyperShift, "h", function()
-  local targets = diagonalArrangeTargets()
+  local targets = arrangeTargets()
 
   for _, screen in ipairs(hs.screen.allScreens()) do
     arrangeWindowsDiagonallyOnScreen(screen, targets)
   end
 end)
 
--- モニタごとに、最大化する直前のウィンドウ配置を保持する。
--- hyper+p で最大化したあと、同じモニタで再度 hyper+p を押したときに復元する。
-local maximizedWindowFramesByScreen = {}
-
--- 指定したモニタ上の対象ウィンドウをすべて最大化し、もう一度呼ぶと元の配置へ戻す。
--- Finder は斜め配置と同じく対象外。macOS の fullscreen モードにはしない。
-local function toggleMaximizeWindowsOnScreen(screen)
-  local screenId = screen:id()
-  local savedFrames = maximizedWindowFramesByScreen[screenId]
-
-  if savedFrames then
-    for windowId, frame in pairs(savedFrames) do
-      local window = hs.window.get(windowId)
-      if window then
-        window:setFrame(frame)
-      end
-    end
-
-    maximizedWindowFramesByScreen[screenId] = nil
+-- 指定したモニタ上の全ウィンドウを均等なタイル状に並べる。
+-- 最終行のウィンドウ数が少ない場合は、その行だけで横幅いっぱいを使う。
+local function tileWindowsOnScreen(screen)
+  local windows = arrangeTargetsOnScreen(screen)
+  local count = #windows
+  if count == 0 then
     return
   end
 
-  local frames = {}
-  local hasTarget = false
+  local screenFrame = screen:frame()
+  local aspect = screenFrame.w / screenFrame.h
+  local columns = math.max(1, math.ceil(math.sqrt(count * aspect)))
+  local rows = math.ceil(count / columns)
+  local tileHeight = screenFrame.h / rows
 
-  for _, window in ipairs(diagonalArrangeTargets()) do
-    local windowScreen = window:screen()
-    if windowScreen and windowScreen:id() == screenId then
-      local windowId = window:id()
-      if windowId then
-        local frame = window:frame()
-        frames[windowId] = {
-          x = frame.x,
-          y = frame.y,
-          w = frame.w,
-          h = frame.h,
-        }
+  local index = 1
+  for row = 1, rows do
+    local remaining = count - index + 1
+    local itemsInRow = math.min(columns, remaining)
+    local tileWidth = screenFrame.w / itemsInRow
 
-        window:maximize()
-        hasTarget = true
-      end
+    for column = 1, itemsInRow do
+      local window = windows[index]
+      window:setFrameInScreenBounds({
+        x = screenFrame.x + (column - 1) * tileWidth,
+        y = screenFrame.y + (row - 1) * tileHeight,
+        w = tileWidth,
+        h = tileHeight,
+      })
+      index = index + 1
     end
-  end
-
-  if hasTarget then
-    maximizedWindowFramesByScreen[screenId] = frames
   end
 end
 
--- Ctrl + Cmd + Option + P: 現在のモニタ上の対象ウィンドウを
--- 「最大化 ↔ 最大化前の配置」にトグルする。
+-- 指定したモニタ上の全ウィンドウを、基準サイズに揃えて中央へ重ねる。
+local function centerWindowsOnScreen(screen)
+  for _, window in ipairs(arrangeTargetsOnScreen(screen)) do
+    centerWindowOnScreen(window, screen)
+  end
+end
+
+-- モニタごとに hyper+p の現在モードを保持する。
+-- Hammerspoon の再読み込み後は、最初の hyper+p で必ずタイル表示になる。
+local windowLayoutModeByScreen = {}
+
+-- Ctrl + Cmd + Option + P: 現在フォーカス中のウィンドウがあるモニタで、
+-- 「タイル表示 ↔ 基準サイズで中央配置」を切り替える。
 hs.hotkey.bind(hyper, "p", function()
-  toggleMaximizeWindowsOnScreen(hs.screen.mainScreen())
+  local screen = hs.screen.mainScreen()
+  local screenId = screen:id()
+
+  if windowLayoutModeByScreen[screenId] == "tiled" then
+    centerWindowsOnScreen(screen)
+    windowLayoutModeByScreen[screenId] = "centered"
+  else
+    tileWindowsOnScreen(screen)
+    windowLayoutModeByScreen[screenId] = "tiled"
+  end
 end)
 
 -- アクティブなウィンドウを隣のモニタへ循環移動し、
