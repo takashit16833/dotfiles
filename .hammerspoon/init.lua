@@ -85,13 +85,13 @@ end tell
   end
 end
 
--- Safari は既存プロセスへ新しい document の生成だけを依頼する。
--- Safari では new document が新しいブラウザウィンドウに対応する。
+-- Safari は ChatGPT を開いた新しいブラウザウィンドウを作る。
+-- Safari が未起動でも AppleScript から起動し、同じ処理でウィンドウを生成する。
 -- activate は使わず、生成後に現在の Space から見えるウィンドウだけをフォーカスする。
 local function openSafariWindow()
   local ok = hs.osascript.applescript(string.format([[
 tell application id "%s"
-  make new document
+  make new document with properties {URL:"https://chatgpt.com/"}
 end tell
 ]], appBundleIDs.safari))
 
@@ -140,6 +140,7 @@ local apps = {
   },
   ["s"] = {
     bundleID = appBundleIDs.safari,
+    launch = openSafariWindow,
     openWindow = openSafariWindow,
   },
   ["w"] = {
@@ -159,7 +160,7 @@ local apps = {
 -- 指定したアプリを、現在見えている Space の範囲内だけで扱う。
 --
 -- 未起動の場合:
---   bundle ID で通常起動する。
+--   launch があればアプリ固有の起動処理を使い、無ければ bundle ID で通常起動する。
 --
 -- 起動済みの場合:
 --   現在見えている Space にウィンドウがあれば、それらだけをまとめて前面へ出す。
@@ -169,7 +170,11 @@ local function activateApp(appConfig)
   local runningApps = hs.application.applicationsForBundleID(bundleID)
 
   if #runningApps == 0 then
-    hs.application.launchOrFocusByBundleID(bundleID)
+    if appConfig.launch then
+      appConfig.launch()
+    else
+      hs.application.launchOrFocusByBundleID(bundleID)
+    end
     return
   end
 
