@@ -83,6 +83,9 @@ cask "hammerspoon"
 
 # --- Applications -----------------------------------------------------------
 
+# ChatGPT などの Web アプリを軽快に利用する Chromium ベースのブラウザ。
+cask "brave-browser"
+
 # Markdown ベースのノート・知識管理に利用する。
 cask "obsidian"
 
