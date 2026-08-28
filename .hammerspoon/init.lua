@@ -2,6 +2,9 @@
 -- 一度 Hammerspoon を起動してこの設定を読み込めば、以後は常駐させて使う。
 hs.autoLaunch(true)
 
+-- Hammerspoon 自身のウィンドウ移動・サイズ変更アニメーションを無効にする。
+hs.window.animationDuration = 0
+
 -- この設定で共通して使う修飾キー。
 -- アプリ切り替えとウィンドウ操作を同じ「Ctrl + Cmd + Option」系に揃える。
 local hyper = { "ctrl", "cmd", "alt" }
@@ -212,17 +215,42 @@ local function withFocusedWindow(action)
   end
 end
 
+-- setFrame* / moveToUnit / maximize などの高水準 API を使わず、
+-- 実測でアニメーションなしだった setSize と setTopLeft だけで配置する。
+-- 同じモニタ内では先にサイズを変え、最後に位置を合わせることで端への配置もずれにくくする。
+local function setWindowFrameImmediately(window, frame)
+  window:setSize({ w = frame.w, h = frame.h })
+  window:setTopLeft({ x = frame.x, y = frame.y })
+end
+
+-- 画面に対する比率指定から実座標のフレームを作る。
+local function unitFrameOnScreen(screen, unit)
+  local screenFrame = screen:frame()
+  return {
+    x = screenFrame.x + screenFrame.w * unit.x,
+    y = screenFrame.y + screenFrame.h * unit.y,
+    w = screenFrame.w * unit.w,
+    h = screenFrame.h * unit.h,
+  }
+end
+
 -- Ctrl + Cmd + Option + K: 現在のウィンドウを画面の左半分へ配置する。
 hs.hotkey.bind(hyper, "k", function()
   withFocusedWindow(function(window)
-    window:moveToUnit({ x = 0, y = 0, w = 0.5, h = 1 })
+    local screen = window:screen()
+    if screen then
+      setWindowFrameImmediately(window, unitFrameOnScreen(screen, { x = 0, y = 0, w = 0.5, h = 1 }))
+    end
   end)
 end)
 
 -- Ctrl + Cmd + Option + S: 現在のウィンドウを画面の右半分へ配置する。
 hs.hotkey.bind(hyper, "s", function()
   withFocusedWindow(function(window)
-    window:moveToUnit({ x = 0.5, y = 0, w = 0.5, h = 1 })
+    local screen = window:screen()
+    if screen then
+      setWindowFrameImmediately(window, unitFrameOnScreen(screen, { x = 0.5, y = 0, w = 0.5, h = 1 }))
+    end
   end)
 end)
 
@@ -230,7 +258,10 @@ end)
 -- 現在の画面で利用可能な領域いっぱいまでウィンドウを最大化する。
 hs.hotkey.bind(hyper, "n", function()
   withFocusedWindow(function(window)
-    window:maximize()
+    local screen = window:screen()
+    if screen then
+      setWindowFrameImmediately(window, screen:frame())
+    end
   end)
 end)
 
@@ -257,7 +288,7 @@ local function centerWindowOnScreen(window, screen)
     h = height,
   }
 
-  window:setFrameInScreenBounds(frame)
+  setWindowFrameImmediately(window, frame)
 end
 
 -- Ctrl + Cmd + Option + T: 現在のウィンドウを基準サイズにして画面中央へ配置する。
@@ -310,19 +341,19 @@ local function tileThreeWindows(screen, windows)
   local halfWidth = frame.w / 2
   local halfHeight = frame.h / 2
 
-  windows[1]:setFrameInScreenBounds({
+  setWindowFrameImmediately(windows[1], {
     x = frame.x,
     y = frame.y,
     w = halfWidth,
     h = frame.h,
   })
-  windows[2]:setFrameInScreenBounds({
+  setWindowFrameImmediately(windows[2], {
     x = frame.x + halfWidth,
     y = frame.y,
     w = halfWidth,
     h = halfHeight,
   })
-  windows[3]:setFrameInScreenBounds({
+  setWindowFrameImmediately(windows[3], {
     x = frame.x + halfWidth,
     y = frame.y + halfHeight,
     w = halfWidth,
@@ -357,7 +388,7 @@ local function tileWindowsOnScreen(screen)
 
     for column = 1, itemsInRow do
       local window = windows[index]
-      window:setFrameInScreenBounds({
+      setWindowFrameImmediately(window, {
         x = screenFrame.x + (column - 1) * tileWidth,
         y = screenFrame.y + (row - 1) * tileHeight,
         w = tileWidth,
@@ -377,8 +408,9 @@ end
 
 -- 指定したモニタ上の全ウィンドウを、macOS の fullscreen モードにはせず最大化する。
 local function maximizeWindowsOnScreen(screen)
+  local frame = screen:frame()
   for _, window in ipairs(arrangeTargetsOnScreen(screen)) do
-    window:maximize()
+    setWindowFrameImmediately(window, frame)
   end
 end
 
@@ -417,8 +449,16 @@ local function moveFocusedWindowToAdjacentScreen(direction)
     end
 
     if targetScreen then
-      window:moveToScreen(targetScreen, true, true)
-      centerWindowOnScreen(window, targetScreen)
+      local screenFrame = targetScreen:frame()
+      local width, height = standardWindowSizeForScreen(targetScreen)
+
+      -- 別モニタへ移す場合は、まず目的の座標へ瞬間移動してからサイズを合わせる。
+      -- これにより moveToScreen のアニメーションを使わずに済む。
+      window:setTopLeft({
+        x = screenFrame.x + (screenFrame.w - width) / 2,
+        y = screenFrame.y + (screenFrame.h - height) / 2,
+      })
+      window:setSize({ w = width, h = height })
     end
   end)
 end
