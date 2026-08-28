@@ -13,7 +13,6 @@ local hyperShift = { "ctrl", "cmd", "alt", "shift" }
 -- アプリ切り替えでは表示名ではなく bundle ID を唯一の識別子として使う。
 -- 表示名やウィンドウタイトルはアプリや状態によって変わり得るため、判定には使わない。
 local appBundleIDs = {
-  chatgpt = "com.openai.codex",
   chatgptClassic = "com.openai.chat",
   chrome = "com.google.Chrome",
   obsidian = "md.obsidian",
@@ -101,15 +100,6 @@ local function openAppInstanceInBackground(bundleID, appArguments)
   end
 end
 
--- ChatGPT は別 Space に既存ウィンドウがあっても、アプリ自身のメニュー操作で
--- 現在の Space に新しいウィンドウを作れる。
-local function openChatGPTWindow()
-  local app = hs.application.get(appBundleIDs.chatgpt)
-  if app and app:selectMenuItem({ "ファイル", "新しいウィンドウ" }) then
-    focusVisibleWindowWhenAvailable(appBundleIDs.chatgpt)
-  end
-end
-
 local function openObsidianWindow()
   openAppInstanceInBackground(appBundleIDs.obsidian)
 end
@@ -129,10 +119,6 @@ end
 -- アプリ切り替え用の設定。
 -- 現在の Space にウィンドウが無ければ、各アプリ固有の方法で新しいウィンドウを作る。
 local apps = {
-  ["g"] = {
-    bundleID = appBundleIDs.chatgpt,
-    openWindow = openChatGPTWindow,
-  },
   ["d"] = {
     bundleID = appBundleIDs.chatgptClassic,
   },
@@ -180,7 +166,6 @@ local function activateApp(appConfig)
   end
 end
 
--- Ctrl + Cmd + Option + g: ChatGPT
 -- Ctrl + Cmd + Option + d: ChatGPT Classic
 -- Ctrl + Cmd + Option + f: Google Chrome
 -- Ctrl + Cmd + Option + w: Obsidian
@@ -207,37 +192,6 @@ end
 local function setWindowFrameImmediately(window, frame)
   window:setFrameWithWorkarounds(frame, 0)
 end
-
--- 画面に対する比率指定から実座標のフレームを作る。
-local function unitFrameOnScreen(screen, unit)
-  local screenFrame = screen:frame()
-  return {
-    x = screenFrame.x + screenFrame.w * unit.x,
-    y = screenFrame.y + screenFrame.h * unit.y,
-    w = screenFrame.w * unit.w,
-    h = screenFrame.h * unit.h,
-  }
-end
-
--- Ctrl + Cmd + Option + K: 現在のウィンドウを画面の左半分へ配置する。
-hs.hotkey.bind(hyper, "k", function()
-  withFocusedWindow(function(window)
-    local screen = window:screen()
-    if screen then
-      setWindowFrameImmediately(window, unitFrameOnScreen(screen, { x = 0, y = 0, w = 0.5, h = 1 }))
-    end
-  end)
-end)
-
--- Ctrl + Cmd + Option + S: 現在のウィンドウを画面の右半分へ配置する。
-hs.hotkey.bind(hyper, "s", function()
-  withFocusedWindow(function(window)
-    local screen = window:screen()
-    if screen then
-      setWindowFrameImmediately(window, unitFrameOnScreen(screen, { x = 0.5, y = 0, w = 0.5, h = 1 }))
-    end
-  end)
-end)
 
 -- Ctrl + Cmd + Option + N: macOS の fullscreen にはせず、
 -- 現在の画面で利用可能な領域いっぱいまでウィンドウを最大化する。
