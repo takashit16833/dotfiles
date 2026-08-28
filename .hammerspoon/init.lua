@@ -100,8 +100,13 @@ local function openAppInstanceInBackground(bundleID, appArguments)
   end
 end
 
+-- ChatGPT は別 Space に既存ウィンドウがあっても、アプリ自身のメニュー操作で
+-- 現在の Space に新しいウィンドウを作れる。
 local function openChatGPTWindow()
-  openAppInstanceInBackground(appBundleIDs.chatgpt)
+  local app = hs.application.get(appBundleIDs.chatgpt)
+  if app and app:selectMenuItem({ "ファイル", "新しいウィンドウ" }) then
+    focusVisibleWindowWhenAvailable(appBundleIDs.chatgpt)
+  end
 end
 
 local function openObsidianWindow()
