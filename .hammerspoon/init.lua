@@ -14,6 +14,7 @@ local hyperShift = { "ctrl", "cmd", "alt", "shift" }
 -- 表示名やウィンドウタイトルはアプリや状態によって変わり得るため、判定には使わない。
 local appBundleIDs = {
   chatgpt = "com.openai.codex",
+  chatgptClassic = "com.openai.chat",
   chrome = "com.google.Chrome",
   obsidian = "md.obsidian",
   kitty = "net.kovidgoyal.kitty",
@@ -132,6 +133,9 @@ local apps = {
     bundleID = appBundleIDs.chatgpt,
     openWindow = openChatGPTWindow,
   },
+  ["d"] = {
+    bundleID = appBundleIDs.chatgptClassic,
+  },
   ["f"] = {
     bundleID = appBundleIDs.chrome,
     openWindow = openChromeWindow,
@@ -177,6 +181,7 @@ local function activateApp(appConfig)
 end
 
 -- Ctrl + Cmd + Option + g: ChatGPT
+-- Ctrl + Cmd + Option + d: ChatGPT Classic
 -- Ctrl + Cmd + Option + f: Google Chrome
 -- Ctrl + Cmd + Option + w: Obsidian
 -- Ctrl + Cmd + Option + r: kitty
