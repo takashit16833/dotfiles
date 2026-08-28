@@ -13,7 +13,6 @@ local hyperShift = { "ctrl", "cmd", "alt", "shift" }
 -- アプリ切り替えでは表示名ではなく bundle ID を唯一の識別子として使う。
 -- 表示名やウィンドウタイトルはアプリや状態によって変わり得るため、判定には使わない。
 local appBundleIDs = {
-  chatgptClassic = "com.openai.chat",
   chrome = "com.google.Chrome",
   obsidian = "md.obsidian",
   kitty = "net.kovidgoyal.kitty",
@@ -119,9 +118,6 @@ end
 -- アプリ切り替え用の設定。
 -- 現在の Space にウィンドウが無ければ、各アプリ固有の方法で新しいウィンドウを作る。
 local apps = {
-  ["d"] = {
-    bundleID = appBundleIDs.chatgptClassic,
-  },
   ["f"] = {
     bundleID = appBundleIDs.chrome,
     openWindow = openChromeWindow,
@@ -166,7 +162,6 @@ local function activateApp(appConfig)
   end
 end
 
--- Ctrl + Cmd + Option + d: ChatGPT Classic
 -- Ctrl + Cmd + Option + f: Google Chrome
 -- Ctrl + Cmd + Option + w: Obsidian
 -- Ctrl + Cmd + Option + r: kitty
