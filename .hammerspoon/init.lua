@@ -15,6 +15,7 @@ local hyperShift = { "ctrl", "cmd", "alt", "shift" }
 local appBundleIDs = {
   chrome = "com.google.Chrome",
   brave = "com.brave.Browser",
+  eTyping = "com.google.Chrome.app.diccnboabdebegbpmodfgcekollacjne",
   obsidian = "md.obsidian",
   kitty = "net.kovidgoyal.kitty",
   vscode = "com.microsoft.VSCode",
@@ -198,6 +199,24 @@ for key, appConfig in pairs(apps) do
     activateApp(appConfig)
   end)
 end
+
+-- e-typing は Chrome からインストールした Web アプリで、通常のアプリ切り替え規則の例外。
+-- 未起動なら現在の Space で起動し、現在の Space にあれば前面へ出す。
+-- 別の Space ですでに起動している場合は、その Space へ移動も新規起動もせず何もしない。
+local function activateETyping()
+  local bundleID = appBundleIDs.eTyping
+  local runningApps = hs.application.applicationsForBundleID(bundleID)
+
+  if #runningApps == 0 then
+    hs.application.launchOrFocusByBundleID(bundleID)
+    return
+  end
+
+  focusVisibleWindowsForApp(bundleID)
+end
+
+-- Ctrl + Cmd + Option + z: e-typing
+hs.hotkey.bind(hyper, "z", activateETyping)
 
 -- 現在フォーカスされているウィンドウに対して処理を行う。
 -- Finder の Desktop など、操作対象の通常ウィンドウが存在しない場合は何もしない。
