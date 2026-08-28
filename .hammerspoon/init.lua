@@ -85,6 +85,21 @@ end tell
   end
 end
 
+-- Safari は既存プロセスへ新しい document の生成だけを依頼する。
+-- Safari では new document が新しいブラウザウィンドウに対応する。
+-- activate は使わず、生成後に現在の Space から見えるウィンドウだけをフォーカスする。
+local function openSafariWindow()
+  local ok = hs.osascript.applescript(string.format([[
+tell application id "%s"
+  make new document
+end tell
+]], appBundleIDs.safari))
+
+  if ok then
+    focusVisibleWindowWhenAvailable(appBundleIDs.safari)
+  end
+end
+
 -- 新しいアプリインスタンスをバックグラウンドで起動する。
 -- 名前ではなく bundle ID で指定し、既存の別 Space のウィンドウを activate しない。
 local function openAppInstanceInBackground(bundleID, appArguments)
@@ -125,6 +140,7 @@ local apps = {
   },
   ["s"] = {
     bundleID = appBundleIDs.safari,
+    openWindow = openSafariWindow,
   },
   ["w"] = {
     bundleID = appBundleIDs.obsidian,
