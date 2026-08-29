@@ -315,54 +315,50 @@ local function arrangeTargetsOnScreen(screen)
   return windows
 end
 
--- 指定した画面上の対象ウィンドウを、左上から右下への対角線に沿って配置する。
--- すべて基準サイズに揃え、画面外にはみ出さない範囲で均等にずらす。
-local function arrangeWindowsDiagonallyOnScreen(screen, targets)
-  local windows = {}
-  local screenId = screen:id()
-
-  for _, window in ipairs(targets) do
-    local windowScreen = window:screen()
-    if windowScreen and windowScreen:id() == screenId then
-      table.insert(windows, window)
-    end
-  end
-
-  if #windows == 0 then
+-- 指定した画面上の対象ウィンドウを、左上から右下へ少しずつずらして配置する。
+-- 通常は 50 point 間隔とし、枚数が多く画面内に収まらない場合だけ間隔を縮める。
+-- カスケード全体が画面中央付近に来るよう、最初のウィンドウ位置も調整する。
+local function arrangeWindowsDiagonallyOnScreen(screen)
+  local windows = arrangeTargetsOnScreen(screen)
+  local count = #windows
+  if count == 0 then
     return
   end
 
   local screenFrame = screen:frame()
   local width, height = standardWindowSizeForScreen(screen)
-  local minT = math.max(width / (2 * screenFrame.w), height / (2 * screenFrame.h))
-  local maxT = math.min(1 - width / (2 * screenFrame.w), 1 - height / (2 * screenFrame.h))
+  local offset = 0
+
+  if count > 1 then
+    local desiredOffset = 50
+    local maxOffsetX = (screenFrame.w - width) / (count - 1)
+    local maxOffsetY = (screenFrame.h - height) / (count - 1)
+    offset = math.max(0, math.min(desiredOffset, maxOffsetX, maxOffsetY))
+  end
+
+  local totalOffset = offset * (count - 1)
+  local startX = screenFrame.x + (screenFrame.w - width - totalOffset) / 2
+  local startY = screenFrame.y + (screenFrame.h - height - totalOffset) / 2
 
   for index, window in ipairs(windows) do
-    local t
-    if #windows == 1 then
-      t = 0.5
-    else
-      t = minT + (maxT - minT) * (index - 1) / (#windows - 1)
-    end
-
-    local centerX = screenFrame.x + screenFrame.w * t
-    local centerY = screenFrame.y + screenFrame.h * t
+    local delta = offset * (index - 1)
     setWindowFrameImmediately(window, {
-      x = centerX - width / 2,
-      y = centerY - height / 2,
+      x = startX + delta,
+      y = startY + delta,
       w = width,
       h = height,
     })
   end
 end
 
--- Ctrl + Cmd + Option + Shift + H: すべてのモニタを、それぞれ独立して斜め配置する。
+-- Ctrl + Cmd + Option + Shift + H: アクティブなウィンドウがあるモニタだけを斜め配置する。
 hs.hotkey.bind(hyperShift, "h", function()
-  local targets = arrangeTargets()
-
-  for _, screen in ipairs(hs.screen.allScreens()) do
-    arrangeWindowsDiagonallyOnScreen(screen, targets)
-  end
+  withFocusedWindow(function(window)
+    local screen = window:screen()
+    if screen then
+      arrangeWindowsDiagonallyOnScreen(screen)
+    end
+  end)
 end)
 
 -- 3 ウィンドウの場合は、前面の 1 枚を左半分、残り 2 枚を右上・右下へ配置する。
