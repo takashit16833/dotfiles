@@ -21,6 +21,19 @@ local appBundleIDs = {
   vscode = "com.microsoft.VSCode",
 }
 
+-- kitty にフォーカスしたら英数入力へ切り替える。
+local englishInputSourceID = "com.apple.inputmethod.Kotoeri.RomajiTyping.Roman"
+
+kittyInputSourceWatcher = hs.application.watcher.new(function(_, eventType, app)
+  if eventType == hs.application.watcher.activated
+      and app
+      and app:bundleID() == appBundleIDs.kitty then
+    hs.keycodes.currentSourceID(englishInputSourceID)
+  end
+end)
+
+kittyInputSourceWatcher:start()
+
 -- 現在見えている Space にある、指定アプリの標準ウィンドウだけを取得する。
 -- hs.window.allWindows() は呼び出すたびに現在の Mission Control Space を問い合わせるため、
 -- Space 切り替え直後の古い状態を使わず、他アプリの背面にあるウィンドウも拾える。
