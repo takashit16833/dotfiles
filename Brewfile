@@ -81,6 +81,9 @@ brew "docker-credential-helper"
 # macOS のアプリ切り替えなどを Lua で自動化する。
 cask "hammerspoon"
 
+# アプリ・ファイル・コマンドなどを横断検索し、Mac の操作入口として利用する。
+cask "raycast"
+
 # --- Applications -----------------------------------------------------------
 
 # ChatGPT などの Web アプリを軽快に利用する Chromium ベースのブラウザ。
