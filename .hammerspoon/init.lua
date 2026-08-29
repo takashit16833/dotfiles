@@ -215,8 +215,8 @@ local function activateETyping()
   focusVisibleWindowsForApp(bundleID)
 end
 
--- Ctrl + Cmd + Option + z: e-typing
-hs.hotkey.bind(hyper, "z", activateETyping)
+-- Ctrl + Cmd + Option + x: e-typing
+hs.hotkey.bind(hyper, "x", activateETyping)
 
 -- 現在フォーカスされているウィンドウに対して処理を行う。
 -- Finder の Desktop など、操作対象の通常ウィンドウが存在しない場合は何もしない。
@@ -351,8 +351,8 @@ local function arrangeWindowsDiagonallyOnScreen(screen)
   end
 end
 
--- Ctrl + Cmd + Option + Shift + H: アクティブなウィンドウがあるモニタだけを斜め配置する。
-hs.hotkey.bind(hyperShift, "h", function()
+-- Ctrl + Cmd + Option + B: アクティブなウィンドウがあるモニタだけを斜め配置する。
+hs.hotkey.bind(hyper, "b", function()
   withFocusedWindow(function(window)
     local screen = window:screen()
     if screen then
@@ -439,19 +439,19 @@ local function maximizeWindowsOnScreen(screen)
   end
 end
 
--- Ctrl + Cmd + Option + P: 現在フォーカス中のウィンドウがあるモニタをタイル表示する。
+-- Ctrl + Cmd + Option + P: 現在フォーカス中のウィンドウがあるモニタの全ウィンドウを最大化する。
 hs.hotkey.bind(hyper, "p", function()
-  tileWindowsOnScreen(hs.screen.mainScreen())
-end)
-
--- Ctrl + Cmd + Option + H: 現在フォーカス中のウィンドウがあるモニタの全ウィンドウを最大化する。
-hs.hotkey.bind(hyper, "h", function()
   maximizeWindowsOnScreen(hs.screen.mainScreen())
 end)
 
--- Ctrl + Cmd + Option + B: 現在フォーカス中のウィンドウがあるモニタの全ウィンドウを
+-- Ctrl + Cmd + Option + H: 現在フォーカス中のウィンドウがあるモニタをタイル表示する。
+hs.hotkey.bind(hyper, "h", function()
+  tileWindowsOnScreen(hs.screen.mainScreen())
+end)
+
+-- Ctrl + Cmd + Option + Z: 現在フォーカス中のウィンドウがあるモニタの全ウィンドウを
 -- 基準サイズに揃えて中央へ重ねる。
-hs.hotkey.bind(hyper, "b", function()
+hs.hotkey.bind(hyper, "z", function()
   centerWindowsOnScreen(hs.screen.mainScreen())
 end)
 
