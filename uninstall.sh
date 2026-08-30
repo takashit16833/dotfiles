@@ -12,6 +12,8 @@ ZELLIJ_MANAGED_STATE_DIR="$HOME/.local/share/dotfiles/zellij"
 ZELLIJ_MANAGED_VERSION_FILE="$ZELLIJ_MANAGED_STATE_DIR/version"
 VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
 RAYCAST_EXTENSION_DIR="$DOTFILES_DIR/raycast/extension"
+RAYCAST_EXTENSION_NAME="dotfiles-commands"
+RAYCAST_INSTALLED_EXTENSIONS_DIR="$HOME/.config/raycast/extensions"
 
 info() {
   printf '[dotfiles] %s\n' "$*"
@@ -105,15 +107,29 @@ uninstall_bat_theme() {
 }
 
 uninstall_raycast_extension() {
-  # repository の source は削除せず、npm / build が生成したものだけを片付ける。
+  local manifest
+
+  # source は残し、repository 内の生成物だけ削除する。
   remove_path "$RAYCAST_EXTENSION_DIR/node_modules"
   remove_path "$RAYCAST_EXTENSION_DIR/dist"
 
-  # Raycast は Local Extension の登録解除を行う公開 CLI / API を提供していない。
-  # 内部 database や private path を推測して削除せず、登録解除だけは Raycast の
-  # Extensions UI から行う。source / 生成物の管理責任は uninstall.sh 側に留める。
-  info 'Raycast Local Extension build artifacts removed'
-  info 'Raycast registration remains; uninstall "Dotfiles Commands" from Raycast Extensions when full deregistration is needed'
+  # Raycast が管理する extensions directory から、この dotfiles Extension と
+  # package.json の name が完全一致するものだけを削除する。
+  if [[ -d "$RAYCAST_INSTALLED_EXTENSIONS_DIR" ]]; then
+    if command -v jq >/dev/null 2>&1; then
+      for manifest in "$RAYCAST_INSTALLED_EXTENSIONS_DIR"/*/package.json; do
+        [[ -f "$manifest" ]] || continue
+
+        if [[ "$(jq -r '.name // empty' "$manifest" 2>/dev/null || true)" == "$RAYCAST_EXTENSION_NAME" ]]; then
+          remove_path "$(dirname "$manifest")"
+        fi
+      done
+    else
+      info 'warning: jq not found; skipped removing installed Raycast Local Extension'
+    fi
+  fi
+
+  info 'Raycast Local Extension removed'
 }
 
 main() {
