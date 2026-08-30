@@ -17,7 +17,11 @@
       "name": "search-repositories",
       "title": "GitHub Repositories",
       "description": "Search GitHub repositories available through the authenticated gh account.",
-      "mode": "view"
+      "mode": "view",
+      "keywords": [
+        "gh",
+        "github"
+      ]
     }
   ],
   "dependencies": {
