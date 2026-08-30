@@ -24,6 +24,8 @@ VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
 
 # dotfiles で管理する唯一の Raycast Local Extension。
 RAYCAST_EXTENSION_DIR="$DOTFILES_DIR/raycast/extension"
+RAYCAST_EXTENSION_NAME="dotfiles-commands"
+RAYCAST_INSTALLED_EXTENSIONS_DIR="$HOME/.config/raycast/extensions"
 
 info() {
   printf '[dotfiles] %s\n' "$*"
@@ -233,10 +235,8 @@ install_vscode_extensions() {
 
 install_raycast_extension() {
   local ray_cli="$RAYCAST_EXTENSION_DIR/node_modules/.bin/ray"
-  local log_file
-  local process_id
-  local build_complete=false
-  local attempt
+  local installed_manifest=''
+  local manifest
 
   if [[ ! -f "$RAYCAST_EXTENSION_DIR/package.json" ]]; then
     fail "$RAYCAST_EXTENSION_DIR/package.json does not exist"
@@ -244,6 +244,10 @@ install_raycast_extension() {
 
   if ! command -v npm >/dev/null 2>&1; then
     fail 'npm was not found after installing Homebrew packages'
+  fi
+
+  if ! command -v jq >/dev/null 2>&1; then
+    fail 'jq was not found after installing Homebrew packages'
   fi
 
   info 'installing Raycast Local Extension dependencies'
@@ -256,59 +260,31 @@ install_raycast_extension() {
     fail 'Raycast extension CLI was not installed by npm'
   fi
 
-  # ray develop は未登録の Local Extension を Raycast へ import する。
-  # 通常は監視プロセスとして動き続けるが、install.sh では Build complete を確認後に
-  # 自動停止し、手動の npm run dev / Ctrl-C を不要にする。
-  /usr/bin/open -gj -a Raycast || fail 'failed to launch Raycast'
-  log_file="$(mktemp)"
-
-  info 'registering and building Raycast Local Extension'
+  # Production build は終了するコマンドなので install.sh から安全に実行できる。
+  # Raycast の build は ~/.config/raycast/extensions 配下へ Local Extension を配置する。
+  info 'building and installing Raycast Local Extension'
   (
     cd "$RAYCAST_EXTENSION_DIR"
-    exec "$ray_cli" develop
-  ) >"$log_file" 2>&1 &
-  process_id=$!
+    npm run build
+  )
 
-  for ((attempt = 0; attempt < 120; attempt++)); do
-    if grep -Fq 'Build complete' "$log_file"; then
-      build_complete=true
-      break
-    fi
+  if [[ -d "$RAYCAST_INSTALLED_EXTENSIONS_DIR" ]]; then
+    for manifest in "$RAYCAST_INSTALLED_EXTENSIONS_DIR"/*/package.json; do
+      [[ -f "$manifest" ]] || continue
 
-    if ! kill -0 "$process_id" 2>/dev/null; then
-      wait "$process_id" 2>/dev/null || true
-      cat "$log_file" >&2
-      rm -f "$log_file"
-      fail 'Raycast extension development process exited before the build completed'
-    fi
-
-    sleep 0.25
-  done
-
-  if [[ "$build_complete" != true ]]; then
-    kill -INT "$process_id" 2>/dev/null || true
-    wait "$process_id" 2>/dev/null || true
-    cat "$log_file" >&2
-    rm -f "$log_file"
-    fail 'timed out while waiting for the Raycast extension build'
+      if [[ "$(jq -r '.name // empty' "$manifest" 2>/dev/null || true)" == "$RAYCAST_EXTENSION_NAME" ]]; then
+        installed_manifest="$manifest"
+        break
+      fi
+    done
   fi
 
-  kill -INT "$process_id" 2>/dev/null || true
-
-  for ((attempt = 0; attempt < 20; attempt++)); do
-    if ! kill -0 "$process_id" 2>/dev/null; then
-      break
-    fi
-    sleep 0.1
-  done
-
-  if kill -0 "$process_id" 2>/dev/null; then
-    kill -TERM "$process_id" 2>/dev/null || true
+  if [[ -z "$installed_manifest" ]]; then
+    fail "Raycast build completed but $RAYCAST_EXTENSION_NAME was not found under $RAYCAST_INSTALLED_EXTENSIONS_DIR"
   fi
-  wait "$process_id" 2>/dev/null || true
-  rm -f "$log_file"
 
-  info 'Raycast Local Extension registered; development process stopped'
+  /usr/bin/open -gj -a Raycast || fail 'failed to launch Raycast'
+  info "Raycast Local Extension installed: $(dirname "$installed_manifest")"
 }
 
 main() {
