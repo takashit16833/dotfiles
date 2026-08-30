@@ -22,12 +22,20 @@
     'a[href^="https://www.youtube.com/shorts/"]'
   ].join(",");
 
+  // These are used only to find the visual card that owns a media link.
+  // Candidate identity is the card element, not the video id. This matters
+  // for Mix/radio cards and repeated videos that legitimately appear in more
+  // than one place on the same page.
   const cardSelectors = [
     "ytd-rich-item-renderer",
     "ytd-video-renderer",
     "ytd-grid-video-renderer",
     "ytd-compact-video-renderer",
     "ytd-playlist-video-renderer",
+    "ytd-playlist-renderer",
+    "ytd-grid-playlist-renderer",
+    "ytd-radio-renderer",
+    "ytd-compact-radio-renderer",
     "yt-lockup-view-model",
     "ytd-rich-grid-media",
     "ytd-rich-grid-slim-media",
@@ -62,11 +70,11 @@
   const rectOf = (element) => {
     const card = closestCard(element);
     const probes = [
-      element,
-      element.querySelector("img"),
       card,
       card?.querySelector("img"),
-      card?.querySelector("yt-image")
+      card?.querySelector("yt-image"),
+      element,
+      element.querySelector("img")
     ].filter(Boolean);
 
     for (const probe of probes) {
@@ -86,43 +94,33 @@
     return null;
   };
 
-  const mediaKey = (element) => {
+  const mediaKind = (element) => {
     try {
       const url = new URL(element.href, window.location.href);
-
-      if (url.pathname === "/watch") {
-        const videoId = url.searchParams.get("v");
-        return videoId ? `watch:${videoId}` : null;
-      }
-
-      if (url.pathname.startsWith("/shorts/")) {
-        const shortId = url.pathname.split("/")[2];
-        return shortId ? `shorts:${shortId}` : null;
-      }
-
+      if (url.pathname === "/watch" && url.searchParams.get("v")) return "watch";
+      if (url.pathname.startsWith("/shorts/") && url.pathname.split("/")[2]) return "shorts";
       return null;
     } catch {
       return null;
     }
   };
 
+  const linkScore = (element) => {
+    // Prefer a large, visible link (usually the thumbnail) as the click target.
+    const rect = element.getBoundingClientRect();
+    return hasArea(rect) ? rect.width * rect.height : 0;
+  };
+
   const getCandidates = () => {
     const links = Array.from(document.querySelectorAll(MEDIA_LINK_SELECTOR));
-    const seen = new Set();
-    const candidates = [];
+    const byCard = new Map();
 
     let rejectedNoMediaId = 0;
-    let rejectedDuplicate = 0;
     let rejectedDisconnected = 0;
 
     for (const element of links) {
-      const key = mediaKey(element);
-      if (!key) {
+      if (!mediaKind(element)) {
         rejectedNoMediaId++;
-        continue;
-      }
-      if (seen.has(key)) {
-        rejectedDuplicate++;
         continue;
       }
       if (!element.isConnected) {
@@ -130,18 +128,35 @@
         continue;
       }
 
-      seen.add(key);
-      candidates.push(element);
+      const card = closestCard(element);
+      const existing = byCard.get(card);
+
+      // One candidate per visual card. If a card contains several equivalent
+      // links (thumbnail/title), keep the largest one as the click target.
+      if (!existing || linkScore(element) > linkScore(existing)) {
+        byCard.set(card, element);
+      }
     }
 
+    const candidates = Array.from(byCard.values());
     const withGeometry = candidates.filter((element) => rectOf(element) !== null).length;
-    const shorts = candidates.filter((element) => mediaKey(element)?.startsWith("shorts:")).length;
+    const shorts = candidates.filter((element) => mediaKind(element) === "shorts").length;
+    const mixes = candidates.filter((element) => {
+      try {
+        const url = new URL(element.href, window.location.href);
+        return url.pathname === "/watch" && url.searchParams.has("list");
+      } catch {
+        return false;
+      }
+    }).length;
+
     log("candidates", candidates.length, {
       rawMediaLinks: links.length,
+      cards: byCard.size,
       shorts,
+      mixes,
       withGeometry,
       rejectedNoMediaId,
-      rejectedDuplicate,
       rejectedDisconnected,
       firstHref: links[0]?.getAttribute("href") ?? null
     });
@@ -162,14 +177,10 @@
     return [];
   };
 
-  const centerOf = (element) => {
-    const rect = rectOf(element);
-    if (!rect) return null;
-    return {
-      x: rect.left + rect.width / 2,
-      y: rect.top + rect.height / 2
-    };
-  };
+  const centerOfRect = (rect) => ({
+    x: rect.left + rect.width / 2,
+    y: rect.top + rect.height / 2
+  });
 
   const clearSelection = () => {
     selected?.classList.remove(SELECTED_CLASS);
@@ -211,26 +222,45 @@
     const pool = inViewport.length > 0 ? inViewport : positioned;
 
     return pool.reduce((best, { element, rect }) => {
-      const x = rect.left + rect.width / 2;
-      const y = rect.top + rect.height / 2;
-      const distance = Math.hypot(x - viewportCenter.x, y - viewportCenter.y);
+      const center = centerOfRect(rect);
+      const distance = Math.hypot(
+        center.x - viewportCenter.x,
+        center.y - viewportCenter.y
+      );
       return !best || distance < best.distance ? { element, distance } : best;
     }, null)?.element ?? candidates[0] ?? null;
   };
 
-  const directionalScore = (origin, candidate, direction) => {
+  const directionalScore = (originRect, candidateRect, direction) => {
+    const origin = centerOfRect(originRect);
+    const candidate = centerOfRect(candidateRect);
     const dx = candidate.x - origin.x;
     const dy = candidate.y - origin.y;
 
+    // Require the next card to be genuinely outside the current card in the
+    // requested direction. This avoids tiny layout offsets making a card in
+    // the same row look like the next row.
     switch (direction) {
-      case "ArrowLeft":
-        return dx < -1 ? -dx + Math.abs(dy) * 2 : Infinity;
-      case "ArrowRight":
-        return dx > 1 ? dx + Math.abs(dy) * 2 : Infinity;
-      case "ArrowUp":
-        return dy < -1 ? -dy + Math.abs(dx) * 2 : Infinity;
-      case "ArrowDown":
-        return dy > 1 ? dy + Math.abs(dx) * 2 : Infinity;
+      case "ArrowUp": {
+        if (candidate.y >= originRect.top - 1) return Infinity;
+        const primary = originRect.top - candidate.y;
+        return primary * 10000 + Math.abs(dx);
+      }
+      case "ArrowDown": {
+        if (candidate.y <= originRect.bottom + 1) return Infinity;
+        const primary = candidate.y - originRect.bottom;
+        return primary * 10000 + Math.abs(dx);
+      }
+      case "ArrowLeft": {
+        if (candidate.x >= originRect.left - 1) return Infinity;
+        const primary = originRect.left - candidate.x;
+        return primary * 10000 + Math.abs(dy);
+      }
+      case "ArrowRight": {
+        if (candidate.x <= originRect.right + 1) return Infinity;
+        const primary = candidate.x - originRect.right;
+        return primary * 10000 + Math.abs(dy);
+      }
       default:
         return Infinity;
     }
@@ -242,17 +272,19 @@
       return;
     }
 
-    const origin = centerOf(selected);
-    if (!origin) {
+    const originRect = rectOf(selected);
+    if (!originRect) {
       select(initialCandidateFrom(getCandidates()));
       return;
     }
 
     const next = getCandidates().reduce((best, element) => {
-      if (element === selected) return best;
-      const center = centerOf(element);
-      if (!center) return best;
-      const score = directionalScore(origin, center, direction);
+      if (closestCard(element) === closestCard(selected)) return best;
+
+      const candidateRect = rectOf(element);
+      if (!candidateRect) return best;
+
+      const score = directionalScore(originRect, candidateRect, direction);
       if (!Number.isFinite(score)) return best;
       return !best || score < best.score ? { element, score } : best;
     }, null)?.element;
