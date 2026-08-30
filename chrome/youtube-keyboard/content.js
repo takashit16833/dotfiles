@@ -9,6 +9,8 @@
 
   const SELECTED_CLASS = "yt-keyboard-selected";
   const MODE_CLASS = "yt-keyboard-mode";
+  const CANDIDATE_WAIT_MS = 3000;
+  const CANDIDATE_POLL_MS = 100;
 
   const videoSelectors = [
     'ytd-rich-item-renderer a#thumbnail[href^="/watch"]',
@@ -28,6 +30,9 @@
 
   let active = false;
   let selected = null;
+  let activationGeneration = 0;
+
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const isEditable = (target) => {
     if (!(target instanceof Element)) return false;
@@ -60,8 +65,6 @@
       if (hasArea(rect)) return rect;
     }
 
-    // Range can recover the rendered bounds of descendants when the host
-    // element itself has no box (for example with display: contents).
     try {
       const range = document.createRange();
       range.selectNodeContents(card ?? element);
@@ -90,6 +93,19 @@
     const withGeometry = candidates.filter((element) => rectOf(element) !== null).length;
     log("candidates", candidates.length, { withGeometry });
     return candidates;
+  };
+
+  const waitForCandidates = async (generation) => {
+    const deadline = Date.now() + CANDIDATE_WAIT_MS;
+
+    while (active && generation === activationGeneration) {
+      const candidates = getCandidates();
+      if (candidates.length > 0) return candidates;
+      if (Date.now() >= deadline) break;
+      await sleep(CANDIDATE_POLL_MS);
+    }
+
+    return [];
   };
 
   const centerOf = (element) => {
@@ -126,8 +142,7 @@
     });
   };
 
-  const initialCandidate = () => {
-    const candidates = getCandidates();
+  const initialCandidateFrom = (candidates) => {
     const viewportCenter = {
       x: window.innerWidth / 2,
       y: window.innerHeight / 2
@@ -158,6 +173,8 @@
       return best;
     }, null)?.element ?? candidates[0] ?? null;
   };
+
+  const initialCandidate = () => initialCandidateFrom(getCandidates());
 
   const directionalScore = (origin, candidate, direction) => {
     const dx = candidate.x - origin.x;
@@ -223,15 +240,26 @@
     if (next) select(next);
   };
 
-  const activate = () => {
+  const activate = async () => {
     active = true;
+    const generation = ++activationGeneration;
     document.documentElement.classList.add(MODE_CLASS);
-    log("activated");
-    select(initialCandidate());
+    log("activated; waiting for candidates");
+
+    const candidates = await waitForCandidates(generation);
+    if (!active || generation !== activationGeneration) return;
+
+    if (candidates.length === 0) {
+      log("activation timed out: no candidates");
+      return;
+    }
+
+    select(initialCandidateFrom(candidates));
   };
 
   const deactivate = () => {
     active = false;
+    activationGeneration++;
     document.documentElement.classList.remove(MODE_CLASS);
     clearSelection();
     log("deactivated");
@@ -256,7 +284,7 @@
         });
         event.preventDefault();
         event.stopPropagation();
-        active ? deactivate() : activate();
+        active ? deactivate() : void activate();
         return;
       }
 
