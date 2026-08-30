@@ -44,10 +44,6 @@
 
   const hasArea = (rect) => rect.width > 1 && rect.height > 1;
 
-  // YouTube frequently changes which wrapper owns layout. Some wrappers use
-  // display: contents, so their own bounding box is zero even though their
-  // descendants are visibly rendered. Resolve geometry from several stable
-  // fallbacks instead of treating a zero-sized wrapper as invisible.
   const rectOf = (element) => {
     const card = element.closest(cardSelector);
     const probes = [
@@ -80,18 +76,57 @@
   const getCandidates = () => {
     const seen = new Set();
     const candidates = [];
+    const selectorCounts = {};
+    let rawMatched = 0;
+    let rejectedNoHref = 0;
+    let rejectedDuplicate = 0;
+    let rejectedDisconnected = 0;
+    let firstMatch = null;
 
     for (const selector of videoSelectors) {
-      for (const element of document.querySelectorAll(selector)) {
+      const elements = Array.from(document.querySelectorAll(selector));
+      selectorCounts[selector] = elements.length;
+      rawMatched += elements.length;
+
+      for (const element of elements) {
+        if (!firstMatch) {
+          firstMatch = {
+            tagName: element.tagName,
+            hrefAttribute: element.getAttribute("href"),
+            hrefProperty: element.href,
+            isConnected: element.isConnected
+          };
+        }
+
         const key = element.href;
-        if (!key || seen.has(key) || !element.isConnected) continue;
+        if (!key) {
+          rejectedNoHref++;
+          continue;
+        }
+        if (seen.has(key)) {
+          rejectedDuplicate++;
+          continue;
+        }
+        if (!element.isConnected) {
+          rejectedDisconnected++;
+          continue;
+        }
+
         seen.add(key);
         candidates.push(element);
       }
     }
 
     const withGeometry = candidates.filter((element) => rectOf(element) !== null).length;
-    log("candidates", candidates.length, { withGeometry });
+    log("candidates", candidates.length, {
+      rawMatched,
+      withGeometry,
+      selectorCounts,
+      rejectedNoHref,
+      rejectedDuplicate,
+      rejectedDisconnected,
+      firstMatch
+    });
     return candidates;
   };
 
