@@ -37,44 +37,65 @@
     );
   };
 
-  // YouTube sometimes gives the thumbnail anchor itself a zero-sized box while
-  // the surrounding renderer owns the visible geometry. Use the card for
-  // visibility and navigation geometry, but keep the anchor as the clickable item.
-  const geometryElement = (element) => element.closest(cardSelector) ?? element;
+  const hasArea = (rect) => rect.width > 1 && rect.height > 1;
 
-  const isVisible = (element) => {
-    const geometry = geometryElement(element);
-    const rect = geometry.getBoundingClientRect();
-    const style = window.getComputedStyle(geometry);
+  // YouTube frequently changes which wrapper owns layout. Some wrappers use
+  // display: contents, so their own bounding box is zero even though their
+  // descendants are visibly rendered. Resolve geometry from several stable
+  // fallbacks instead of treating a zero-sized wrapper as invisible.
+  const rectOf = (element) => {
+    const card = element.closest(cardSelector);
+    const probes = [
+      element,
+      element.querySelector("img"),
+      element.querySelector("yt-image"),
+      card,
+      card?.querySelector("a#thumbnail"),
+      card?.querySelector("img"),
+      card?.querySelector("yt-image")
+    ].filter(Boolean);
 
-    return (
-      geometry.getClientRects().length > 0 &&
-      rect.width > 0 &&
-      rect.height > 0 &&
-      style.visibility !== "hidden" &&
-      style.display !== "none"
-    );
+    for (const probe of probes) {
+      const rect = probe.getBoundingClientRect();
+      if (hasArea(rect)) return rect;
+    }
+
+    // Range can recover the rendered bounds of descendants when the host
+    // element itself has no box (for example with display: contents).
+    try {
+      const range = document.createRange();
+      range.selectNodeContents(card ?? element);
+      const rect = range.getBoundingClientRect();
+      if (hasArea(rect)) return rect;
+    } catch {
+      // Ignore and report no geometry below.
+    }
+
+    return null;
   };
 
   const getCandidates = () => {
     const seen = new Set();
+    const candidates = [];
 
-    const matched = videoSelectors.flatMap((selector) =>
-      Array.from(document.querySelectorAll(selector))
-    );
+    for (const selector of videoSelectors) {
+      for (const element of document.querySelectorAll(selector)) {
+        const key = element.href;
+        if (!key || seen.has(key) || !element.isConnected) continue;
+        seen.add(key);
+        candidates.push(element);
+      }
+    }
 
-    const candidates = matched.filter((element) => {
-      if (seen.has(element) || !isVisible(element)) return false;
-      seen.add(element);
-      return true;
-    });
-
-    log("candidates", candidates.length, { matched: matched.length });
+    const withGeometry = candidates.filter((element) => rectOf(element) !== null).length;
+    log("candidates", candidates.length, { withGeometry });
     return candidates;
   };
 
   const centerOf = (element) => {
-    const rect = geometryElement(element).getBoundingClientRect();
+    const rect = rectOf(element);
+    if (!rect) return null;
+
     return {
       x: rect.left + rect.width / 2,
       y: rect.top + rect.height / 2
@@ -96,7 +117,9 @@
     selected = element;
     selected.classList.add(SELECTED_CLASS);
     log("selected", selected.href);
-    geometryElement(selected).scrollIntoView({
+
+    const card = selected.closest(cardSelector);
+    (card ?? selected).scrollIntoView({
       block: "center",
       inline: "center",
       behavior: "smooth"
@@ -110,26 +133,30 @@
       y: window.innerHeight / 2
     };
 
-    const inViewport = candidates.filter((element) => {
-      const rect = geometryElement(element).getBoundingClientRect();
-      return rect.bottom > 0 && rect.top < window.innerHeight;
-    });
+    const positioned = candidates
+      .map((element) => ({ element, rect: rectOf(element) }))
+      .filter(({ rect }) => rect !== null);
 
-    const pool = inViewport.length > 0 ? inViewport : candidates;
+    const inViewport = positioned.filter(({ rect }) =>
+      rect.bottom > 0 &&
+      rect.top < window.innerHeight &&
+      rect.right > 0 &&
+      rect.left < window.innerWidth
+    );
 
-    return pool.reduce((best, element) => {
-      const center = centerOf(element);
-      const distance = Math.hypot(
-        center.x - viewportCenter.x,
-        center.y - viewportCenter.y
-      );
+    const pool = inViewport.length > 0 ? inViewport : positioned;
+
+    return pool.reduce((best, { element, rect }) => {
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      const distance = Math.hypot(x - viewportCenter.x, y - viewportCenter.y);
 
       if (!best || distance < best.distance) {
         return { element, distance };
       }
 
       return best;
-    }, null)?.element;
+    }, null)?.element ?? candidates[0] ?? null;
   };
 
   const directionalScore = (origin, candidate, direction) => {
@@ -176,11 +203,18 @@
     }
 
     const origin = centerOf(selected);
-    const candidates = getCandidates().filter((element) => element !== selected);
+    if (!origin) {
+      select(initialCandidate());
+      return;
+    }
 
-    const next = candidates.reduce((best, element) => {
-      const score = directionalScore(origin, centerOf(element), direction);
+    const next = getCandidates().reduce((best, element) => {
+      if (element === selected) return best;
 
+      const center = centerOf(element);
+      if (!center) return best;
+
+      const score = directionalScore(origin, center, direction);
       if (!Number.isFinite(score)) return best;
       if (!best || score < best.score) return { element, score };
       return best;
