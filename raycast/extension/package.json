@@ -35,6 +35,9 @@
     "prettier": "^3.5.3",
     "typescript": "^5.8.2"
   },
+  "allowScripts": {
+    "esbuild": true
+  },
   "scripts": {
     "build": "ray build -e dist",
     "dev": "ray develop",
