@@ -1,4 +1,12 @@
 (() => {
+  const LOG_PREFIX = "[yt-keyboard]";
+  const log = (...args) => console.log(LOG_PREFIX, ...args);
+
+  log("content script loaded", {
+    href: window.location.href,
+    readyState: document.readyState
+  });
+
   const SELECTED_CLASS = "yt-keyboard-selected";
   const MODE_CLASS = "yt-keyboard-mode";
 
@@ -36,13 +44,16 @@
   const getCandidates = () => {
     const seen = new Set();
 
-    return videoSelectors
+    const candidates = videoSelectors
       .flatMap((selector) => Array.from(document.querySelectorAll(selector)))
       .filter((element) => {
         if (seen.has(element) || !isVisible(element)) return false;
         seen.add(element);
         return true;
       });
+
+    log("candidates", candidates.length);
+    return candidates;
   };
 
   const centerOf = (element) => {
@@ -59,11 +70,15 @@
   };
 
   const select = (element) => {
-    if (!element) return;
+    if (!element) {
+      log("select skipped: no candidate");
+      return;
+    }
 
     selected?.classList.remove(SELECTED_CLASS);
     selected = element;
     selected.classList.add(SELECTED_CLASS);
+    log("selected", selected.href);
     selected.scrollIntoView({ block: "center", inline: "center", behavior: "smooth" });
   };
 
@@ -132,6 +147,8 @@
   };
 
   const move = (direction) => {
+    log("move", direction);
+
     if (!selected || !document.contains(selected)) {
       select(initialCandidate());
       return;
@@ -154,6 +171,7 @@
   const activate = () => {
     active = true;
     document.documentElement.classList.add(MODE_CLASS);
+    log("activated");
     select(initialCandidate());
   };
 
@@ -161,6 +179,7 @@
     active = false;
     document.documentElement.classList.remove(MODE_CLASS);
     clearSelection();
+    log("deactivated");
   };
 
   document.addEventListener(
@@ -170,6 +189,12 @@
         event.ctrlKey && event.shiftKey && !event.metaKey && !event.altKey && event.code === "KeyY";
 
       if (togglePressed) {
+        log("toggle key received", {
+          key: event.key,
+          code: event.code,
+          ctrlKey: event.ctrlKey,
+          shiftKey: event.shiftKey
+        });
         event.preventDefault();
         event.stopPropagation();
         active ? deactivate() : activate();
@@ -195,6 +220,7 @@
       if (event.key === "Enter" && selected) {
         event.preventDefault();
         event.stopPropagation();
+        log("open", selected.href);
         selected.click();
         deactivate();
       }
@@ -202,5 +228,8 @@
     true
   );
 
-  document.addEventListener("yt-navigate-start", deactivate);
+  document.addEventListener("yt-navigate-start", () => {
+    log("yt-navigate-start");
+    deactivate();
+  });
 })();
