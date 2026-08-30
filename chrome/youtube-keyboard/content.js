@@ -18,6 +18,14 @@
     'ytd-playlist-video-renderer a#thumbnail[href^="/watch"]'
   ];
 
+  const cardSelector = [
+    "ytd-rich-item-renderer",
+    "ytd-video-renderer",
+    "ytd-grid-video-renderer",
+    "ytd-compact-video-renderer",
+    "ytd-playlist-video-renderer"
+  ].join(",");
+
   let active = false;
   let selected = null;
 
@@ -29,11 +37,18 @@
     );
   };
 
+  // YouTube sometimes gives the thumbnail anchor itself a zero-sized box while
+  // the surrounding renderer owns the visible geometry. Use the card for
+  // visibility and navigation geometry, but keep the anchor as the clickable item.
+  const geometryElement = (element) => element.closest(cardSelector) ?? element;
+
   const isVisible = (element) => {
-    const rect = element.getBoundingClientRect();
-    const style = window.getComputedStyle(element);
+    const geometry = geometryElement(element);
+    const rect = geometry.getBoundingClientRect();
+    const style = window.getComputedStyle(geometry);
 
     return (
+      geometry.getClientRects().length > 0 &&
       rect.width > 0 &&
       rect.height > 0 &&
       style.visibility !== "hidden" &&
@@ -44,20 +59,22 @@
   const getCandidates = () => {
     const seen = new Set();
 
-    const candidates = videoSelectors
-      .flatMap((selector) => Array.from(document.querySelectorAll(selector)))
-      .filter((element) => {
-        if (seen.has(element) || !isVisible(element)) return false;
-        seen.add(element);
-        return true;
-      });
+    const matched = videoSelectors.flatMap((selector) =>
+      Array.from(document.querySelectorAll(selector))
+    );
 
-    log("candidates", candidates.length);
+    const candidates = matched.filter((element) => {
+      if (seen.has(element) || !isVisible(element)) return false;
+      seen.add(element);
+      return true;
+    });
+
+    log("candidates", candidates.length, { matched: matched.length });
     return candidates;
   };
 
   const centerOf = (element) => {
-    const rect = element.getBoundingClientRect();
+    const rect = geometryElement(element).getBoundingClientRect();
     return {
       x: rect.left + rect.width / 2,
       y: rect.top + rect.height / 2
@@ -79,7 +96,11 @@
     selected = element;
     selected.classList.add(SELECTED_CLASS);
     log("selected", selected.href);
-    selected.scrollIntoView({ block: "center", inline: "center", behavior: "smooth" });
+    geometryElement(selected).scrollIntoView({
+      block: "center",
+      inline: "center",
+      behavior: "smooth"
+    });
   };
 
   const initialCandidate = () => {
@@ -90,7 +111,7 @@
     };
 
     const inViewport = candidates.filter((element) => {
-      const rect = element.getBoundingClientRect();
+      const rect = geometryElement(element).getBoundingClientRect();
       return rect.bottom > 0 && rect.top < window.innerHeight;
     });
 
@@ -186,7 +207,11 @@
     "keydown",
     (event) => {
       const togglePressed =
-        event.ctrlKey && event.shiftKey && !event.metaKey && !event.altKey && event.code === "KeyY";
+        event.ctrlKey &&
+        event.shiftKey &&
+        !event.metaKey &&
+        !event.altKey &&
+        event.code === "KeyY";
 
       if (togglePressed) {
         log("toggle key received", {
