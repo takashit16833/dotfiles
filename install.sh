@@ -22,6 +22,9 @@ ZELLIJ_MANAGED_VERSION_FILE="$ZELLIJ_MANAGED_STATE_DIR/version"
 # VS Code の macOS 標準 User directory。
 VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
 
+# dotfiles で管理する唯一の Raycast Local Extension。
+RAYCAST_EXTENSION_DIR="$DOTFILES_DIR/raycast/extension"
+
 info() {
   printf '[dotfiles] %s\n' "$*"
 }
@@ -228,6 +231,86 @@ install_vscode_extensions() {
   fi
 }
 
+install_raycast_extension() {
+  local ray_cli="$RAYCAST_EXTENSION_DIR/node_modules/.bin/ray"
+  local log_file
+  local process_id
+  local build_complete=false
+  local attempt
+
+  if [[ ! -f "$RAYCAST_EXTENSION_DIR/package.json" ]]; then
+    fail "$RAYCAST_EXTENSION_DIR/package.json does not exist"
+  fi
+
+  if ! command -v npm >/dev/null 2>&1; then
+    fail 'npm was not found after installing Homebrew packages'
+  fi
+
+  info 'installing Raycast Local Extension dependencies'
+  (
+    cd "$RAYCAST_EXTENSION_DIR"
+    npm install --package-lock=false --no-audit --no-fund
+  )
+
+  if [[ ! -x "$ray_cli" ]]; then
+    fail 'Raycast extension CLI was not installed by npm'
+  fi
+
+  # ray develop は未登録の Local Extension を Raycast へ import する。
+  # 通常は監視プロセスとして動き続けるが、install.sh では Build complete を確認後に
+  # 自動停止し、手動の npm run dev / Ctrl-C を不要にする。
+  /usr/bin/open -gj -a Raycast || fail 'failed to launch Raycast'
+  log_file="$(mktemp)"
+
+  info 'registering and building Raycast Local Extension'
+  (
+    cd "$RAYCAST_EXTENSION_DIR"
+    exec "$ray_cli" develop
+  ) >"$log_file" 2>&1 &
+  process_id=$!
+
+  for ((attempt = 0; attempt < 120; attempt++)); do
+    if grep -Fq 'Build complete' "$log_file"; then
+      build_complete=true
+      break
+    fi
+
+    if ! kill -0 "$process_id" 2>/dev/null; then
+      wait "$process_id" 2>/dev/null || true
+      cat "$log_file" >&2
+      rm -f "$log_file"
+      fail 'Raycast extension development process exited before the build completed'
+    fi
+
+    sleep 0.25
+  done
+
+  if [[ "$build_complete" != true ]]; then
+    kill -INT "$process_id" 2>/dev/null || true
+    wait "$process_id" 2>/dev/null || true
+    cat "$log_file" >&2
+    rm -f "$log_file"
+    fail 'timed out while waiting for the Raycast extension build'
+  fi
+
+  kill -INT "$process_id" 2>/dev/null || true
+
+  for ((attempt = 0; attempt < 20; attempt++)); do
+    if ! kill -0 "$process_id" 2>/dev/null; then
+      break
+    fi
+    sleep 0.1
+  done
+
+  if kill -0 "$process_id" 2>/dev/null; then
+    kill -TERM "$process_id" 2>/dev/null || true
+  fi
+  wait "$process_id" 2>/dev/null || true
+  rm -f "$log_file"
+
+  info 'Raycast Local Extension registered; development process stopped'
+}
+
 main() {
   info "installing from $DOTFILES_DIR"
 
@@ -318,6 +401,8 @@ main() {
   ensure_symlink \
     "$DOTFILES_DIR/.hammerspoon" \
     "$HOME/.hammerspoon"
+
+  install_raycast_extension
 
   info 'install complete'
 }
