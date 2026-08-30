@@ -12,21 +12,22 @@
   const CANDIDATE_WAIT_MS = 3000;
   const CANDIDATE_POLL_MS = 100;
 
-  const videoSelectors = [
-    'ytd-rich-item-renderer a#thumbnail[href^="/watch"]',
-    'ytd-video-renderer a#thumbnail[href^="/watch"]',
-    'ytd-grid-video-renderer a#thumbnail[href^="/watch"]',
-    'ytd-compact-video-renderer a#thumbnail[href^="/watch"]',
-    'ytd-playlist-video-renderer a#thumbnail[href^="/watch"]'
-  ];
+  // Prefer semantic links over YouTube's renderer tag names. Those renderer
+  // names and nesting change frequently, while watch links are the stable
+  // contract we actually need.
+  const WATCH_LINK_SELECTOR = 'a[href^="/watch"], a[href^="https://www.youtube.com/watch"]';
 
-  const cardSelector = [
+  const cardSelectors = [
     "ytd-rich-item-renderer",
     "ytd-video-renderer",
     "ytd-grid-video-renderer",
     "ytd-compact-video-renderer",
-    "ytd-playlist-video-renderer"
-  ].join(",");
+    "ytd-playlist-video-renderer",
+    "yt-lockup-view-model",
+    "ytd-rich-grid-media",
+    "ytd-rich-grid-slim-media",
+    "ytd-reel-item-renderer"
+  ];
 
   let active = false;
   let selected = null;
@@ -36,7 +37,6 @@
 
   const isEditable = (target) => {
     if (!(target instanceof Element)) return false;
-
     return Boolean(
       target.closest('input, textarea, select, [contenteditable="true"], [role="textbox"]')
     );
@@ -44,14 +44,20 @@
 
   const hasArea = (rect) => rect.width > 1 && rect.height > 1;
 
+  const closestCard = (element) => {
+    for (const selector of cardSelectors) {
+      const card = element.closest(selector);
+      if (card) return card;
+    }
+    return element.parentElement ?? element;
+  };
+
   const rectOf = (element) => {
-    const card = element.closest(cardSelector);
+    const card = closestCard(element);
     const probes = [
       element,
       element.querySelector("img"),
-      element.querySelector("yt-image"),
       card,
-      card?.querySelector("a#thumbnail"),
       card?.querySelector("img"),
       card?.querySelector("yt-image")
     ].filter(Boolean);
@@ -67,66 +73,59 @@
       const rect = range.getBoundingClientRect();
       if (hasArea(rect)) return rect;
     } catch {
-      // Ignore and report no geometry below.
+      // No usable geometry.
     }
 
     return null;
   };
 
+  const videoKey = (element) => {
+    try {
+      const url = new URL(element.href, window.location.href);
+      return url.pathname === "/watch" ? url.searchParams.get("v") : null;
+    } catch {
+      return null;
+    }
+  };
+
   const getCandidates = () => {
+    const links = Array.from(document.querySelectorAll(WATCH_LINK_SELECTOR));
     const seen = new Set();
     const candidates = [];
-    const selectorCounts = {};
-    let rawMatched = 0;
-    let rejectedNoHref = 0;
+
+    let rejectedNoVideoId = 0;
     let rejectedDuplicate = 0;
     let rejectedDisconnected = 0;
-    let firstMatch = null;
 
-    for (const selector of videoSelectors) {
-      const elements = Array.from(document.querySelectorAll(selector));
-      selectorCounts[selector] = elements.length;
-      rawMatched += elements.length;
-
-      for (const element of elements) {
-        if (!firstMatch) {
-          firstMatch = {
-            tagName: element.tagName,
-            hrefAttribute: element.getAttribute("href"),
-            hrefProperty: element.href,
-            isConnected: element.isConnected
-          };
-        }
-
-        const key = element.href;
-        if (!key) {
-          rejectedNoHref++;
-          continue;
-        }
-        if (seen.has(key)) {
-          rejectedDuplicate++;
-          continue;
-        }
-        if (!element.isConnected) {
-          rejectedDisconnected++;
-          continue;
-        }
-
-        seen.add(key);
-        candidates.push(element);
+    for (const element of links) {
+      const key = videoKey(element);
+      if (!key) {
+        rejectedNoVideoId++;
+        continue;
       }
+      if (seen.has(key)) {
+        rejectedDuplicate++;
+        continue;
+      }
+      if (!element.isConnected) {
+        rejectedDisconnected++;
+        continue;
+      }
+
+      seen.add(key);
+      candidates.push(element);
     }
 
     const withGeometry = candidates.filter((element) => rectOf(element) !== null).length;
     log("candidates", candidates.length, {
-      rawMatched,
+      rawWatchLinks: links.length,
       withGeometry,
-      selectorCounts,
-      rejectedNoHref,
+      rejectedNoVideoId,
       rejectedDuplicate,
       rejectedDisconnected,
-      firstMatch
+      firstHref: links[0]?.getAttribute("href") ?? null
     });
+
     return candidates;
   };
 
@@ -146,7 +145,6 @@
   const centerOf = (element) => {
     const rect = rectOf(element);
     if (!rect) return null;
-
     return {
       x: rect.left + rect.width / 2,
       y: rect.top + rect.height / 2
@@ -159,18 +157,14 @@
   };
 
   const select = (element) => {
-    if (!element) {
-      log("select skipped: no candidate");
-      return;
-    }
+    if (!element) return;
 
     selected?.classList.remove(SELECTED_CLASS);
     selected = element;
     selected.classList.add(SELECTED_CLASS);
     log("selected", selected.href);
 
-    const card = selected.closest(cardSelector);
-    (card ?? selected).scrollIntoView({
+    closestCard(selected).scrollIntoView({
       block: "center",
       inline: "center",
       behavior: "smooth"
@@ -200,76 +194,47 @@
       const x = rect.left + rect.width / 2;
       const y = rect.top + rect.height / 2;
       const distance = Math.hypot(x - viewportCenter.x, y - viewportCenter.y);
-
-      if (!best || distance < best.distance) {
-        return { element, distance };
-      }
-
-      return best;
+      return !best || distance < best.distance ? { element, distance } : best;
     }, null)?.element ?? candidates[0] ?? null;
   };
-
-  const initialCandidate = () => initialCandidateFrom(getCandidates());
 
   const directionalScore = (origin, candidate, direction) => {
     const dx = candidate.x - origin.x;
     const dy = candidate.y - origin.y;
 
-    let primary;
-    let secondary;
-
     switch (direction) {
       case "ArrowLeft":
-        if (dx >= -1) return Infinity;
-        primary = -dx;
-        secondary = Math.abs(dy);
-        break;
+        return dx < -1 ? -dx + Math.abs(dy) * 2 : Infinity;
       case "ArrowRight":
-        if (dx <= 1) return Infinity;
-        primary = dx;
-        secondary = Math.abs(dy);
-        break;
+        return dx > 1 ? dx + Math.abs(dy) * 2 : Infinity;
       case "ArrowUp":
-        if (dy >= -1) return Infinity;
-        primary = -dy;
-        secondary = Math.abs(dx);
-        break;
+        return dy < -1 ? -dy + Math.abs(dx) * 2 : Infinity;
       case "ArrowDown":
-        if (dy <= 1) return Infinity;
-        primary = dy;
-        secondary = Math.abs(dx);
-        break;
+        return dy > 1 ? dy + Math.abs(dx) * 2 : Infinity;
       default:
         return Infinity;
     }
-
-    return primary + secondary * 2;
   };
 
   const move = (direction) => {
-    log("move", direction);
-
     if (!selected || !document.contains(selected)) {
-      select(initialCandidate());
+      select(initialCandidateFrom(getCandidates()));
       return;
     }
 
     const origin = centerOf(selected);
     if (!origin) {
-      select(initialCandidate());
+      select(initialCandidateFrom(getCandidates()));
       return;
     }
 
     const next = getCandidates().reduce((best, element) => {
       if (element === selected) return best;
-
       const center = centerOf(element);
       if (!center) return best;
-
       const score = directionalScore(origin, center, direction);
       if (!Number.isFinite(score)) return best;
-      if (!best || score < best.score) return { element, score };
-      return best;
+      return !best || score < best.score ? { element, score } : best;
     }, null)?.element;
 
     if (next) select(next);
@@ -311,12 +276,6 @@
         event.code === "KeyY";
 
       if (togglePressed) {
-        log("toggle key received", {
-          key: event.key,
-          code: event.code,
-          ctrlKey: event.ctrlKey,
-          shiftKey: event.shiftKey
-        });
         event.preventDefault();
         event.stopPropagation();
         active ? deactivate() : void activate();
@@ -350,8 +309,5 @@
     true
   );
 
-  document.addEventListener("yt-navigate-start", () => {
-    log("yt-navigate-start");
-    deactivate();
-  });
+  document.addEventListener("yt-navigate-start", deactivate);
 })();
