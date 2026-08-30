@@ -84,6 +84,9 @@ cask "hammerspoon"
 # アプリ・ファイル・コマンドなどを横断検索し、Mac の操作入口として利用する。
 cask "raycast"
 
+# Raycast のローカル Extension を構築するための Node.js / npm。
+brew "node"
+
 # --- Applications -----------------------------------------------------------
 
 # ChatGPT などの Web アプリを軽快に利用する Chromium ベースのブラウザ。
