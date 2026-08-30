@@ -12,9 +12,6 @@
   const CANDIDATE_WAIT_MS = 3000;
   const CANDIDATE_POLL_MS = 100;
 
-  // Prefer semantic media links over YouTube's renderer tag names. Renderer
-  // names and nesting change frequently, while watch/shorts URLs are the
-  // stable contract we actually need.
   const MEDIA_LINK_SELECTOR = [
     'a[href^="/watch"]',
     'a[href^="https://www.youtube.com/watch"]',
@@ -22,10 +19,6 @@
     'a[href^="https://www.youtube.com/shorts/"]'
   ].join(",");
 
-  // These are used only to find the visual card that owns a media link.
-  // Candidate identity is the card element, not the video id. This matters
-  // for Mix/radio cards and repeated videos that legitimately appear in more
-  // than one place on the same page.
   const cardSelectors = [
     "ytd-rich-item-renderer",
     "ytd-video-renderer",
@@ -106,7 +99,6 @@
   };
 
   const linkScore = (element) => {
-    // Prefer a large, visible link (usually the thumbnail) as the click target.
     const rect = element.getBoundingClientRect();
     return hasArea(rect) ? rect.width * rect.height : 0;
   };
@@ -131,8 +123,6 @@
       const card = closestCard(element);
       const existing = byCard.get(card);
 
-      // One candidate per visual card. If a card contains several equivalent
-      // links (thumbnail/title), keep the largest one as the click target.
       if (!existing || linkScore(element) > linkScore(existing)) {
         byCard.set(card, element);
       }
@@ -181,6 +171,15 @@
     x: rect.left + rect.width / 2,
     y: rect.top + rect.height / 2
   });
+
+  const verticalOverlap = (a, b) =>
+    Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+
+  const sameVisualRow = (a, b) => {
+    const overlap = verticalOverlap(a, b);
+    const required = Math.min(a.height, b.height) * 0.35;
+    return overlap >= required;
+  };
 
   const clearSelection = () => {
     selected?.classList.remove(SELECTED_CLASS);
@@ -231,39 +230,42 @@
     }, null)?.element ?? candidates[0] ?? null;
   };
 
-  const directionalScore = (originRect, candidateRect, direction) => {
+  const verticalScore = (originRect, candidateRect, direction) => {
     const origin = centerOfRect(originRect);
     const candidate = centerOfRect(candidateRect);
     const dx = candidate.x - origin.x;
-    const dy = candidate.y - origin.y;
 
-    // Require the next card to be genuinely outside the current card in the
-    // requested direction. This avoids tiny layout offsets making a card in
-    // the same row look like the next row.
-    switch (direction) {
-      case "ArrowUp": {
-        if (candidate.y >= originRect.top - 1) return Infinity;
-        const primary = originRect.top - candidate.y;
-        return primary * 10000 + Math.abs(dx);
-      }
-      case "ArrowDown": {
-        if (candidate.y <= originRect.bottom + 1) return Infinity;
-        const primary = candidate.y - originRect.bottom;
-        return primary * 10000 + Math.abs(dx);
-      }
-      case "ArrowLeft": {
-        if (candidate.x >= originRect.left - 1) return Infinity;
-        const primary = originRect.left - candidate.x;
-        return primary * 10000 + Math.abs(dy);
-      }
-      case "ArrowRight": {
-        if (candidate.x <= originRect.right + 1) return Infinity;
-        const primary = candidate.x - originRect.right;
-        return primary * 10000 + Math.abs(dy);
-      }
-      default:
-        return Infinity;
+    if (direction === "ArrowUp") {
+      if (candidate.y >= originRect.top - 1) return Infinity;
+      return (originRect.top - candidate.y) * 10000 + Math.abs(dx);
     }
+
+    if (direction === "ArrowDown") {
+      if (candidate.y <= originRect.bottom + 1) return Infinity;
+      return (candidate.y - originRect.bottom) * 10000 + Math.abs(dx);
+    }
+
+    return Infinity;
+  };
+
+  const horizontalScore = (originRect, candidateRect, direction) => {
+    if (!sameVisualRow(originRect, candidateRect)) return Infinity;
+
+    const origin = centerOfRect(originRect);
+    const candidate = centerOfRect(candidateRect);
+    const dy = Math.abs(candidate.y - origin.y);
+
+    if (direction === "ArrowLeft") {
+      if (candidate.x >= origin.x - 1) return Infinity;
+      return (origin.x - candidate.x) * 10000 + dy;
+    }
+
+    if (direction === "ArrowRight") {
+      if (candidate.x <= origin.x + 1) return Infinity;
+      return (candidate.x - origin.x) * 10000 + dy;
+    }
+
+    return Infinity;
   };
 
   const move = (direction) => {
@@ -278,18 +280,27 @@
       return;
     }
 
+    const horizontal = direction === "ArrowLeft" || direction === "ArrowRight";
+
     const next = getCandidates().reduce((best, element) => {
       if (closestCard(element) === closestCard(selected)) return best;
 
       const candidateRect = rectOf(element);
       if (!candidateRect) return best;
 
-      const score = directionalScore(originRect, candidateRect, direction);
+      const score = horizontal
+        ? horizontalScore(originRect, candidateRect, direction)
+        : verticalScore(originRect, candidateRect, direction);
+
       if (!Number.isFinite(score)) return best;
       return !best || score < best.score ? { element, score } : best;
     }, null)?.element;
 
-    if (next) select(next);
+    if (next) {
+      select(next);
+    } else if (horizontal) {
+      log("horizontal move skipped: no stable same-row candidate", direction);
+    }
   };
 
   const activate = async () => {
