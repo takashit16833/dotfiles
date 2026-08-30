@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Keyboard Navigator",
+  "version": "0.1.0",
+  "description": "Navigate YouTube video cards with the keyboard.",
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
