@@ -27,8 +27,10 @@ Raycast 側では、このディレクトリを Script Commands の検索対象�
 `raycast/extension` は、dotfiles で管理する自作 Raycast コマンドをまとめる唯一の Local Extension とする。
 動的な一覧表示など Raycast Extension API が必要な機能は、機能ごとに npm project を増やさず、この Extension に command を追加する。
 
-`bash install.sh` は Node.js/npm の導入、依存 package の取得、`ray develop` による Raycast への登録と build、development process の停止まで自動で行う。
-普段の利用時に `npm run dev` を起動しておく必要はない。Extension のソースを変更して手元で開発するときだけ `npm run dev` を使う。
+`bash install.sh` は Node.js/npm の導入、依存 package の取得、`npm run build` による production build と Raycast の extensions directory への配置まで自動で行う。
+`ray develop` は installer では使用しない。普段の利用時に `npm run dev` を起動しておく必要はなく、Extension のソースを変更して手元で開発するときだけ `npm run dev` を使う。
+
+install 後は `~/.config/raycast/extensions` を確認し、package name が `dotfiles-commands` の Extension が実際に配置された場合だけ成功扱いにする。
 
 ### GitHub Repositories
 
@@ -42,16 +44,17 @@ Extension はログインシェルから `gh` の実体を解決するため、H
 
 ## Uninstall
 
-`bash uninstall.sh` は `raycast/extension/node_modules` と `dist` など、dotfiles の Local Extension が生成したファイルを削除する。
+`bash uninstall.sh` は `raycast/extension/node_modules` / `dist` に加えて、`~/.config/raycast/extensions` 配下から package name が `dotfiles-commands` と完全一致する Local Extension だけを削除する。
 
-Raycast は Local Extension の登録解除を行う公開 CLI / API を現時点では提供していないため、Raycast 内の登録だけは内部 database を直接操作せず残す。完全に登録解除する場合は Raycast の Extensions から `Dotfiles Commands` を Uninstall する。
+Raycast の内部 database は直接操作しない。installed extensions directory 上の manifest を識別子として扱い、他の Extension には触れない。
 
 ## 管理方針
 
 - Raycast 本体: `Brewfile` で管理する。
 - Script Commands / 自作 Extension: ソースコードを Git で管理する。
 - 自作 Extension は `raycast/extension` の 1 project に集約し、機能ごとに npm project を増やさない。
-- `install.sh` は Local Extension の dependency install / Raycast import / build / development process 停止まで自動化する。
+- `install.sh` は Local Extension の dependency install / production build / installed manifest 確認まで自動化する。
+- `npm run dev` / `ray develop` は開発時だけ利用し、環境構築には使わない。
 - Hotkey / Alias など Raycast 内部の設定: Raycast 側で設定し、この README に再構築手順を記録する。
 - Clipboard History / AI 履歴 / Notes などの個人データ: Git では管理しない。
 - `.rayconfig`: Raycast 自身のバックアップ用途として扱い、dotfiles には含めない。
