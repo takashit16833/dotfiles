@@ -12,10 +12,15 @@
   const CANDIDATE_WAIT_MS = 3000;
   const CANDIDATE_POLL_MS = 100;
 
-  // Prefer semantic links over YouTube's renderer tag names. Those renderer
-  // names and nesting change frequently, while watch links are the stable
-  // contract we actually need.
-  const WATCH_LINK_SELECTOR = 'a[href^="/watch"], a[href^="https://www.youtube.com/watch"]';
+  // Prefer semantic media links over YouTube's renderer tag names. Renderer
+  // names and nesting change frequently, while watch/shorts URLs are the
+  // stable contract we actually need.
+  const MEDIA_LINK_SELECTOR = [
+    'a[href^="/watch"]',
+    'a[href^="https://www.youtube.com/watch"]',
+    'a[href^="/shorts/"]',
+    'a[href^="https://www.youtube.com/shorts/"]'
+  ].join(",");
 
   const cardSelectors = [
     "ytd-rich-item-renderer",
@@ -26,7 +31,9 @@
     "yt-lockup-view-model",
     "ytd-rich-grid-media",
     "ytd-rich-grid-slim-media",
-    "ytd-reel-item-renderer"
+    "ytd-reel-item-renderer",
+    "ytm-shorts-lockup-view-model",
+    "ytm-shorts-lockup-view-model-v2"
   ];
 
   let active = false;
@@ -79,28 +86,39 @@
     return null;
   };
 
-  const videoKey = (element) => {
+  const mediaKey = (element) => {
     try {
       const url = new URL(element.href, window.location.href);
-      return url.pathname === "/watch" ? url.searchParams.get("v") : null;
+
+      if (url.pathname === "/watch") {
+        const videoId = url.searchParams.get("v");
+        return videoId ? `watch:${videoId}` : null;
+      }
+
+      if (url.pathname.startsWith("/shorts/")) {
+        const shortId = url.pathname.split("/")[2];
+        return shortId ? `shorts:${shortId}` : null;
+      }
+
+      return null;
     } catch {
       return null;
     }
   };
 
   const getCandidates = () => {
-    const links = Array.from(document.querySelectorAll(WATCH_LINK_SELECTOR));
+    const links = Array.from(document.querySelectorAll(MEDIA_LINK_SELECTOR));
     const seen = new Set();
     const candidates = [];
 
-    let rejectedNoVideoId = 0;
+    let rejectedNoMediaId = 0;
     let rejectedDuplicate = 0;
     let rejectedDisconnected = 0;
 
     for (const element of links) {
-      const key = videoKey(element);
+      const key = mediaKey(element);
       if (!key) {
-        rejectedNoVideoId++;
+        rejectedNoMediaId++;
         continue;
       }
       if (seen.has(key)) {
@@ -117,10 +135,12 @@
     }
 
     const withGeometry = candidates.filter((element) => rectOf(element) !== null).length;
+    const shorts = candidates.filter((element) => mediaKey(element)?.startsWith("shorts:")).length;
     log("candidates", candidates.length, {
-      rawWatchLinks: links.length,
+      rawMediaLinks: links.length,
+      shorts,
       withGeometry,
-      rejectedNoVideoId,
+      rejectedNoMediaId,
       rejectedDuplicate,
       rejectedDisconnected,
       firstHref: links[0]?.getAttribute("href") ?? null
