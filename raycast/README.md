@@ -27,10 +27,12 @@ Raycast 側では、このディレクトリを Script Commands の検索対象�
 `raycast/extension` は、dotfiles で管理する自作 Raycast コマンドをまとめる唯一の Local Extension とする。
 動的な一覧表示など Raycast Extension API が必要な機能は、機能ごとに npm project を増やさず、この Extension に command を追加する。
 
-`bash install.sh` は Node.js/npm の導入、依存 package の取得、`npm run build` による production build と Raycast の extensions directory への配置まで自動で行う。
-`ray develop` は installer では使用しない。普段の利用時に `npm run dev` を起動しておく必要はなく、Extension のソースを変更して手元で開発するときだけ `npm run dev` を使う。
+`bash install.sh` は Node.js/npm の導入、依存 package の取得、production build、`~/.config/raycast/extensions/dotfiles-commands` への配置まで自動で行う。
+build は `ray build -e dist -o <directory>` のように output directory を明示し、Raycast app を起動せずに実行する。
 
-install 後は `~/.config/raycast/extensions` を確認し、package name が `dotfiles-commands` の Extension が実際に配置された場合だけ成功扱いにする。
+installer では `ray develop` を使用しない。普段の利用時に `npm run dev` を起動しておく必要はなく、Extension のソースを変更して手元で開発するときだけ `npm run dev` を使う。
+
+install 時はいったん staging directory へ build し、生成された `package.json` の `name` が `dotfiles-commands` と一致することを確認してから installed directory と入れ替える。
 
 ### GitHub Repositories
 
@@ -44,16 +46,17 @@ Extension はログインシェルから `gh` の実体を解決するため、H
 
 ## Uninstall
 
-`bash uninstall.sh` は `raycast/extension/node_modules` / `dist` に加えて、`~/.config/raycast/extensions` 配下から package name が `dotfiles-commands` と完全一致する Local Extension だけを削除する。
+`bash uninstall.sh` は `raycast/extension/node_modules` / `dist` に加えて、`~/.config/raycast/extensions/dotfiles-commands` を manifest で識別したうえで削除する。
+中断時に残り得る `.dotfiles-commands.staging.*` も削除する。
 
-Raycast の内部 database は直接操作しない。installed extensions directory 上の manifest を識別子として扱い、他の Extension には触れない。
+Raycast の内部 database は直接操作しない。dotfiles が配置した extensions directory 上のファイルだけを管理し、他の Extension には触れない。
 
 ## 管理方針
 
 - Raycast 本体: `Brewfile` で管理する。
 - Script Commands / 自作 Extension: ソースコードを Git で管理する。
 - 自作 Extension は `raycast/extension` の 1 project に集約し、機能ごとに npm project を増やさない。
-- `install.sh` は Local Extension の dependency install / production build / installed manifest 確認まで自動化する。
+- `install.sh` は Local Extension の dependency install / headless production build / manifest 検証 / 配置まで自動化する。
 - `npm run dev` / `ray develop` は開発時だけ利用し、環境構築には使わない。
 - Hotkey / Alias など Raycast 内部の設定: Raycast 側で設定し、この README に再構築手順を記録する。
 - Clipboard History / AI 履歴 / Notes などの個人データ: Git では管理しない。
