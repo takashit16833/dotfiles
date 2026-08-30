@@ -16,6 +16,14 @@ bash ./install.sh
 
 Hammerspoon は初回起動時にアクセシビリティ権限を許可する。
 
+## Browser extensions
+
+自作の Chromium 系ブラウザ拡張は `chrome/` 配下で管理する。
+
+- `chrome/youtube-keyboard`: YouTube の動画一覧をキーボードで移動・選択する。
+
+Chrome / Brave の unpacked extension はブラウザ側への初回登録が必要なため、各 extension の README に再構築手順を記載する。
+
 ## Git identity
 
 各 Mac で `~/.gitconfig.local` を作成する。
