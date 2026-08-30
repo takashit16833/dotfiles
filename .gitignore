@@ -4,3 +4,4 @@
 .config/zsh/.zcompcache
 raycast/extension/node_modules/
 raycast/extension/dist/
+raycast/extension/raycast-env.d.ts
