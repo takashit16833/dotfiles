@@ -2,3 +2,5 @@
 .config/zsh/.zsh_sessions
 .config/zsh/.zcompdump*
 .config/zsh/.zcompcache
+raycast/extensions/**/node_modules/
+raycast/extensions/**/dist/
