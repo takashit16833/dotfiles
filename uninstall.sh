@@ -11,6 +11,7 @@ ZELLIJ_BIN="$LOCAL_BIN_DIR/zellij"
 ZELLIJ_MANAGED_STATE_DIR="$HOME/.local/share/dotfiles/zellij"
 ZELLIJ_MANAGED_VERSION_FILE="$ZELLIJ_MANAGED_STATE_DIR/version"
 VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
+RAYCAST_EXTENSION_DIR="$DOTFILES_DIR/raycast/extension"
 
 info() {
   printf '[dotfiles] %s\n' "$*"
@@ -103,6 +104,18 @@ uninstall_bat_theme() {
   rmdir "$XDG_CONFIG_HOME/bat" 2>/dev/null || true
 }
 
+uninstall_raycast_extension() {
+  # repository の source は削除せず、npm / build が生成したものだけを片付ける。
+  remove_path "$RAYCAST_EXTENSION_DIR/node_modules"
+  remove_path "$RAYCAST_EXTENSION_DIR/dist"
+
+  # Raycast は Local Extension の登録解除を行う公開 CLI / API を提供していない。
+  # 内部 database や private path を推測して削除せず、登録解除だけは Raycast の
+  # Extensions UI から行う。source / 生成物の管理責任は uninstall.sh 側に留める。
+  info 'Raycast Local Extension build artifacts removed'
+  info 'Raycast registration remains; uninstall "Dotfiles Commands" from Raycast Extensions when full deregistration is needed'
+}
+
 main() {
   info "uninstalling links and local tools created from $DOTFILES_DIR"
 
@@ -177,6 +190,8 @@ main() {
   remove_symlink \
     "$DOTFILES_DIR/.hammerspoon" \
     "$HOME/.hammerspoon"
+
+  uninstall_raycast_extension
 
   # ~/.local/bin 自体は他の local CLI と共有するため、空のときだけ削除する。
   rmdir "$LOCAL_BIN_DIR" 2>/dev/null || true
