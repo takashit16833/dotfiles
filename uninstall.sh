@@ -107,27 +107,28 @@ uninstall_bat_theme() {
 }
 
 uninstall_raycast_extension() {
-  local manifest
+  local install_dir="$RAYCAST_INSTALLED_EXTENSIONS_DIR/$RAYCAST_EXTENSION_NAME"
+  local staging_dir
 
-  # source は残し、repository 内の生成物だけ削除する。
+  # repository の source は残し、npm / local build が生成したものだけを片付ける。
   remove_path "$RAYCAST_EXTENSION_DIR/node_modules"
   remove_path "$RAYCAST_EXTENSION_DIR/dist"
 
-  # Raycast が管理する extensions directory から、この dotfiles Extension と
-  # package.json の name が完全一致するものだけを削除する。
-  if [[ -d "$RAYCAST_INSTALLED_EXTENSIONS_DIR" ]]; then
-    if command -v jq >/dev/null 2>&1; then
-      for manifest in "$RAYCAST_INSTALLED_EXTENSIONS_DIR"/*/package.json; do
-        [[ -f "$manifest" ]] || continue
-
-        if [[ "$(jq -r '.name // empty' "$manifest" 2>/dev/null || true)" == "$RAYCAST_EXTENSION_NAME" ]]; then
-          remove_path "$(dirname "$manifest")"
-        fi
-      done
+  # install.sh が管理する固定 destination と、中断時に残り得る staging directory を削除する。
+  if [[ -f "$install_dir/package.json" ]] && command -v jq >/dev/null 2>&1; then
+    if [[ "$(jq -r '.name // empty' "$install_dir/package.json" 2>/dev/null || true)" == "$RAYCAST_EXTENSION_NAME" ]]; then
+      remove_path "$install_dir"
     else
-      info 'warning: jq not found; skipped removing installed Raycast Local Extension'
+      info "skip: $install_dir does not identify as $RAYCAST_EXTENSION_NAME"
     fi
+  elif [[ -e "$install_dir" || -L "$install_dir" ]]; then
+    info "skip: $install_dir exists but could not be verified as $RAYCAST_EXTENSION_NAME"
   fi
+
+  for staging_dir in "$RAYCAST_INSTALLED_EXTENSIONS_DIR"/."$RAYCAST_EXTENSION_NAME".staging.*; do
+    [[ -e "$staging_dir" || -L "$staging_dir" ]] || continue
+    remove_path "$staging_dir"
+  done
 
   info 'Raycast Local Extension removed'
 }
