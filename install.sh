@@ -235,8 +235,8 @@ install_vscode_extensions() {
 
 install_raycast_extension() {
   local ray_cli="$RAYCAST_EXTENSION_DIR/node_modules/.bin/ray"
-  local installed_manifest=''
-  local manifest
+  local install_dir="$RAYCAST_INSTALLED_EXTENSIONS_DIR/$RAYCAST_EXTENSION_NAME"
+  local staging_dir="$RAYCAST_INSTALLED_EXTENSIONS_DIR/.${RAYCAST_EXTENSION_NAME}.staging.$$"
 
   if [[ ! -f "$RAYCAST_EXTENSION_DIR/package.json" ]]; then
     fail "$RAYCAST_EXTENSION_DIR/package.json does not exist"
@@ -260,31 +260,34 @@ install_raycast_extension() {
     fail 'Raycast extension CLI was not installed by npm'
   fi
 
-  # Production build は終了するコマンドなので install.sh から安全に実行できる。
-  # Raycast の build は ~/.config/raycast/extensions 配下へ Local Extension を配置する。
-  info 'building and installing Raycast Local Extension'
-  (
+  mkdir -p "$RAYCAST_INSTALLED_EXTENSIONS_DIR"
+  rm -rf "$staging_dir"
+
+  # -o を明示すると Raycast app を起動せず、指定 directory へ production build を出力できる。
+  # いったん staging directory へ build し、manifest を検証してから atomically に入れ替える。
+  info 'building Raycast Local Extension without launching Raycast'
+  if ! (
     cd "$RAYCAST_EXTENSION_DIR"
-    npm run build
-  )
-
-  if [[ -d "$RAYCAST_INSTALLED_EXTENSIONS_DIR" ]]; then
-    for manifest in "$RAYCAST_INSTALLED_EXTENSIONS_DIR"/*/package.json; do
-      [[ -f "$manifest" ]] || continue
-
-      if [[ "$(jq -r '.name // empty' "$manifest" 2>/dev/null || true)" == "$RAYCAST_EXTENSION_NAME" ]]; then
-        installed_manifest="$manifest"
-        break
-      fi
-    done
+    "$ray_cli" build -e dist -o "$staging_dir"
+  ); then
+    rm -rf "$staging_dir"
+    fail 'failed to build Raycast Local Extension'
   fi
 
-  if [[ -z "$installed_manifest" ]]; then
-    fail "Raycast build completed but $RAYCAST_EXTENSION_NAME was not found under $RAYCAST_INSTALLED_EXTENSIONS_DIR"
+  if [[ ! -f "$staging_dir/package.json" ]]; then
+    rm -rf "$staging_dir"
+    fail "Raycast build completed but package.json was not found in $staging_dir"
   fi
 
-  /usr/bin/open -gj -a Raycast || fail 'failed to launch Raycast'
-  info "Raycast Local Extension installed: $(dirname "$installed_manifest")"
+  if [[ "$(jq -r '.name // empty' "$staging_dir/package.json" 2>/dev/null || true)" != "$RAYCAST_EXTENSION_NAME" ]]; then
+    rm -rf "$staging_dir"
+    fail "Raycast build output does not identify as $RAYCAST_EXTENSION_NAME"
+  fi
+
+  rm -rf "$install_dir"
+  mv "$staging_dir" "$install_dir"
+
+  info "Raycast Local Extension installed: $install_dir"
 }
 
 main() {
