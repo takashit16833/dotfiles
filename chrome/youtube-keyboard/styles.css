@@ -1,0 +1,5 @@
+html.yt-keyboard-mode .yt-keyboard-selected {
+  outline: 4px solid #ff0033 !important;
+  outline-offset: 4px !important;
+  border-radius: 10px !important;
+}
