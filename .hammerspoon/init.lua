@@ -510,3 +510,74 @@ end)
 hs.hotkey.bind(hyperShift, "tab", function()
   moveFocusedWindowToAdjacentScreen("previous")
 end)
+
+-- Mouse4 / Mouse5 を、マウスカーソル下ではなくアクティブなウィンドウの
+-- 「戻る / 進む」操作へ変換する。実機では Mouse4 = 3、Mouse5 = 4。
+local navigationMouseButtons = {
+  [3] = true,
+  [4] = true,
+}
+
+-- VS Code の「進む」は JIS の「ろ」キー（virtual keycode 94）に Ctrl を付けた操作。
+-- 文字名ではなく、実機で確認した keycode を直接送ってキーボード配列の差を避ける。
+local function sendVSCodeForward()
+  hs.eventtap.event.newKeyEvent({ "ctrl" }, 94, true):post()
+  hs.eventtap.event.newKeyEvent({ "ctrl" }, 94, false):post()
+end
+
+local function supportsMouseNavigation(bundleID)
+  return bundleID == appBundleIDs.chrome
+      or bundleID == appBundleIDs.brave
+      or bundleID == appBundleIDs.vscode
+end
+
+local function sendMouseNavigation(button, bundleID)
+  if bundleID == appBundleIDs.chrome or bundleID == appBundleIDs.brave then
+    if button == 3 then
+      hs.eventtap.keyStroke({ "cmd" }, "left", 0)
+    else
+      hs.eventtap.keyStroke({ "cmd" }, "right", 0)
+    end
+    return
+  end
+
+  if bundleID == appBundleIDs.vscode then
+    if button == 3 then
+      hs.eventtap.keyStroke({ "ctrl" }, "-", 0)
+    else
+      sendVSCodeForward()
+    end
+  end
+end
+
+mouseNavigationEventTap = hs.eventtap.new({
+  hs.eventtap.event.types.otherMouseDown,
+  hs.eventtap.event.types.otherMouseUp,
+}, function(event)
+  local button = event:getProperty(
+    hs.eventtap.event.properties.mouseEventButtonNumber
+  )
+
+  if not navigationMouseButtons[button] then
+    return false
+  end
+
+  local window = hs.window.focusedWindow()
+  local app = window and window:application()
+  local bundleID = app and app:bundleID()
+
+  -- 未対応アプリでは Mouse4 / Mouse5 をそのまま通す。
+  if not bundleID or not supportsMouseNavigation(bundleID) then
+    return false
+  end
+
+  -- MouseUp は握り潰し、操作は MouseDown の一度だけ実行する。
+  if event:getType() == hs.eventtap.event.types.otherMouseUp then
+    return true
+  end
+
+  sendMouseNavigation(button, bundleID)
+  return true
+end)
+
+mouseNavigationEventTap:start()
