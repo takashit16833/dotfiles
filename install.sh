@@ -79,6 +79,22 @@ ensure_symlink() {
   info "linked: $target -> $source"
 }
 
+install_managed_scripts() {
+  local scripts_dir="$DOTFILES_DIR/scripts/bin"
+  local script
+
+  if [[ ! -d "$scripts_dir" ]]; then
+    fail "$scripts_dir does not exist"
+  fi
+
+  mkdir -p "$LOCAL_BIN_DIR"
+  for script in "$scripts_dir"/*; do
+    [[ -f "$script" ]] || continue
+    [[ -x "$script" ]] || fail "$script is not executable"
+    ensure_symlink "$script" "$LOCAL_BIN_DIR/$(basename "$script")"
+  done
+}
+
 zellij_target_triple() {
   case "$(uname -m)" in
     arm64)
@@ -295,6 +311,7 @@ main() {
 
   install_homebrew_packages
   install_zellij
+  install_managed_scripts
 
   ensure_symlink \
     "$DOTFILES_DIR/.config/zellij/config.kdl" \
