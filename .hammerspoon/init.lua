@@ -518,6 +518,14 @@ local navigationMouseButtons = {
   [4] = true,
 }
 
+-- 文字名からの変換は JIS 配列で実機と異なる keycode になったため、
+-- Chrome / Brave の戻る・進むも実機で確認した物理 keycode を直接送る。
+local function sendBrowserNavigation(button)
+  local keyCode = button == 3 and 30 or 42
+  hs.eventtap.event.newKeyEvent({ "cmd" }, keyCode, true):post()
+  hs.eventtap.event.newKeyEvent({ "cmd" }, keyCode, false):post()
+end
+
 -- VS Code の「進む」は JIS の「ろ」キー（virtual keycode 94）に Ctrl を付けた操作。
 -- 文字名ではなく、実機で確認した keycode を直接送ってキーボード配列の差を避ける。
 local function sendVSCodeForward()
@@ -533,11 +541,7 @@ end
 
 local function sendMouseNavigation(button, bundleID)
   if bundleID == appBundleIDs.chrome or bundleID == appBundleIDs.brave then
-    if button == 3 then
-      hs.eventtap.keyStroke({ "cmd" }, "[", 0)
-    else
-      hs.eventtap.keyStroke({ "cmd" }, "]", 0)
-    end
+    sendBrowserNavigation(button)
     return
   end
 
