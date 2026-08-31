@@ -41,9 +41,6 @@ brew "lazygit"
 # Lazygit で通常の Git diff を syntax highlight 付きで読みやすく表示する。
 brew "git-delta"
 
-# git-delta の構文色に独自の Retro Hacker Blue theme を読み込ませる。
-brew "bat"
-
 # GitHub の認証や repository 操作に利用する。
 brew "gh"
 
