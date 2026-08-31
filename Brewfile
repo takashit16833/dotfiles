@@ -86,6 +86,9 @@ brew "node"
 
 # --- Applications -----------------------------------------------------------
 
+# 通常の Web ブラウジングや Chrome 固有の Web アプリで利用する。
+cask "google-chrome"
+
 # ChatGPT などの Web アプリを軽快に利用する Chromium ベースのブラウザ。
 cask "brave-browser"
 
