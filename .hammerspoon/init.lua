@@ -519,8 +519,8 @@ local navigationMouseButtons = {
 }
 
 -- 文字名からの変換は JIS 配列で実機と異なる keycode になったため、
--- Chrome / Brave の戻る・進むも実機で確認した物理 keycode を直接送る。
-local function sendBrowserNavigation(button)
+-- VS Code 以外では Cmd + [ / ] 相当の実機で確認した物理 keycode を直接送る。
+local function sendDefaultNavigation(button)
   local keyCode = button == 3 and 30 or 42
   hs.eventtap.event.newKeyEvent({ "cmd" }, keyCode, true):post()
   hs.eventtap.event.newKeyEvent({ "cmd" }, keyCode, false):post()
@@ -533,25 +533,17 @@ local function sendVSCodeForward()
   hs.eventtap.event.newKeyEvent({ "ctrl" }, 94, false):post()
 end
 
-local function supportsMouseNavigation(bundleID)
-  return bundleID == appBundleIDs.chrome
-      or bundleID == appBundleIDs.brave
-      or bundleID == appBundleIDs.vscode
-end
-
 local function sendMouseNavigation(button, bundleID)
-  if bundleID == appBundleIDs.chrome or bundleID == appBundleIDs.brave then
-    sendBrowserNavigation(button)
-    return
-  end
-
   if bundleID == appBundleIDs.vscode then
     if button == 3 then
       hs.eventtap.keyStroke({ "ctrl" }, "-", 0)
     else
       sendVSCodeForward()
     end
+    return
   end
+
+  sendDefaultNavigation(button)
 end
 
 mouseNavigationEventTap = hs.eventtap.new({
@@ -570,8 +562,8 @@ mouseNavigationEventTap = hs.eventtap.new({
   local app = window and window:application()
   local bundleID = app and app:bundleID()
 
-  -- 未対応アプリでは Mouse4 / Mouse5 をそのまま通す。
-  if not bundleID or not supportsMouseNavigation(bundleID) then
+  -- アクティブな通常ウィンドウを特定できない場合は Mouse4 / Mouse5 をそのまま通す。
+  if not bundleID then
     return false
   end
 
