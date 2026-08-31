@@ -87,8 +87,7 @@
 - Homebrew 外で dotfiles が管理する CLI は `$HOME/.local/bin` に置き、`.config/zsh/.zshenv` で同 directory を `PATH` の先頭へ追加する。
 - 自作の個人用 CLI / 運用スクリプトは `scripts/bin/` を正本とし、用途と使い方は `scripts/README.md` にまとめる。新しい CLI を追加する前に `scripts/README.md` と `scripts/bin/` を確認し、同じ責務のスクリプトを重複して作らない。
 - `install.sh` は `scripts/bin/` の executable を `$HOME/.local/bin` へ symlink し、`uninstall.sh` はこの repository を指している symlink だけを解除する。script の実体を `$HOME/.local/bin` へコピーしない。
-- 自作 CLI の runtime state、秘密情報、SSH private/public key は repository に含めない。`repo-main-bypass` の key pair は `~/.ssh/github-main-bypass` 配下に置く。
-- GitHub Ruleset の `DeployKey` bypass は個別の Deploy Key ID ではなく Deploy Key 種別に適用されるため、`repo-main-bypass setup` は別の write-enabled Deploy Key が存在する repository では停止し、この権限分離を曖昧にしない。
+- 自作 CLI の runtime state、秘密情報、SSH private/public key は repository に含めない。
 - `tdf` は Homebrew core の formula として `Brewfile` で管理する。`cargo install` を直接使わず、Rust toolchain も top-level dependency として追加しない。
 - Zellij は Kitty Graphics Protocol 対応が必要なため、Homebrew の更新タイミングには依存せず、`install.sh` が指定 version の公式 macOS release binary を `$HOME/.local/bin/zellij` へ導入する。
 - Zellij を `install.sh` が導入したときだけ `$HOME/.local/share/dotfiles/zellij/version` を ownership marker として作る。marker の無い既存 binary は、同じ version であっても dotfiles 管理として採用せず、勝手に上書きしない。
