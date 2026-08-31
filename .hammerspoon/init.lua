@@ -18,26 +18,21 @@ local appBundleIDs = {
   eTyping = "com.google.Chrome.app.diccnboabdebegbpmodfgcekollacjne",
   obsidian = "md.obsidian",
   kitty = "net.kovidgoyal.kitty",
-  raycast = "com.raycast.macos",
   vscode = "com.microsoft.VSCode",
 }
 
--- 指定したアプリにフォーカスしたら英数入力へ切り替える。
+-- kitty にフォーカスしたら英数入力へ切り替える。
 local englishInputSourceID = "com.apple.inputmethod.Kotoeri.RomajiTyping.Roman"
-local englishInputSourceApps = {
-  [appBundleIDs.kitty] = true,
-  [appBundleIDs.raycast] = true,
-}
 
-englishInputSourceWatcher = hs.application.watcher.new(function(_, eventType, app)
+kittyInputSourceWatcher = hs.application.watcher.new(function(_, eventType, app)
   if eventType == hs.application.watcher.activated
       and app
-      and englishInputSourceApps[app:bundleID()] then
+      and app:bundleID() == appBundleIDs.kitty then
     hs.keycodes.currentSourceID(englishInputSourceID)
   end
 end)
 
-englishInputSourceWatcher:start()
+kittyInputSourceWatcher:start()
 
 -- 現在見えている Space にある、指定アプリの標準ウィンドウだけを取得する。
 -- hs.window.allWindows() は呼び出すたびに現在の Mission Control Space を問い合わせるため、
