@@ -534,9 +534,9 @@ end
 local function sendMouseNavigation(button, bundleID)
   if bundleID == appBundleIDs.chrome or bundleID == appBundleIDs.brave then
     if button == 3 then
-      hs.eventtap.keyStroke({ "cmd" }, "left", 0)
+      hs.eventtap.keyStroke({ "cmd" }, "[", 0)
     else
-      hs.eventtap.keyStroke({ "cmd" }, "right", 0)
+      hs.eventtap.keyStroke({ "cmd" }, "]", 0)
     end
     return
   end
