@@ -1,0 +1,420 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+KEY_ROOT="${REPO_MAIN_BYPASS_KEY_ROOT:-$HOME/.ssh/github-main-bypass}"
+PR_RULESET='Require PR (local deploy key bypass)'
+PROTECT_RULESET='Protect default branch (no bypass)'
+
+info() { printf '[repo-main-bypass] %s\n' "$*"; }
+warn() { printf '[repo-main-bypass] WARNING: %s\n' "$*" >&2; }
+fail() { printf '[repo-main-bypass] ERROR: %s\n' "$*" >&2; exit 1; }
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  repo-main-bypass setup
+  repo-main-bypass status
+  repo-main-bypass remove
+  repo-main-bypass audit
+
+setup/status/remove operate on the Git repository in the current directory.
+USAGE
+}
+
+need() { command -v "$1" >/dev/null 2>&1 || fail "required command not found: $1"; }
+
+require_tools() {
+  need git
+  need gh
+  need jq
+}
+
+repo_context() {
+  git rev-parse --is-inside-work-tree >/dev/null 2>&1 || fail 'run this inside a Git repository'
+  git remote get-url origin >/dev/null 2>&1 || fail 'origin remote is required'
+}
+
+repo_name() { gh repo view --json nameWithOwner --jq '.nameWithOwner'; }
+repo_branch() { gh repo view "$1" --json defaultBranchRef --jq '.defaultBranchRef.name'; }
+key_path() { printf '%s/%s\n' "$KEY_ROOT" "$1"; }
+normalize_pub() { awk 'NF >= 2 { print $1 " " $2; exit }' "$1"; }
+keys_json() { gh api "repos/$1/keys?per_page=100"; }
+
+key_id_for_pub() {
+  local keys="$1" pub="$2"
+  printf '%s' "$keys" | jq -r --arg pub "$pub" '
+    [.[] | select((.key | split(" ") | .[0:2] | join(" ")) == $pub)][0].id // empty
+  '
+}
+
+rulesets_json() {
+  local repo="$1" ids
+  ids="$(gh api "repos/$repo/rulesets?per_page=100" | jq -r '.[].id')"
+  if [[ -z "$ids" ]]; then
+    printf '[]\n'
+    return
+  fi
+  while IFS= read -r id; do
+    gh api "repos/$repo/rulesets/$id"
+  done <<< "$ids" | jq -s '.'
+}
+
+has_deploy_key_bypass() {
+  local rulesets="$1"
+  printf '%s' "$rulesets" | jq -e --arg name "$PR_RULESET" '
+    any(.[];
+      .source_type == "Repository"
+      and .name == $name
+      and any((.bypass_actors // [])[]?; .actor_type == "DeployKey" and .bypass_mode == "always")
+    )
+  ' >/dev/null
+}
+
+has_unbypassable_protection() {
+  local rulesets="$1" branch="$2" ref
+  ref="refs/heads/$branch"
+  printf '%s' "$rulesets" | jq -e --arg ref "$ref" '
+    any(.[];
+      .target == "branch"
+      and .enforcement == "active"
+      and (((.conditions.ref_name.include // []) | index($ref) != null or index("~DEFAULT_BRANCH") != null or index("~ALL") != null))
+      and (((.conditions.ref_name.exclude // []) | index($ref) == null and index("~DEFAULT_BRANCH") == null and index("~ALL") == null))
+      and ((.bypass_actors // []) | length) == 0
+      and ([.rules[]?.type] | index("pull_request") == null)
+      and any(.rules[]?; .type == "deletion")
+      and any(.rules[]?; .type == "non_fast_forward")
+    )
+  ' >/dev/null
+}
+
+ensure_key_pair() {
+  local repo="$1" key="$2"
+  need ssh-keygen
+
+  if [[ -f "$key" && -f "$key.pub" ]]; then
+    info "local key already exists: $key"
+    return
+  fi
+  [[ ! -e "$key" && ! -e "$key.pub" ]] || fail "incomplete key pair exists at $key"
+
+  mkdir -p "$(dirname "$key")"
+  chmod 700 "$KEY_ROOT" "$(dirname "$key")" 2>/dev/null || true
+  ssh-keygen -q -t ed25519 -N '' -C "main-bypass:$repo" -f "$key"
+  chmod 600 "$key"
+  chmod 644 "$key.pub"
+  info "generated local key: $key"
+}
+
+ensure_deploy_key() {
+  local repo="$1" key="$2" pub keys id conflicts fingerprint
+  pub="$(normalize_pub "$key.pub")"
+  keys="$(keys_json "$repo")"
+  id="$(key_id_for_pub "$keys" "$pub")"
+
+  conflicts="$(printf '%s' "$keys" | jq --arg pub "$pub" '
+    [.[] | select(.read_only == false) | select((.key | split(" ") | .[0:2] | join(" ")) != $pub)]
+  ')"
+  if [[ "$(printf '%s' "$conflicts" | jq 'length')" != 0 ]]; then
+    printf '%s\n' "$conflicts" | jq -r '.[] | "  - \(.title) (id=\(.id))"' >&2
+    fail 'another write-enabled deploy key exists; GitHub would let it use the same DeployKey bypass'
+  fi
+
+  if [[ -n "$id" ]]; then
+    [[ "$(printf '%s' "$keys" | jq -r --argjson id "$id" '.[] | select(.id == $id) | .read_only')" == false ]] \
+      || fail 'matching GitHub deploy key is read-only; remove it and retry setup'
+    info "GitHub deploy key already registered (id=$id)"
+    return
+  fi
+
+  fingerprint="$(ssh-keygen -lf "$key.pub" -E sha256 | awk '{print $2}')"
+  gh repo deploy-key add "$key.pub" --repo "$repo" \
+    --title "local-main-bypass:${fingerprint#SHA256:}" --allow-write
+  info 'registered write-enabled GitHub deploy key'
+}
+
+create_protect_ruleset() {
+  local repo="$1" payload
+  payload="$(jq -n --arg name "$PROTECT_RULESET" '{
+    name: $name,
+    target: "branch",
+    enforcement: "active",
+    bypass_actors: [],
+    conditions: {ref_name: {include: ["~DEFAULT_BRANCH"], exclude: []}},
+    rules: [{type: "deletion"}, {type: "non_fast_forward"}]
+  }')"
+  printf '%s' "$payload" | gh api --method POST "repos/$repo/rulesets" --input - >/dev/null
+  info "created ruleset: $PROTECT_RULESET"
+}
+
+ensure_protect_ruleset() {
+  local repo="$1" branch="$2" rulesets="$3"
+  if has_unbypassable_protection "$rulesets" "$branch"; then
+    info 'force-push/deletion protection already exists without bypass'
+  else
+    create_protect_ruleset "$repo"
+  fi
+}
+
+create_pr_ruleset() {
+  local repo="$1" payload
+  payload="$(jq -n --arg name "$PR_RULESET" '{
+    name: $name,
+    target: "branch",
+    enforcement: "active",
+    bypass_actors: [{actor_id: null, actor_type: "DeployKey", bypass_mode: "always"}],
+    conditions: {ref_name: {include: ["~DEFAULT_BRANCH"], exclude: []}},
+    rules: [{
+      type: "pull_request",
+      parameters: {
+        allowed_merge_methods: ["merge", "squash", "rebase"],
+        dismiss_stale_reviews_on_push: false,
+        require_code_owner_review: false,
+        require_last_push_approval: false,
+        required_approving_review_count: 0,
+        required_review_thread_resolution: true
+      }
+    }]
+  }')"
+  printf '%s' "$payload" | gh api --method POST "repos/$repo/rulesets" --input - >/dev/null
+  info "created ruleset: $PR_RULESET"
+}
+
+migrate_or_create_pr_ruleset() {
+  local repo="$1" branch="$2" rulesets="$3" ref existing count types bypasses payload id
+  ref="refs/heads/$branch"
+
+  existing="$(printf '%s' "$rulesets" | jq --arg ref "$ref" --arg managed "$PR_RULESET" '
+    [
+      .[]
+      | select(.target == "branch" and .enforcement == "active")
+      | select(
+          .name == $managed
+          or (
+            (((.conditions.ref_name.include // []) | index($ref) != null or index("~DEFAULT_BRANCH") != null or index("~ALL") != null))
+            and (((.conditions.ref_name.exclude // []) | index($ref) == null and index("~DEFAULT_BRANCH") == null and index("~ALL") == null))
+            and any(.rules[]?; .type == "pull_request")
+          )
+        )
+    ]
+  ')"
+  count="$(printf '%s' "$existing" | jq 'length')"
+  (( count <= 1 )) || fail 'multiple PR rulesets apply to the default branch; refusing to guess which one to modify'
+
+  if (( count == 0 )); then
+    create_pr_ruleset "$repo"
+    return
+  fi
+
+  existing="$(printf '%s' "$existing" | jq '.[0]')"
+  [[ "$(printf '%s' "$existing" | jq -r '.source_type')" == Repository ]] \
+    || fail 'the PR rule comes from organization/enterprise scope and cannot be changed here'
+
+  types="$(printf '%s' "$existing" | jq -r '[.rules[].type | select(. != "pull_request" and . != "deletion" and . != "non_fast_forward")] | unique | join(", ")')"
+  [[ -z "$types" ]] || fail "existing PR ruleset has unsupported mixed rules: $types"
+
+  bypasses="$(printf '%s' "$existing" | jq '(.bypass_actors // []) | length')"
+  if (( bypasses > 0 )) && [[ "$(printf '%s' "$existing" | jq '[.rules[].type | select(. != "pull_request")] | length')" != 0 ]]; then
+    fail 'mixed PR/protection ruleset already has bypass actors; split it manually before retrying'
+  fi
+
+  id="$(printf '%s' "$existing" | jq -r '.id')"
+  payload="$(printf '%s' "$existing" | jq --arg name "$PR_RULESET" '{
+    name: $name,
+    target: .target,
+    enforcement: .enforcement,
+    bypass_actors: ([((.bypass_actors // [])[]) | select(.actor_type != "DeployKey")] + [{actor_id: null, actor_type: "DeployKey", bypass_mode: "always"}]),
+    conditions: .conditions,
+    rules: [.rules[] | select(.type == "pull_request")]
+  }')"
+  printf '%s' "$payload" | gh api --method PUT "repos/$repo/rulesets/$id" --input - >/dev/null
+  info "configured ruleset: $PR_RULESET"
+}
+
+ensure_rulesets() {
+  local repo="$1" branch="$2" rulesets
+  rulesets="$(rulesets_json "$repo")"
+
+  # A dedicated no-bypass protection ruleset must exist before an old mixed
+  # PR/protection ruleset is rewritten to PR-only. This avoids any protection gap.
+  ensure_protect_ruleset "$repo" "$branch" "$rulesets"
+  rulesets="$(rulesets_json "$repo")"
+  migrate_or_create_pr_ruleset "$repo" "$branch" "$rulesets"
+}
+
+remove_deploy_key_bypass() {
+  local repo="$1" rulesets existing id payload
+  rulesets="$(rulesets_json "$repo")"
+  existing="$(printf '%s' "$rulesets" | jq --arg name "$PR_RULESET" '[.[] | select(.source_type == "Repository" and .name == $name)][0] // empty')"
+  if [[ -z "$existing" ]]; then
+    warn "managed PR ruleset not found: $PR_RULESET"
+    return
+  fi
+  id="$(printf '%s' "$existing" | jq -r '.id')"
+  payload="$(printf '%s' "$existing" | jq '{
+    name: .name,
+    target: .target,
+    enforcement: .enforcement,
+    bypass_actors: [((.bypass_actors // [])[]) | select(.actor_type != "DeployKey")],
+    conditions: .conditions,
+    rules: .rules
+  }')"
+  printf '%s' "$payload" | gh api --method PUT "repos/$repo/rulesets/$id" --input - >/dev/null
+  info 'removed DeployKey bypass; PR requirement remains active'
+}
+
+configure_git() {
+  local repo="$1" key="$2" desired current origin ssh_origin
+  printf -v desired 'ssh -i %q -o IdentitiesOnly=yes' "$key"
+  current="$(git config --local --get core.sshCommand 2>/dev/null || true)"
+  [[ -z "$current" || "$current" == "$desired" ]] || fail "core.sshCommand is already customized: $current"
+
+  origin="$(git remote get-url origin)"
+  ssh_origin="git@github.com:$repo.git"
+  if [[ "$origin" != "$ssh_origin" ]]; then
+    git config --local --get repoMainBypass.originalOriginUrl >/dev/null 2>&1 \
+      || git config --local repoMainBypass.originalOriginUrl "$origin"
+    git remote set-url origin "$ssh_origin"
+    info "changed origin to SSH: $ssh_origin"
+  fi
+
+  git config --local core.sshCommand "$desired"
+  git config --local repoMainBypass.managed true
+  git config --local repoMainBypass.repo "$repo"
+  info 'configured repository-local SSH identity'
+}
+
+restore_git() {
+  local key="$1" desired current original
+  [[ "$(git config --local --get repoMainBypass.managed 2>/dev/null || true)" == true ]] || return
+
+  printf -v desired 'ssh -i %q -o IdentitiesOnly=yes' "$key"
+  current="$(git config --local --get core.sshCommand 2>/dev/null || true)"
+  if [[ "$current" == "$desired" ]]; then
+    git config --local --unset-all core.sshCommand || true
+  elif [[ -n "$current" ]]; then
+    warn "core.sshCommand changed since setup; leaving it untouched: $current"
+  fi
+
+  original="$(git config --local --get repoMainBypass.originalOriginUrl 2>/dev/null || true)"
+  if [[ -n "$original" ]]; then
+    git remote set-url origin "$original"
+    info "restored origin: $original"
+  fi
+  git config --local --unset-all repoMainBypass.originalOriginUrl 2>/dev/null || true
+  git config --local --unset-all repoMainBypass.managed 2>/dev/null || true
+  git config --local --unset-all repoMainBypass.repo 2>/dev/null || true
+}
+
+setup_cmd() {
+  local repo branch key
+  require_tools
+  need ssh-keygen
+  repo_context
+  gh auth status >/dev/null 2>&1 || fail 'run gh auth login first'
+
+  repo="$(repo_name)"
+  branch="$(repo_branch "$repo")"
+  key="$(key_path "$repo")"
+  info "repository: $repo"
+
+  ensure_key_pair "$repo" "$key"
+  ensure_deploy_key "$repo" "$key"
+  ensure_rulesets "$repo" "$branch"
+  configure_git "$repo" "$key"
+  info 'setup complete'
+}
+
+status_cmd() {
+  local repo branch key pub='' keys id='' rulesets desired current
+  require_tools
+  repo_context
+  repo="$(repo_name)"
+  branch="$(repo_branch "$repo")"
+  key="$(key_path "$repo")"
+
+  [[ -f "$key.pub" ]] && pub="$(normalize_pub "$key.pub")"
+  keys="$(keys_json "$repo")"
+  [[ -n "$pub" ]] && id="$(key_id_for_pub "$keys" "$pub")"
+  rulesets="$(rulesets_json "$repo")"
+  printf -v desired 'ssh -i %q -o IdentitiesOnly=yes' "$key"
+  current="$(git config --local --get core.sshCommand 2>/dev/null || true)"
+
+  printf 'Repository : %s\n' "$repo"
+  printf 'Local key  : %s\n' "$([[ -f "$key" && -f "$key.pub" ]] && echo ok || echo missing)"
+  printf 'GitHub key : %s\n' "$([[ -n "$id" ]] && echo "ok (id=$id)" || echo missing)"
+  printf 'PR bypass  : %s\n' "$(has_deploy_key_bypass "$rulesets" && echo ok || echo missing)"
+  printf 'Protection : %s\n' "$(has_unbypassable_protection "$rulesets" "$branch" && echo ok || echo missing)"
+  printf 'Git config : %s\n' "$([[ "$current" == "$desired" ]] && echo ok || echo inactive)"
+}
+
+remove_cmd() {
+  local repo key pub='' keys id=''
+  require_tools
+  repo_context
+  repo="$(repo_name)"
+  key="$(key_path "$repo")"
+
+  if [[ -f "$key.pub" ]]; then
+    pub="$(normalize_pub "$key.pub")"
+    keys="$(keys_json "$repo")"
+    id="$(key_id_for_pub "$keys" "$pub")"
+  fi
+
+  if [[ -n "$id" ]]; then
+    gh repo deploy-key delete "$id" --repo "$repo"
+    info "deleted GitHub deploy key (id=$id)"
+  elif [[ -f "$key.pub" ]]; then
+    info 'matching GitHub deploy key already absent'
+  else
+    warn 'local public key is missing; cannot identify a GitHub deploy key safely'
+  fi
+
+  remove_deploy_key_bypass "$repo"
+  restore_git "$key"
+  rm -f "$key" "$key.pub"
+  rmdir "$(dirname "$key")" 2>/dev/null || true
+  rmdir "$KEY_ROOT" 2>/dev/null || true
+  info 'remove complete; PR/force-push/deletion protection remains enabled'
+}
+
+audit_cmd() {
+  local pub relative repo branch local_pub keys id rulesets found=false
+  require_tools
+  [[ -d "$KEY_ROOT" ]] || { info "no key directory: $KEY_ROOT"; return; }
+
+  while IFS= read -r pub; do
+    [[ -n "$pub" ]] || continue
+    found=true
+    relative="${pub#"$KEY_ROOT"/}"
+    repo="${relative%.pub}"
+    if ! gh repo view "$repo" >/dev/null 2>&1; then
+      printf '! %-38s repository missing; orphaned local key\n' "$repo"
+      continue
+    fi
+    branch="$(repo_branch "$repo")"
+    local_pub="$(normalize_pub "$pub")"
+    keys="$(keys_json "$repo")"
+    id="$(key_id_for_pub "$keys" "$local_pub")"
+    rulesets="$(rulesets_json "$repo")"
+    printf '%s %-38s deploy-key=%s pr-bypass=%s protection=%s\n' \
+      "$([[ -n "$id" ]] && echo '✓' || echo '!')" "$repo" \
+      "$([[ -n "$id" ]] && echo ok || echo missing)" \
+      "$(has_deploy_key_bypass "$rulesets" && echo ok || echo missing)" \
+      "$(has_unbypassable_protection "$rulesets" "$branch" && echo ok || echo missing)"
+  done < <(find "$KEY_ROOT" -type f -name '*.pub' -print | sort)
+
+  [[ "$found" == true ]] || info 'no local main-bypass keys found'
+}
+
+main() {
+  case "${1:-}" in
+    setup) [[ $# -eq 1 ]] || fail 'setup takes no arguments'; setup_cmd ;;
+    status) [[ $# -eq 1 ]] || fail 'status takes no arguments'; status_cmd ;;
+    remove) [[ $# -eq 1 ]] || fail 'remove takes no arguments'; remove_cmd ;;
+    audit) [[ $# -eq 1 ]] || fail 'audit takes no arguments'; audit_cmd ;;
+    help|-h|--help|'') usage ;;
+    *) usage >&2; fail "unknown command: $1" ;;
+  esac
+}
+
+main "$@"
