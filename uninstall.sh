@@ -56,6 +56,21 @@ remove_path() {
   info "removed: $target"
 }
 
+uninstall_managed_scripts() {
+  local scripts_dir="$DOTFILES_DIR/scripts/bin"
+  local script
+
+  if [[ ! -d "$scripts_dir" ]]; then
+    info "managed scripts directory already absent: $scripts_dir"
+    return
+  fi
+
+  for script in "$scripts_dir"/*; do
+    [[ -f "$script" ]] || continue
+    remove_symlink "$script" "$LOCAL_BIN_DIR/$(basename "$script")"
+  done
+}
+
 uninstall_zellij() {
   local tmp_root="${TMPDIR:-/tmp}"
 
@@ -136,6 +151,7 @@ uninstall_raycast_extension() {
 main() {
   info "uninstalling links and local tools created from $DOTFILES_DIR"
 
+  uninstall_managed_scripts
   uninstall_zellij
 
   remove_symlink \
