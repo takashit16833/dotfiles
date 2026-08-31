@@ -38,7 +38,6 @@ repo_name() { gh repo view --json nameWithOwner --jq '.nameWithOwner'; }
 repo_branch() { gh repo view "$1" --json defaultBranchRef --jq '.defaultBranchRef.name'; }
 key_path() { printf '%s/%s\n' "$KEY_ROOT" "$1"; }
 normalize_pub() { awk 'NF >= 2 { print $1 " " $2; exit }' "$1"; }
-
 keys_json() { gh api "repos/$1/keys?per_page=100"; }
 
 key_id_for_pub() {
@@ -60,10 +59,6 @@ rulesets_json() {
   done <<< "$ids" | jq -s '.'
 }
 
-managed_pr_ruleset() {
-  printf '%s' "$1" | jq --arg name "$PR_RULESET" '[.[] | select(.source_type == "Repository" and .name == $name)][0] // empty'
-}
-
 has_deploy_key_bypass() {
   local rulesets="$1"
   printf '%s' "$rulesets" | jq -e --arg name "$PR_RULESET" '
@@ -71,6 +66,23 @@ has_deploy_key_bypass() {
       .source_type == "Repository"
       and .name == $name
       and any((.bypass_actors // [])[]?; .actor_type == "DeployKey" and .bypass_mode == "always")
+    )
+  ' >/dev/null
+}
+
+has_unbypassable_protection() {
+  local rulesets="$1" branch="$2" ref
+  ref="refs/heads/$branch"
+  printf '%s' "$rulesets" | jq -e --arg ref "$ref" '
+    any(.[];
+      .target == "branch"
+      and .enforcement == "active"
+      and (((.conditions.ref_name.include // []) | index($ref) != null or index("~DEFAULT_BRANCH") != null or index("~ALL") != null))
+      and (((.conditions.ref_name.exclude // []) | index($ref) == null and index("~DEFAULT_BRANCH") == null and index("~ALL") == null))
+      and ((.bypass_actors // []) | length) == 0
+      and ([.rules[]?.type] | index("pull_request") == null)
+      and any(.rules[]?; .type == "deletion")
+      and any(.rules[]?; .type == "non_fast_forward")
     )
   ' >/dev/null
 }
@@ -135,20 +147,8 @@ create_protect_ruleset() {
 }
 
 ensure_protect_ruleset() {
-  local repo="$1" branch="$2" rulesets="$3" ref
-  ref="refs/heads/$branch"
-  if printf '%s' "$rulesets" | jq -e --arg ref "$ref" '
-    any(.[];
-      .source_type == "Repository"
-      and .target == "branch"
-      and .enforcement == "active"
-      and (((.conditions.ref_name.include // []) | index($ref) != null or index("~DEFAULT_BRANCH") != null or index("~ALL") != null))
-      and (((.conditions.ref_name.exclude // []) | index($ref) == null and index("~DEFAULT_BRANCH") == null and index("~ALL") == null))
-      and ((.bypass_actors // []) | length) == 0
-      and any(.rules[]?; .type == "deletion")
-      and any(.rules[]?; .type == "non_fast_forward")
-    )
-  ' >/dev/null; then
+  local repo="$1" branch="$2" rulesets="$3"
+  if has_unbypassable_protection "$rulesets" "$branch"; then
     info 'force-push/deletion protection already exists without bypass'
   else
     create_protect_ruleset "$repo"
@@ -190,8 +190,8 @@ migrate_or_create_pr_ruleset() {
       | select(
           .name == $managed
           or (
-            ((.conditions.ref_name.include // [])
-              | index($ref) != null or index("~DEFAULT_BRANCH") != null or index("~ALL") != null)
+            (((.conditions.ref_name.include // []) | index($ref) != null or index("~DEFAULT_BRANCH") != null or index("~ALL") != null))
+            and (((.conditions.ref_name.exclude // []) | index($ref) == null and index("~DEFAULT_BRANCH") == null and index("~ALL") == null))
             and any(.rules[]?; .type == "pull_request")
           )
         )
@@ -234,8 +234,8 @@ ensure_rulesets() {
   local repo="$1" branch="$2" rulesets
   rulesets="$(rulesets_json "$repo")"
 
-  # Protection is created first, so splitting the old mixed ruleset never opens
-  # a window where force-push or branch deletion is allowed.
+  # A dedicated no-bypass protection ruleset must exist before an old mixed
+  # PR/protection ruleset is rewritten to PR-only. This avoids any protection gap.
   ensure_protect_ruleset "$repo" "$branch" "$rulesets"
   rulesets="$(rulesets_json "$repo")"
   migrate_or_create_pr_ruleset "$repo" "$branch" "$rulesets"
@@ -244,7 +244,7 @@ ensure_rulesets() {
 remove_deploy_key_bypass() {
   local repo="$1" rulesets existing id payload
   rulesets="$(rulesets_json "$repo")"
-  existing="$(managed_pr_ruleset "$rulesets")"
+  existing="$(printf '%s' "$rulesets" | jq --arg name "$PR_RULESET" '[.[] | select(.source_type == "Repository" and .name == $name)][0] // empty')"
   if [[ -z "$existing" ]]; then
     warn "managed PR ruleset not found: $PR_RULESET"
     return
@@ -325,10 +325,11 @@ setup_cmd() {
 }
 
 status_cmd() {
-  local repo key pub='' keys id='' rulesets desired current
+  local repo branch key pub='' keys id='' rulesets desired current
   require_tools
   repo_context
   repo="$(repo_name)"
+  branch="$(repo_branch "$repo")"
   key="$(key_path "$repo")"
 
   [[ -f "$key.pub" ]] && pub="$(normalize_pub "$key.pub")"
@@ -342,6 +343,7 @@ status_cmd() {
   printf 'Local key  : %s\n' "$([[ -f "$key" && -f "$key.pub" ]] && echo ok || echo missing)"
   printf 'GitHub key : %s\n' "$([[ -n "$id" ]] && echo "ok (id=$id)" || echo missing)"
   printf 'PR bypass  : %s\n' "$(has_deploy_key_bypass "$rulesets" && echo ok || echo missing)"
+  printf 'Protection : %s\n' "$(has_unbypassable_protection "$rulesets" "$branch" && echo ok || echo missing)"
   printf 'Git config : %s\n' "$([[ "$current" == "$desired" ]] && echo ok || echo inactive)"
 }
 
@@ -376,7 +378,7 @@ remove_cmd() {
 }
 
 audit_cmd() {
-  local pub relative repo local_pub keys id rulesets found=false
+  local pub relative repo branch local_pub keys id rulesets found=false
   require_tools
   [[ -d "$KEY_ROOT" ]] || { info "no key directory: $KEY_ROOT"; return; }
 
@@ -389,14 +391,16 @@ audit_cmd() {
       printf '! %-38s repository missing; orphaned local key\n' "$repo"
       continue
     fi
+    branch="$(repo_branch "$repo")"
     local_pub="$(normalize_pub "$pub")"
     keys="$(keys_json "$repo")"
     id="$(key_id_for_pub "$keys" "$local_pub")"
     rulesets="$(rulesets_json "$repo")"
-    printf '%s %-38s deploy-key=%s ruleset=%s\n' \
+    printf '%s %-38s deploy-key=%s pr-bypass=%s protection=%s\n' \
       "$([[ -n "$id" ]] && echo '✓' || echo '!')" "$repo" \
       "$([[ -n "$id" ]] && echo ok || echo missing)" \
-      "$(has_deploy_key_bypass "$rulesets" && echo ok || echo missing)"
+      "$(has_deploy_key_bypass "$rulesets" && echo ok || echo missing)" \
+      "$(has_unbypassable_protection "$rulesets" "$branch" && echo ok || echo missing)"
   done < <(find "$KEY_ROOT" -type f -name '*.pub' -print | sort)
 
   [[ "$found" == true ]] || info 'no local main-bypass keys found'
