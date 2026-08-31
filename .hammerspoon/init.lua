@@ -510,3 +510,45 @@ end)
 hs.hotkey.bind(hyperShift, "tab", function()
   moveFocusedWindowToAdjacentScreen("previous")
 end)
+
+-- Mouse4 / Mouse5 の戻る・進むを、マウスカーソル下ではなく
+-- 現在フォーカスされているウィンドウのアプリへ送る。
+-- 実機で Mouse4 = 3、Mouse5 = 4 であることを確認済み。
+local navigationMouseButtons = {
+  [3] = true,
+  [4] = true,
+}
+
+-- 再送した Mouse4 / Mouse5 をこの eventtap 自身が再び横取りしないための印。
+local redirectedMouseEventMarker = 16833
+
+mouseNavigationEventTap = hs.eventtap.new({
+  hs.eventtap.event.types.otherMouseDown,
+  hs.eventtap.event.types.otherMouseUp,
+}, function(event)
+  local properties = hs.eventtap.event.properties
+
+  if event:getProperty(properties.eventSourceUserData) == redirectedMouseEventMarker then
+    return false
+  end
+
+  local button = event:getProperty(properties.mouseEventButtonNumber)
+  if not navigationMouseButtons[button] then
+    return false
+  end
+
+  local window = hs.window.focusedWindow()
+  local app = window and window:application()
+  if not app then
+    return true
+  end
+
+  local redirectedEvent = event:copy()
+  redirectedEvent:setProperty(properties.eventSourceUserData, redirectedMouseEventMarker)
+  redirectedEvent:post(app)
+
+  -- 元のイベントは握り潰し、カーソル下のウィンドウには届かせない。
+  return true
+end)
+
+mouseNavigationEventTap:start()
