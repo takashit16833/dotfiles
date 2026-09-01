@@ -189,30 +189,6 @@ install_yazi_plugins() {
   fi
 }
 
-install_bat_theme() {
-  local theme_source="$DOTFILES_DIR/.config/bat/themes/Retro Hacker Blue.tmTheme"
-  local theme_target="$XDG_CONFIG_HOME/bat/themes/Retro Hacker Blue.tmTheme"
-
-  if ! command -v bat >/dev/null 2>&1; then
-    fail 'bat was not found after installing Homebrew packages'
-  fi
-
-  if [[ ! -f "$theme_source" ]]; then
-    fail "$theme_source does not exist"
-  fi
-
-  ensure_symlink "$theme_source" "$theme_target"
-
-  # Delta は bat の custom asset cache から追加 theme を読み込む。
-  # config directory を XDG 配下へ固定したうえで cache を再構築する。
-  info 'building bat cache for Retro Hacker Blue'
-  BAT_CONFIG_DIR="$XDG_CONFIG_HOME/bat" bat cache --build >/dev/null
-
-  if ! BAT_CONFIG_DIR="$XDG_CONFIG_HOME/bat" bat --list-themes | grep -Fxq 'Retro Hacker Blue'; then
-    fail 'Retro Hacker Blue was not found in the bat theme cache'
-  fi
-}
-
 install_vscode_extensions() {
   local extensions_file="$DOTFILES_DIR/.config/vscode/extensions.txt"
   local vscode_cli=''
@@ -366,7 +342,6 @@ main() {
     "$XDG_CONFIG_HOME/yazi/init.lua"
 
   install_yazi_plugins
-  install_bat_theme
 
   ensure_symlink \
     "$DOTFILES_DIR/.gitconfig" \
