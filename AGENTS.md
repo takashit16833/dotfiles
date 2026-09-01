@@ -72,14 +72,11 @@
 - ユーザーは Vim 操作を前提にしない。標準の矢印キー / Enter / Space に加え、Tab、F2、F4〜F8、Delete、Ctrl-L で主要操作を完結できる設定を優先する。
 - F5 / F6 は、Yazi 標準の yank / paste と split-tabs の pane 切替を組み合わせて、反対 pane への copy / move として提供する。
 
-## git-delta / bat
+## git-delta
 
 - Lazygit の diff renderer は `.config/lazygit/config.yml` から `delta --dark` を呼び、縦並び / side-by-side の切替方法は変更しない。
 - Delta の UI 配色は `.gitconfig` の `[delta "retro-hacker-blue"]` feature を正本とする。追加 / 削除の行全体は強い色面にせず、非常に薄い背景差で示し、行内差分だけを一段濃くする。
-- Delta の構文色は `.config/bat/themes/Retro Hacker Blue.tmTheme` を正本とし、VS Code の Retro Hacker Blue `tokenColors` を TextMate theme へ移植する。元テーマの赤 `#FF5A5A` は dotfiles 全体の方針に合わせて `#FF4DE1` に置換する。
-- custom syntax theme の読み込みには `bat` の asset cache が必要なため、`bat` は `Brewfile` で管理する。`install.sh` は theme file を `~/.config/bat/themes` へ個別 symlink し、`BAT_CONFIG_DIR=~/.config/bat bat cache --build` を実行する。
-- bat directory 全体は symlink しない。他の custom syntax / theme や bat 自身の状態と混在させないため、管理対象の theme file だけを個別に link する。
-- `uninstall.sh` はこの repository が作った theme symlink だけを解除し、bat が存在する場合は cache を再構築して theme を cache からも外す。
+- Delta の構文色は `.gitconfig` の `syntax-theme = "Visual Studio Dark+"` を使い、外部の custom theme や追加の asset cache には依存させない。
 - Delta の file / hunk / commit decoration は枠線や長い横線を増やさず、文字色と控えめな背景差を優先する。
 
 ## Local CLI tools
