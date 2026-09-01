@@ -175,4 +175,5 @@
         "**/.forgejo/workflows/*.yml",
         "**/.forgejo/workflows/*.yaml"
     ],
+    "workbench.activityBar.location": "hidden",
 }
