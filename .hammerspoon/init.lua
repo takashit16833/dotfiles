@@ -103,14 +103,13 @@ end tell
   end
 end
 
--- Brave は ChatGPT を開いた新しいブラウザウィンドウを作る。
+-- Brave は既存プロセスへ新しいウィンドウの生成だけを依頼する。
 -- Brave が未起動でも AppleScript から起動し、同じ処理でウィンドウを生成する。
 -- activate は使わず、生成後に現在の Space から見えるウィンドウだけをフォーカスする。
 local function openBraveWindow()
   local ok = hs.osascript.applescript(string.format([[
 tell application id "%s"
-  set newWindow to make new window
-  set URL of active tab of newWindow to "https://chatgpt.com/"
+  make new window
 end tell
 ]], appBundleIDs.brave))
 
