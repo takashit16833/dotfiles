@@ -176,4 +176,5 @@
         "**/.forgejo/workflows/*.yaml"
     ],
     "workbench.activityBar.location": "hidden",
+    "editor.minimap.enabled": false,
 }
