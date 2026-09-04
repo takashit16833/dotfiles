@@ -177,4 +177,10 @@
     ],
     "workbench.activityBar.location": "hidden",
     "editor.minimap.enabled": false,
+    "workbench.navigationControl.enabled": false,
+    "workbench.layoutControl.enabled": false,
+    "chat.titleBar.openInAgentsWindow.enabled": false,
+    "workbench.browser.showInTitleBar": false,
+    "window.commandCenter": false,
+    "workbench.editor.editorActionsLocation": "hidden",
 }
