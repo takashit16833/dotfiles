@@ -1,7 +1,7 @@
 local M = {}
 
 local SERVER_PORT = 17365
-local ALERT_DURATION_SECONDS = 4
+local ALERT_DURATION_SECONDS = 3
 
 local function decodePayload(body)
   if not body or body == "" then
