@@ -32,6 +32,25 @@ Raycast Local Extension の初回登録では、公式の `ray develop` を短�
 - Chrome / Brave の unpacked extension や Web アプリはブラウザ側で初回登録する。
 - Tampermonkey userscript を使う場合は `chrome/userscripts/README.md` の手順で初回登録する。
 
+### Brave を ChatGPT ビューアにする
+
+Brave の起動、新しいウィンドウ、新しいタブで `https://chatgpt.com/` を開くようにする。
+
+この設定は dotfiles から強制せず、Brave の UI で手動設定する。これにより管理ポリシー扱いにせず、あとから Brave 側で自由に変更できる状態を保つ。
+
+1. `brave://settings/appearance` を開く。
+   - **Show home button** を ON にする。
+   - URL に `https://chatgpt.com/` を指定する。
+2. `brave://settings/getStarted` を開く。
+   - **New Tab Page** の **New tab page shows** を **Homepage** にする。
+   - **On startup** を **Open the New Tab page** にする。
+
+設定後は次の動作になる。
+
+- Brave 起動 → ChatGPT
+- `Cmd+N` → ChatGPT
+- `Cmd+T` → ChatGPT
+
 ## Browser extensions
 
 自作の Chromium 系ブラウザ拡張と userscript は `chrome/` 配下で管理する。
