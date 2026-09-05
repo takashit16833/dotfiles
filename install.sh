@@ -24,8 +24,6 @@ VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
 
 # dotfiles で管理する唯一の Raycast Local Extension。
 RAYCAST_EXTENSION_DIR="$DOTFILES_DIR/raycast/extension"
-RAYCAST_EXTENSION_NAME="dotfiles-commands"
-RAYCAST_INSTALLED_EXTENSIONS_DIR="$HOME/.config/raycast/extensions"
 
 info() {
   printf '[dotfiles] %s\n' "$*"
@@ -60,6 +58,18 @@ install_homebrew_packages() {
 
   info 'ensuring Kitty is current for managed keybindings'
   brew upgrade --cask kitty
+
+  # brew bundle --no-upgrade では、既存 Node と更新済み shared library の組み合わせが
+  # 壊れたまま残ることがある。Raycast Extension の npm install 前に実行可能性を確認し、
+  # 壊れている場合だけ Homebrew の Node を入れ直して依存関係を揃える。
+  info 'checking Node.js runtime'
+  if ! node --version >/dev/null 2>&1 || ! npm --version >/dev/null 2>&1; then
+    info 'Node.js runtime is broken; reinstalling Homebrew node'
+    HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 brew reinstall node
+  fi
+
+  node --version >/dev/null 2>&1 || fail 'node is still unavailable after Homebrew setup'
+  npm --version >/dev/null 2>&1 || fail 'npm is still unavailable after Homebrew setup'
 }
 
 ensure_symlink() {
@@ -236,8 +246,11 @@ install_vscode_extensions() {
 
 install_raycast_extension() {
   local ray_cli="$RAYCAST_EXTENSION_DIR/node_modules/.bin/ray"
-  local install_dir="$RAYCAST_INSTALLED_EXTENSIONS_DIR/$RAYCAST_EXTENSION_NAME"
-  local staging_dir="$RAYCAST_INSTALLED_EXTENSIONS_DIR/.${RAYCAST_EXTENSION_NAME}.staging.$$"
+  local develop_log
+  local ray_pid
+  local status=0
+  local ready=false
+  local i
 
   if [[ ! -f "$RAYCAST_EXTENSION_DIR/package.json" ]]; then
     fail "$RAYCAST_EXTENSION_DIR/package.json does not exist"
@@ -245,10 +258,6 @@ install_raycast_extension() {
 
   if ! command -v npm >/dev/null 2>&1; then
     fail 'npm was not found after installing Homebrew packages'
-  fi
-
-  if ! command -v jq >/dev/null 2>&1; then
-    fail 'jq was not found after installing Homebrew packages'
   fi
 
   info 'installing Raycast Local Extension dependencies'
@@ -261,34 +270,55 @@ install_raycast_extension() {
     fail 'Raycast extension CLI was not installed by npm'
   fi
 
-  mkdir -p "$RAYCAST_INSTALLED_EXTENSIONS_DIR"
-  rm -rf "$staging_dir"
+  # Raycast の production build を ~/.config/raycast/extensions へ置くだけでは、
+  # Raycast 本体には Local Extension として登録されない。
+  # 公式の ray develop を短時間だけ起動して import を完了させ、build 成功後に停止する。
+  # development process を常駐させる必要はなく、停止後も Extension は Raycast に残る。
+  develop_log="$(mktemp)"
+  info 'registering Raycast Local Extension'
 
-  # -o を明示すると Raycast app を起動せず、指定 directory へ production build を出力できる。
-  # いったん staging directory へ build し、manifest を検証してから atomically に入れ替える。
-  info 'building Raycast Local Extension without launching Raycast'
-  if ! (
-    cd "$RAYCAST_EXTENSION_DIR"
-    "$ray_cli" build -e dist -o "$staging_dir"
-  ); then
-    rm -rf "$staging_dir"
-    fail 'failed to build Raycast Local Extension'
+  cd "$RAYCAST_EXTENSION_DIR"
+  "$ray_cli" develop >"$develop_log" 2>&1 &
+  ray_pid=$!
+  cd "$DOTFILES_DIR"
+
+  for ((i = 0; i < 30; i++)); do
+    if grep -q 'built extension successfully' "$develop_log"; then
+      ready=true
+      break
+    fi
+
+    if ! kill -0 "$ray_pid" 2>/dev/null; then
+      wait "$ray_pid" || status=$?
+      cat "$develop_log" >&2
+      rm -f "$develop_log"
+      fail "Raycast development process exited before registration completed (status $status)"
+    fi
+
+    sleep 1
+  done
+
+  if [[ "$ready" != true ]]; then
+    kill -INT "$ray_pid" 2>/dev/null || true
+    wait "$ray_pid" 2>/dev/null || true
+    cat "$develop_log" >&2
+    rm -f "$develop_log"
+    fail 'timed out while registering Raycast Local Extension'
   fi
 
-  if [[ ! -f "$staging_dir/package.json" ]]; then
-    rm -rf "$staging_dir"
-    fail "Raycast build completed but package.json was not found in $staging_dir"
+  # build 完了直後に Raycast 側の import 処理が反映される余裕を少しだけ持たせる。
+  sleep 1
+  kill -INT "$ray_pid" 2>/dev/null || true
+  wait "$ray_pid" || status=$?
+
+  cat "$develop_log"
+  rm -f "$develop_log"
+
+  if [[ "$status" -ne 0 && "$status" -ne 130 ]]; then
+    fail "Raycast development process stopped unexpectedly (status $status)"
   fi
 
-  if [[ "$(jq -r '.name // empty' "$staging_dir/package.json" 2>/dev/null || true)" != "$RAYCAST_EXTENSION_NAME" ]]; then
-    rm -rf "$staging_dir"
-    fail "Raycast build output does not identify as $RAYCAST_EXTENSION_NAME"
-  fi
-
-  rm -rf "$install_dir"
-  mv "$staging_dir" "$install_dir"
-
-  info "Raycast Local Extension installed: $install_dir"
+  info 'Raycast Local Extension registered'
 }
 
 main() {
