@@ -26,14 +26,16 @@ bash ./install.sh
 - Hammerspoon を初回起動し、アクセシビリティ権限を許可する。以後は設定からログイン時に自動起動する。
 - Docker を利用する場合は `colima start` で container runtime を起動する。
 - Chrome / Brave の unpacked extension や Web アプリはブラウザ側で初回登録する。
+- Tampermonkey userscript を使う場合は `chrome/userscripts/README.md` の手順で初回登録する。
 
 ## Browser extensions
 
-自作の Chromium 系ブラウザ拡張は `chrome/` 配下で管理する。
+自作の Chromium 系ブラウザ拡張と userscript は `chrome/` 配下で管理する。
 
 - `chrome/youtube-keyboard`: YouTube の動画一覧をキーボードで移動・選択する。
+- `chrome/userscripts/chatgpt-notify.user.js`: ChatGPT の回答生成完了を Hammerspoon 経由で通知する。
 
-Chrome / Brave の unpacked extension はブラウザ側への初回登録が必要なため、各 extension の README に再構築手順を記載する。
+Chrome / Brave の unpacked extension はブラウザ側への初回登録が必要なため、各 extension の README に再構築手順を記載する。Tampermonkey userscript もブラウザ側で初回登録する。
 
 ## Git identity
 
