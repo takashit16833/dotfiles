@@ -1,0 +1,74 @@
+[
+    {
+        "name": "random（チャンネル） - on-gaku - Slack",
+        "link": "https://app.slack.com/client/TR7F7T3FU/CRL8T9W56",
+        "icon": "default",
+        "tags": [
+            "Slack"
+        ]
+    },
+    {
+        "name": "Downloads Folder",
+        "link": "/Users/suzukitakashi/Downloads/",
+        "icon": "default",
+        "tags": [
+            "Folder"
+        ]
+    },
+    {
+        "name": "YouTube",
+        "link": "https://www.youtube.com/?app=desktop&hl=ja",
+        "icon": "default",
+        "tags": [
+            "Media"
+        ]
+    },
+    {
+        "name": "受信トレイ - tksszk0814@gmail.com - Gmail",
+        "link": "https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox",
+        "icon": "default",
+        "tags": [
+            "Google"
+        ]
+    },
+    {
+        "name": "日本最大級の無料オンライン家計簿｜家計簿アプリ くふう Zaim",
+        "link": "https://zaim.net/home",
+        "icon": "default",
+        "tags": [
+            "Other"
+        ]
+    },
+    {
+        "name": "関東・信越の天気 - Yahoo!天気・災害",
+        "link": "https://weather.yahoo.co.jp/weather/jp/3.html?day=1",
+        "icon": "default",
+        "tags": [
+            "Yahoo"
+        ]
+    },
+    {
+        "name": "Amazon | 本, ファッション, 家電から食品まで | アマゾン",
+        "link": "https://www.amazon.co.jp/",
+        "icon": "default",
+        "tags": [
+            "Amazon"
+        ]
+    },
+    {
+        "name": "Google カレンダー",
+        "link": "https://calendar.google.com/calendar/u/0/r",
+        "icon": "default",
+        "tags": [
+            "Google"
+        ]
+    },
+    {
+        "name": "乗換案内、時刻表、運行情報 - Yahoo!路線情報",
+        "link": "https://transit.yahoo.co.jp/",
+        "icon": "default",
+        "tags": [
+            "Yahoo"
+        ]
+    }
+]
