@@ -176,4 +176,5 @@
     "workbench.browser.showInTitleBar": false,
     "window.commandCenter": false,
     "workbench.editor.editorActionsLocation": "hidden",
+    "chat.titleBar.signIn.enabled": false,
 }
