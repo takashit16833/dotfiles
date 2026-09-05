@@ -66,9 +66,11 @@ Chrome / Brave などでスクロールバーを常時表示しないように�
 Chrome / Brave の unpacked extension はブラウザ側への初回登録が必要なため、各 extension の README に再構築手順を記載する。Tampermonkey userscript もブラウザ側で初回登録する。
 
 ### kitty sessionを定義する
+
 **設定例**
-```
-cat > ~/.config/kitty/startup.kitty-session<<'EOF'
+
+```bash
+cat > ~/.config/kitty/startup.kitty-session <<'EOF'
 new_tab dotfiles
 cd ~/dotfiles
 launch /bin/zsh -lc "exec lazygit"
@@ -84,6 +86,16 @@ launch /bin/zsh -lc "exec lazygit"
 focus_tab 0
 EOF
 ```
+
+作成した session を Kitty 起動時に使うため、マシン固有設定の `local.conf` で有効化する。
+
+```bash
+cat > ~/.config/kitty/local.conf <<'EOF'
+startup_session startup.kitty-session
+EOF
+```
+
+設定後は Kitty を完全終了してから起動し直す。
 
 ## Git identity
 
