@@ -26,6 +26,7 @@ local function showCompletionAlert(payload)
   end
 
   hs.alert.show(message, ALERT_DURATION_SECONDS)
+  hs.sound.getByName("Glass"):play()
 end
 
 function M.start(options)
