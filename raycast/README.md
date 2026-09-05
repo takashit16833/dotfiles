@@ -27,12 +27,19 @@ Raycast 側では、このディレクトリを Script Commands の検索対象�
 `raycast/extension` は、dotfiles で管理する自作 Raycast コマンドをまとめる唯一の Local Extension とする。
 動的な一覧表示など Raycast Extension API が必要な機能は、機能ごとに npm project を増やさず、この Extension に command を追加する。
 
-`bash install.sh` は Node.js/npm の導入、依存 package の取得、production build、`~/.config/raycast/extensions/dotfiles-commands` への配置まで自動で行う。
-build は `ray build -e dist -o <directory>` のように output directory を明示し、Raycast app を起動せずに実行する。
+`bash install.sh` は Node.js/npm の導入、依存 package の取得、Raycast への Local Extension 登録まで自動で行う。
 
-installer では `ray develop` を使用しない。普段の利用時に `npm run dev` を起動しておく必要はなく、Extension のソースを変更して手元で開発するときだけ `npm run dev` を使う。
+Raycast の `ray build` は production build を作るための command であり、その生成物を任意の directory に配置するだけでは Raycast 本体への登録にはならない。
+そのため installer は公式の `ray develop` を短時間だけ起動し、Extension を Raycast へ import する。build 成功を確認したら development process を停止するため、普段の利用時に `npm run dev` を起動し続ける必要はない。
 
-install 時はいったん staging directory へ build し、生成された `package.json` の `name` が `dotfiles-commands` と一致することを確認してから installed directory と入れ替える。
+初回登録時は Raycast app が自動で開くことがある。これは `ray develop` による import のための正常な動作。
+
+Extension のソースを変更して手元で開発するときだけ、以下を実行して development mode を使う。
+
+```bash
+cd ~/dotfiles/raycast/extension
+npm run dev
+```
 
 ### GitHub Repositories
 
@@ -46,18 +53,18 @@ Extension はログインシェルから `gh` の実体を解決するため、H
 
 ## Uninstall
 
-`bash uninstall.sh` は `raycast/extension/node_modules` / `dist` に加えて、`~/.config/raycast/extensions/dotfiles-commands` を manifest で識別したうえで削除する。
-中断時に残り得る `.dotfiles-commands.staging.*` も削除する。
+`bash uninstall.sh` は `raycast/extension/node_modules` / `dist` と、旧 installer が `~/.config/raycast/extensions/dotfiles-commands` に作成していた build artifact を削除する。
 
-Raycast の内部 database は直接操作しない。dotfiles が配置した extensions directory 上のファイルだけを管理し、他の Extension には触れない。
+Raycast に import 済みの development extension 自体を削除したい場合は、Raycast の `Manage Extensions` から `Dotfiles Commands` を削除する。
+Raycast の内部 database は直接操作しない。
 
 ## 管理方針
 
 - Raycast 本体: `Brewfile` で管理する。
 - Script Commands / 自作 Extension: ソースコードを Git で管理する。
 - 自作 Extension は `raycast/extension` の 1 project に集約し、機能ごとに npm project を増やさない。
-- `install.sh` は Local Extension の dependency install / headless production build / manifest 検証 / 配置まで自動化する。
-- `npm run dev` / `ray develop` は開発時だけ利用し、環境構築には使わない。
+- `install.sh` は Local Extension の dependency install と `ray develop` による初回 import / 再登録まで自動化する。
+- `npm run dev` / `ray develop` を常駐させるのは開発時だけとする。
 - Hotkey / Alias など Raycast 内部の設定: Raycast 側で設定し、この README に再構築手順を記録する。
 - Clipboard History / AI 履歴 / Notes などの個人データ: Git では管理しない。
 - `.rayconfig`: Raycast 自身のバックアップ用途として扱い、dotfiles には含めない。
