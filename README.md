@@ -36,8 +36,6 @@ Raycast Local Extension の初回登録では、公式の `ray develop` を短�
 
 Brave の起動、新しいウィンドウ、新しいタブで `https://chatgpt.com/` を開くようにする。
 
-この設定は dotfiles から強制せず、Brave の UI で手動設定する。これにより管理ポリシー扱いにせず、あとから Brave 側で自由に変更できる状態を保つ。
-
 1. `brave://settings/appearance` を開く。
    - **Show home button** を ON にする。
    - URL に `https://chatgpt.com/` を指定する。
