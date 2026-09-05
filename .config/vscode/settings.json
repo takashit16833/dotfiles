@@ -167,14 +167,7 @@
         "announcement": "auto"
     },
     "editor.accessibilitySupport": "off",
-    "yaml.disableSchemaDetection": [
-        "**/.github/workflows/*.yml",
-        "**/.github/workflows/*.yaml",
-        "**/.gitea/workflows/*.yml",
-        "**/.gitea/workflows/*.yaml",
-        "**/.forgejo/workflows/*.yml",
-        "**/.forgejo/workflows/*.yaml"
-    ],
+    "yaml.disableSchemaDetection": [],
     "workbench.activityBar.location": "hidden",
     "editor.minimap.enabled": false,
     "workbench.navigationControl.enabled": false,
