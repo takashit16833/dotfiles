@@ -49,6 +49,13 @@ Brave の起動、新しいウィンドウ、新しいタブで `https://chatgpt
 - `Cmd+N` → ChatGPT
 - `Cmd+T` → ChatGPT
 
+### スクロールバーをスクロール時だけ表示する
+
+Chrome / Brave などでスクロールバーを常時表示しないようにする。
+
+1. macOS の **システム設定** → **外観** を開く。
+2. **スクロールバーを表示** を **スクロール時に表示** にする。
+
 ## Browser extensions
 
 自作の Chromium 系ブラウザ拡張と userscript は `chrome/` 配下で管理する。
