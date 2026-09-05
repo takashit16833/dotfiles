@@ -307,16 +307,14 @@ install_raycast_extension() {
   fi
 
   # build 完了直後に Raycast 側の import 処理が反映される余裕を少しだけ持たせる。
+  # ここから先は installer 自身が develop process を停止するため、その終了 status は
+  # Raycast CLI の実装依存として成功判定には使わない。
   sleep 1
   kill -INT "$ray_pid" 2>/dev/null || true
-  wait "$ray_pid" || status=$?
+  wait "$ray_pid" 2>/dev/null || true
 
   cat "$develop_log"
   rm -f "$develop_log"
-
-  if [[ "$status" -ne 0 && "$status" -ne 130 ]]; then
-    fail "Raycast development process stopped unexpectedly (status $status)"
-  fi
 
   info 'Raycast Local Extension registered'
 }
