@@ -110,7 +110,7 @@ uninstall_raycast_extension() {
   remove_path "$RAYCAST_EXTENSION_DIR/node_modules"
   remove_path "$RAYCAST_EXTENSION_DIR/dist"
 
-  # install.sh が管理する固定 destination と、中断時に残り得る staging directory を削除する。
+  # 旧 installer が管理していた固定 destination と、中断時に残り得る staging directory を削除する。
   if [[ -f "$install_dir/package.json" ]] && command -v jq >/dev/null 2>&1; then
     if [[ "$(jq -r '.name // empty' "$install_dir/package.json" 2>/dev/null || true)" == "$RAYCAST_EXTENSION_NAME" ]]; then
       remove_path "$install_dir"
@@ -126,7 +126,9 @@ uninstall_raycast_extension() {
     remove_path "$staging_dir"
   done
 
-  info 'Raycast Local Extension removed'
+  # ray develop で Raycast 本体へ import された development extension の登録は
+  # Raycast の内部 state なので直接変更しない。必要なら Manage Extensions から削除する。
+  info 'Raycast Local Extension build artifacts removed; remove its Raycast registration manually if desired'
 }
 
 main() {
