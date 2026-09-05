@@ -49,8 +49,17 @@ install_homebrew_packages() {
     fail "$DOTFILES_DIR/Brewfile does not exist"
   fi
 
+  # brew bundle --no-upgrade は既存 package を意図せず一括更新しないため維持する。
+  # ただし Kitty の keybindings は比較的新しい action を使うため、metadata を更新して
+  # Kitty だけは現行版へ揃える。これにより既存の古い Kitty が残る再構築を防ぐ。
+  info 'updating Homebrew metadata'
+  brew update
+
   info 'installing Homebrew packages from Brewfile'
   brew bundle --file="$DOTFILES_DIR/Brewfile" --no-upgrade
+
+  info 'ensuring Kitty is current for managed keybindings'
+  brew upgrade --cask kitty
 }
 
 ensure_symlink() {
