@@ -23,17 +23,30 @@ local appBundleIDs = {
 }
 
 -- kitty / VS Code にフォーカスしたら英数入力へ切り替える。
-local englishInputSourceID = "com.apple.inputmethod.Kotoeri.RomajiTyping.Roman"
+-- 英数入力の source ID は Mac ごとの入力ソース構成によって異なるため、
+-- 既知の候補を順に試し、その Mac で有効なものへ切り替える。
+local englishInputSourceIDs = {
+  "com.apple.inputmethod.Kotoeri.RomajiTyping.Roman",
+  "com.apple.keylayout.ABC",
+}
 local englishInputApps = {
   [appBundleIDs.kitty] = true,
   [appBundleIDs.vscode] = true,
 }
 
+local function switchToEnglishInput()
+  for _, sourceID in ipairs(englishInputSourceIDs) do
+    if hs.keycodes.currentSourceID(sourceID) then
+      return
+    end
+  end
+end
+
 englishInputSourceWatcher = hs.application.watcher.new(function(_, eventType, app)
   if eventType == hs.application.watcher.activated
       and app
       and englishInputApps[app:bundleID()] then
-    hs.keycodes.currentSourceID(englishInputSourceID)
+    switchToEnglishInput()
   end
 end)
 
@@ -237,7 +250,6 @@ for key, appConfig in pairs(apps) do
     activateApp(appConfig)
   end)
 end
-
 -- e-typing は Chrome からインストールした Web アプリで、通常のアプリ切り替え規則の例外。
 -- 未起動なら現在の Space で起動し、現在の Space にあれば前面へ出す。
 -- 別の Space ですでに起動している場合は、その Space へ移動も新規起動もせず何もしない。
@@ -357,7 +369,6 @@ local function moveFocusedWindowToAdjacentScreen(direction)
     if not targetScreen then
       return
     end
-
     window:moveToScreen(targetScreen, true, false, 0)
   end)
 end
