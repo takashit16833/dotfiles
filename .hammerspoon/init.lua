@@ -332,9 +332,12 @@ hs.hotkey.bind(hyper, "o", function()
 end)
 
 -- 配置操作の対象か判定する。
--- デスクトップなどを除き、通常のアプリウィンドウだけを対象にする。
+-- Finder とデスクトップなどを除き、通常のアプリウィンドウだけを対象にする。
 local function isArrangeTarget(window)
+  local app = window:application()
   return window:isStandard()
+      and app
+      and app:bundleID() ~= appBundleIDs.finder
 end
 
 -- 現在見えている配置対象のウィンドウを、前面から順に取得する。
@@ -401,14 +404,9 @@ local function arrangeWindowsDiagonallyOnScreen(screen)
   end
 end
 
--- Ctrl + Cmd + Option + B: アクティブなウィンドウがあるモニタだけを斜め配置する。
+-- Ctrl + Cmd + Option + B: 現在フォーカス中のウィンドウがあるモニタを斜め配置する。
 hs.hotkey.bind(hyper, "b", function()
-  withFocusedWindow(function(window)
-    local screen = window:screen()
-    if screen then
-      arrangeWindowsDiagonallyOnScreen(screen)
-    end
-  end)
+  arrangeWindowsDiagonallyOnScreen(hs.screen.mainScreen())
 end)
 
 -- 3 ウィンドウの場合は、前面の 1 枚を左半分、残り 2 枚を右上・右下へ配置する。
