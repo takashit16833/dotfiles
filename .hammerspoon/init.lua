@@ -250,9 +250,23 @@ local function setWindowFrameImmediately(window, frame)
   window:setFrameWithWorkarounds(frame, 0)
 end
 
--- Ctrl + Cmd + Option + N: macOS の fullscreen にはせず、
+-- Ctrl + Cmd + Option + I: 現在のウィンドウを画面の左半分へ配置する。
+hs.hotkey.bind(hyper, "i", function()
+  withFocusedWindow(function(window)
+    window:moveToUnit({ x = 0, y = 0, w = 0.5, h = 1 })
+  end)
+end)
+
+-- Ctrl + Cmd + Option + -: 現在のウィンドウを画面の右半分へ配置する。
+hs.hotkey.bind(hyper, "-", function()
+  withFocusedWindow(function(window)
+    window:moveToUnit({ x = 0.5, y = 0, w = 0.5, h = 1 })
+  end)
+end)
+
+-- Ctrl + Cmd + Option + A: macOS の fullscreen にはせず、
 -- 現在の画面で利用可能な領域いっぱいまでウィンドウを最大化する。
-hs.hotkey.bind(hyper, "n", function()
+hs.hotkey.bind(hyper, "a", function()
   withFocusedWindow(function(window)
     local screen = window:screen()
     if screen then
@@ -287,8 +301,8 @@ local function centerWindowOnScreen(window, screen)
   setWindowFrameImmediately(window, frame)
 end
 
--- Ctrl + Cmd + Option + T: 現在のウィンドウを基準サイズにして画面中央へ配置する。
-hs.hotkey.bind(hyper, "t", function()
+-- Ctrl + Cmd + Option + O: 現在のウィンドウを基準サイズにして画面中央へ配置する。
+hs.hotkey.bind(hyper, "o", function()
   withFocusedWindow(function(window)
     local screen = window:screen()
     if screen then
