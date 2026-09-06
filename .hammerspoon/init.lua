@@ -119,12 +119,14 @@ end tell
   end
 end
 
--- Finder は常駐しているため、現在の Space にウィンドウが無い場合だけ新しいウィンドウを作る。
+-- Finder は常駐しているため、現在の Space にウィンドウが無い場合だけ
+-- ホームフォルダを表示する新しいウィンドウを作る。
 -- 別 Space の Finder ウィンドウを activate して Space を移動しない。
 local function openFinderWindow()
   local ok = hs.osascript.applescript(string.format([[
 tell application id "%s"
-  make new Finder window
+  set newWindow to make new Finder window
+  set target of newWindow to home
 end tell
 ]], appBundleIDs.finder))
 
