@@ -16,6 +16,7 @@ local appBundleIDs = {
   chrome = "com.google.Chrome",
   brave = "com.brave.Browser",
   eTyping = "com.google.Chrome.app.diccnboabdebegbpmodfgcekollacjne",
+  finder = "com.apple.finder",
   obsidian = "md.obsidian",
   kitty = "net.kovidgoyal.kitty",
   vscode = "com.microsoft.VSCode",
@@ -118,6 +119,20 @@ end tell
   end
 end
 
+-- Finder は常駐しているため、現在の Space にウィンドウが無い場合だけ新しいウィンドウを作る。
+-- 別 Space の Finder ウィンドウを activate して Space を移動しない。
+local function openFinderWindow()
+  local ok = hs.osascript.applescript(string.format([[
+tell application id "%s"
+  make new Finder window
+end tell
+]], appBundleIDs.finder))
+
+  if ok then
+    focusVisibleWindowWhenAvailable(appBundleIDs.finder)
+  end
+end
+
 -- 新しいアプリインスタンスをバックグラウンドで起動する。
 -- 名前ではなく bundle ID で指定し、既存の別 Space のウィンドウを activate しない。
 local function openAppInstanceInBackground(bundleID, appArguments)
@@ -160,6 +175,10 @@ local apps = {
     bundleID = appBundleIDs.brave,
     launch = openBraveWindow,
     openWindow = openBraveWindow,
+  },
+  ["k"] = {
+    bundleID = appBundleIDs.finder,
+    openWindow = openFinderWindow,
   },
   ["w"] = {
     bundleID = appBundleIDs.obsidian,
@@ -207,6 +226,7 @@ end
 
 -- Ctrl + Cmd + Option + f: Google Chrome
 -- Ctrl + Cmd + Option + s: Brave Browser
+-- Ctrl + Cmd + Option + k: Finder
 -- Ctrl + Cmd + Option + w: Obsidian
 -- Ctrl + Cmd + Option + r: kitty
 -- Ctrl + Cmd + Option + y: Visual Studio Code
