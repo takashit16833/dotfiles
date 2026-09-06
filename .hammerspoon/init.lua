@@ -295,18 +295,6 @@ hs.hotkey.bind(hyper, "a", function()
   end)
 end)
 
--- ウィンドウ操作で共通して使う基準サイズ。
--- Hammerspoon のウィンドウサイズは macOS の画面座標（point）単位。
-local standardWindowWidth = 1504
-local standardWindowHeight = 940
-
--- 指定した画面で、基準サイズを超えない範囲のウィンドウサイズを返す。
--- 小さい画面では利用可能領域に収まるように縮める。
-local function standardWindowSizeForScreen(screen)
-  local screenFrame = screen:frame()
-  return math.min(standardWindowWidth, screenFrame.w), math.min(standardWindowHeight, screenFrame.h)
-end
-
 -- 配置操作の対象か判定する。
 -- Finder とデスクトップなどを除き、通常のアプリウィンドウだけを対象にする。
 local function isArrangeTarget(window)
@@ -357,7 +345,7 @@ hs.hotkey.bind(hyper, "p", function()
 end)
 
 -- アクティブなウィンドウを隣のモニタへ循環移動する。
--- Finder はサイズと相対位置を保って移動のみ行い、それ以外は移動先で基準サイズに揃えて中央へ配置する。
+-- サイズと相対位置は変えず、モニタだけを移動する。
 -- hs.screen:next()/previous() の順序は Hammerspoon が決めるため、
 -- 3 画面以上では物理配置上の時計回り・反時計回りとは限らない。
 local function moveFocusedWindowToAdjacentScreen(direction)
@@ -378,33 +366,16 @@ local function moveFocusedWindowToAdjacentScreen(direction)
       return
     end
 
-    local app = window:application()
-    if app and app:bundleID() == appBundleIDs.finder then
-      window:moveToScreen(targetScreen, true, false, 0)
-      return
-    end
-
-    local screenFrame = targetScreen:frame()
-    local width, height = standardWindowSizeForScreen(targetScreen)
-
-    -- 別モニタへ移す場合は、まず目的の座標へ瞬間移動してからサイズを合わせる。
-    -- これにより moveToScreen のアニメーションを使わずに済む。
-    window:setTopLeft({
-      x = screenFrame.x + (screenFrame.w - width) / 2,
-      y = screenFrame.y + (screenFrame.h - height) / 2,
-    })
-    window:setSize({ w = width, h = height })
+    window:moveToScreen(targetScreen, true, false, 0)
   end)
 end
 
 -- Ctrl + Cmd + Option + Tab: 次のモニタへ循環移動する。
--- Finder は移動のみ、それ以外は基準サイズに揃えて中央へ配置する。
 hs.hotkey.bind(hyper, "tab", function()
   moveFocusedWindowToAdjacentScreen("next")
 end)
 
 -- Ctrl + Cmd + Option + Shift + Tab: 前のモニタへ循環移動する。
--- Finder は移動のみ、それ以外は基準サイズに揃えて中央へ配置する。
 hs.hotkey.bind(hyperShift, "tab", function()
   moveFocusedWindowToAdjacentScreen("previous")
 end)
