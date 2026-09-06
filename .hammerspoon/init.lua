@@ -265,13 +265,6 @@ local function withFocusedWindow(action)
   end
 end
 
--- フレームを一度に設定する。
--- animationDuration = 0 と組み合わせ、移動・サイズ変更をアニメーションなしで行う。
--- setFrameWithWorkarounds は画面端などでフレームが反映されにくい場合も補正する。
-local function setWindowFrameImmediately(window, frame)
-  window:setFrameWithWorkarounds(frame, 0)
-end
-
 -- Ctrl + Cmd + Option + I: 現在のウィンドウを画面の左半分へ配置する。
 hs.hotkey.bind(hyper, "i", function()
   withFocusedWindow(function(window)
@@ -287,13 +280,10 @@ hs.hotkey.bind(hyper, "-", function()
 end)
 
 -- Ctrl + Cmd + Option + A: macOS の fullscreen にはせず、
--- 現在の画面で利用可能な領域いっぱいまでウィンドウを最大化する。
+-- 現在のウィンドウを利用可能な領域いっぱいまで最大化する。
 hs.hotkey.bind(hyper, "a", function()
   withFocusedWindow(function(window)
-    local screen = window:screen()
-    if screen then
-      setWindowFrameImmediately(window, screen:frame())
-    end
+    window:maximize(0)
   end)
 end)
 
