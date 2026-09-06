@@ -503,8 +503,8 @@ hs.hotkey.bind(hyper, "z", function()
   centerWindowsOnScreen(hs.screen.mainScreen())
 end)
 
--- アクティブなウィンドウを隣のモニタへ循環移動し、
--- 移動先で基準サイズに揃えて画面中央へ配置する。
+-- アクティブなウィンドウを隣のモニタへ循環移動する。
+-- Finder はサイズと相対位置を保って移動のみ行い、それ以外は移動先で基準サイズに揃えて中央へ配置する。
 -- hs.screen:next()/previous() の順序は Hammerspoon が決めるため、
 -- 3 画面以上では物理配置上の時計回り・反時計回りとは限らない。
 local function moveFocusedWindowToAdjacentScreen(direction)
@@ -521,27 +521,37 @@ local function moveFocusedWindowToAdjacentScreen(direction)
       targetScreen = currentScreen:previous()
     end
 
-    if targetScreen then
-      local screenFrame = targetScreen:frame()
-      local width, height = standardWindowSizeForScreen(targetScreen)
-
-      -- 別モニタへ移す場合は、まず目的の座標へ瞬間移動してからサイズを合わせる。
-      -- これにより moveToScreen のアニメーションを使わずに済む。
-      window:setTopLeft({
-        x = screenFrame.x + (screenFrame.w - width) / 2,
-        y = screenFrame.y + (screenFrame.h - height) / 2,
-      })
-      window:setSize({ w = width, h = height })
+    if not targetScreen then
+      return
     end
+
+    local app = window:application()
+    if app and app:bundleID() == appBundleIDs.finder then
+      window:moveToScreen(targetScreen, true, false, 0)
+      return
+    end
+
+    local screenFrame = targetScreen:frame()
+    local width, height = standardWindowSizeForScreen(targetScreen)
+
+    -- 別モニタへ移す場合は、まず目的の座標へ瞬間移動してからサイズを合わせる。
+    -- これにより moveToScreen のアニメーションを使わずに済む。
+    window:setTopLeft({
+      x = screenFrame.x + (screenFrame.w - width) / 2,
+      y = screenFrame.y + (screenFrame.h - height) / 2,
+    })
+    window:setSize({ w = width, h = height })
   end)
 end
 
--- Ctrl + Cmd + Option + Tab: 次のモニタへ循環移動し、中央へ配置する。
+-- Ctrl + Cmd + Option + Tab: 次のモニタへ循環移動する。
+-- Finder は移動のみ、それ以外は基準サイズに揃えて中央へ配置する。
 hs.hotkey.bind(hyper, "tab", function()
   moveFocusedWindowToAdjacentScreen("next")
 end)
 
--- Ctrl + Cmd + Option + Shift + Tab: 前のモニタへ循環移動し、中央へ配置する。
+-- Ctrl + Cmd + Option + Shift + Tab: 前のモニタへ循環移動する。
+-- Finder は移動のみ、それ以外は基準サイズに揃えて中央へ配置する。
 hs.hotkey.bind(hyperShift, "tab", function()
   moveFocusedWindowToAdjacentScreen("previous")
 end)
