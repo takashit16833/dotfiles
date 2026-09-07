@@ -1,9 +1,16 @@
-# Retro Hacker Blue に合わせ、Yazi の UI 装飾だけを既定 theme から上書きする。
+# Retro Hacker Blue に合わせ、Yazi の UI 装飾を落ち着いた青系に寄せる。
 
 [mgr]
-# parent / current / preview の仕切りを Terminal の通常文字色と同じ青にする。
-border_style = { fg = "#5EAFFF" }
+# parent / current / preview の仕切りは Zellij の通常枠と同じ暗い青にする。
+border_style = { fg = "#00184A" }
 
 [indicator]
-# 既定の Powerline 風の丸い端を空白へ置き換え、選択行を四角い背景にする。
+# 既定の reversed を使わず、選択行は暗い青背景 + 明るい青文字に固定する。
+current = { fg = "#5EAFFF", bg = "#00184A" }
+parent = { fg = "#4C9EEB", bg = "#00184A" }
+
+# preview 側は背景を塗らず、控えめな強調だけ残す。
+preview = { underline = true }
+
+# 既定の Powerline 風の丸い端を空白へ置き換える。
 padding = { open = " ", close = " " }
