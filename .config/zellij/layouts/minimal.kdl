@@ -1,12 +1,12 @@
 // Zellij 自身の名前・session・mode は表示せず、tab だけを 1 行で表示する。
-// GUI アプリの tab bar に近づけるため、zjstatus は画面上部に配置する。
+// GUI アプリの tab bar に近づけつつ、zjstatus は画面下部に配置する。
 // zjstatus の配色・表示設定は config.kdl の plugin alias に集約する。
 layout {
     default_tab_template {
+        children
+
         pane size=1 borderless=true {
             plugin location="zjstatus"
         }
-
-        children
     }
 }
