@@ -1,16 +1,125 @@
-# Retro Hacker Blue に合わせ、Yazi の UI 装飾を落ち着いた青系に寄せる。
+# Retro Hacker Blue
+# Kitty / Zellij と同じ暗い青を土台にし、Yazi の UI 全体を落ち着いた青系へ寄せる。
+# エラーや cut など注意が必要な箇所だけ、既存のピンクをアクセントとして残す。
+
+[app]
+overall = { bg = "#010111" }
 
 [mgr]
-# parent / current / preview の仕切りは Zellij の通常枠と同じ暗い青にする。
+cwd = { fg = "#5EAFFF", bold = true }
+
+# 検索結果は見失わない程度に強調する。
+find_keyword = { fg = "#FF4DE1", bold = true, underline = true }
+find_position = { fg = "#4C9EEB", bold = true }
+
+symlink_target = { fg = "#4C9EEB", italic = true }
+
+# コピー / 選択は青、cut だけ注意色としてピンクを使う。
+marker_copied = { fg = "#4C9EEB", bg = "#4C9EEB" }
+marker_cut = { fg = "#FF4DE1", bg = "#FF4DE1" }
+marker_marked = { fg = "#5EAFFF", bg = "#5EAFFF" }
+marker_selected = { fg = "#5EAFFF", bg = "#5EAFFF" }
+marker_symbol = "│"
+
+count_copied = { fg = "#010111", bg = "#4C9EEB", bold = true }
+count_cut = { fg = "#010111", bg = "#FF4DE1", bold = true }
+count_selected = { fg = "#010111", bg = "#5EAFFF", bold = true }
+
+# parent / current / preview、split-tabs の仕切りも Zellij と同じ暗い青。
+border_symbol = "│"
 border_style = { fg = "#00184A" }
 
+[tabs]
+active = { fg = "#010111", bg = "#4C9EEB", bold = true }
+inactive = { fg = "#5EAFFF", bg = "#00184A" }
+sep_inner = { open = " ", close = " " }
+sep_outer = { open = " ", close = " " }
+
+[mode]
+normal_main = { fg = "#010111", bg = "#4C9EEB", bold = true }
+normal_alt = { fg = "#5EAFFF", bg = "#00184A" }
+select_main = { fg = "#010111", bg = "#5EAFFF", bold = true }
+select_alt = { fg = "#5EAFFF", bg = "#00184A" }
+unset_main = { fg = "#010111", bg = "#FF4DE1", bold = true }
+unset_alt = { fg = "#FF4DE1", bg = "#00184A" }
+
 [indicator]
-# 既定の reversed を使わず、選択行は暗い青背景 + 明るい青文字に固定する。
-current = { fg = "#5EAFFF", bg = "#00184A" }
+# 既定の reversed は使わず、選択行の色を固定する。
+current = { fg = "#5EAFFF", bg = "#00184A", bold = true }
 parent = { fg = "#4C9EEB", bg = "#00184A" }
-
-# preview 側は背景を塗らず、控えめな強調だけ残す。
-preview = { underline = true }
-
-# 既定の Powerline 風の丸い端を空白へ置き換える。
+preview = { fg = "#4C9EEB", underline = true }
 padding = { open = " ", close = " " }
+
+[status]
+overall = { bg = "#010111" }
+sep_left = { open = " ", close = " " }
+sep_right = { open = " ", close = " " }
+
+perm_sep = { fg = "#00184A" }
+perm_type = { fg = "#5EAFFF" }
+perm_read = { fg = "#4C9EEB" }
+perm_write = { fg = "#FF4DE1" }
+perm_exec = { fg = "#5EAFFF", bold = true }
+
+progress_label = { fg = "#5EAFFF", bold = true }
+progress_normal = { fg = "#5EAFFF", bg = "#00184A" }
+progress_error = { fg = "#010111", bg = "#FF4DE1", bold = true }
+
+[which]
+border = { fg = "#00184A" }
+cols = 3
+mask = { bg = "#010111" }
+cand = { fg = "#5EAFFF", bold = true }
+rest = { fg = "#4C9EEB" }
+desc = { fg = "#4C9EEB" }
+separator = "  "
+separator_style = { fg = "#00184A" }
+
+[confirm]
+border = { fg = "#00184A" }
+title = { fg = "#5EAFFF", bold = true }
+body = { fg = "#5EAFFF" }
+list = { fg = "#4C9EEB" }
+btn_yes = { fg = "#010111", bg = "#4C9EEB", bold = true }
+btn_no = { fg = "#5EAFFF", bg = "#00184A" }
+
+[spot]
+border = { fg = "#00184A" }
+title = { fg = "#5EAFFF", bold = true }
+tbl_col = { fg = "#4C9EEB" }
+tbl_cell = { fg = "#5EAFFF", bg = "#00184A", bold = true }
+
+[notify]
+title_info = { fg = "#4C9EEB", bold = true }
+title_warn = { fg = "#5EAFFF", bold = true }
+title_error = { fg = "#FF4DE1", bold = true }
+
+[pick]
+border = { fg = "#00184A" }
+active = { fg = "#5EAFFF", bg = "#00184A", bold = true }
+inactive = { fg = "#4C9EEB" }
+
+[input]
+border = { fg = "#00184A" }
+title = { fg = "#5EAFFF", bold = true }
+value = { fg = "#5EAFFF" }
+selected = { fg = "#010111", bg = "#4C9EEB" }
+
+[cmp]
+border = { fg = "#00184A" }
+active = { fg = "#5EAFFF", bg = "#00184A", bold = true }
+inactive = { fg = "#4C9EEB" }
+icon_file = ""
+icon_folder = ""
+icon_command = ""
+
+[tasks]
+border = { fg = "#00184A" }
+title = { fg = "#5EAFFF", bold = true }
+hovered = { fg = "#5EAFFF", bg = "#00184A", bold = true }
+
+[help]
+border = { fg = "#00184A" }
+chord = { fg = "#5EAFFF", bold = true }
+action = { fg = "#4C9EEB" }
+hovered = { fg = "#5EAFFF", bg = "#00184A", bold = true }
