@@ -38,23 +38,24 @@ themes {
 theme "retro-hacker-blue"
 
 // 複数 layout から同じ tab bar を再利用できるよう、zjstatus の設定を alias に集約する。
+// GUI アプリの tab に近い見た目にし、active は明るい青、inactive は pane frame と同じ暗い青にする。
 plugins {
     zjstatus location="https://github.com/dj95/zjstatus/releases/download/v0.24.0/zjstatus.wasm" {
         format_left "{tabs}"
         format_center ""
         format_right ""
-        format_space ""
+        format_space "#[bg=#010111]"
 
         border_enabled "false"
 
-        tab_normal            "#[fg=#4C9EEB] {focused_pane_title} "
-        tab_normal_fullscreen "#[fg=#4C9EEB] {focused_pane_title} "
-        tab_normal_sync       "#[fg=#4C9EEB] {focused_pane_title} "
-        tab_active            "#[fg=#FF4DE1,bold] {focused_pane_title} "
-        tab_active_fullscreen "#[fg=#FF4DE1,bold] {focused_pane_title} "
-        tab_active_sync       "#[fg=#FF4DE1,bold] {focused_pane_title} "
-        tab_rename            "#[fg=#FF4DE1,bold] {name} "
-        tab_separator         "  "
+        tab_normal            "#[fg=#4C9EEB,bg=#00184A] {focused_pane_title} #[bg=#010111]"
+        tab_normal_fullscreen "#[fg=#4C9EEB,bg=#00184A] {focused_pane_title} #[bg=#010111]"
+        tab_normal_sync       "#[fg=#4C9EEB,bg=#00184A] {focused_pane_title} #[bg=#010111]"
+        tab_active            "#[fg=#010111,bg=#4C9EEB,bold] {focused_pane_title} #[bg=#010111]"
+        tab_active_fullscreen "#[fg=#010111,bg=#4C9EEB,bold] {focused_pane_title} #[bg=#010111]"
+        tab_active_sync       "#[fg=#010111,bg=#4C9EEB,bold] {focused_pane_title} #[bg=#010111]"
+        tab_rename            "#[fg=#010111,bg=#4C9EEB,bold] {name} #[bg=#010111]"
+        tab_separator         " "
     }
 }
 
