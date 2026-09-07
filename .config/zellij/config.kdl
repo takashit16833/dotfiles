@@ -1,8 +1,41 @@
-// Kitty の見た目を邪魔しないよう、Zellij の UI は必要最小限にする。
-// tab 表示は layout 側で管理し、pane frame は表示しない。
+// Kitty の配色に合わせ、Zellij の pane frame / 分割線は普段は暗い青、
+// Pane mode などの操作中だけ明るい青で強調する。
 simplified_ui true
 default_layout "minimal"
-pane_frames false
+pane_frame_style "full"
+
+themes {
+    retro-hacker-blue {
+        frame_unselected {
+            base 0 24 74
+            background 0
+            emphasis_0 0 24 74
+            emphasis_1 0 24 74
+            emphasis_2 0 24 74
+            emphasis_3 0 24 74
+        }
+
+        frame_selected {
+            base 0 24 74
+            background 0
+            emphasis_0 0 24 74
+            emphasis_1 0 24 74
+            emphasis_2 0 24 74
+            emphasis_3 0 24 74
+        }
+
+        frame_highlight {
+            base 76 158 235
+            background 0
+            emphasis_0 76 158 235
+            emphasis_1 76 158 235
+            emphasis_2 76 158 235
+            emphasis_3 76 158 235
+        }
+    }
+}
+
+theme "retro-hacker-blue"
 
 // 複数 layout から同じ tab bar を再利用できるよう、zjstatus の設定を alias に集約する。
 plugins {
