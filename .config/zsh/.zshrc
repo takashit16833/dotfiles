@@ -25,7 +25,7 @@ setopt INTERACTIVE_COMMENTS
 bindkey -e
 
 # Cmd + Backspace 用。
-# WezTerm から送る Meta + Ctrl-U は Emacs keymap では未使用なので、
+# Kitty から送る Meta + Ctrl-U は Emacs keymap では未使用なので、
 # カーソル位置から行頭までを削除する操作だけを明示的に割り当てる。
 bindkey '\e^U' backward-kill-line
 

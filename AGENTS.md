@@ -47,7 +47,7 @@
 - default config 全体を複製せず、意図的に変更する項目だけを repository で管理する。
 - Kitty の directory 全体は symlink せず、`kitty.conf`、`appearance.conf`、`keybindings.conf` だけを個別に symlink する。theme kitten などが生成する local file を repository へ混在させないため。
 - `kitty.conf` は最後に `globinclude local.conf` を読み、`~/.config/kitty/local.conf` が存在するマシンだけ追加設定を適用する。`local.conf` やそこから参照する session file はマシン固有として repository では管理しない。
-- `appearance.conf` は WezTerm の Retro Hacker Blue ベースの配色、右上寄せの上部 tab bar、Menlo + BIZ UDGothic の日本語表示を引き継ぐ。
+- `appearance.conf` は Retro Hacker Blue ベースの配色、右上寄せの上部 tab bar、Menlo + BIZ UDGothic の日本語表示を管理する。
 - tab bar は `slant` style を使い、active は `#FF4DE1` の背景と `#010111` の文字、inactive は `#4C9EEB` の文字と terminal 背景を使う。Powerline 風の強い装飾にはしない。
 - Kitty の分割ショートカットは分割時に `splits` layout へ切り替え、Cmd-Enter で左右分割、Cmd-Shift-Enter で上下分割する。他の layout は引き続き利用できる状態を維持する。
 - Kitty の split pane 境界は active / inactive とも `#00184A` に統一し、`draw_minimal_borders` の既定挙動で pane 間の線だけを描画する。

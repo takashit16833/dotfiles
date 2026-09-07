@@ -150,10 +150,6 @@ main() {
     "$XDG_CONFIG_HOME/kitty/keybindings.conf"
 
   remove_symlink \
-    "$DOTFILES_DIR/.config/wezterm" \
-    "$XDG_CONFIG_HOME/wezterm"
-
-  remove_symlink \
     "$DOTFILES_DIR/.config/starship.toml" \
     "$XDG_CONFIG_HOME/starship.toml"
 

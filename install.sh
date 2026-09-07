@@ -351,10 +351,6 @@ main() {
     "$XDG_CONFIG_HOME/kitty/keybindings.conf"
 
   ensure_symlink \
-    "$DOTFILES_DIR/.config/wezterm" \
-    "$XDG_CONFIG_HOME/wezterm"
-
-  ensure_symlink \
     "$DOTFILES_DIR/.config/starship.toml" \
     "$XDG_CONFIG_HOME/starship.toml"
 
