@@ -100,7 +100,8 @@ active = { fg = "#5EAFFF", bg = "#00184A", bold = true }
 inactive = { fg = "#4C9EEB" }
 
 [input]
-border = { fg = "#00184A" }
+# `/` などで開く入力欄は暗い枠だと見失いやすいので、通常アクセントの青を使う。
+border = { fg = "#4C9EEB" }
 title = { fg = "#5EAFFF", bold = true }
 value = { fg = "#5EAFFF" }
 selected = { fg = "#010111", bg = "#4C9EEB" }
