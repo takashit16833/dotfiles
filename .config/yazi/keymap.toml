@@ -5,6 +5,7 @@
 prepend_keymap = [
   # 2 pane 表示。Tab は現在操作する pane を切り替える。
   { on = "\\", run = "plugin split-tabs spl_toggle", desc = "Toggle dual-pane view" },
+  { on = "¥", run = "plugin split-tabs spl_toggle", desc = "Toggle dual-pane view" },
   { on = "<Tab>", run = "plugin split-tabs spl_switch_tab", desc = "Switch pane" },
 
   # ブラウザのアドレスバーに近い感覚で local path / sftp://... を直接入力する。
