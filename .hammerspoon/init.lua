@@ -157,17 +157,17 @@ local apps = {
     openWindow = openChromeWindow,
   },
   ["s"] = {
-    bundleID = appBundleIDs.brave,
-    launch = openBraveWindow,
-    openWindow = openBraveWindow,
+    bundleID = appBundleIDs.obsidian,
+    openWindow = openObsidianWindow,
   },
   ["k"] = {
     bundleID = appBundleIDs.finder,
     openWindow = openFinderWindow,
   },
   ["w"] = {
-    bundleID = appBundleIDs.obsidian,
-    openWindow = openObsidianWindow,
+    bundleID = appBundleIDs.brave,
+    launch = openBraveWindow,
+    openWindow = openBraveWindow,
   },
   ["t"] = {
     bundleID = appBundleIDs.kitty,
@@ -210,9 +210,9 @@ local function activateApp(appConfig)
 end
 
 -- Ctrl + Cmd + Option + f: Google Chrome
--- Ctrl + Cmd + Option + s: Brave Browser
+-- Ctrl + Cmd + Option + s: Obsidian
 -- Ctrl + Cmd + Option + k: Finder
--- Ctrl + Cmd + Option + w: Obsidian
+-- Ctrl + Cmd + Option + w: Brave Browser
 -- Ctrl + Cmd + Option + t: kitty
 -- Ctrl + Cmd + Option + n: Visual Studio Code
 for key, appConfig in pairs(apps) do
