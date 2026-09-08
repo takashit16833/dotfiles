@@ -169,11 +169,11 @@ local apps = {
     bundleID = appBundleIDs.obsidian,
     openWindow = openObsidianWindow,
   },
-  ["r"] = {
+  ["t"] = {
     bundleID = appBundleIDs.kitty,
     openWindow = openKittyWindow,
   },
-  ["y"] = {
+  ["n"] = {
     bundleID = appBundleIDs.vscode,
     openWindow = openVSCodeWindow,
   },
@@ -213,8 +213,8 @@ end
 -- Ctrl + Cmd + Option + s: Brave Browser
 -- Ctrl + Cmd + Option + k: Finder
 -- Ctrl + Cmd + Option + w: Obsidian
--- Ctrl + Cmd + Option + r: kitty
--- Ctrl + Cmd + Option + y: Visual Studio Code
+-- Ctrl + Cmd + Option + t: kitty
+-- Ctrl + Cmd + Option + n: Visual Studio Code
 for key, appConfig in pairs(apps) do
   hs.hotkey.bind(hyper, key, function()
     activateApp(appConfig)
@@ -267,55 +267,6 @@ hs.hotkey.bind(hyper, "a", function()
   withFocusedWindow(function(window)
     window:maximize(0)
   end)
-end)
-
--- 配置操作の対象か判定する。
--- Finder とデスクトップなどを除き、通常のアプリウィンドウだけを対象にする。
-local function isArrangeTarget(window)
-  local app = window:application()
-  return window:isStandard()
-      and app
-      and app:bundleID() ~= appBundleIDs.finder
-end
-
--- 現在見えている配置対象のウィンドウを、前面から順に取得する。
-local function arrangeTargets()
-  local windows = {}
-
-  for _, window in ipairs(hs.window.orderedWindows()) do
-    if isArrangeTarget(window) then
-      table.insert(windows, window)
-    end
-  end
-
-  return windows
-end
-
--- 指定したモニタ上の配置対象ウィンドウだけを取得する。
-local function arrangeTargetsOnScreen(screen)
-  local windows = {}
-  local screenId = screen:id()
-
-  for _, window in ipairs(arrangeTargets()) do
-    local windowScreen = window:screen()
-    if windowScreen and windowScreen:id() == screenId then
-      table.insert(windows, window)
-    end
-  end
-
-  return windows
-end
-
--- 指定したモニタ上の全ウィンドウを、macOS の fullscreen モードにはせず最大化する。
-local function maximizeWindowsOnScreen(screen)
-  for _, window in ipairs(arrangeTargetsOnScreen(screen)) do
-    window:maximize(0)
-  end
-end
-
--- Ctrl + Cmd + Option + P: 現在フォーカス中のウィンドウがあるモニタの全ウィンドウを最大化する。
-hs.hotkey.bind(hyper, "p", function()
-  maximizeWindowsOnScreen(hs.screen.mainScreen())
 end)
 
 -- アクティブなウィンドウを隣のモニタへ循環移動する。
