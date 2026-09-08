@@ -73,17 +73,21 @@ Chrome / Brave の unpacked extension はブラウザ側への初回登録が必
 cat > ~/.config/kitty/startup.kitty-session <<'EOF'
 new_tab dotfiles
 cd ~/dotfiles
-launch /bin/zsh -lc "exec lazygit"
+launch /bin/zsh -lc "exec zellij attach -c dotfiles options --default-layout lazygit"
 
 new_tab RAGScope
 cd ~/RAGScope/main
-launch /bin/zsh -lc "exec lazygit"
+launch /bin/zsh -lc "exec zellij attach -c RAGScope options --default-layout lazygit"
 
 new_tab Workbench
 cd ~/Workbench
-launch /bin/zsh -lc "exec lazygit"
+launch /bin/zsh -lc "exec zellij attach -c Workbench options --default-layout lazygit"
 
-focus_tab 0
+new_tab work
+cd ~
+launch /bin/zsh -lc "exec zellij attach -c work"
+
+focus_tab 3
 EOF
 ```
 
