@@ -148,16 +148,24 @@
         "key": "ctrl+pageup",
         "command": "workbench.action.previousEditorInGroup"
     },
-    // Ctrl+PageUp/Down に割り当てられていた1行スクロールを Option+PageUp/Down へ移す。
+    // Option+PageUp/Down で半ページずつスクロールする。
     {
         "key": "alt+pageup",
-        "command": "scrollLineUp",
-        "when": "textInputFocus"
+        "command": "editorScroll",
+        "when": "textInputFocus",
+        "args": {
+            "to": "up",
+            "by": "halfPage"
+        }
     },
     {
         "key": "alt+pagedown",
-        "command": "scrollLineDown",
-        "when": "textInputFocus"
+        "command": "editorScroll",
+        "when": "textInputFocus",
+        "args": {
+            "to": "down",
+            "by": "halfPage"
+        }
     },
     // タブ移動を Ctrl+PageUp/Down に統一するため、macOS 既定の Cmd+Option+←/→ は解除する。
     {
