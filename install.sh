@@ -19,6 +19,12 @@ ZELLIJ_BIN="$LOCAL_BIN_DIR/zellij"
 ZELLIJ_MANAGED_STATE_DIR="$HOME/.local/share/dotfiles/zellij"
 ZELLIJ_MANAGED_VERSION_FILE="$ZELLIJ_MANAGED_STATE_DIR/version"
 
+# zjstatus は Zellij の remote plugin loader を経由せず、公式 release を事前配置して使う。
+ZJSTATUS_VERSION="0.24.0"
+ZJSTATUS_SHA256="1ccedece1ded62cf3e209be690cdd39ca6fb9e8228ed71a951f6507f9956669b"
+ZELLIJ_PLUGIN_DIR="$HOME/Library/Application Support/org.Zellij-Contributors.Zellij/plugins"
+ZJSTATUS_WASM="$ZELLIJ_PLUGIN_DIR/zjstatus.wasm"
+
 # VS Code の macOS 標準 User directory。
 VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
 
@@ -185,6 +191,48 @@ install_zellij() {
   info "installed: $ZELLIJ_BIN"
 }
 
+install_zjstatus() {
+  local current_sha=''
+  local downloaded_sha
+  local tmp_file
+
+  mkdir -p "$ZELLIJ_PLUGIN_DIR"
+
+  if [[ -e "$ZJSTATUS_WASM" || -L "$ZJSTATUS_WASM" ]]; then
+    if [[ ! -f "$ZJSTATUS_WASM" ]]; then
+      fail "$ZJSTATUS_WASM already exists but is not a regular file; leaving it untouched"
+    fi
+
+    current_sha="$(shasum -a 256 "$ZJSTATUS_WASM" | awk '{print $1}')"
+    if [[ "$current_sha" == "$ZJSTATUS_SHA256" ]]; then
+      info "zjstatus already installed: v$ZJSTATUS_VERSION"
+      return
+    fi
+
+    fail "$ZJSTATUS_WASM already exists with an unexpected checksum; leaving it untouched"
+  fi
+
+  tmp_file="$(mktemp)"
+  info "installing zjstatus v$ZJSTATUS_VERSION"
+
+  if ! curl -fL \
+    "https://github.com/dj95/zjstatus/releases/download/v${ZJSTATUS_VERSION}/zjstatus.wasm" \
+    -o "$tmp_file"; then
+    rm -f "$tmp_file"
+    fail 'failed to download zjstatus'
+  fi
+
+  downloaded_sha="$(shasum -a 256 "$tmp_file" | awk '{print $1}')"
+  if [[ "$downloaded_sha" != "$ZJSTATUS_SHA256" ]]; then
+    rm -f "$tmp_file"
+    fail "zjstatus checksum mismatch: expected $ZJSTATUS_SHA256, got $downloaded_sha"
+  fi
+
+  install -m 644 "$tmp_file" "$ZJSTATUS_WASM"
+  rm -f "$tmp_file"
+  info "installed: $ZJSTATUS_WASM"
+}
+
 install_yazi_plugins() {
   local split_tabs_plugin_dir="$XDG_CONFIG_HOME/yazi/plugins/split-tabs.yazi"
   local no_status_plugin_dir="$XDG_CONFIG_HOME/yazi/plugins/no-status.yazi"
@@ -324,6 +372,7 @@ main() {
 
   install_homebrew_packages
   install_zellij
+  install_zjstatus
   install_managed_scripts
 
   ensure_symlink \
