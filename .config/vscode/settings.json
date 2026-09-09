@@ -5,7 +5,7 @@
     // WezTerm と見た目を揃えるため、Retro Hacker の Blue variant を利用する。
     "workbench.colorTheme": "Retro Hacker Blue",
     // エディタのフォントサイズ
-    "editor.fontSize": 13,
+    "editor.fontSize": 12,
     // エディタのフォント
     "editor.fontFamily": "'Menlo', 'BIZ UDGothic', monospace",
     "terminal.integrated.fontFamily": "'Menlo', 'BIZ UDGothic', monospace",
