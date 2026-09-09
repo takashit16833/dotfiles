@@ -139,13 +139,33 @@
             ]
         }
     },
-    // タブグループ内の移動に変更
+    // 他アプリに合わせて Ctrl+PageUp/Down でタブグループ内を移動する。
     {
-        "key": "cmd+alt+right",
+        "key": "ctrl+pagedown",
         "command": "workbench.action.nextEditorInGroup"
     },
     {
-        "key": "cmd+alt+left",
+        "key": "ctrl+pageup",
         "command": "workbench.action.previousEditorInGroup"
+    },
+    // Ctrl+PageUp/Down に割り当てられていた1行スクロールを Option+PageUp/Down へ移す。
+    {
+        "key": "alt+pageup",
+        "command": "scrollLineUp",
+        "when": "textInputFocus"
+    },
+    {
+        "key": "alt+pagedown",
+        "command": "scrollLineDown",
+        "when": "textInputFocus"
+    },
+    // タブ移動を Ctrl+PageUp/Down に統一するため、macOS 既定の Cmd+Option+←/→ は解除する。
+    {
+        "key": "cmd+alt+right",
+        "command": "-workbench.action.nextEditorInGroup"
+    },
+    {
+        "key": "cmd+alt+left",
+        "command": "-workbench.action.previousEditorInGroup"
     },
 ]
