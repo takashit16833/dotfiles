@@ -38,9 +38,10 @@ themes {
 theme "retro-hacker-blue"
 
 // 複数 layout から同じ tab bar を再利用できるよう、zjstatus の設定を alias に集約する。
+// plugin 本体は install.sh が Zellij の plugin directory へ配置し、remote load は使わない。
 // GUI アプリの tab に近い見た目にし、active は明るい青、inactive は pane frame と同じ暗い青にする。
 plugins {
-    zjstatus location="https://github.com/dj95/zjstatus/releases/download/v0.24.0/zjstatus.wasm" {
+    zjstatus location="file:zjstatus" {
         format_left "{tabs}"
         format_center ""
         format_right ""
