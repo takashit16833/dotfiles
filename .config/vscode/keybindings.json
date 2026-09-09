@@ -148,9 +148,20 @@
         "key": "ctrl+pageup",
         "command": "workbench.action.previousEditorInGroup"
     },
-    // Option+PageUp/Down で半ページずつスクロールする。
+    // Option+PageUp/Down は1行スクロール。
     {
         "key": "alt+pageup",
+        "command": "scrollLineUp",
+        "when": "textInputFocus"
+    },
+    {
+        "key": "alt+pagedown",
+        "command": "scrollLineDown",
+        "when": "textInputFocus"
+    },
+    // PageUp/Down は半ページずつスクロールする。
+    {
+        "key": "pageup",
         "command": "editorScroll",
         "when": "textInputFocus",
         "args": {
@@ -159,7 +170,7 @@
         }
     },
     {
-        "key": "alt+pagedown",
+        "key": "pagedown",
         "command": "editorScroll",
         "when": "textInputFocus",
         "args": {
