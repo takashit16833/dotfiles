@@ -92,7 +92,7 @@
 - Zellij の通常 UI は `.config/zellij/layouts/minimal.kdl` を使い、session 名・mode 表示・Powerline 風装飾を出さず tab だけを 1 行表示する。
 - `.config/zellij/layouts/lazygit.kdl` は同じ UI のまま起動直後の唯一の terminal pane で `lazygit` を実行する。Homebrew の PATH は login zsh の `.zprofile` で設定されるため、layout から Homebrew CLI を直接 command 指定せず `/bin/zsh -lc` 経由で起動する。必要になった通常 pane は Zellij 側で後から追加する。
 - `minimal.kdl` と `lazygit.kdl` は `install.sh` が個別に symlink する。
-- `zjstatus` v0.24.0 は `install.sh` が公式 release から取得し、SHA-256 を検証して Zellij の platform plugin directory に `zjstatus.wasm` として配置する。`config.kdl` の `zjstatus` plugin alias は `file:zjstatus` でローカル参照し、各 layout は alias だけを参照する。Zellij の remote plugin load は環境によって `unexpected end-of-file` になることがあるため使わない。表示・配色は alias に集約し、active は `#FF4DE1`、inactive は `#4C9EEB`、背景色なしとする。
+- `zjstatus` v0.24.0 は `install.sh` が公式 release から取得し、SHA-256 を検証して Zellij の platform plugin directory に `zjstatus.wasm` として配置する。`config.kdl` の `zjstatus` plugin alias は `file:~/Library/Application Support/org.Zellij-Contributors.Zellij/plugins/zjstatus.wasm` でローカル参照し、各 layout は alias だけを参照する。相対指定の `file:zjstatus` は Zellij 起動時の cwd 基準で解決されるため使わない。Zellij の remote plugin load は環境によって `unexpected end-of-file` になることがあるため使わない。初回は plugin location ごとの権限確認が 1 行の status pane 内で `/n)` のように切れて見えることがあるため、その場合は `y` で許可する。表示・配色は alias に集約し、active は `#FF4DE1`、inactive は `#4C9EEB`、背景色なしとする。
 - Zellij の startup tip は `show_startup_tips false` で表示しない。
 - Zellij の前後 tab は Kitty から送る Alt-Shift-Left / Alt-Shift-Right を `GoToPreviousTab` / `GoToNextTab` に割り当て、物理キーでは Cmd-Option-Left / Cmd-Option-Right で操作する。
 - tab bar の各 tab は `focused_pane_title` を表示する。
