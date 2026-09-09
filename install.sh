@@ -28,6 +28,11 @@ ZJSTATUS_WASM="$ZELLIJ_PLUGIN_DIR/zjstatus.wasm"
 # VS Code の macOS 標準 User directory。
 VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
 
+# Marketplace 未公開の QuickJump は、固定 commit から VSIX を作って導入する。
+QUICKJUMP_VERSION="1.0.0"
+QUICKJUMP_COMMIT="af23a8c11654d9eea5a59dfe5d816490cdcced19"
+QUICKJUMP_EXTENSION_ID="takashit16833.quickjump"
+
 # dotfiles で管理する唯一の Raycast Local Extension。
 RAYCAST_EXTENSION_DIR="$DOTFILES_DIR/raycast/extension"
 
@@ -292,6 +297,68 @@ install_vscode_extensions() {
   fi
 }
 
+install_quickjump_extension() {
+  local vscode_cli=''
+  local tmp_dir
+  local archive
+  local source_dir
+  local vsix
+
+  if command -v code >/dev/null 2>&1; then
+    vscode_cli="$(command -v code)"
+  elif [[ -x '/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code' ]]; then
+    vscode_cli='/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code'
+  else
+    fail 'VS Code CLI was not found after installing Visual Studio Code'
+  fi
+
+  if "$vscode_cli" --list-extensions --show-versions \
+    | grep -Fqx "${QUICKJUMP_EXTENSION_ID}@${QUICKJUMP_VERSION}"; then
+    info "QuickJump already installed: $QUICKJUMP_VERSION"
+    return
+  fi
+
+  if ! command -v npm >/dev/null 2>&1; then
+    fail 'npm was not found after installing Homebrew packages'
+  fi
+
+  tmp_dir="$(mktemp -d)"
+  archive="$tmp_dir/quickjump.tar.gz"
+
+  (
+    trap 'rm -rf "$tmp_dir"' EXIT
+
+    info "installing QuickJump $QUICKJUMP_VERSION"
+    if ! curl -fL \
+      "https://github.com/takashit16833/QuickJump/archive/${QUICKJUMP_COMMIT}.tar.gz" \
+      -o "$archive"; then
+      fail 'failed to download QuickJump source archive'
+    fi
+
+    if ! tar -xzf "$archive" -C "$tmp_dir"; then
+      fail 'failed to extract QuickJump source archive'
+    fi
+
+    source_dir="$tmp_dir/QuickJump-${QUICKJUMP_COMMIT}"
+    if [[ ! -f "$source_dir/package.json" ]]; then
+      fail 'QuickJump source archive did not contain package.json'
+    fi
+
+    cd "$source_dir"
+    npm install --package-lock=false --no-audit --no-fund
+    npm run package
+
+    vsix="$source_dir/quickjump-${QUICKJUMP_VERSION}.vsix"
+    if [[ ! -f "$vsix" ]]; then
+      fail "QuickJump package did not produce $vsix"
+    fi
+
+    "$vscode_cli" --install-extension "$vsix" --force
+  )
+
+  info "QuickJump installed: $QUICKJUMP_VERSION"
+}
+
 install_raycast_extension() {
   local ray_cli="$RAYCAST_EXTENSION_DIR/node_modules/.bin/ray"
   local develop_log
@@ -450,6 +517,7 @@ main() {
     "$VSCODE_USER_DIR/keybindings.json"
 
   install_vscode_extensions
+  install_quickjump_extension
 
   ensure_symlink \
     "$DOTFILES_DIR/.hammerspoon" \
