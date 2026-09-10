@@ -117,7 +117,7 @@
     },
     // 集中モードに入る
     {
-        "key": "cmd+shift+m",
+        "key": "cmd+m",
         "command": "runCommands",
         "when": "!isCenteredLayout",
         "args": {
@@ -129,7 +129,7 @@
     },
     // 集中モードから戻る
     {
-        "key": "cmd+shift+m",
+        "key": "cmd+m",
         "command": "runCommands",
         "when": "isCenteredLayout",
         "args": {
