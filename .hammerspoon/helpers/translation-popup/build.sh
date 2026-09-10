@@ -2,13 +2,19 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BUILD_ROOT="${TMPDIR:-/tmp}/dotfiles-translation-popup"
-APP_DIR="$BUILD_ROOT/TranslationPopup.app"
+INSTALL_ROOT="${1:-$HOME/.local/share/dotfiles/translation-popup}"
+INSTALLED_APP="$INSTALL_ROOT/TranslationPopup.app"
+TMP_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/dotfiles-translation-popup.XXXXXX")"
+APP_DIR="$TMP_ROOT/TranslationPopup.app"
 CONTENTS_DIR="$APP_DIR/Contents"
 MACOS_DIR="$CONTENTS_DIR/MacOS"
 EXECUTABLE="$MACOS_DIR/TranslationPopup"
 
-rm -rf "$APP_DIR"
+cleanup() {
+  rm -rf "$TMP_ROOT"
+}
+trap cleanup EXIT
+
 mkdir -p "$MACOS_DIR"
 
 cat > "$CONTENTS_DIR/Info.plist" <<'PLIST'
@@ -40,8 +46,12 @@ xcrun swiftc \
   "$SCRIPT_DIR/TranslationPopup.swift" \
   -o "$EXECUTABLE"
 
-# The app is built locally and has no distribution identity; an ad-hoc signature
-# is enough for this experiment and avoids treating the bundle as malformed.
+# ローカル利用専用なので ad-hoc 署名を付ける。
 codesign --force --sign - "$APP_DIR" >/dev/null
 
-printf '%s\n' "$APP_DIR"
+# ビルド成功後だけ既存 helper を置き換え、失敗時は動作中の版を残す。
+mkdir -p "$INSTALL_ROOT"
+rm -rf "$INSTALLED_APP"
+mv "$APP_DIR" "$INSTALLED_APP"
+
+printf '%s\n' "$INSTALLED_APP"
