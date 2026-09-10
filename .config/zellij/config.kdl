@@ -97,3 +97,7 @@ keybinds {
 
 // About Zellij の startup tip は普段使いでは不要なので表示しない。
 show_startup_tips false
+
+// Ctrl+Q で終了したセッションは復元しない。
+// 実行中セッションへの attach は引き続き利用できる。
+session_serialization false
