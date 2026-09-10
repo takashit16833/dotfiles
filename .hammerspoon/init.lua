@@ -371,6 +371,9 @@ end)
 
 mouseNavigationEventTap:start()
 
+-- Ctrl + Cmd + Option + Q: 選択中のテキストを macOS 標準の翻訳 UI で表示する。
+require("modules.translation_popup").start()
+
 -- ChatGPT の回答完了通知はブラウザ側の userscript と組み合わせて使う。
 require("modules.chatgpt_notify").start({
   braveBundleID = appBundleIDs.brave,
