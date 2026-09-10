@@ -10,6 +10,7 @@ ZELLIJ_VERSION="0.45.0"
 ZELLIJ_BIN="$LOCAL_BIN_DIR/zellij"
 ZELLIJ_MANAGED_STATE_DIR="$HOME/.local/share/dotfiles/zellij"
 ZELLIJ_MANAGED_VERSION_FILE="$ZELLIJ_MANAGED_STATE_DIR/version"
+TRANSLATION_POPUP_DIR="$HOME/.local/share/dotfiles/translation-popup"
 VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
 RAYCAST_EXTENSION_DIR="$DOTFILES_DIR/raycast/extension"
 RAYCAST_EXTENSION_NAME="dotfiles-commands"
@@ -200,6 +201,9 @@ main() {
   remove_symlink \
     "$DOTFILES_DIR/.hammerspoon" \
     "$HOME/.hammerspoon"
+
+  remove_path "$TRANSLATION_POPUP_DIR"
+  rmdir "$HOME/.local/share/dotfiles" 2>/dev/null || true
 
   uninstall_raycast_extension
 
