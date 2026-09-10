@@ -16,13 +16,13 @@ private struct TranslationAnchorView: View {
                 arrowEdge: .top
             )
             .onAppear {
-                // Wait until the hosting view belongs to a visible window before
+                // Wait until the hosting view belongs to a visible key window before
                 // asking SwiftUI to present the system translation popover.
                 DispatchQueue.main.async {
                     isPresented = true
                 }
             }
-            .onChange(of: isPresented) { value in
+            .onChange(of: isPresented) { _, value in
                 // translationPresentation toggles the binding back to false when
                 // the popover is dismissed. The helper has no other UI, so exit.
                 if !value {
@@ -30,6 +30,14 @@ private struct TranslationAnchorView: View {
                 }
             }
     }
+}
+
+// A borderless window normally cannot become the key window. This invisible
+// anchor must be key before translationPresentation opens its popover so the
+// popover starts active instead of requiring an initial click.
+private final class FocusableAnchorPanel: NSPanel {
+    override var canBecomeKey: Bool { true }
+    override var canBecomeMain: Bool { false }
 }
 
 private final class AppDelegate: NSObject, NSApplicationDelegate {
@@ -43,14 +51,14 @@ private final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         let mouseLocation = NSEvent.mouseLocation
 
-        let panel = NSPanel(
+        let panel = FocusableAnchorPanel(
             contentRect: NSRect(
                 x: mouseLocation.x,
                 y: mouseLocation.y,
                 width: 1,
                 height: 1
             ),
-            styleMask: [.borderless, .nonactivatingPanel],
+            styleMask: [.borderless],
             backing: .buffered,
             defer: false
         )
@@ -65,9 +73,12 @@ private final class AppDelegate: NSObject, NSApplicationDelegate {
         // Keep the invisible anchor window alive for as long as the translation
         // popover is visible and place it at the current mouse position.
         anchorWindow = panel
-        panel.orderFrontRegardless()
 
+        // translationPresentation inherits activation from its host window.
+        // Make the helper active and the invisible anchor key up front so the
+        // system popover can be dismissed by clicking elsewhere immediately.
         NSApp.activate(ignoringOtherApps: true)
+        panel.makeKeyAndOrderFront(nil)
     }
 }
 
