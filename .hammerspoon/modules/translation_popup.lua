@@ -16,16 +16,17 @@ local function restorePasteboard(saved)
 end
 
 local function helperPaths()
-  local tmpDir = (os.getenv("TMPDIR") or "/tmp"):gsub("/+$", "")
-  local appPath = tmpDir .. "/dotfiles-translation-popup/TranslationPopup.app"
+  local home = os.getenv("HOME")
+  local installRoot = home .. "/.local/share/dotfiles/translation-popup"
+  local appPath = installRoot .. "/TranslationPopup.app"
   local executablePath = appPath .. "/Contents/MacOS/TranslationPopup"
   local buildScript = hs.configdir .. "/helpers/translation-popup/build.sh"
 
-  return appPath, executablePath, buildScript
+  return appPath, executablePath, buildScript, installRoot
 end
 
 local function launchPopup(text)
-  local appPath, executablePath, buildScript = helperPaths()
+  local appPath, executablePath, buildScript, installRoot = helperPaths()
 
   local function openPopup()
     M.openTask = hs.task.new("/usr/bin/open", function()
@@ -55,7 +56,7 @@ local function launchPopup(text)
     end
 
     openPopup()
-  end, { buildScript })
+  end, { buildScript, installRoot })
 
   M.buildTask:start()
 end
@@ -84,7 +85,12 @@ local function translateSelection()
 end
 
 function M.start()
+  if M.hotkey then
+    M.hotkey:delete()
+  end
+
   M.hotkey = hs.hotkey.bind({ "ctrl", "cmd", "alt" }, "q", translateSelection)
+  return M
 end
 
 return M
