@@ -63,7 +63,7 @@ end
 local function translateSelection()
   local savedPasteboard = hs.pasteboard.readAllData()
 
-  -- Option+T の修飾キーが離れてから Cmd+C を送る。
+  -- ホットキーの修飾キーが離れてから Cmd+C を送る。
   -- ブラウザへ余計な修飾キーが混ざるのを避けるため、短時間だけ待つ。
   hs.timer.doAfter(COPY_DELAY_SECONDS, function()
     hs.pasteboard.callbackWhenChanged(COPY_TIMEOUT_SECONDS, function(changed)
@@ -84,7 +84,7 @@ local function translateSelection()
 end
 
 function M.start()
-  M.hotkey = hs.hotkey.bind({ "alt" }, "t", translateSelection)
+  M.hotkey = hs.hotkey.bind({ "ctrl", "cmd", "alt" }, "q", translateSelection)
 end
 
 return M
