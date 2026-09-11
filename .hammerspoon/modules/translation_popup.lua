@@ -2,6 +2,8 @@ local M = {}
 
 local COPY_DELAY_SECONDS = 0.15
 local COPY_TIMEOUT_SECONDS = 1
+local CHROME_BUNDLE_ID = "com.google.Chrome"
+local GOOGLE_TRANSLATE_URL = "https://translate.google.com/?sl=auto&tl=ja&text=%s&op=translate"
 
 local function trim(text)
   return text and text:match("^%s*(.-)%s*$") or nil
@@ -15,50 +17,15 @@ local function restorePasteboard(saved)
   end
 end
 
-local function helperPaths()
-  local home = os.getenv("HOME")
-  local installRoot = home .. "/.local/share/dotfiles/translation-popup"
-  local appPath = installRoot .. "/TranslationPopup.app"
-  local executablePath = appPath .. "/Contents/MacOS/TranslationPopup"
-  local buildScript = hs.configdir .. "/helpers/translation-popup/build.sh"
+local function openGoogleTranslate(text)
+  local url = string.format(
+    GOOGLE_TRANSLATE_URL,
+    hs.http.encodeForQuery(text)
+  )
 
-  return appPath, executablePath, buildScript, installRoot
-end
-
-local function launchPopup(text)
-  local appPath, executablePath, buildScript, installRoot = helperPaths()
-
-  local function openPopup()
-    M.openTask = hs.task.new("/usr/bin/open", function()
-      M.openTask = nil
-    end, { "-n", appPath, "--args", text })
-
-    M.openTask:start()
+  if not hs.urlevent.openURLWithBundle(url, CHROME_BUNDLE_ID) then
+    hs.alert.show("Google 翻訳を Chrome で開けませんでした")
   end
-
-  if hs.fs.attributes(executablePath, "mode") == "file" then
-    openPopup()
-    return
-  end
-
-  if M.buildTask then
-    hs.alert.show("翻訳ヘルパーを準備中です")
-    return
-  end
-
-  M.buildTask = hs.task.new("/bin/bash", function(exitCode, _, stderr)
-    M.buildTask = nil
-
-    if exitCode ~= 0 then
-      hs.alert.show("翻訳ヘルパーのビルドに失敗しました")
-      print("TranslationPopup build failed:", stderr)
-      return
-    end
-
-    openPopup()
-  end, { buildScript, installRoot })
-
-  M.buildTask:start()
 end
 
 local function translateSelection()
@@ -77,7 +44,7 @@ local function translateSelection()
         return
       end
 
-      launchPopup(selectedText)
+      openGoogleTranslate(selectedText)
     end)
 
     hs.eventtap.keyStroke({ "cmd" }, "c", 0)
