@@ -187,4 +187,14 @@
         "key": "cmd+alt+left",
         "command": "-workbench.action.previousEditorInGroup"
     },
+    {
+        "key": "ctrl+shift+[Semicolon]",
+        "command": "quickJump.jumpTwoCharacters",
+        "when": "editorTextFocus && !quickJump.active"
+    },
+    {
+        "key": "ctrl+alt+[Semicolon]",
+        "command": "-quickJump.jumpTwoCharacters",
+        "when": "editorTextFocus && !quickJump.active"
+    },
 ]
