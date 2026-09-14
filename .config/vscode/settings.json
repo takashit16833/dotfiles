@@ -1,4 +1,16 @@
 {
+    // 開いているファイル内の単語を補完候補にする
+    "editor.wordBasedSuggestions": "allDocuments",
+    // コード部分だけ自動補完する
+    "editor.quickSuggestions": {
+        "other": "on",
+        "comments": "off",
+        "strings": "off"
+    },
+    // 単語ベースの候補を表示する
+    "editor.suggest.showWords": true,
+    // 近くで使われている単語を少し優先する
+    "editor.suggest.localityBonus": true,
     // ジャンプ後はなるべく上にカーソルを持っていく
     "quickJump.revealMode": "position",
     "quickJump.revealPosition": 10,
