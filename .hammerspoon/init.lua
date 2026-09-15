@@ -22,17 +22,15 @@ local appBundleIDs = {
   vscode = "com.microsoft.VSCode",
 }
 
--- kitty / VS Code にフォーカスしたら英数入力へ切り替える。
+-- 対象アプリにフォーカスしたら英数入力へ切り替える。
 -- 英数入力の source ID は Mac ごとの入力ソース構成によって異なるため、
 -- 既知の候補を順に試し、その Mac で有効なものへ切り替える。
 local englishInputSourceIDs = {
   "com.apple.inputmethod.Kotoeri.RomajiTyping.Roman",
   "com.apple.keylayout.ABC",
 }
-local englishInputApps = {
-  [appBundleIDs.kitty] = true,
-  [appBundleIDs.vscode] = true,
-}
+-- 現在は対象アプリなし。必要になったら bundle ID をここへ追加する。
+local englishInputApps = {}
 
 local function switchToEnglishInput()
   for _, sourceID in ipairs(englishInputSourceIDs) do
