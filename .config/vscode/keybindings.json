@@ -187,6 +187,28 @@
         "key": "cmd+alt+left",
         "command": "-workbench.action.previousEditorInGroup"
     },
+    // Option+H/J/K/L で隣のタブグループにフォーカスを移す。
+    // エディタ内だけで有効にし、アクセシビリティのヘルプ用キーは維持する。
+    {
+        "key": "alt+h",
+        "command": "workbench.action.focusLeftGroup",
+        "when": "editorFocus && !accessibilityHelpIsShown"
+    },
+    {
+        "key": "alt+j",
+        "command": "workbench.action.focusBelowGroup",
+        "when": "editorFocus && !accessibilityHelpIsShown"
+    },
+    {
+        "key": "alt+k",
+        "command": "workbench.action.focusAboveGroup",
+        "when": "editorFocus && !accessibilityHelpIsShown"
+    },
+    {
+        "key": "alt+l",
+        "command": "workbench.action.focusRightGroup",
+        "when": "editorFocus && !accessibilityHelpIsShown"
+    },
     {
         "key": "ctrl+shift+[Semicolon]",
         "command": "quickJump.jumpTwoCharacters",
