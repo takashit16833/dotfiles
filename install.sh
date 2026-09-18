@@ -318,7 +318,7 @@ install_quickjump_extension() {
 
     source_dir="$tmp_dir/QuickJump-${QUICKJUMP_COMMIT}"
     if [[ ! -f "$source_dir/package.json" ]]; then
-      fail 'QuickJump source archive did not contain package.json'
+      fail "$source_dir/package.json does not exist"
     fi
 
     cd "$source_dir"
@@ -359,7 +359,7 @@ install_raycast_extension() {
   )
 
   if [[ ! -x "$ray_cli" ]]; then
-    fail "$ray_cli was not installed by npm"
+    fail 'Raycast extension CLI was not installed by npm'
   fi
 
   # Raycast の production build を ~/.config/raycast/extensions へ置くだけでは、
@@ -443,10 +443,10 @@ main() {
     "$DOTFILES_DIR/.config/kitty/keybindings.conf" \
     "$XDG_CONFIG_HOME/kitty/keybindings.conf"
 
-  # WezTerm は配色ファイルだけを管理し、既存の設定やディレクトリは上書きしない。
+  # WezTerm: 以前と同じディレクトリ単位のリンクで復活し、既存リンクも再利用する。
   ensure_symlink \
-    "$DOTFILES_DIR/.config/wezterm/wezterm.lua" \
-    "$XDG_CONFIG_HOME/wezterm/wezterm.lua"
+    "$DOTFILES_DIR/.config/wezterm" \
+    "$XDG_CONFIG_HOME/wezterm"
 
   ensure_symlink \
     "$DOTFILES_DIR/.config/starship.toml" \
