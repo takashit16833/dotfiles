@@ -1,6 +1,9 @@
 local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
+-- 修飾キーを端末内のアプリへ伝える。
+config.enable_kitty_keyboard = true
+
 -- Retro Hacker Blue の基本色。
 local background = '#010111'
 local foreground = '#5EAFFF'
@@ -135,6 +138,12 @@ end)
 -- macOS の修飾キーを Emacs / zsh で使う ESC シーケンスへ変換する。
 -- Cmd+Z / Cmd+Shift+Z は Emacs 側の M-z / M-Z（Undo / Redo）に対応する。
 config.keys = {
+    -- Cmd+P でプロジェクト内のファイルを検索する。
+  {
+    key = 'p',
+    mods = 'CMD',
+    action = wezterm.action.SendString '\x18pf',
+  },
   {
     key = 'z',
     mods = 'OPT',
