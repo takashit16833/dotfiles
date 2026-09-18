@@ -113,6 +113,25 @@ wezterm.on('format-window-title', function()
   return wezterm.mux.get_active_workspace()
 end)
 
+-- 起動時に各プロジェクトの Workspace を作成する。
+wezterm.on('gui-startup', function()
+  local workspaces = {
+    { name = 'dotfiles', cwd = wezterm.home_dir .. '/dotfiles' },
+    { name = 'RAGScope', cwd = wezterm.home_dir .. '/RAGScope/main' },
+    { name = 'Emacs', cwd = wezterm.home_dir .. '/.emacs.d' },
+  }
+
+  for _, workspace in ipairs(workspaces) do
+    wezterm.mux.spawn_window {
+      workspace = workspace.name,
+      cwd = workspace.cwd,
+    }
+  end
+
+  -- 起動直後は dotfiles を表示する。
+  wezterm.mux.set_active_workspace('dotfiles')
+end)
+
 -- macOS の修飾キーを Emacs / zsh で使う ESC シーケンスへ変換する。
 -- Cmd+Z / Cmd+Shift+Z は Emacs 側の M-z / M-Z（Undo / Redo）に対応する。
 config.keys = {
