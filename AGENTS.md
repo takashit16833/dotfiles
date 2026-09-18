@@ -61,9 +61,7 @@
 ## git-delta
 
 - Lazygit の diff renderer は `.config/lazygit/config.yml` から `delta --dark` を呼び、縦並び / side-by-side の切替方法は変更しない。
-- Delta の UI 配色は `.gitconfig` の `[delta "retro-hacker-blue"]` feature を正本とする。追加 / 削除の行全体は強い色面にせず、非常に薄い背景差で示し、行内差分だけを一段濃くする。
-- Delta の構文色は `.gitconfig` の `syntax-theme = "Visual Studio Dark+"` を使い、外部の custom theme や追加の asset cache には依存させない。
-- Delta の file / hunk / commit decoration は枠線や長い横線を増やさず、文字色と控えめな背景差を優先する。
+- Lazygit の `gui.theme` と Delta の独自テーマ指定は管理せず、配色はそれぞれの標準設定に任せる。`delta --dark` は暗い背景向けの動作指定として維持する。
 
 ## Local CLI tools
 
