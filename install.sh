@@ -395,7 +395,7 @@ install_raycast_extension() {
     wait "$ray_pid" 2>/dev/null || true
     cat "$develop_log" >&2
     rm -f "$develop_log"
-    fail 'timed out while registering Raycast Extension'
+    fail 'timed out while registering Raycast Local Extension'
   fi
 
   # build 完了直後に Raycast 側の import 処理が反映される余裕を少しだけ持たせる。
