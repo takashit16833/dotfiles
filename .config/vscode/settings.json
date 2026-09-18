@@ -189,5 +189,4 @@
     "window.commandCenter": false,
     "workbench.editor.editorActionsLocation": "hidden",
     "chat.titleBar.signIn.enabled": false,
-    "editor.minimap.enabled": false,
 }
