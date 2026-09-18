@@ -50,6 +50,7 @@ config.colors = {
     active_tab = {
       bg_color = '#287FD9',
       fg_color = background,
+      intensity = 'Bold',
     },
 
     inactive_tab = {
@@ -185,9 +186,7 @@ config.keys = {
     mods = 'CMD|ALT',
     action = wezterm.action.SwitchToWorkspace {
       name = 'Emacs',
-      spawn = {
-        cwd = wezterm.home_dir .. '/.emacs.d',
-      },
+      spawn = { cwd = wezterm.home_dir .. '/.emacs.d' },
     },
   },
 }
