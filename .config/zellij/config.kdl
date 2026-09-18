@@ -75,11 +75,16 @@ keybinds {
     // Zellij 既定の Alt-f (floating pane toggle) を外し、shell へそのまま通す。
     unbind "Alt f"
 
-    // 全体の unbind だけでは Normal mode で Ctrl+S が解除されなかったため、
-    // 個別に解除して Emacs の保存や LazyGit の操作へ渡す。
+    
     normal {
+        // 全体の unbind だけでは Normal mode で Ctrl+S が解除されなかったため、
+        // 個別に解除して Emacs の保存や LazyGit の操作へ渡す。
         unbind "Ctrl s"
+	
+        // Emacsなどのアプリで使うため、Zellijの既定キーを解除する。
+        unbind "Ctrl s" "Ctrl b"
     }
+    
 
     tab {
         // Tab mode 中も Ctrl+T を shell 用に空け、Alt+T で Normal mode へ戻る。
