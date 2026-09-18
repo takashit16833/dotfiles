@@ -13,8 +13,5 @@
 [user]
     useConfigOnly = true
 
-[delta "retro-hacker-blue"]
-    syntax-theme = "Visual Studio Dark+"
-
 [include]
     path = ~/.gitconfig.local
