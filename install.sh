@@ -359,7 +359,7 @@ install_raycast_extension() {
   )
 
   if [[ ! -x "$ray_cli" ]]; then
-    fail 'Raycast extension CLI was not installed by npm'
+    fail "$ray_cli was not installed by npm"
   fi
 
   # Raycast の production build を ~/.config/raycast/extensions へ置くだけでは、
@@ -442,6 +442,11 @@ main() {
   ensure_symlink \
     "$DOTFILES_DIR/.config/kitty/keybindings.conf" \
     "$XDG_CONFIG_HOME/kitty/keybindings.conf"
+
+  # WezTerm は配色ファイルだけを管理し、既存の設定やディレクトリは上書きしない。
+  ensure_symlink \
+    "$DOTFILES_DIR/.config/wezterm/wezterm.lua" \
+    "$XDG_CONFIG_HOME/wezterm/wezterm.lua"
 
   ensure_symlink \
     "$DOTFILES_DIR/.config/starship.toml" \
