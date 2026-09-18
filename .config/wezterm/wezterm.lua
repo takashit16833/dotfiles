@@ -1,8 +1,8 @@
 local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
--- 以前の WezTerm 設定から Retro Hacker Blue の配色だけを復元する。
--- キーバインドや Workspace の設定は、移行方針が決まってから追加する。
+-- 以前の WezTerm 設定を土台に、必要な項目を順次復元する。
+-- Workspace の設定は、移行方針が決まってから追加する。
 local background = '#010111'
 local foreground = '#5EAFFF'
 local cyber_pink = '#FF4DE1'
@@ -63,6 +63,9 @@ config.colors = {
 
 -- 上記のタブバー配色を使用するため、シンプルなタブバーを選ぶ。
 config.use_fancy_tab_bar = false
+
+-- Nightly 限定: macOS 標準タイトルバーを残し、背景色をターミナルと揃える。
+config.window_decorations = 'TITLE|RESIZE|MACOS_USE_BACKGROUND_COLOR_AS_TITLEBAR_COLOR'
 
 -- macOS の修飾キーを Emacs / zsh で使う ESC シーケンスへ変換する。
 -- Cmd+Z / Cmd+Shift+Z は Emacs 側の M-z / M-Z（Undo / Redo）に対応する。
