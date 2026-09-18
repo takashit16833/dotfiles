@@ -8,6 +8,9 @@ alias ll='ls -lahG'
 # Zellij は zoxide の `z` と衝突しない短い名前で起動する。
 alias zj='zellij'
 
+# emacs を `e` で起動する。
+alias e='emacs -nw'
+
 # コマンド履歴をセッションをまたいで保存し、複数の zsh で共有する。
 HISTFILE="$ZDOTDIR/.zsh_history"
 HISTSIZE=100000
