@@ -38,6 +38,7 @@ config.colors = {
     foreground,
     '#B07CFF',
     '#00FFFF',
+    '#FFFFFF',
   },
 
   -- タブバーは背景色を揃え、文字色で状態を区別する。
