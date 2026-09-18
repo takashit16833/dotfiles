@@ -64,4 +64,13 @@ config.colors = {
 -- 上記のタブバー配色を使用するため、シンプルなタブバーを選ぶ。
 config.use_fancy_tab_bar = false
 
+-- Option+Z を ESC+z として送り、zsh 側の zi ウィジェットを呼び出す。
+config.keys = {
+  {
+    key = 'z',
+    mods = 'OPT',
+    action = wezterm.action.SendString '\x1bz',
+  },
+}
+
 return config
