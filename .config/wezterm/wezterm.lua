@@ -38,7 +38,6 @@ config.colors = {
     foreground,
     '#B07CFF',
     '#00FFFF',
-    '#FFFFFF',
   },
 
   -- タブバーは背景色を揃え、文字色で状態を区別する。
@@ -66,6 +65,14 @@ config.use_fancy_tab_bar = false
 -- Nightly 限定: macOS 標準タイトルバーを残し、背景色をターミナルと揃える。
 config.window_decorations = 'TITLE|RESIZE|MACOS_USE_BACKGROUND_COLOR_AS_TITLEBAR_COLOR'
 
+-- Workspace 名を右端に表示する。
+wezterm.on('update-right-status', function(window)
+  window:set_right_status(wezterm.format {
+    { Foreground = { Color = foreground } },
+    { Text = window:active_workspace() },
+  })
+end)
+
 -- macOS の修飾キーを Emacs / zsh で使う ESC シーケンスへ変換する。
 -- Cmd+Z / Cmd+Shift+Z は Emacs 側の M-z / M-Z（Undo / Redo）に対応する。
 config.keys = {
@@ -89,6 +96,30 @@ config.keys = {
     key = 'x',
     mods = 'OPT',
     action = wezterm.action.SendString '\x1bx',
+  },
+  -- プロジェクトを選び、既存の Workspace に切り替える。初回は指定ディレクトリで起動する。
+  {
+    key = 'p',
+    mods = 'CMD|SHIFT',
+    action = wezterm.action.InputSelector {
+      title = 'Workspace',
+      fuzzy = true,
+      choices = {
+        { label = 'dotfiles', id = wezterm.home_dir .. '/dotfiles' },
+        { label = 'RAGScope', id = wezterm.home_dir .. '/RAGScope/main' },
+        { label = 'Workbench', id = wezterm.home_dir .. '/Workbench' },
+        { label = 'work', id = wezterm.home_dir },
+      },
+      action = wezterm.action_callback(function(window, pane, cwd, name)
+        if not cwd then
+          return
+        end
+        window:perform_action(wezterm.action.SwitchToWorkspace {
+          name = name,
+          spawn = { cwd = cwd },
+        }, pane)
+      end),
+    },
   },
 }
 
