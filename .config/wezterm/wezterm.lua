@@ -1,8 +1,7 @@
 local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
--- 以前の WezTerm 設定を土台に、必要な項目を順次復元する。
--- Workspace の設定は、移行方針が決まってから追加する。
+-- Retro Hacker Blue の基本色。
 local background = '#010111'
 local foreground = '#5EAFFF'
 local cyber_pink = '#FF4DE1'
@@ -42,7 +41,7 @@ config.colors = {
     '#FFFFFF',
   },
 
-  -- 以前のタブバー配色を復元する。
+  -- タブバーは背景色を揃え、文字色で状態を区別する。
   tab_bar = {
     background = background,
     active_tab = {
