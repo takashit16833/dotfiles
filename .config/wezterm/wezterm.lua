@@ -64,12 +64,23 @@ config.colors = {
 -- 上記のタブバー配色を使用するため、シンプルなタブバーを選ぶ。
 config.use_fancy_tab_bar = false
 
--- Option+Z を ESC+z として送り、zsh 側の zi ウィジェットを呼び出す。
+-- macOS の修飾キーを Emacs / zsh で使う ESC シーケンスへ変換する。
+-- Cmd+Z / Cmd+Shift+Z は Emacs 側の M-z / M-Z（Undo / Redo）に対応する。
 config.keys = {
   {
     key = 'z',
     mods = 'OPT',
     action = wezterm.action.SendString '\x1bz',
+  },
+  {
+    key = 'z',
+    mods = 'CMD',
+    action = wezterm.action.SendString '\x1bz',
+  },
+  {
+    key = 'z',
+    mods = 'CMD|SHIFT',
+    action = wezterm.action.SendString '\x1bZ',
   },
 }
 
