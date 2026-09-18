@@ -64,6 +64,9 @@ plugins {
 // Kitty は Cmd + Option + Left / Right を Alt-Shift-Left / Right として渡す。
 // Option + Left / Right 単体の shell word navigation を残したまま、Zellij tab を直接移動する。
 keybinds {
+    // Ctrl+G は Emacs の中断操作に使うため、Locked mode への切り替えを解除する。
+    unbind "Ctrl g"
+
     // Ctrl+S は LazyGit など Terminal application 側で利用するため、
     // Zellij の既定 Scroll mode キーから外す。
     unbind "Ctrl s"
