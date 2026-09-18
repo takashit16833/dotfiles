@@ -9,8 +9,8 @@
 # Kitty Graphics Protocol をネイティブに利用する TUI / PDF viewer との互換性を優先する Terminal。
 cask "kitty"
 
-# WezTerm を Kitty と並行して試す。Nightly 専用の設定は使わないため Stable 版を採用する。
-cask "wezterm"
+# 以前の WezTerm 環境と同じ Nightly 版を復活し、Kitty と並行して試す。
+cask "wezterm@nightly"
 
 # zsh のプロンプト。表示内容は starship.toml 側で最小構成に絞る。
 brew "starship"
