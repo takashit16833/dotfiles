@@ -40,6 +40,7 @@ config.colors = {
     '#FFFF00',
     foreground,
     '#B07CFF',
+    '#00FFFF',
     '#FFFFFF',
   },
   -- タブバーは背景色を揃え、文字色で状態を区別する。
@@ -49,7 +50,6 @@ config.colors = {
     active_tab = {
       bg_color = '#287FD9',
       fg_color = background,
-      intensity = 'Bold',
     },
 
     inactive_tab = {
