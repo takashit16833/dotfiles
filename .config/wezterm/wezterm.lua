@@ -73,4 +73,13 @@ config.keys = {
   },
 }
 
+-- ターミナルの文字サイズ。
+config.font_size = 13.5
+
+-- フォント設定。
+config.font = wezterm.font_with_fallback {
+  'Menlo',
+  'BIZ UDGothic',
+}
+
 return config
