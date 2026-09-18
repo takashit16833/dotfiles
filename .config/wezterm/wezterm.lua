@@ -40,7 +40,6 @@ config.colors = {
     '#FFFF00',
     foreground,
     '#B07CFF',
-    '#00FFFF',
     '#FFFFFF',
   },
   -- タブバーは背景色を揃え、文字色で状態を区別する。
@@ -135,36 +134,8 @@ wezterm.on('gui-startup', function()
   wezterm.mux.set_active_workspace('dotfiles')
 end)
 
--- macOS の修飾キーを Emacs / zsh で使う ESC シーケンスへ変換する。
--- Cmd+Z / Cmd+Shift+Z は Emacs 側の M-z / M-Z（Undo / Redo）に対応する。
+-- WezTerm自身のWorkspace操作だけを割り当てる。
 config.keys = {
-    -- Cmd+P でプロジェクト内のファイルを検索する。
-  {
-    key = 'p',
-    mods = 'CMD',
-    action = wezterm.action.SendString '\x18pf',
-  },
-  {
-    key = 'z',
-    mods = 'OPT',
-    action = wezterm.action.SendString '\x1bz',
-  },
-  {
-    key = 'z',
-    mods = 'CMD',
-    action = wezterm.action.SendString '\x1bz',
-  },
-  {
-    key = 'z',
-    mods = 'CMD|SHIFT',
-    action = wezterm.action.SendString '\x1bZ',
-  },
-  -- Option+X で Emacs の M-x を実行する。
-  {
-    key = 'x',
-    mods = 'OPT',
-    action = wezterm.action.SendString '\x1bx',
-  },
   -- プロジェクトを選び、既存の Workspace に切り替える。初回は指定ディレクトリで起動する。
   {
     key = 'p',
