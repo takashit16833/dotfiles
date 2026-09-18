@@ -395,7 +395,7 @@ install_raycast_extension() {
     wait "$ray_pid" 2>/dev/null || true
     cat "$develop_log" >&2
     rm -f "$develop_log"
-    fail 'timed out while registering Raycast Local Extension'
+    fail 'timed out while registering Raycast Extension'
   fi
 
   # build 完了直後に Raycast 側の import 処理が反映される余裕を少しだけ持たせる。
@@ -443,7 +443,7 @@ main() {
     "$DOTFILES_DIR/.config/kitty/keybindings.conf" \
     "$XDG_CONFIG_HOME/kitty/keybindings.conf"
 
-  # WezTerm: 以前と同じディレクトリ単位のリンクで復活し、既存リンクも再利用する。
+  # WezTerm の設定ディレクトリをリンクし、別の実ファイルやリンクは上書きしない。
   ensure_symlink \
     "$DOTFILES_DIR/.config/wezterm" \
     "$XDG_CONFIG_HOME/wezterm"
