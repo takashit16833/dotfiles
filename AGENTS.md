@@ -58,20 +58,6 @@
 - Ctrl-PageUp / Ctrl-PageDown は Kitty 自身の前後 tab 移動に使う。
 - Cmd-Option-Left / Cmd-Option-Right は Kitty から Alt-Shift-Left / Alt-Shift-Right として child terminal へ渡し、Zellij 側で前後 tab 移動に割り当てる。Option-Left / Option-Right 単体の zsh word navigation は維持する。
 
-## Yazi
-
-- `yazi` 本体と preview / search に使う補助 CLI は `Brewfile` で管理する。
-- portable な設定は `.config/yazi/yazi.toml`、`keymap.toml`、`theme.toml`、`init.lua` を正本とし、`install.sh` が個別に symlink する。
-- Yazi の directory 全体は symlink しない。`package.toml`、`plugins/`、`vfs.toml` など、Yazi 自身やマシンごとに変わる状態を repository から分離するため。
-- SFTP 接続先は `vfs.toml` に host / user / key / password などのマシン固有・非公開情報を含み得るため、この repository では管理しない。
-- 2 pane 表示には `terrakok/split-tabs.yazi` を使い、`install.sh` が未導入時だけ `ya pkg add terrakok/split-tabs` を実行する。
-- status bar は公式 `yazi-rs/plugins:no-status` で非表示にし、`init.lua` から `require("no-status"):setup()` を呼ぶ。`install.sh` は未導入時だけ plugin を追加する。
-- plugin 本体と `package.toml` の lock 情報は Yazi 側で管理し、repository には含めない。
-- `theme.toml` では manager の仕切りを通常文字色 `#5EAFFF` にし、indicator の丸い Powerline 端を空白へ置き換えて選択行を四角い背景にする。
-- `dawsers/dual-pane.yazi` は archived repository のため採用しない。
-- ユーザーは Vim 操作を前提にしない。標準の矢印キー / Enter / Space に加え、Tab、F2、F4〜F8、Delete、Ctrl-L で主要操作を完結できる設定を優先する。
-- F5 / F6 は、Yazi 標準の yank / paste と split-tabs の pane 切替を組み合わせて、反対 pane への copy / move として提供する。
-
 ## git-delta
 
 - Lazygit の diff renderer は `.config/lazygit/config.yml` から `delta --dark` を呼び、縦並び / side-by-side の切替方法は変更しない。

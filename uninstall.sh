@@ -159,22 +159,6 @@ main() {
     "$XDG_CONFIG_HOME/lazygit/config.yml"
 
   remove_symlink \
-    "$DOTFILES_DIR/.config/yazi/yazi.toml" \
-    "$XDG_CONFIG_HOME/yazi/yazi.toml"
-
-  remove_symlink \
-    "$DOTFILES_DIR/.config/yazi/keymap.toml" \
-    "$XDG_CONFIG_HOME/yazi/keymap.toml"
-
-  remove_symlink \
-    "$DOTFILES_DIR/.config/yazi/theme.toml" \
-    "$XDG_CONFIG_HOME/yazi/theme.toml"
-
-  remove_symlink \
-    "$DOTFILES_DIR/.config/yazi/init.lua" \
-    "$XDG_CONFIG_HOME/yazi/init.lua"
-
-  remove_symlink \
     "$DOTFILES_DIR/.gitconfig" \
     "$HOME/.gitconfig"
 

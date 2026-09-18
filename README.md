@@ -14,7 +14,7 @@ bash ./install.sh
 
 公開リポジトリを HTTPS で clone するため、初回セットアップ時点では GitHub の SSH 鍵や `gh` の認証は不要。
 
-`install.sh` は `Brewfile` に宣言した CLI / アプリのインストール、設定ファイルの symlink、VS Code extension、Yazi plugin、Raycast Local Extension などのセットアップを行う。
+`install.sh` は `Brewfile` に宣言した CLI / アプリのインストール、設定ファイルの symlink、VS Code extension、Raycast Local Extension などのセットアップを行う。
 
 Raycast Local Extension の初回登録では、公式の `ray develop` を短時間だけ利用するため Raycast app が自動で開くことがある。登録後は development process を停止するので、普段の利用時に `npm run dev` を起動しておく必要はない。
 

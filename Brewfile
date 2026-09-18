@@ -21,14 +21,6 @@ brew "zoxide"
 # Kitty Graphics Protocol を利用できる TUI ベースの PDF viewer。
 brew "tdf"
 
-# ローカル / SFTP リモートを同じ操作で扱える TUI ファイルマネージャー。
-brew "yazi"
-
-# Yazi のファイル名検索、アーカイブ、PDF プレビューを有効にする補助ツール。
-brew "fd"
-brew "sevenzip"
-brew "poppler"
-
 # --- Git / data handling ----------------------------------------------------
 
 # Git 操作のメイン UI として利用する。
@@ -44,11 +36,9 @@ brew "gh"
 brew "tree"
 
 # JSON の確認・加工用。host と Dev Container の双方で利用する方針。
-# Yazi の JSON preview でも利用する。
 brew "jq"
 
 # codebase 内の高速な全文検索に利用する。
-# Yazi のファイル内容検索でも利用する。
 brew "ripgrep"
 
 # --- Containers -------------------------------------------------------------
