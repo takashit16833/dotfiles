@@ -150,6 +150,11 @@ main() {
     "$DOTFILES_DIR/.config/kitty/keybindings.conf" \
     "$XDG_CONFIG_HOME/kitty/keybindings.conf"
 
+  # WezTerm は dotfiles が作ったリンクだけを解除し、アプリ本体は削除しない。
+  remove_symlink \
+    "$DOTFILES_DIR/.config/wezterm" \
+    "$XDG_CONFIG_HOME/wezterm"
+
   remove_symlink \
     "$DOTFILES_DIR/.config/starship.toml" \
     "$XDG_CONFIG_HOME/starship.toml"
