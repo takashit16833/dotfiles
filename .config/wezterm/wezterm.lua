@@ -84,6 +84,12 @@ config.keys = {
     mods = 'CMD|SHIFT',
     action = wezterm.action.SendString '\x1bZ',
   },
+  -- Option+X で Emacs の M-x を実行する。
+  {
+    key = 'x',
+    mods = 'OPT',
+    action = wezterm.action.SendString '\x1bx',
+  },
 }
 
 -- ターミナルの文字サイズ。
