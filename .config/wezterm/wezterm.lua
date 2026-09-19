@@ -120,26 +120,7 @@ wezterm.on("format-window-title", function()
   return wezterm.mux.get_active_workspace()
 end)
 
--- 起動時に各プロジェクトの Workspace を作成する。
-wezterm.on("gui-startup", function()
-  local workspaces = {
-    { name = "dotfiles", cwd = wezterm.home_dir .. "/dotfiles" },
-    { name = "RAGScope", cwd = wezterm.home_dir .. "/RAGScope/main" },
-    { name = "Emacs", cwd = wezterm.home_dir .. "/.emacs.d" },
-  }
-
-  for _, workspace in ipairs(workspaces) do
-    wezterm.mux.spawn_window {
-      workspace = workspace.name,
-      cwd = workspace.cwd,
-    }
-  end
-
-  -- 起動直後は dotfiles を表示する。
-  wezterm.mux.set_active_workspace("dotfiles")
-end)
-
--- WezTerm自身のWorkspace操作だけを割り当てる。
+-- キー設定。
 config.keys = {
   -- zshの行編集。
   { key = "LeftArrow", mods = "CMD", action = wezterm.action.SendString "\x01" },
@@ -162,62 +143,16 @@ config.keys = {
     mods = "CMD|SHIFT",
     action = wezterm.action.SendString "\x1b[122;10u",
   },
-  -- プロジェクトを選び、既存の Workspace に切り替える。初回は指定ディレクトリで起動する。
-  {
-    key = "p",
-    mods = "CMD|SHIFT",
-    action = wezterm.action.InputSelector {
-      title = "Workspace",
-      fuzzy = true,
-      choices = {
-        { label = "dotfiles", id = wezterm.home_dir .. "/dotfiles" },
-        { label = "RAGScope", id = wezterm.home_dir .. "/RAGScope/main" },
-        { label = "Emacs", id = wezterm.home_dir .. "/.emacs.d" },
-      },
-      action = wezterm.action_callback(function(window, pane, cwd, name)
-        if not cwd then
-          return
-        end
-        window:perform_action(
-          wezterm.action.SwitchToWorkspace {
-            name = name,
-            spawn = { cwd = cwd },
-          },
-          pane
-        )
-      end),
-    },
-  },
-  -- Cmd+Option+q: dotfiles Workspace に切り替える。
-  {
-    key = "q",
-    mods = "CMD|ALT",
-    action = wezterm.action.SwitchToWorkspace {
-      name = "dotfiles",
-      spawn = {
-        cwd = wezterm.home_dir .. "/dotfiles",
-      },
-    },
-  },
-  {
-    key = "l",
-    mods = "CMD|ALT",
-    action = wezterm.action.SwitchToWorkspace {
-      name = "RAGScope",
-      spawn = {
-        cwd = wezterm.home_dir .. "/RAGScope/main",
-      },
-    },
-  },
-  {
-    key = "u",
-    mods = "CMD|ALT",
-    action = wezterm.action.SwitchToWorkspace {
-      name = "Emacs",
-      spawn = { cwd = wezterm.home_dir .. "/.emacs.d" },
-    },
-  },
 }
+
+-- PC固有のWorkspace設定があれば読み込む。
+local workspace_file = wezterm.home_dir .. "/.config/wezterm-local/workspaces.lua"
+local file = io.open(workspace_file, "r")
+if file then
+  file:close()
+  wezterm.add_to_config_reload_watch_list(workspace_file)
+  dofile(workspace_file)(wezterm, config)
+end
 
 -- ターミナルの文字サイズ。
 config.font_size = 13.5
