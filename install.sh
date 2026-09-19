@@ -111,8 +111,8 @@ ensure_symlink() {
 
 # PC固有のWorkspace設定は初回だけ雛形から作成し、既存ファイルを上書きしない。
 install_wezterm_local_config() {
-  local template="$DOTFILES_DIR/.config/wezterm/workspaces.example.lua"
-  local target="$XDG_CONFIG_HOME/wezterm-local/workspaces.lua"
+  local template="$DOTFILES_DIR/.config/wezterm/local.example.lua"
+  local target="$XDG_CONFIG_HOME/wezterm-local/local.lua"
 
   if [[ -e "$target" || -L "$target" ]]; then
     info "WezTerm local config already exists: $target"

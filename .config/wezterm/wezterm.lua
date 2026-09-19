@@ -146,7 +146,7 @@ config.keys = {
 }
 
 -- PC固有のWorkspace設定があれば読み込む。
-local workspace_file = wezterm.home_dir .. "/.config/wezterm-local/workspaces.lua"
+local workspace_file = wezterm.home_dir .. "/.config/wezterm-local/local.lua"
 local file = io.open(workspace_file, "r")
 if file then
   file:close()
