@@ -4,7 +4,7 @@ macOS 用の dotfiles。
 
 ## Install
 
-Homebrew をインストールした状態で実行する。
+Homebrew をインストールした状態で実行する。新しい Mac で Git や C コンパイラが利用できない場合は、`xcode-select -p` で Xcode Command Line Tools の状態を確認し、未導入なら `xcode-select --install` で導入する。C コンパイラは Emacs の Tree-sitter 文法のビルドに使用する。
 
 ```bash
 git clone https://github.com/takashit16833/dotfiles.git ~/dotfiles
@@ -15,6 +15,8 @@ bash ./install.sh
 公開リポジトリを HTTPS で clone するため、初回セットアップ時点では GitHub の SSH 鍵や `gh` の認証は不要。
 
 `install.sh` は `Brewfile` に宣言した CLI / アプリのインストール、設定ファイルの symlink、VS Code extension、Raycast Local Extension などのセットアップを行う。
+
+Emacs 本体、Tree-sitter CLI、Lua Language Server、StyLua は `Brewfile` で導入する。Emacs の設定と Haskell・Lua の Tree-sitter 文法は別リポジトリの [`.emacs.d-cli` の README.org](https://github.com/takashit16833/.emacs.d-cli/blob/main/README.org) に従ってセットアップする。dotfiles の `install.sh` は Emacs 設定リポジトリの取得や、その `install.sh` の実行は行わない。
 
 Raycast Local Extension の初回登録では、公式の `ray develop` を短時間だけ利用するため Raycast app が自動で開くことがある。登録後は development process を停止するので、普段の利用時に `npm run dev` を起動しておく必要はない。
 
@@ -41,7 +43,7 @@ Brave の起動、新しいウィンドウ、新しいタブで `https://chatgpt
    - URL に `https://chatgpt.com/` を指定する。
 2. `brave://settings/getStarted` を開く。
    - **New Tab Page** の **New tab page shows** を **Homepage** にする。
-   - **On startup** を **Open the New Tab page** にする。
+   - **On startup** を **Open the New tab page** にする。
 
 設定後は次の動作になる。
 
@@ -54,7 +56,7 @@ Brave の起動、新しいウィンドウ、新しいタブで `https://chatgpt
 Chrome / Brave などでスクロールバーを常時表示しないようにする。
 
 1. macOS の **システム設定** → **外観** を開く。
-2. **スクロールバーを表示** を **スクロール時に表示** にする。
+2. **スクロールバーを表示** → **スクロール時に表示** にする。
 
 ## Browser extensions
 
