@@ -141,6 +141,17 @@ end)
 
 -- WezTerm自身のWorkspace操作だけを割り当てる。
 config.keys = {
+  -- 暫定対応: WezTermで失われるCmd+Shiftの修飾キーを直接送信する。
+  {
+    key = "phys:K",
+    mods = "CMD|SHIFT",
+    action = wezterm.action.SendString "\x1b[107;10u",
+  },
+  {
+    key = "phys:Z",
+    mods = "CMD|SHIFT",
+    action = wezterm.action.SendString "\x1b[122;10u",
+  },
   -- プロジェクトを選び、既存の Workspace に切り替える。初回は指定ディレクトリで起動する。
   {
     key = "p",
