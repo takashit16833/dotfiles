@@ -19,6 +19,7 @@ local appBundleIDs = {
   finder = "com.apple.finder",
   obsidian = "md.obsidian",
   kitty = "net.kovidgoyal.kitty",
+  wezterm = "com.github.wez.wezterm",
   vscode = "com.microsoft.VSCode",
 }
 
@@ -177,6 +178,11 @@ local function openKittyWindow()
   openAppInstanceInBackground(appBundleIDs.kitty)
 end
 
+-- 現在の Space に WezTerm のウィンドウがなければ、新しいインスタンスを起動する。
+local function openWezTermWindow()
+  openAppInstanceInBackground(appBundleIDs.wezterm)
+end
+
 -- VS Code は --new-window を明示して、既存ウィンドウを別 Space から呼び戻さず
 -- 現在の Space に新しいウィンドウを作る。
 local function openVSCodeWindow()
@@ -204,8 +210,8 @@ local apps = {
     openWindow = openBraveWindow,
   },
   ["t"] = {
-    bundleID = appBundleIDs.kitty,
-    openWindow = openKittyWindow,
+    bundleID = appBundleIDs.wezterm,
+    openWindow = openWezTermWindow,
   },
   ["n"] = {
     bundleID = appBundleIDs.vscode,
@@ -247,7 +253,7 @@ end
 -- Ctrl + Cmd + Option + s: Obsidian
 -- Ctrl + Cmd + Option + k: Finder
 -- Ctrl + Cmd + Option + w: Brave Browser
--- Ctrl + Cmd + Option + t: Kitty
+-- Ctrl + Cmd + Option + t: WezTerm
 -- Ctrl + Cmd + Option + n: Visual Studio Code
 for key, appConfig in pairs(apps) do
   hs.hotkey.bind(hyper, key, function()
