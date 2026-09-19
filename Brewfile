@@ -86,3 +86,13 @@ cask "obsidian"
 
 # 開発のメイン editor。
 cask "visual-studio-code"
+
+# --- Emacs / Lua development -----------------------------------------------
+
+# CLI EmacsとTree-sitter文法のビルドに使用する。
+brew "emacs"
+brew "tree-sitter-cli"
+
+# Luaの補完・診断と自動整形に使用する。
+brew "lua-language-server"
+brew "stylua"
