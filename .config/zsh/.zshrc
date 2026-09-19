@@ -32,6 +32,9 @@ bindkey -e
 # カーソル位置から行頭までを削除する操作だけを明示的に割り当てる。
 bindkey '\e^U' backward-kill-line
 
+# WezTermのCmd+Backspaceでカーソルから行頭まで削除する。
+bindkey $'\e[127;9u' backward-kill-line
+
 # zsh 標準の補完を有効にし、候補一覧を矢印キーで選択できるようにする。
 # Git の branch / ref なども command の文脈に応じて補完される。
 zmodload zsh/complist
