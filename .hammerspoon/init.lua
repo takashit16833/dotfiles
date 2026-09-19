@@ -41,9 +41,7 @@ local function switchToEnglishInput()
 end
 
 englishInputSourceWatcher = hs.application.watcher.new(function(_, eventType, app)
-  if eventType == hs.application.watcher.activated
-      and app
-      and englishInputApps[app:bundleID()] then
+  if eventType == hs.application.watcher.activated and app and englishInputApps[app:bundleID()] then
     switchToEnglishInput()
   end
 end)
@@ -104,11 +102,14 @@ end
 -- Chrome は既存プロセスへ新しいウィンドウの生成だけを依頼する。
 -- activate は使わず、生成後に現在の Space から見えるウィンドウだけをフォーカスする。
 local function openChromeWindow()
-  local ok = hs.osascript.applescript(string.format([[
+  local ok = hs.osascript.applescript(string.format(
+    [[
 tell application id "%s"
   make new window
 end tell
-]], appBundleIDs.chrome))
+]],
+    appBundleIDs.chrome
+  ))
 
   if ok then
     focusVisibleWindowWhenAvailable(appBundleIDs.chrome)
@@ -119,11 +120,14 @@ end
 -- Brave が未起動でも AppleScript から起動し、同じ処理でウィンドウを生成する。
 -- activate は使わず、生成後に現在の Space から見えるウィンドウだけをフォーカスする。
 local function openBraveWindow()
-  local ok = hs.osascript.applescript(string.format([[
+  local ok = hs.osascript.applescript(string.format(
+    [[
 tell application id "%s"
   make new window
 end tell
-]], appBundleIDs.brave))
+]],
+    appBundleIDs.brave
+  ))
 
   if ok then
     focusVisibleWindowWhenAvailable(appBundleIDs.brave)
@@ -134,12 +138,15 @@ end
 -- ホームフォルダを表示する新しいウィンドウを作る。
 -- 別 Space の Finder ウィンドウを activate して Space を移動しない。
 local function openFinderWindow()
-  local ok = hs.osascript.applescript(string.format([[
+  local ok = hs.osascript.applescript(string.format(
+    [[
 tell application id "%s"
   set newWindow to make new Finder window
   set target of newWindow to home
 end tell
-]], appBundleIDs.finder))
+]],
+    appBundleIDs.finder
+  ))
 
   if ok then
     focusVisibleWindowWhenAvailable(appBundleIDs.finder)
@@ -370,9 +377,7 @@ mouseNavigationEventTap = hs.eventtap.new({
   hs.eventtap.event.types.otherMouseDown,
   hs.eventtap.event.types.otherMouseUp,
 }, function(event)
-  local button = event:getProperty(
-    hs.eventtap.event.properties.mouseEventButtonNumber
-  )
+  local button = event:getProperty(hs.eventtap.event.properties.mouseEventButtonNumber)
 
   if not navigationMouseButtons[button] then
     return false
