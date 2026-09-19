@@ -71,22 +71,26 @@ config.colors = {
   tab_bar = {
     background = background,
 
+    -- アクティブ: 濃紺の背景と明るい文字。
     active_tab = {
       bg_color = '#111D39',
       fg_color = '#E0EEFF',
       intensity = 'Bold',
     },
 
+    -- 非アクティブ: 背景に溶け込ませる。
     inactive_tab = {
       bg_color = background,
       fg_color = '#5B86BC',
     },
 
+    -- マウスを重ねたときだけ少し明るくする。
     inactive_tab_hover = {
       bg_color = '#17264A',
       fg_color = '#E0EEFF',
     },
 
+    -- タブ間の境界線を背景に溶け込ませる。
     inactive_tab_edge = background,
   },
 }
