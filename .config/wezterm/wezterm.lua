@@ -141,6 +141,15 @@ end)
 
 -- WezTerm自身のWorkspace操作だけを割り当てる。
 config.keys = {
+  -- zshの行編集。
+  { key = "LeftArrow", mods = "CMD", action = wezterm.action.SendString "\x01" },
+  { key = "RightArrow", mods = "CMD", action = wezterm.action.SendString "\x05" },
+  { key = "Backspace", mods = "CMD", action = wezterm.action.SendString "\x1b\x15" },
+  { key = "Delete", mods = "CMD", action = wezterm.action.SendString "\x0b" },
+  -- 単語単位の移動・削除。
+  { key = "LeftArrow", mods = "ALT", action = wezterm.action.SendKey { key = "b", mods = "ALT" } },
+  { key = "RightArrow", mods = "ALT", action = wezterm.action.SendKey { key = "f", mods = "ALT" } },
+  { key = "Delete", mods = "ALT", action = wezterm.action.SendKey { key = "d", mods = "ALT" } },
   -- 暫定対応: WezTermで失われるCmd+Shiftの修飾キーを直接送信する。
   {
     key = "phys:K",
