@@ -43,7 +43,7 @@ Brave の起動、新しいウィンドウ、新しいタブで `https://chatgpt
    - URL に `https://chatgpt.com/` を指定する。
 2. `brave://settings/getStarted` を開く。
    - **New Tab Page** の **New tab page shows** を **Homepage** にする。
-   - **On startup** を **Open the New tab page** にする。
+   - **On startup** を **Open the New Tab page** にする。
 
 設定後は次の動作になる。
 
