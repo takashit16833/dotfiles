@@ -30,8 +30,10 @@ local englishInputSourceIDs = {
   "com.apple.inputmethod.Kotoeri.RomajiTyping.Roman",
   "com.apple.keylayout.ABC",
 }
--- 現在は対象アプリなし。必要になったら bundle ID をここへ追加する。
-local englishInputApps = {}
+-- bundle ID をここへ追加する。
+local englishInputApps = {
+  [appBundleIDs.wezterm] = true,
+}
 
 local function switchToEnglishInput()
   for _, sourceID in ipairs(englishInputSourceIDs) do
