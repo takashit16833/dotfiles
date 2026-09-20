@@ -130,9 +130,15 @@ config.keys = {
   -- Ctrl+PageUp/PageDownを端末内のアプリへ渡す。
   { key = "PageUp", mods = "CTRL", action = wezterm.action.DisableDefaultAssignment },
   { key = "PageDown", mods = "CTRL", action = wezterm.action.DisableDefaultAssignment },
+  -- Ctrl+Shift+PageUp/PageDownも端末内のアプリへ渡す。
+  { key = "PageUp", mods = "CTRL|SHIFT", action = wezterm.action.DisableDefaultAssignment },
+  { key = "PageDown", mods = "CTRL|SHIFT", action = wezterm.action.DisableDefaultAssignment },
   -- WezTermのタブを切り替える。
   { key = "LeftArrow", mods = "CMD|ALT", action = wezterm.action.ActivateTabRelative(-1) },
   { key = "RightArrow", mods = "CMD|ALT", action = wezterm.action.ActivateTabRelative(1) },
+  -- WezTermのタブを左右に移動する。
+  { key = "LeftArrow", mods = "CMD|ALT|SHIFT", action = wezterm.action.MoveTabRelative(-1) },
+  { key = "RightArrow", mods = "CMD|ALT|SHIFT", action = wezterm.action.MoveTabRelative(1) },
   -- Cmd+Fを端末内のアプリへ渡す。
   { key = "f", mods = "CMD", action = wezterm.action.DisableDefaultAssignment },
   -- Deleteを標準のエスケープシーケンスで送信する。
