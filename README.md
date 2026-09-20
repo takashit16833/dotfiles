@@ -43,7 +43,7 @@ Brave の起動、新しいウィンドウ、新しいタブで `https://chatgpt
    - URL に `https://chatgpt.com/` を指定する。
 2. `brave://settings/getStarted` を開く。
    - **New Tab Page** の **New tab page shows** を **Homepage** にする。
-   - **On startup** を **Open the New Tab page** にする。
+   - **On startup** を **Open the New tab page** にする。
 
 設定後は次の動作になる。
 
@@ -66,42 +66,6 @@ Chrome / Brave などでスクロールバーを常時表示しないように�
 - `chrome/userscripts/chatgpt-notify.user.js`: ChatGPT の回答生成完了を Hammerspoon 経由で通知する。
 
 Chrome / Brave の unpacked extension はブラウザ側への初回登録が必要なため、各 extension の README に再構築手順を記載する。Tampermonkey userscript もブラウザ側で初回登録する。
-
-### kitty sessionを定義する
-
-**設定例**
-
-```bash
-cat > ~/.config/kitty/startup.kitty-session <<'EOF'
-new_tab dotfiles
-cd ~/dotfiles
-launch /bin/zsh -lc "exec zellij attach -c dotfiles options --default-layout lazygit"
-
-new_tab RAGScope
-cd ~/RAGScope/main
-launch /bin/zsh -lc "exec zellij attach -c RAGScope options --default-layout lazygit"
-
-new_tab Workbench
-cd ~/Workbench
-launch /bin/zsh -lc "exec zellij attach -c Workbench options --default-layout lazygit"
-
-new_tab work
-cd ~
-launch /bin/zsh -lc "exec zellij attach -c work"
-
-focus_tab 3
-EOF
-```
-
-作成した session を Kitty 起動時に使うため、マシン固有設定の `local.conf` で有効化する。
-
-```bash
-cat > ~/.config/kitty/local.conf <<'EOF'
-startup_session startup.kitty-session
-EOF
-```
-
-設定後は Kitty を完全終了してから起動し直す。
 
 ## Git identity
 
