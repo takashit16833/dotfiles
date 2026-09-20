@@ -41,22 +41,9 @@
 - `uninstall.sh` は VS Code の設定 symlink だけを解除し、導入済み extension は削除しない。
 - snippets や Profiles は必要になった時点で追加し、先回りして空の管理対象を増やさない。
 
-## Kitty
+## Terminal
 
-- Kitty は `.config/kitty/kitty.conf` を薄い entry point とし、`appearance.conf` と `keybindings.conf` を明示的に `include` する。
-- default config 全体を複製せず、意図的に変更する項目だけを repository で管理する。
-- Kitty の directory 全体は symlink せず、`kitty.conf`、`appearance.conf`、`keybindings.conf` だけを個別に symlink する。theme kitten などが生成する local file を repository へ混在させないため。
-- `kitty.conf` は最後に `globinclude local.conf` を読み、`~/.config/kitty/local.conf` が存在するマシンだけ追加設定を適用する。`local.conf` やそこから参照する session file はマシン固有として repository では管理しない。
-- `appearance.conf` は Retro Hacker Blue ベースの配色、右上寄せの上部 tab bar、Menlo + BIZ UDGothic の日本語表示を管理する。
-- tab bar は `slant` style を使い、active は `#FF4DE1` の背景と `#010111` の文字、inactive は `#4C9EEB` の文字と terminal 背景を使う。Powerline 風の強い装飾にはしない。
-- Kitty の分割ショートカットは分割時に `splits` layout へ切り替え、Cmd-Enter で左右分割、Cmd-Shift-Enter で上下分割する。他の layout は引き続き利用できる状態を維持する。
-- Kitty の split pane 境界は active / inactive とも `#00184A` に統一し、`draw_minimal_borders` の既定挙動で pane 間の線だけを描画する。
-- `keybindings.conf` は macOS の Cmd / Option 操作を zsh 側の Emacs 系編集へ橋渡しする。行編集の意味は Terminal ではなく zsh 側に持たせる。
-- Option は `macos_option_as_alt both` で Alt modifier として Terminal application へ渡す。個別の Kitty key mapping はこれより優先される。
-- Option-Z / Option-G は zsh 側の zi / lazygit widget 用 ESC sequence を送る挙動を維持する。
-- Option-Right は zsh の forward-word 用に Alt-f を送る。Zellij の既定 Alt-f は解除し、Zellij 内でもこの shell 操作を優先する。Option-Left の Alt-b は Zellij 既定と衝突しない。
-- Ctrl-PageUp / Ctrl-PageDown は Kitty 自身の前後 tab 移動に使う。
-- Cmd-Option-Left / Cmd-Option-Right は Kitty から Alt-Shift-Left / Alt-Shift-Right として child terminal へ渡し、Zellij 側で前後 tab 移動に割り当てる。Option-Left / Option-Right 単体の zsh word navigation は維持する。
+ターミナルは WezTerm を使用する。
 
 ## git-delta
 
@@ -70,20 +57,6 @@
 - `install.sh` は `scripts/bin/` の executable を `$HOME/.local/bin` へ symlink し、`uninstall.sh` はこの repository を指している symlink だけを解除する。script の実体を `$HOME/.local/bin` へコピーしない。
 - 自作 CLI の runtime state、秘密情報、SSH private/public key は repository に含めない。
 - `tdf` は Homebrew core の formula として `Brewfile` で管理する。`cargo install` を直接使わず、Rust toolchain も top-level dependency として追加しない。
-- Zellij は Kitty Graphics Protocol 対応が必要なため、Homebrew の更新タイミングには依存せず、`install.sh` が指定 version の公式 macOS release binary を `$HOME/.local/bin/zellij` へ導入する。
-- Zellij を `install.sh` が導入したときだけ `$HOME/.local/share/dotfiles/zellij/version` を ownership marker として作る。marker の無い既存 binary は、同じ version であっても dotfiles 管理として採用せず、勝手に上書きしない。
-- Zellij は zsh の `zj` alias から通常の command として起動する。ZLE widget から直接起動しない。
-- Zellij の通常 UI は `.config/zellij/layouts/minimal.kdl` を使い、session 名・mode 表示・Powerline 風装飾を出さず tab だけを 1 行表示する。
-- `.config/zellij/layouts/lazygit.kdl` は同じ UI のまま起動直後の唯一の terminal pane で `lazygit` を実行する。Homebrew の PATH は login zsh の `.zprofile` で設定されるため、layout から Homebrew CLI を直接 command 指定せず `/bin/zsh -lc` 経由で起動する。必要になった通常 pane は Zellij 側で後から追加する。
-- `minimal.kdl` と `lazygit.kdl` は `install.sh` が個別に symlink する。
-- `zjstatus` v0.24.0 は `install.sh` が公式 release から取得し、SHA-256 を検証して Zellij の platform plugin directory に `zjstatus.wasm` として配置する。`config.kdl` の `zjstatus` plugin alias は `file:~/Library/Application Support/org.Zellij-Contributors.Zellij/plugins/zjstatus.wasm` でローカル参照し、各 layout は alias だけを参照する。相対指定の `file:zjstatus` は Zellij 起動時の cwd 基準で解決されるため使わない。Zellij の remote plugin load は環境によって `unexpected end-of-file` になることがあるため使わない。初回は plugin location ごとの権限確認が 1 行の status pane 内で `/n)` のように切れて見えることがあるため、その場合は `y` で許可する。表示・配色は alias に集約し、active は `#FF4DE1`、inactive は `#4C9EEB`、背景色なしとする。
-- Zellij の startup tip は `show_startup_tips false` で表示しない。
-- Zellij の前後 tab は Kitty から送る Alt-Shift-Left / Alt-Shift-Right を `GoToPreviousTab` / `GoToNextTab` に割り当て、物理キーでは Cmd-Option-Left / Cmd-Option-Right で操作する。
-- tab bar の各 tab は `focused_pane_title` を表示する。
-- tab label の理想形は、通常時は `focused_pane_title`、`rename-tab` で明示的な tab 名を付けた場合はその名前を優先すること。zjstatus v0.24.0 にはこの条件付き fallback がないため、現時点では `focused_pane_title` を優先する。表示だけのために zjstatus の fork、独自 WASM の配布、各 command ごとの Zellij 状態問い合わせなどの複雑な仕組みは追加しない。upstream で条件付き fallback が利用可能になったら設定だけで切り替える。
-- Zellij 内の zsh は OSC 2 で pane title を更新し、prompt 待機中は `zsh`、通常の command 実行中は先頭の command 名を表示する。zsh の widget から直接起動する TUI は必要に応じて明示的に title を設定する。
-- pane frame は見た目の主張が強いため常時表示しない。Zellij 0.45.0 では frame を消したまま pane 間の区切り線だけを任意色で描く設定はないため、UI の簡潔さを優先する。
-- Zellij は `uninstall.sh` で完全削除する対象とする。managed binary を消す前に session 停止を試み、`~/.config/zellij`、platform cache/data、XDG fallback、runtime socket directory まで削除する。
 
 ## Packages and machine-local settings
 
