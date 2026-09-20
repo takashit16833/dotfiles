@@ -127,7 +127,6 @@ config.keys = {
   { key = "RightArrow", mods = "CMD", action = wezterm.action.SendString "\x05" },
   -- Cmd+BackspaceをSuper付きBackspaceとして送信する。
   { key = "Backspace", mods = "CMD", action = wezterm.action.SendString "\x1b[127;9u" },
-  { key = "Delete", mods = "CMD", action = wezterm.action.SendString "\x0b" },
   -- 単語単位の移動・削除。
   { key = "LeftArrow", mods = "ALT", action = wezterm.action.SendKey { key = "b", mods = "ALT" } },
   { key = "RightArrow", mods = "ALT", action = wezterm.action.SendKey { key = "f", mods = "ALT" } },
