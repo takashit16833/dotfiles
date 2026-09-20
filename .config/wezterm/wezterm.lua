@@ -13,12 +13,9 @@ local background = "#010111"
 local foreground = "#5EAFFF"
 local cyber_pink = "#FF4DE1"
 
--- 選択中のタブだけ、暗い青のカプセルに明るい青文字を浮かべる。
-local tab_pill_background = "#05233D"
-local tab_glow_blue = "#569FFF"
-local tab_inactive_foreground = "#5B86BC"
-local tab_hover_background = "#17264A"
-local tab_hover_foreground = "#E0EEFF"
+-- タブだけに色を付け、タブバーの余白には背景色を塗らない。
+local tab_bar_transparent = "rgba(0, 0, 0, 0)"
+local tab_dark_blue = "#05233D"
 
 config.colors = {
   foreground = foreground,
@@ -54,23 +51,23 @@ config.colors = {
     "#00FFFF",
     "#FFFFFF",
   },
-  -- タブバーの余白は端末と同色。形状と余白は format-tab-title で指定する。
+  -- アクティブと非アクティブは背景色・文字色をちょうど反転する。
   tab_bar = {
-    background = background,
+    background = tab_bar_transparent,
     active_tab = {
-      bg_color = tab_pill_background,
-      fg_color = tab_glow_blue,
+      bg_color = foreground,
+      fg_color = tab_dark_blue,
       intensity = "Bold",
     },
     inactive_tab = {
-      bg_color = background,
-      fg_color = tab_inactive_foreground,
+      bg_color = tab_dark_blue,
+      fg_color = foreground,
     },
     inactive_tab_hover = {
-      bg_color = tab_hover_background,
-      fg_color = tab_hover_foreground,
+      bg_color = tab_dark_blue,
+      fg_color = foreground,
     },
-    inactive_tab_edge = background,
+    inactive_tab_edge = tab_bar_transparent,
   },
 }
 
@@ -82,8 +79,7 @@ config.window_frame = {
   inactive_titlebar_border_bottom = background,
 }
 
--- 文字で両端の丸みを描き、選択中だけカプセル型にする。
--- レトロタブの文字サイズには端末の config.font_size が使われる。
+-- 文字で両端の丸みを描く。レトロタブは端末のフォントサイズを使う。
 config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = true
 config.hide_tab_bar_if_only_one_tab = true
@@ -94,42 +90,30 @@ config.show_new_tab_button_in_tab_bar = false
 config.show_close_tab_button_in_tabs = false
 config.show_tab_index_in_tab_bar = false
 
--- 標準のタブ名を維持しつつ、アクティブタブだけ青いラベルにする。
-wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
+-- 両方のタブを同じカプセル形状にし、選択状態に応じて配色だけ反転する。
+wezterm.on("format-tab-title", function(tab, _, _, _, _, max_width)
   local title = tab.tab_title
   if not title or title == "" then
     title = tab.active_pane.title
   end
 
-  if tab.is_active then
-    title = wezterm.truncate_right(title, math.max(1, max_width - 8))
-    return {
-      { Background = { Color = background } },
-      { Text = " " },
-      { Foreground = { Color = tab_pill_background } },
-      { Text = wezterm.nerdfonts.ple_left_half_circle_thick },
-      { Background = { Color = tab_pill_background } },
-      { Foreground = { Color = tab_glow_blue } },
-      { Attribute = { Intensity = "Bold" } },
-      { Text = "  " .. title .. "  " },
-      { Background = { Color = background } },
-      { Foreground = { Color = tab_pill_background } },
-      { Text = wezterm.nerdfonts.ple_right_half_circle_thick },
-      { Text = " " },
-    }
-  end
+  local tab_background = tab.is_active and foreground or tab_dark_blue
+  local tab_foreground = tab.is_active and tab_dark_blue or foreground
+  local intensity = tab.is_active and "Bold" or "Normal"
+  title = wezterm.truncate_right(title, math.max(1, max_width - 8))
 
-  -- 非アクティブは従来の配色を維持し、タブ同士に間隔を空ける。
-  local tab_background = hover and tab_hover_background or background
-  local tab_foreground = hover and tab_hover_foreground or tab_inactive_foreground
-  title = wezterm.truncate_right(title, math.max(1, max_width - 4))
   return {
-    { Background = { Color = background } },
+    { Background = { Color = tab_bar_transparent } },
     { Text = " " },
+    { Foreground = { Color = tab_background } },
+    { Text = wezterm.nerdfonts.ple_left_half_circle_thick },
     { Background = { Color = tab_background } },
     { Foreground = { Color = tab_foreground } },
-    { Text = " " .. title .. " " },
-    { Background = { Color = background } },
+    { Attribute = { Intensity = intensity } },
+    { Text = "  " .. title .. "  " },
+    { Background = { Color = tab_bar_transparent } },
+    { Foreground = { Color = tab_background } },
+    { Text = wezterm.nerdfonts.ple_right_half_circle_thick },
     { Text = " " },
   }
 end)
@@ -179,8 +163,8 @@ if file then
   dofile(workspace_file)(wezterm, config)
 end
 
--- ターミナルの文字サイズ。
-config.font_size = 14.5
+-- ターミナルの文字サイズを元に戻す。
+config.font_size = 13.5
 
 -- フォント設定。
 config.font = wezterm.font_with_fallback {
