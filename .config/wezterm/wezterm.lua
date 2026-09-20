@@ -122,6 +122,8 @@ end)
 
 -- キー設定。
 config.keys = {
+  -- Cmd+Fを端末内のアプリへ渡す。
+  { key = "f", mods = "CMD", action = wezterm.action.DisableDefaultAssignment },
   -- Deleteを標準のエスケープシーケンスで送信する。
   { key = "Delete", mods = "NONE", action = wezterm.action.SendString "\x1b[3~" },
   -- zshの行編集。
