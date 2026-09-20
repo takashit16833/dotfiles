@@ -166,4 +166,53 @@ config.font = wezterm.font_with_fallback {
   "BIZ UDGothic",
 }
 
+-- 既存のCopy Mode操作を維持し、コマンド出力単位の操作を追加する。
+local copy_mode = wezterm.gui.default_key_tables().copy_mode
+
+table.insert(copy_mode, {
+  key = "p",
+  mods = "NONE",
+  action = wezterm.action.CopyMode { MoveBackwardZoneOfType = "Output" },
+})
+
+table.insert(copy_mode, {
+  key = "n",
+  mods = "NONE",
+  action = wezterm.action.CopyMode { MoveForwardZoneOfType = "Output" },
+})
+
+table.insert(copy_mode, {
+  key = "s",
+  mods = "NONE",
+  action = wezterm.action.CopyMode { SetSelectionMode = "SemanticZone" },
+})
+
+config.key_tables = config.key_tables or {}
+
+-- コマンド文字列と実行結果をまとめて選択する。
+table.insert(copy_mode, {
+  key = "a",
+  mods = "NONE",
+  action = wezterm.action.Multiple {
+    wezterm.action.CopyMode "ClearSelectionMode",
+    wezterm.action.CopyMode { MoveBackwardZoneOfType = "Input" },
+    wezterm.action.CopyMode { SetSelectionMode = "SemanticZone" },
+    wezterm.action.CopyMode { MoveForwardZoneOfType = "Output" },
+  },
+})
+
+-- コピー後に選択を解除する。
+for _, binding in ipairs(copy_mode) do
+  if binding.key == "y" and binding.mods == "NONE" then
+    binding.action = wezterm.action.Multiple {
+      wezterm.action.CopyTo "Clipboard",
+      wezterm.action.ClearSelection,
+      wezterm.action.CopyMode "MoveToScrollbackBottom",
+      wezterm.action.CopyMode "Close",
+    }
+  end
+end
+
+config.key_tables.copy_mode = copy_mode
+
 return config
