@@ -13,6 +13,13 @@ local background = "#010111"
 local foreground = "#5EAFFF"
 local cyber_pink = "#FF4DE1"
 
+-- 選択中のタブだけ、暗い青のカプセルに明るい青文字を浮かべる。
+local tab_pill_background = "#05233D"
+local tab_glow_blue = "#7EE8FF"
+local tab_inactive_foreground = "#5B86BC"
+local tab_hover_background = "#17264A"
+local tab_hover_foreground = "#E0EEFF"
+
 config.colors = {
   foreground = foreground,
   background = background,
@@ -47,53 +54,85 @@ config.colors = {
     "#00FFFF",
     "#FFFFFF",
   },
-  -- タブバーの余白は端末と同色にして、タブだけを浮かび上がらせる。
+  -- タブバーの余白は端末と同色。形状と余白は format-tab-title で指定する。
   tab_bar = {
     background = background,
-
-    -- アクティブ: 通常の青で強調する。
     active_tab = {
-      bg_color = "#287FD9",
-      fg_color = background,
+      bg_color = tab_pill_background,
+      fg_color = tab_glow_blue,
       intensity = "Bold",
     },
-
-    -- 非アクティブ: これまでどおり背景に溶け込ませる。
     inactive_tab = {
       bg_color = background,
-      fg_color = "#5B86BC",
+      fg_color = tab_inactive_foreground,
     },
-
-    -- マウスを重ねたときだけ少し明るくする。
     inactive_tab_hover = {
-      bg_color = "#17264A",
-      fg_color = "#E0EEFF",
+      bg_color = tab_hover_background,
+      fg_color = tab_hover_foreground,
     },
-
-    -- タブ間の境界線を背景に溶け込ませる。
     inactive_tab_edge = background,
   },
 }
 
--- タブバー全体を端末の背景に馴染ませ、文字を少し大きくする。
+-- macOS のタイトルバーを端末の背景に馴染ませる。
 config.window_frame = {
   active_titlebar_bg = background,
   inactive_titlebar_bg = background,
   active_titlebar_border_bottom = background,
   inactive_titlebar_border_bottom = background,
-  font = wezterm.font("Menlo"),
-  font_size = 14.5,
 }
 
--- タブは画面下部に配置し、2つ以上あるときだけ表示する。
-config.use_fancy_tab_bar = true
+-- 文字で両端の丸みを描き、選択中だけカプセル型にする。
+-- レトロタブの文字サイズには端末の config.font_size が使われる。
+config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = true
 config.hide_tab_bar_if_only_one_tab = true
+config.tab_max_width = 32
 
 -- タブの追加ボタン・閉じるボタン・番号を表示しない。
 config.show_new_tab_button_in_tab_bar = false
 config.show_close_tab_button_in_tabs = false
 config.show_tab_index_in_tab_bar = false
+
+-- 標準のタブ名を維持しつつ、アクティブタブだけ青いラベルにする。
+wezterm.on("format-tab-title", function(tab, _, _, _, hover, max_width)
+  local title = tab.tab_title
+  if not title or title == "" then
+    title = tab.active_pane.title
+  end
+
+  if tab.is_active then
+    title = wezterm.truncate_right(title, math.max(1, max_width - 8))
+    return {
+      { Background = { Color = background } },
+      { Text = " " },
+      { Foreground = { Color = tab_pill_background } },
+      { Text = wezterm.nerdfonts.ple_left_half_circle_thick },
+      { Background = { Color = tab_pill_background } },
+      { Foreground = { Color = tab_glow_blue } },
+      { Attribute = { Intensity = "Bold" } },
+      { Text = "  " .. title .. "  " },
+      { Background = { Color = background } },
+      { Foreground = { Color = tab_pill_background } },
+      { Text = wezterm.nerdfonts.ple_right_half_circle_thick },
+      { Text = " " },
+    }
+  end
+
+  -- 非アクティブは従来の配色を維持し、タブ同士に間隔を空ける。
+  local tab_background = hover and tab_hover_background or background
+  local tab_foreground = hover and tab_hover_foreground or tab_inactive_foreground
+  title = wezterm.truncate_right(title, math.max(1, max_width - 4))
+  return {
+    { Background = { Color = background } },
+    { Text = " " },
+    { Background = { Color = tab_background } },
+    { Foreground = { Color = tab_foreground } },
+    { Text = " " .. title .. " " },
+    { Background = { Color = background } },
+    { Text = " " },
+  }
+end)
 
 -- Nightly 限定: macOS 標準タイトルバーを残し、背景色をターミナルと揃える。
 config.window_decorations = "TITLE|RESIZE|MACOS_USE_BACKGROUND_COLOR_AS_TITLEBAR_COLOR"
