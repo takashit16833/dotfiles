@@ -47,38 +47,18 @@ config.colors = {
     "#00FFFF",
     "#FFFFFF",
   },
-  -- タブバーは背景色を揃え、文字色で状態を区別する。
+  -- タブバーの余白は端末と同色にして、タブだけを浮かび上がらせる。
   tab_bar = {
     background = background,
 
+    -- アクティブ: 通常の青で強調する。
     active_tab = {
       bg_color = "#287FD9",
       fg_color = background,
       intensity = "Bold",
     },
 
-    inactive_tab = {
-      bg_color = "#174A9C",
-      fg_color = "#E0EEFF",
-    },
-
-    inactive_tab_hover = {
-      bg_color = "#3B85D8",
-      fg_color = background,
-    },
-  },
-  -- タブの配色。
-  tab_bar = {
-    background = background,
-
-    -- アクティブ: 濃紺の背景と明るい文字。
-    active_tab = {
-      bg_color = "#111D39",
-      fg_color = "#E0EEFF",
-      intensity = "Bold",
-    },
-
-    -- 非アクティブ: 背景に溶け込ませる。
+    -- 非アクティブ: これまでどおり背景に溶け込ませる。
     inactive_tab = {
       bg_color = background,
       fg_color = "#5B86BC",
@@ -95,16 +75,19 @@ config.colors = {
   },
 }
 
--- タブバー全体の背景とフォント。
+-- タブバー全体を端末の背景に馴染ませ、文字を少し大きくする。
 config.window_frame = {
   active_titlebar_bg = background,
   inactive_titlebar_bg = background,
+  active_titlebar_border_bottom = background,
+  inactive_titlebar_border_bottom = background,
   font = wezterm.font("Menlo"),
-  font_size = 13.0,
+  font_size = 14.5,
 }
 
--- タブバーは2つ以上のタブがあるときだけ表示する。
+-- タブは画面下部に配置し、2つ以上あるときだけ表示する。
 config.use_fancy_tab_bar = true
+config.tab_bar_at_bottom = true
 config.hide_tab_bar_if_only_one_tab = true
 
 -- タブの追加ボタン・閉じるボタン・番号を表示しない。
