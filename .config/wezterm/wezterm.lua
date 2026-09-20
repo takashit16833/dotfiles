@@ -15,7 +15,7 @@ local cyber_pink = "#FF4DE1"
 
 -- 選択中のタブだけ、暗い青のカプセルに明るい青文字を浮かべる。
 local tab_pill_background = "#05233D"
-local tab_glow_blue = "#7EE8FF"
+local tab_glow_blue = "#569FFF"
 local tab_inactive_foreground = "#5B86BC"
 local tab_hover_background = "#17264A"
 local tab_hover_foreground = "#E0EEFF"
@@ -180,7 +180,7 @@ if file then
 end
 
 -- ターミナルの文字サイズ。
-config.font_size = 13.5
+config.font_size = 14.5
 
 -- フォント設定。
 config.font = wezterm.font_with_fallback {
