@@ -13,9 +13,13 @@ local background = "#010111"
 local foreground = "#5EAFFF"
 local cyber_pink = "#FF4DE1"
 
--- タブだけに色を付け、タブバーの余白には背景色を塗らない。
+-- Emacsのretro-hacker-blue-core.elにあるmode-lineの背景色・文字色に揃える。
+-- タブバーの余白は透明のままにする。
 local tab_bar_transparent = "rgba(0, 0, 0, 0)"
-local tab_dark_blue = "#05233D"
+local tab_active_background = "#000E2F"
+local tab_active_foreground = "#316CBD"
+local tab_inactive_background = "#000008"
+local tab_inactive_foreground = "#102F66"
 
 config.colors = {
   foreground = foreground,
@@ -51,21 +55,21 @@ config.colors = {
     "#00FFFF",
     "#FFFFFF",
   },
-  -- アクティブと非アクティブは背景色・文字色をちょうど反転する。
+  -- Emacsのアクティブ・非アクティブのモードラインとそれぞれ同じ配色にする。
   tab_bar = {
     background = tab_bar_transparent,
     active_tab = {
-      bg_color = foreground,
-      fg_color = tab_dark_blue,
+      bg_color = tab_active_background,
+      fg_color = tab_active_foreground,
       intensity = "Bold",
     },
     inactive_tab = {
-      bg_color = tab_dark_blue,
-      fg_color = foreground,
+      bg_color = tab_inactive_background,
+      fg_color = tab_inactive_foreground,
     },
     inactive_tab_hover = {
-      bg_color = tab_dark_blue,
-      fg_color = foreground,
+      bg_color = tab_inactive_background,
+      fg_color = tab_inactive_foreground,
     },
     inactive_tab_edge = tab_bar_transparent,
   },
@@ -79,7 +83,7 @@ config.window_frame = {
   inactive_titlebar_border_bottom = background,
 }
 
--- 文字で両端の丸みを描く。レトロタブは端末のフォントサイズを使う。
+-- タブは四角形で、端末のフォントサイズを使用する。
 config.use_fancy_tab_bar = false
 config.tab_bar_at_bottom = true
 config.hide_tab_bar_if_only_one_tab = true
@@ -90,30 +94,26 @@ config.show_new_tab_button_in_tab_bar = false
 config.show_close_tab_button_in_tabs = false
 config.show_tab_index_in_tab_bar = false
 
--- 両方のタブを同じカプセル形状にし、選択状態に応じて配色だけ反転する。
+-- 両方のタブを四角形にし、Emacsの各モードラインと背景色・文字色を揃える。
 wezterm.on("format-tab-title", function(tab, _, _, _, _, max_width)
   local title = tab.tab_title
   if not title or title == "" then
     title = tab.active_pane.title
   end
 
-  local tab_background = tab.is_active and foreground or tab_dark_blue
-  local tab_foreground = tab.is_active and tab_dark_blue or foreground
+  local tab_background = tab.is_active and tab_active_background or tab_inactive_background
+  local tab_foreground = tab.is_active and tab_active_foreground or tab_inactive_foreground
   local intensity = tab.is_active and "Bold" or "Normal"
-  title = wezterm.truncate_right(title, math.max(1, max_width - 8))
+  title = wezterm.truncate_right(title, math.max(1, max_width - 6))
 
   return {
     { Background = { Color = tab_bar_transparent } },
     { Text = " " },
-    { Foreground = { Color = tab_background } },
-    { Text = wezterm.nerdfonts.ple_left_half_circle_thick },
     { Background = { Color = tab_background } },
     { Foreground = { Color = tab_foreground } },
     { Attribute = { Intensity = intensity } },
     { Text = "  " .. title .. "  " },
     { Background = { Color = tab_bar_transparent } },
-    { Foreground = { Color = tab_background } },
-    { Text = wezterm.nerdfonts.ple_right_half_circle_thick },
     { Text = " " },
   }
 end)
@@ -163,7 +163,7 @@ if file then
   dofile(workspace_file)(wezterm, config)
 end
 
--- ターミナルの文字サイズを元に戻す。
+-- ターミナルの文字サイズは13.5を維持する。
 config.font_size = 13.5
 
 -- フォント設定。
