@@ -183,6 +183,10 @@ config.font = wezterm.font_with_fallback {
   "BIZ UDGothic",
 }
 
+-- カーソルスタイル
+config.default_cursor_style = "BlinkingBar"
+config.cursor_thickness = "2px"
+
 -- 画面のチラつき（一瞬消えたりする）対策
 -- 【候補1】描画を「Software」に変更（一番安定します）
 -- config.front_end = "Software"
