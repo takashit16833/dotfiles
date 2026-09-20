@@ -166,4 +166,14 @@ config.font = wezterm.font_with_fallback {
   "BIZ UDGothic",
 }
 
+-- 画面のチラつき（一瞬消えたりする）対策
+-- 【候補1】描画を「Software」に変更（一番安定します）
+-- config.front_end = "Software"
+
+-- 【候補2】Softwareで直らない、または重い場合は「OpenGL」を試す
+-- config.front_end = "OpenGL"
+
+-- 【候補3】最新の描画エンジン「WebGpu」を試す
+config.front_end = "WebGpu"
+
 return config
