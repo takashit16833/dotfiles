@@ -104,7 +104,7 @@ wezterm.on("format-tab-title", function(tab, _, _, _, _, max_width)
   local tab_background = tab.is_active and tab_active_background or tab_inactive_background
   local tab_foreground = tab.is_active and tab_active_foreground or tab_inactive_foreground
   local intensity = tab.is_active and "Bold" or "Normal"
-  title = wezterm.truncate_right(title, math.max(1, max_width - 6))
+  title = wezterm.truncate_right(title, math.max(1, max_width - 5))
 
   return {
     { Background = { Color = tab_bar_transparent } },
@@ -114,7 +114,6 @@ wezterm.on("format-tab-title", function(tab, _, _, _, _, max_width)
     { Attribute = { Intensity = intensity } },
     { Text = "  " .. title .. "  " },
     { Background = { Color = tab_bar_transparent } },
-    { Text = " " },
   }
 end)
 
