@@ -103,6 +103,35 @@ uninstall_zellij() {
   rmdir "$HOME/.local/share/dotfiles" 2>/dev/null || true
 }
 
+# install.shが作ったPC固有の設定だけを削除する。
+uninstall_wezterm_local_config() {
+  local directory="$XDG_CONFIG_HOME/wezterm-local"
+  local target="$directory/local.lua"
+  local marker="$directory/.dotfiles-created"
+
+  if [[ -L "$directory" ]]; then
+    info "skip: $directory is a symlink"
+    return
+  fi
+  if [[ -L "$marker" || ! -f "$marker" ]] ||
+    [[ "$(cat "$marker")" != 'created by dotfiles install.sh' ]]; then
+    if [[ -e "$target" || -L "$target" ]]; then
+      info "skip: $target has no dotfiles ownership marker"
+    fi
+    return
+  fi
+  if [[ -L "$target" || ( -e "$target" && ! -f "$target" ) ]]; then
+    info "skip: $target is not a regular file"
+    return
+  fi
+  if [[ -f "$target" ]]; then
+    rm "$target"
+    info "removed: $target"
+  fi
+  rm "$marker"
+  rmdir "$directory" 2>/dev/null || true
+}
+
 uninstall_raycast_extension() {
   local install_dir="$RAYCAST_INSTALLED_EXTENSIONS_DIR/$RAYCAST_EXTENSION_NAME"
   local staging_dir
@@ -154,6 +183,7 @@ main() {
   remove_symlink \
     "$DOTFILES_DIR/.config/wezterm" \
     "$XDG_CONFIG_HOME/wezterm"
+  uninstall_wezterm_local_config
 
   remove_symlink \
     "$DOTFILES_DIR/.config/starship.toml" \
