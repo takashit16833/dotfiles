@@ -15,3 +15,6 @@
 
 [include]
     path = ~/.gitconfig.local
+
+[pager]
+    diff = delta
