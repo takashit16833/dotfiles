@@ -122,6 +122,8 @@ end)
 
 -- キー設定。
 config.keys = {
+  -- Deleteを標準のエスケープシーケンスで送信する。
+  { key = "Delete", mods = "NONE", action = wezterm.action.SendString "\x1b[3~" },
   -- zshの行編集。
   { key = "LeftArrow", mods = "CMD", action = wezterm.action.SendString "\x01" },
   { key = "RightArrow", mods = "CMD", action = wezterm.action.SendString "\x05" },
