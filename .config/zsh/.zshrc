@@ -110,11 +110,6 @@ if command -v lazygit >/dev/null 2>&1; then
   bindkey '^[g' lazygit-widget
 fi
 
-# WezTermにコマンドと出力の境界を通知する。
-if [[ -n "${WEZTERM_PANE:-}" ]]; then
-  source "$HOME/.config/wezterm/wezterm.sh"
-fi
-
 # Starship をプロンプトとして初期化する。
 # プロンプト系は他の shell integration の後に置き、最後に見た目を確定させる。
 if command -v starship >/dev/null 2>&1; then
