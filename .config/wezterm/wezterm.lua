@@ -133,12 +133,6 @@ config.keys = {
   -- Ctrl+Shift+PageUp/PageDownも端末内のアプリへ渡す。
   { key = "PageUp", mods = "CTRL|SHIFT", action = wezterm.action.DisableDefaultAssignment },
   { key = "PageDown", mods = "CTRL|SHIFT", action = wezterm.action.DisableDefaultAssignment },
-  -- WezTermのタブを切り替える。
-  { key = "LeftArrow", mods = "CMD|ALT", action = wezterm.action.ActivateTabRelative(-1) },
-  { key = "RightArrow", mods = "CMD|ALT", action = wezterm.action.ActivateTabRelative(1) },
-  -- WezTermのタブを左右に移動する。
-  { key = "LeftArrow", mods = "CMD|ALT|SHIFT", action = wezterm.action.MoveTabRelative(-1) },
-  { key = "RightArrow", mods = "CMD|ALT|SHIFT", action = wezterm.action.MoveTabRelative(1) },
   -- Cmd+Fを端末内のアプリへ渡す。
   { key = "f", mods = "CMD", action = wezterm.action.DisableDefaultAssignment },
   -- Deleteを標準のエスケープシーケンスで送信する。
@@ -162,6 +156,70 @@ config.keys = {
     key = "phys:Z",
     mods = "CMD|SHIFT",
     action = wezterm.action.SendString "\x1b[122;10u",
+  },
+  -- Cmd+Tからタブ操作を選択する。
+  {
+    key = "t",
+    mods = "CMD",
+    action = wezterm.action.ActivateKeyTable {
+      name = "tab_actions",
+      one_shot = false,
+      until_unknown = true,
+    },
+  },
+}
+
+-- タブ操作。
+config.key_tables = {
+  tab_actions = {
+    -- 左右のタブへ移動する。
+    {
+      key = "LeftArrow",
+      action = wezterm.action.ActivateTabRelative(-1),
+    },
+    {
+      key = "RightArrow",
+      action = wezterm.action.ActivateTabRelative(1),
+    },
+    -- Shift+左右でタブの並び順を変更する。
+    {
+      key = "LeftArrow",
+      mods = "SHIFT",
+      action = wezterm.action.MoveTabRelative(-1),
+    },
+    {
+      key = "RightArrow",
+      mods = "SHIFT",
+      action = wezterm.action.MoveTabRelative(1),
+    },
+    -- 新しいタブを開いて終了する。
+    {
+      key = "t",
+      action = wezterm.action.Multiple {
+        wezterm.action.PopKeyTable,
+        wezterm.action.SpawnTab "CurrentPaneDomain",
+      },
+    },
+    -- 現在のタブの名前を変更して終了する。
+    {
+      key = "r",
+      action = wezterm.action.Multiple {
+        wezterm.action.PopKeyTable,
+        wezterm.action.PromptInputLine {
+          description = "新しいタブ名:",
+          action = wezterm.action_callback(function(window, pane, line)
+            if line and line ~= "" then
+              window:active_tab():set_title(line)
+            end
+          end),
+        },
+      },
+    },
+    -- 操作をキャンセルする。
+    {
+      key = "Escape",
+      action = wezterm.action.PopKeyTable,
+    },
   },
 }
 
