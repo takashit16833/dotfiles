@@ -232,6 +232,23 @@ if file then
   dofile(workspace_file)(wezterm, config)
 end
 
+-- コピーモードの移動キー。
+local act = wezterm.action
+
+config.key_tables = config.key_tables or {}
+config.key_tables.copy_mode = config.key_tables.copy_mode or wezterm.gui.default_key_tables().copy_mode
+
+local copy_mode_keys = {
+  { key = "LeftArrow", mods = "SUPER", action = act.CopyMode "MoveToStartOfLine" },
+  { key = "RightArrow", mods = "SUPER", action = act.CopyMode "MoveToEndOfLineContent" },
+  { key = "UpArrow", mods = "SUPER", action = act.CopyMode "MoveToViewportTop" },
+  { key = "DownArrow", mods = "SUPER", action = act.CopyMode "MoveToViewportBottom" },
+}
+
+for _, binding in ipairs(copy_mode_keys) do
+  table.insert(config.key_tables.copy_mode, binding)
+end
+
 -- ターミナルの文字サイズは13.5を維持する。
 config.font_size = 13.5
 
