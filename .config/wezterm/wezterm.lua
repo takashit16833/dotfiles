@@ -135,6 +135,21 @@ config.keys = {
   { key = "PageDown", mods = "CTRL|SHIFT", action = wezterm.action.DisableDefaultAssignment },
   -- Cmd+Fを端末内のアプリへ渡す。
   { key = "f", mods = "CMD", action = wezterm.action.DisableDefaultAssignment },
+  -- Cmd+C: 選択中ならコピーし、未選択なら端末へ渡す。
+  {
+    key = "c",
+    mods = "CMD",
+    action = wezterm.action_callback(function(window, pane)
+      local selection = window:get_selection_text_for_pane(pane)
+
+      if selection ~= "" then
+        window:perform_action(wezterm.action.CopyTo "Clipboard", pane)
+        window:perform_action(wezterm.action.ClearSelection, pane)
+      else
+        window:perform_action(wezterm.action.SendString "\x1b[99;9u", pane)
+      end
+    end),
+  },
   -- Deleteを標準のエスケープシーケンスで送信する。
   { key = "Delete", mods = "NONE", action = wezterm.action.SendString "\x1b[3~" },
   -- zshの行編集。

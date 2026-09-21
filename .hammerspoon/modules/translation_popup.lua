@@ -18,10 +18,7 @@ local function restorePasteboard(saved)
 end
 
 local function openGoogleTranslate(text)
-  local url = string.format(
-    GOOGLE_TRANSLATE_URL,
-    hs.http.encodeForQuery(text)
-  )
+  local url = string.format(GOOGLE_TRANSLATE_URL, hs.http.encodeForQuery(text))
 
   if not hs.urlevent.openURLWithBundle(url, CHROME_BUNDLE_ID) then
     hs.alert.show("Google 翻訳を Chrome で開けませんでした")
@@ -31,23 +28,28 @@ end
 local function translateSelection()
   local savedPasteboard = hs.pasteboard.readAllData()
 
-  -- ホットキーの修飾キーが離れてから Cmd+C を送る。
-  -- ブラウザへ余計な修飾キーが混ざるのを避けるため、短時間だけ待つ。
   hs.timer.doAfter(COPY_DELAY_SECONDS, function()
-    hs.pasteboard.callbackWhenChanged(COPY_TIMEOUT_SECONDS, function(changed)
-      local selectedText = changed and trim(hs.pasteboard.getContents()) or nil
+    -- 同じ文字列をコピーする場合にも対応する。
+    hs.pasteboard.clearContents()
 
-      restorePasteboard(savedPasteboard)
+    local deadline = hs.timer.secondsSinceEpoch() + COPY_TIMEOUT_SECONDS
 
-      if not selectedText or selectedText == "" then
+    local function waitForCopy()
+      local selectedText = trim(hs.pasteboard.readString())
+
+      if selectedText and selectedText ~= "" then
+        restorePasteboard(savedPasteboard)
+        openGoogleTranslate(selectedText)
+      elseif hs.timer.secondsSinceEpoch() >= deadline then
+        restorePasteboard(savedPasteboard)
         hs.alert.show("翻訳するテキストを選択してください")
-        return
+      else
+        hs.timer.doAfter(0.05, waitForCopy)
       end
-
-      openGoogleTranslate(selectedText)
-    end)
+    end
 
     hs.eventtap.keyStroke({ "cmd" }, "c", 0)
+    hs.timer.doAfter(0.05, waitForCopy)
   end)
 end
 
