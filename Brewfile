@@ -96,3 +96,7 @@ brew "tree-sitter-cli"
 # Luaの補完・診断と自動整形に使用する。
 brew "lua-language-server"
 brew "stylua"
+
+# vtermのビルドに使用する。
+brew "cmake"
+brew "libtool"

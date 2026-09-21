@@ -157,6 +157,12 @@ config.keys = {
     mods = "CMD|SHIFT",
     action = wezterm.action.SendString "\x1b[122;10u",
   },
+  -- Cmd+Shift+Fを修飾キー付きで送信する。
+  {
+    key = "phys:F",
+    mods = "CMD|SHIFT",
+    action = wezterm.action.SendString "\x1b[102;10u",
+  },
   -- Cmd+Tからタブ操作を選択する。
   {
     key = "t",
