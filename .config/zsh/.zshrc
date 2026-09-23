@@ -115,3 +115,12 @@ fi
 if command -v starship >/dev/null 2>&1; then
   eval "$(starship init zsh)"
 fi
+
+# vtermにプロンプトの終端を通知する。
+if [[ "$INSIDE_EMACS" == "vterm" ]]; then
+  my_vterm_prompt_end() {
+    printf '\e]51;A%s@%s:%s\e\\' "$USER" "$(hostname)" "$PWD"
+  }
+
+  PROMPT=$PROMPT'%{$(my_vterm_prompt_end)%}'
+fi
