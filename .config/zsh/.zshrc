@@ -11,6 +11,9 @@ alias zj='zellij'
 # emacs を `e` で起動する。
 alias e='emacs -nw'
 
+# gita fetch してから gita ll する
+alias gll='gita fetch && gita ll'
+
 # コマンド履歴をセッションをまたいで保存し、複数の zsh で共有する。
 HISTFILE="$ZDOTDIR/.zsh_history"
 HISTSIZE=100000
