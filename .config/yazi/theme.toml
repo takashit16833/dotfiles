@@ -20,7 +20,7 @@ border_style = { fg = "#153A75" }
 parent = { fg = "#316CBD" }
 current = { fg = "#A6CAFF", bg = "#061536", bold = true }
 preview = { fg = "#316CBD" }
-padding = { open = "", close = "" }
+padding = { open = " ", close = " " }
 
 [tabs]
 active = { fg = "#5EAFFF", bg = "#000E2F", bold = true }
@@ -30,14 +30,14 @@ sep_outer = { open = "", close = "" }
 
 [mode]
 normal_main = { fg = "#5EAFFF", bg = "#000E2F", bold = true }
-normal_alt = { fg = "#316CBD", bg = "#010111" }
+normal_alt = { fg = "#316CBD", bg = "#000E2F" }
 select_main = { fg = "#010111", bg = "#FFD700", bold = true }
-select_alt = { fg = "#FFD700", bg = "#010111" }
+select_alt = { fg = "#FFD700", bg = "#000E2F" }
 unset_main = { fg = "#010111", bg = "#FF4DE1", bold = true }
-unset_alt = { fg = "#FF76E8", bg = "#010111" }
+unset_alt = { fg = "#FF76E8", bg = "#000E2F" }
 
 [status]
-overall = { fg = "#316CBD", bg = "#010111" }
+overall = { fg = "#316CBD", bg = "#000E2F" }
 sep_left = { open = "", close = "" }
 sep_right = { open = "", close = "" }
 perm_type = { fg = "#5EAFFF" }
