@@ -29,6 +29,9 @@ brew "tdf"
 # Git 操作のメイン UI として利用する。
 brew "lazygit"
 
+# 複数のローカル Git repository の状態確認・一括操作に利用する。
+brew "gita"
+
 # Lazygit で通常の Git diff を syntax highlight 付きで読みやすく表示する。
 brew "git-delta"
 
