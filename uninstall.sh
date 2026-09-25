@@ -166,6 +166,10 @@ main() {
     "$XDG_CONFIG_HOME/yazi/theme.toml"
 
   remove_symlink \
+    "$DOTFILES_DIR/.config/yazi/keymap.toml" \
+    "$XDG_CONFIG_HOME/yazi/keymap.toml"
+
+  remove_symlink \
     "$DOTFILES_DIR/.gitconfig" \
     "$HOME/.gitconfig"
 

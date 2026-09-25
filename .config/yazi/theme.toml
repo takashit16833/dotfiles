@@ -18,7 +18,7 @@ border_style = { fg = "#153A75" }
 
 [indicator]
 parent = { fg = "#316CBD" }
-current = { fg = "#A6CAFF", bg = "#264770", bold = true }
+current = { fg = "#A6CAFF", bg = "#061536", bold = true }
 preview = { fg = "#316CBD" }
 padding = { open = "", close = "" }
 
@@ -102,3 +102,17 @@ border = { fg = "#153A75" }
 chord = { fg = "#FFD700", bold = true }
 action = { fg = "#7CBEFF" }
 hovered = { fg = "#A6CAFF", bg = "#264770", bold = true }
+
+[icon]
+# 既定のカラフルな nvim-web-devicons は使わず、形と色を絞る。
+globs = []
+dirs = []
+files = []
+exts = []
+conds = [
+  { if = "link & dir", text = "", fg = "#00CED1" },
+  { if = "dir",        text = "", fg = "#5EAFFF" },
+  { if = "link",       text = "", fg = "#00CED1" },
+  { if = "exec",       text = "", fg = "#7CBEFF" },
+  { if = "!dir",       text = "", fg = "#316CBD" },
+]

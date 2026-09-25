@@ -1,0 +1,10 @@
+# q は表示だけ閉じ、Q は Yazi 内の現在位置を shell へ返す。
+[[mgr.prepend_keymap]]
+on = "q"
+run = "quit --no-cwd-file"
+desc = "Quit without changing directory"
+
+[[mgr.prepend_keymap]]
+on = "Q"
+run = "quit"
+desc = "Quit and change directory"
