@@ -11,10 +11,20 @@ run = "open -a Numbers %s"
 for = "macos"
 desc = "Open with Numbers"
 
+# 画像は macOS の Preview で開く。
+[[opener.preview]]
+run = "open -a Preview %s"
+for = "macos"
+desc = "Open with Preview"
+
 # 専用アプリで開くものを先に判定し、それ以外は Emacs に渡す。
 [[open.prepend_rules]]
 url = "*.numbers"
 use = "numbers"
+
+[[open.prepend_rules]]
+mime = "image/*"
+use = "preview"
 
 [[open.prepend_rules]]
 url = "*/"
