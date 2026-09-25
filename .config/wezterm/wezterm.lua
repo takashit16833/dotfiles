@@ -97,8 +97,19 @@ config.show_tab_index_in_tab_bar = false
 -- 両方のタブを四角形にし、Emacsの各モードラインと背景色・文字色を揃える。
 wezterm.on("format-tab-title", function(tab, _, _, _, _, max_width)
   local title = tab.tab_title
+
   if not title or title == "" then
     title = tab.active_pane.title
+  end
+
+  if not title or title == "" then
+    local process_name = tab.active_pane.foreground_process_name
+
+    if process_name and process_name ~= "" then
+      title = process_name:match("([^/]+)$") or process_name
+    else
+      title = "shell"
+    end
   end
 
   local tab_background = tab.is_active and tab_active_background or tab_inactive_background
