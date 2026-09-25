@@ -17,6 +17,18 @@ run = "open -a Preview %s"
 for = "macos"
 desc = "Open with Preview"
 
+# Web location は .webloc 内の URL を取り出して Chrome で開く。
+[[opener.chrome]]
+run = 'url="$(plutil -extract URL raw -o - %s)" && open -a "Google Chrome" "$url"'
+for = "macos"
+desc = "Open with Chrome"
+
+# Shift+Enter の選択メニューから Chrome のプライベートモードでも開ける。
+[[opener.chrome-private]]
+run = 'url="$(plutil -extract URL raw -o - %s)" && open -na "Google Chrome" --args --incognito "$url"'
+for = "macos"
+desc = "Open with Chrome Private"
+
 # 専用アプリで開くものを先に判定し、それ以外は Emacs に渡す。
 [[open.prepend_rules]]
 url = "*.numbers"
@@ -25,6 +37,10 @@ use = "numbers"
 [[open.prepend_rules]]
 mime = "image/*"
 use = "preview"
+
+[[open.prepend_rules]]
+url = "*.webloc"
+use = [ "chrome", "chrome-private" ]
 
 [[open.prepend_rules]]
 url = "*/"
