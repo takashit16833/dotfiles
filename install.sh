@@ -13,18 +13,6 @@ XDG_CONFIG_HOME="$HOME/.config"
 # Homebrew 外で管理する CLI の配置先。zsh 側でも PATH に追加する。
 LOCAL_BIN_DIR="$HOME/.local/bin"
 
-# Kitty Graphics Protocol 対応を含む Zellij を公式 release binary から導入する。
-ZELLIJ_VERSION="0.45.0"
-ZELLIJ_BIN="$LOCAL_BIN_DIR/zellij"
-ZELLIJ_MANAGED_STATE_DIR="$HOME/.local/share/dotfiles/zellij"
-ZELLIJ_MANAGED_VERSION_FILE="$ZELLIJ_MANAGED_STATE_DIR/version"
-
-# zjstatus は Zellij の remote plugin loader を経由せず、公式 release を事前配置して使う。
-ZJSTATUS_VERSION="0.24.0"
-ZJSTATUS_SHA256="1ccedece1ded62cf3e209be690cdd39ca6fb9e8228ed71a951f6507f9956669b"
-ZELLIJ_PLUGIN_DIR="$HOME/Library/Application Support/org.Zellij-Contributors.Zellij/plugins"
-ZJSTATUS_WASM="$ZELLIJ_PLUGIN_DIR/zjstatus.wasm"
-
 # VS Code の macOS 標準 User directory。
 VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
 
@@ -147,119 +135,6 @@ install_managed_scripts() {
     [[ -x "$script" ]] || fail "$script is not executable"
     ensure_symlink "$script" "$LOCAL_BIN_DIR/$(basename "$script")"
   done
-}
-
-zellij_target_triple() {
-  case "$(uname -m)" in
-    arm64)
-      printf '%s\n' 'aarch64-apple-darwin'
-      ;;
-    x86_64)
-      printf '%s\n' 'x86_64-apple-darwin'
-      ;;
-    *)
-      fail "unsupported macOS architecture: $(uname -m)"
-      ;;
-  esac
-}
-
-install_zellij() {
-  local target_triple
-  local installed_version=''
-  local tmp_dir
-  local archive
-
-  target_triple="$(zellij_target_triple)"
-  mkdir -p "$LOCAL_BIN_DIR"
-
-  if [[ -e "$ZELLIJ_BIN" || -L "$ZELLIJ_BIN" ]]; then
-    if [[ ! -x "$ZELLIJ_BIN" ]]; then
-      fail "$ZELLIJ_BIN already exists but is not executable; leaving it untouched"
-    fi
-
-    installed_version="$("$ZELLIJ_BIN" --version 2>/dev/null || true)"
-
-    if [[ ! -f "$ZELLIJ_MANAGED_VERSION_FILE" ]]; then
-      fail "$ZELLIJ_BIN already exists ($installed_version) but is not dotfiles-managed; leaving it untouched"
-    fi
-
-    if [[ "$installed_version" == "zellij $ZELLIJ_VERSION" ]]; then
-      info "Zellij already installed: $installed_version"
-      return
-    fi
-
-    info "updating dotfiles-managed Zellij from $installed_version to $ZELLIJ_VERSION"
-  fi
-
-  tmp_dir="$(mktemp -d)"
-  archive="$tmp_dir/zellij.tar.gz"
-
-  info "installing Zellij $ZELLIJ_VERSION for $target_triple"
-  if ! curl -fL \
-    "https://github.com/zellij-org/zellij/releases/download/v${ZELLIJ_VERSION}/zellij-${target_triple}.tar.gz" \
-    -o "$archive"; then
-    rm -rf "$tmp_dir"
-    fail 'failed to download the Zellij release archive'
-  fi
-
-  if ! tar -xzf "$archive" -C "$tmp_dir"; then
-    rm -rf "$tmp_dir"
-    fail 'failed to extract the Zellij release archive'
-  fi
-
-  if [[ ! -x "$tmp_dir/zellij" ]]; then
-    rm -rf "$tmp_dir"
-    fail 'the Zellij release archive did not contain an executable zellij binary'
-  fi
-
-  install -m 755 "$tmp_dir/zellij" "$ZELLIJ_BIN"
-  rm -rf "$tmp_dir"
-
-  mkdir -p "$ZELLIJ_MANAGED_STATE_DIR"
-  printf '%s\n' "$ZELLIJ_VERSION" > "$ZELLIJ_MANAGED_VERSION_FILE"
-  info "installed: $ZELLIJ_BIN"
-}
-
-install_zjstatus() {
-  local current_sha=''
-  local downloaded_sha
-  local tmp_file
-
-  mkdir -p "$ZELLIJ_PLUGIN_DIR"
-
-  if [[ -e "$ZJSTATUS_WASM" || -L "$ZJSTATUS_WASM" ]]; then
-    if [[ ! -f "$ZJSTATUS_WASM" ]]; then
-      fail "$ZJSTATUS_WASM already exists but is not a regular file; leaving it untouched"
-    fi
-
-    current_sha="$(shasum -a 256 "$ZJSTATUS_WASM" | awk '{print $1}')"
-    if [[ "$current_sha" == "$ZJSTATUS_SHA256" ]]; then
-      info "zjstatus already installed: v$ZJSTATUS_VERSION"
-      return
-    fi
-
-    fail "$ZJSTATUS_WASM already exists with an unexpected checksum; leaving it untouched"
-  fi
-
-  tmp_file="$(mktemp)"
-  info "installing zjstatus v$ZJSTATUS_VERSION"
-
-  if ! curl -fL \
-    "https://github.com/dj95/zjstatus/releases/download/v${ZJSTATUS_VERSION}/zjstatus.wasm" \
-    -o "$tmp_file"; then
-    rm -f "$tmp_file"
-    fail 'failed to download zjstatus'
-  fi
-
-  downloaded_sha="$(shasum -a 256 "$tmp_file" | awk '{print $1}')"
-  if [[ "$downloaded_sha" != "$ZJSTATUS_SHA256" ]]; then
-    rm -f "$tmp_file"
-    fail "zjstatus checksum mismatch: expected $ZJSTATUS_SHA256, got $downloaded_sha"
-  fi
-
-  install -m 644 "$tmp_file" "$ZJSTATUS_WASM"
-  rm -f "$tmp_file"
-  info "installed: $ZJSTATUS_WASM"
 }
 
 install_vscode_extensions() {
@@ -440,21 +315,7 @@ main() {
 
   install_wezterm_local_config
   install_homebrew_packages
-  install_zellij
-  install_zjstatus
   install_managed_scripts
-
-  ensure_symlink \
-    "$DOTFILES_DIR/.config/zellij/config.kdl" \
-    "$XDG_CONFIG_HOME/zellij/config.kdl"
-
-  ensure_symlink \
-    "$DOTFILES_DIR/.config/zellij/layouts/minimal.kdl" \
-    "$XDG_CONFIG_HOME/zellij/layouts/minimal.kdl"
-
-  ensure_symlink \
-    "$DOTFILES_DIR/.config/zellij/layouts/lazygit.kdl" \
-    "$XDG_CONFIG_HOME/zellij/layouts/lazygit.kdl"
 
   ensure_symlink \
     "$DOTFILES_DIR/.config/kitty/kitty.conf" \

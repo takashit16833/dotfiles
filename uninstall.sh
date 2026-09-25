@@ -6,10 +6,6 @@ set -euo pipefail
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 XDG_CONFIG_HOME="$HOME/.config"
 LOCAL_BIN_DIR="$HOME/.local/bin"
-ZELLIJ_VERSION="0.45.0"
-ZELLIJ_BIN="$LOCAL_BIN_DIR/zellij"
-ZELLIJ_MANAGED_STATE_DIR="$HOME/.local/share/dotfiles/zellij"
-ZELLIJ_MANAGED_VERSION_FILE="$ZELLIJ_MANAGED_STATE_DIR/version"
 TRANSLATION_POPUP_DIR="$HOME/.local/share/dotfiles/translation-popup"
 VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
 RAYCAST_EXTENSION_DIR="$DOTFILES_DIR/raycast/extension"
@@ -70,37 +66,6 @@ uninstall_managed_scripts() {
     [[ -f "$script" ]] || continue
     remove_symlink "$script" "$LOCAL_BIN_DIR/$(basename "$script")"
   done
-}
-
-uninstall_zellij() {
-  local tmp_root="${TMPDIR:-/tmp}"
-
-  # session process が残ったまま binary / runtime state を消さないよう、先に停止を試みる。
-  if [[ -x "$ZELLIJ_BIN" ]]; then
-    "$ZELLIJ_BIN" kill-all-sessions --yes >/dev/null 2>&1 || true
-  fi
-
-  if [[ -f "$ZELLIJ_MANAGED_VERSION_FILE" ]]; then
-    remove_path "$ZELLIJ_BIN"
-    remove_path "$ZELLIJ_MANAGED_STATE_DIR"
-  elif [[ -e "$ZELLIJ_BIN" || -L "$ZELLIJ_BIN" ]]; then
-    info "skip: $ZELLIJ_BIN exists but is not marked as dotfiles-managed"
-  else
-    info 'Zellij binary already absent'
-  fi
-
-  # Zellij は binary だけでなく config / cache / data / socket も削除し、
-  # uninstall.sh 後に local state を残さない。
-  remove_path "$XDG_CONFIG_HOME/zellij"
-  remove_path "$HOME/.cache/zellij"
-  remove_path "$HOME/.local/share/zellij"
-  remove_path "$HOME/Library/Caches/org.Zellij-Contributors.Zellij"
-  remove_path "$HOME/Library/Application Support/org.Zellij-Contributors.Zellij"
-  remove_path "${tmp_root%/}/zellij-$(id -u)"
-  remove_path "/tmp/zellij-$(id -u)"
-
-  # dotfiles 用 marker の親 directory は、他の managed tool が無い場合だけ片付ける。
-  rmdir "$HOME/.local/share/dotfiles" 2>/dev/null || true
 }
 
 # install.shが作ったPC固有の設定だけを削除する。
@@ -165,7 +130,6 @@ main() {
   info "uninstalling links and local tools created from $DOTFILES_DIR"
 
   uninstall_managed_scripts
-  uninstall_zellij
 
   remove_symlink \
     "$DOTFILES_DIR/.config/kitty/kitty.conf" \

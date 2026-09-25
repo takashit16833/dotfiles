@@ -5,9 +5,6 @@
 # よく使う ls の詳細表示。
 alias ll='ls -lahG'
 
-# Zellij は zoxide の `z` と衝突しない短い名前で起動する。
-alias zj='zellij'
-
 # emacs を `e` で起動する。
 alias e='emacs -nw'
 
@@ -45,38 +42,6 @@ autoload -Uz compinit
 compinit
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-
-# Zellij 内では Kitty の自動 shell integration が注入されないため、明示的に読み込む。
-# OSC 133 により command / output の境界を Zellij が認識できるようになり、
-# Scroll mode で command 単位の移動や直前の出力コピーを利用できる。
-if [[ -n "${ZELLIJ:-}" && -n "${KITTY_INSTALLATION_DIR:-}" ]]; then
-  export KITTY_SHELL_INTEGRATION="enabled"
-  autoload -Uz -- "$KITTY_INSTALLATION_DIR"/shell-integration/zsh/kitty-integration
-  kitty-integration
-  unfunction kitty-integration
-fi
-
-# Zellij 内では pane title を shell / 実行中 command に合わせる。
-# zjstatus はこの title を tab 名として表示するため、Pane #N のような既定名を避けられる。
-set_zellij_pane_title() {
-  [[ -n "${ZELLIJ:-}" ]] || return
-  printf '\e]2;%s\a' "$1"
-}
-
-autoload -Uz add-zsh-hook
-
-zellij_pane_title_preexec() {
-  local -a command_words
-  command_words=(${(z)1})
-  set_zellij_pane_title "${command_words[1]:t}"
-}
-
-zellij_pane_title_precmd() {
-  set_zellij_pane_title 'zsh'
-}
-
-add-zsh-hook preexec zellij_pane_title_preexec
-add-zsh-hook precmd zellij_pane_title_precmd
 
 # fzf の zsh integration。
 # Ctrl-R の履歴検索、Ctrl-T のファイル選択、**<Tab> の fuzzy completion を有効にする。
@@ -123,9 +88,7 @@ fi
 if command -v lazygit >/dev/null 2>&1; then
   lazygit-widget() {
     zle -I
-    set_zellij_pane_title 'lazygit'
     lazygit
-    set_zellij_pane_title 'zsh'
     zle reset-prompt
   }
   zle -N lazygit-widget
