@@ -127,6 +127,9 @@ end)
 
 -- キー設定。
 config.keys = {
+  -- Ctrl+Tab / Ctrl+Shift+Tabを端末内のアプリへ渡す。
+  { key = "Tab", mods = "CTRL", action = wezterm.action.DisableDefaultAssignment },
+  { key = "Tab", mods = "CTRL|SHIFT", action = wezterm.action.DisableDefaultAssignment },
   -- Ctrl+PageUp/PageDownを端末内のアプリへ渡す。
   { key = "PageUp", mods = "CTRL", action = wezterm.action.DisableDefaultAssignment },
   { key = "PageDown", mods = "CTRL", action = wezterm.action.DisableDefaultAssignment },
