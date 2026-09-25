@@ -1,9 +1,25 @@
+# 通常のファイルとディレクトリは Emacs で開く。
+[[opener.emacs]]
+run = "emacs -nw %s"
+block = true
+for = "unix"
+desc = "Open with Emacs"
+
 # Numbers の書類は macOS の Numbers で開く。
 [[opener.numbers]]
 run = "open -a Numbers %s"
 for = "macos"
 desc = "Open with Numbers"
 
+# 専用アプリで開くものを先に判定し、それ以外は Emacs に渡す。
 [[open.prepend_rules]]
 url = "*.numbers"
 use = "numbers"
+
+[[open.prepend_rules]]
+url = "*/"
+use = "emacs"
+
+[[open.prepend_rules]]
+url = "*"
+use = "emacs"

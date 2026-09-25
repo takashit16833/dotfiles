@@ -347,6 +347,10 @@ main() {
     "$XDG_CONFIG_HOME/yazi/yazi.toml"
 
   ensure_symlink \
+    "$DOTFILES_DIR/.config/yazi/theme.toml" \
+    "$XDG_CONFIG_HOME/yazi/theme.toml"
+
+  ensure_symlink \
     "$DOTFILES_DIR/.gitconfig" \
     "$HOME/.gitconfig"
 

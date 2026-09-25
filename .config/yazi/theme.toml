@@ -1,0 +1,104 @@
+# Emacs / WezTerm の Retro Hacker Blue と同じ配色を使う。
+# 主役は濃紺と青に絞り、ピンクと金は状態表示のアクセントとして使う。
+
+[mgr]
+cwd = { fg = "#5EAFFF", bold = true }
+find_keyword = { fg = "#FFD700", bold = true }
+find_position = { fg = "#FF4DE1", bg = "#010111", bold = true }
+symlink_target = { fg = "#00CED1", italic = true }
+marker_copied = { fg = "#00FFFF", bg = "#00FFFF" }
+marker_cut = { fg = "#FF4DE1", bg = "#FF4DE1" }
+marker_marked = { fg = "#B07CFF", bg = "#B07CFF" }
+marker_selected = { fg = "#FFD700", bg = "#FFD700" }
+count_copied = { fg = "#010111", bg = "#00CED1" }
+count_cut = { fg = "#010111", bg = "#FF4DE1" }
+count_selected = { fg = "#010111", bg = "#FFD700" }
+border_symbol = "│"
+border_style = { fg = "#153A75" }
+
+[indicator]
+parent = { fg = "#316CBD" }
+current = { fg = "#A6CAFF", bg = "#264770", bold = true }
+preview = { fg = "#316CBD" }
+padding = { open = "", close = "" }
+
+[tabs]
+active = { fg = "#5EAFFF", bg = "#000E2F", bold = true }
+inactive = { fg = "#102F66", bg = "#000008" }
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
+
+[mode]
+normal_main = { fg = "#5EAFFF", bg = "#000E2F", bold = true }
+normal_alt = { fg = "#316CBD", bg = "#010111" }
+select_main = { fg = "#010111", bg = "#FFD700", bold = true }
+select_alt = { fg = "#FFD700", bg = "#010111" }
+unset_main = { fg = "#010111", bg = "#FF4DE1", bold = true }
+unset_alt = { fg = "#FF76E8", bg = "#010111" }
+
+[status]
+overall = { fg = "#316CBD", bg = "#010111" }
+sep_left = { open = "", close = "" }
+sep_right = { open = "", close = "" }
+perm_type = { fg = "#5EAFFF" }
+perm_read = { fg = "#316CBD" }
+perm_write = { fg = "#FF4DE1" }
+perm_exec = { fg = "#00CED1" }
+perm_sep = { fg = "#153A75" }
+progress_label = { fg = "#A6CAFF", bold = true }
+progress_normal = { fg = "#5EAFFF", bg = "#061536" }
+progress_error = { fg = "#FF4DE1", bg = "#310F39" }
+
+[which]
+border = { fg = "#153A75" }
+cand = { fg = "#5EAFFF", bold = true }
+rest = { fg = "#316CBD" }
+desc = { fg = "#7CBEFF" }
+separator = "  "
+separator_style = { fg = "#153A75" }
+
+[confirm]
+border = { fg = "#153A75" }
+title = { fg = "#5EAFFF", bold = true }
+body = { fg = "#7CBEFF" }
+list = { fg = "#5EAFFF" }
+btn_yes = { fg = "#010111", bg = "#5EAFFF", bold = true }
+btn_no = { fg = "#316CBD" }
+
+[spot]
+border = { fg = "#153A75" }
+title = { fg = "#5EAFFF", bold = true }
+tbl_col = { fg = "#7CBEFF" }
+tbl_cell = { fg = "#A6CAFF", bg = "#264770" }
+
+[notify]
+title_info = { fg = "#00CED1" }
+title_warn = { fg = "#FFD700" }
+title_error = { fg = "#FF4DE1" }
+
+[pick]
+border = { fg = "#153A75" }
+active = { fg = "#A6CAFF", bg = "#264770", bold = true }
+inactive = { fg = "#316CBD" }
+
+[input]
+border = { fg = "#153A75" }
+title = { fg = "#5EAFFF", bold = true }
+value = { fg = "#A6CAFF" }
+selected = { fg = "#A6CAFF", bg = "#264770" }
+
+[cmp]
+border = { fg = "#153A75" }
+active = { fg = "#A6CAFF", bg = "#264770", bold = true }
+inactive = { fg = "#316CBD" }
+
+[tasks]
+border = { fg = "#153A75" }
+title = { fg = "#5EAFFF", bold = true }
+hovered = { fg = "#A6CAFF", bg = "#264770", bold = true }
+
+[help]
+border = { fg = "#153A75" }
+chord = { fg = "#FFD700", bold = true }
+action = { fg = "#7CBEFF" }
+hovered = { fg = "#A6CAFF", bg = "#264770", bold = true }
