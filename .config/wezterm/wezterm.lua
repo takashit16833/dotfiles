@@ -235,7 +235,7 @@ config.key_tables = {
           return
         end
 
-        local direction = pane_height > pane_width and "Right" or "Down"
+        local direction = pane_height > pane_width and "Down" or "Right"
         window:perform_action(
           wezterm.action.SplitPane {
             direction = direction,
