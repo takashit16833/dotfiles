@@ -213,6 +213,28 @@ config.key_tables = {
       mods = "SHIFT",
       action = wezterm.action.MoveTabRelative(1),
     },
+    -- ペインを左右に分割し、新しいペインを右側に開いて終了する。
+    {
+      key = "v",
+      action = wezterm.action.Multiple {
+        wezterm.action.PopKeyTable,
+        wezterm.action.SplitPane {
+          direction = "Right",
+          size = { Percent = 50 },
+        },
+      },
+    },
+    -- ペインを上下に分割し、新しいペインを下側に開いて終了する。
+    {
+      key = "s",
+      action = wezterm.action.Multiple {
+        wezterm.action.PopKeyTable,
+        wezterm.action.SplitPane {
+          direction = "Down",
+          size = { Percent = 50 },
+        },
+      },
+    },
     -- 新しいタブを開いて終了する。
     {
       key = "t",
