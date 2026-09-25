@@ -65,6 +65,21 @@ if command -v zoxide >/dev/null 2>&1; then
   bindkey '^[z' zoxide-zi-widget
 fi
 
+# Yazi を y で起動し、終了時は Yazi 内の現在のディレクトリへ移動する。
+if command -v yazi >/dev/null 2>&1; then
+  y() {
+    local tmp cwd
+    tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+
+    command yazi "$@" --cwd-file="$tmp"
+
+    IFS= read -r -d '' cwd < "$tmp"
+    [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd" || builtin true
+
+    command rm -f -- "$tmp"
+  }
+fi
+
 # gita に登録した Git repository を fzf で選択して移動する。
 if command -v gita >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
   gita-repo-widget() {
