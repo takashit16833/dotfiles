@@ -213,27 +213,37 @@ config.key_tables = {
       mods = "SHIFT",
       action = wezterm.action.MoveTabRelative(1),
     },
-    -- ペインを左右に分割し、新しいペインを右側に開いて終了する。
-    {
-      key = "v",
-      action = wezterm.action.Multiple {
-        wezterm.action.PopKeyTable,
-        wezterm.action.SplitPane {
-          direction = "Right",
-          size = { Percent = 50 },
-        },
-      },
-    },
-    -- ペインを上下に分割し、新しいペインを下側に開いて終了する。
+    -- 現在のペインの縦横比に合わせて、長い辺を分ける方向へ分割する。
     {
       key = "s",
-      action = wezterm.action.Multiple {
-        wezterm.action.PopKeyTable,
-        wezterm.action.SplitPane {
-          direction = "Down",
-          size = { Percent = 50 },
-        },
-      },
+      action = wezterm.action_callback(function(window, pane)
+        local pane_width
+        local pane_height
+
+        for _, pane_info in ipairs(window:active_tab():panes_with_info()) do
+          if pane_info.is_active then
+            pane_width = pane_info.pixel_width
+            pane_height = pane_info.pixel_height
+            break
+          end
+        end
+
+        window:perform_action(wezterm.action.PopKeyTable, pane)
+
+        if not pane_width or not pane_height then
+          wezterm.log_error "Could not determine active pane dimensions"
+          return
+        end
+
+        local direction = pane_height > pane_width and "Right" or "Down"
+        window:perform_action(
+          wezterm.action.SplitPane {
+            direction = direction,
+            size = { Percent = 50 },
+          },
+          pane
+        )
+      end),
     },
     -- 新しいタブを開いて終了する。
     {
