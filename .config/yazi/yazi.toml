@@ -1,0 +1,9 @@
+# Numbers の書類は macOS の Numbers で開く。
+[[opener.numbers]]
+run = "open -a Numbers %s"
+for = "macos"
+desc = "Open with Numbers"
+
+[[open.prepend_rules]]
+url = "*.numbers"
+use = "numbers"

@@ -343,6 +343,10 @@ main() {
     "$XDG_CONFIG_HOME/lazygit/config.yml"
 
   ensure_symlink \
+    "$DOTFILES_DIR/.config/yazi/yazi.toml" \
+    "$XDG_CONFIG_HOME/yazi/yazi.toml"
+
+  ensure_symlink \
     "$DOTFILES_DIR/.gitconfig" \
     "$HOME/.gitconfig"
 

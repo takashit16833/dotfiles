@@ -24,6 +24,9 @@ brew "zoxide"
 # Kitty Graphics Protocol を利用できる TUI ベースの PDF viewer。
 brew "tdf"
 
+# ターミナル上でファイルを閲覧・操作するファイルマネージャ。
+brew "yazi"
+
 # --- Git / data handling ----------------------------------------------------
 
 # Git 操作のメイン UI として利用する。
