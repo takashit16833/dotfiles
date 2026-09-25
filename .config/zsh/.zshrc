@@ -97,6 +97,25 @@ if command -v zoxide >/dev/null 2>&1; then
   bindkey '^[z' zoxide-zi-widget
 fi
 
+# gita に登録した Git repository を fzf で選択して移動する。
+if command -v gita >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
+  gita-repo-widget() {
+    local repo repo_path
+
+    repo="$(gita ls | tr ' ' '\n' | fzf)" || {
+      zle reset-prompt
+      return
+    }
+
+    repo_path="$(gita ls "$repo")" || return
+    cd "$repo_path"
+    zle reset-prompt
+  }
+
+  zle -N gita-repo-widget
+  bindkey '^[r' gita-repo-widget
+fi
+
 # Kitty 側で Option + G を ESC + g に変換し、現在のディレクトリで lazygit を起動する。
 if command -v lazygit >/dev/null 2>&1; then
   lazygit-widget() {
