@@ -219,4 +219,9 @@
         "command": "-quickJump.jumpTwoCharacters",
         "when": "editorTextFocus && !quickJump.active"
     },
+    // tasks.jsonのデフォルトタスク
+    {
+        "key": "f13",
+        "command": "workbench.action.tasks.test"
+    }
 ]

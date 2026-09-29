@@ -124,3 +124,7 @@ if [[ "$INSIDE_EMACS" == "vterm" ]]; then
 
   PROMPT=$PROMPT'%{$(my_vterm_prompt_end)%}'
 fi
+
+# Haskell
+export PATH="$HOME/.ghcup/bin:$PATH"
+export PATH="$HOME/.cabal/bin:$PATH"

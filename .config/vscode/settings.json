@@ -18,7 +18,7 @@
     // WezTerm と見た目を揃えるため、Retro Hacker の Blue variant を利用する。
     "workbench.colorTheme": "Retro Hacker Blue",
     // エディタのフォントサイズ
-    "editor.fontSize": 12,
+    "editor.fontSize": 12.5,
     // エディタのフォント
     "editor.fontFamily": "'Menlo', 'BIZ UDGothic', monospace",
     "terminal.integrated.fontFamily": "'Menlo', 'BIZ UDGothic', monospace",
@@ -148,6 +148,18 @@
                         "foreground": "#FF4DE1",
                         "fontStyle": "bold underline"
                     }
+                },
+                {
+                    "name": "Retro Hacker Blue: comment style",
+                    "scope": [
+                        "comment",
+                        "comment.line",
+                        "comment.block",
+                        "comment.block.documentation"
+                    ],
+                    "settings": {
+                        "fontStyle": ""
+                    }
                 }
             ]
         }
@@ -180,7 +192,14 @@
         "announcement": "auto"
     },
     "editor.accessibilitySupport": "off",
-    "yaml.disableSchemaDetection": [],
+    "yaml.disableSchemaDetection": [
+        "**/.github/workflows/*.yml",
+        "**/.github/workflows/*.yaml",
+        "**/.gitea/workflows/*.yml",
+        "**/.gitea/workflows/*.yaml",
+        "**/.forgejo/workflows/*.yml",
+        "**/.forgejo/workflows/*.yaml"
+    ],
     "workbench.activityBar.location": "hidden",
     "workbench.navigationControl.enabled": false,
     "workbench.layoutControl.enabled": false,
