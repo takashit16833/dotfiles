@@ -169,6 +169,9 @@ config.keys = {
   -- zshの行編集。
   { key = "LeftArrow", mods = "CMD", action = wezterm.action.SendString "\x01" },
   { key = "RightArrow", mods = "CMD", action = wezterm.action.SendString "\x05" },
+  -- Cmd+Option+左右でタブを移動する。
+  { key = "LeftArrow", mods = "CMD|ALT", action = wezterm.action.ActivateTabRelative(-1) },
+  { key = "RightArrow", mods = "CMD|ALT", action = wezterm.action.ActivateTabRelative(1) },
   -- Cmd+BackspaceをSuper付きBackspaceとして送信する。
   { key = "Backspace", mods = "CMD", action = wezterm.action.SendString "\x1b[127;9u" },
   -- 単語単位の移動・削除。
@@ -207,15 +210,6 @@ config.keys = {
 -- タブ操作。
 config.key_tables = {
   tab_actions = {
-    -- 左右のタブへ移動する。
-    {
-      key = "LeftArrow",
-      action = wezterm.action.ActivateTabRelative(-1),
-    },
-    {
-      key = "RightArrow",
-      action = wezterm.action.ActivateTabRelative(1),
-    },
     -- Shift+左右でタブの並び順を変更する。
     {
       key = "LeftArrow",

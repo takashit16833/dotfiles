@@ -223,5 +223,9 @@
     {
         "key": "f13",
         "command": "workbench.action.tasks.test"
+    },
+    {
+        "key": "f4",
+        "command": "quicktree.open"
     }
 ]

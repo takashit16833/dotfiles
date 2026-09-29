@@ -126,15 +126,15 @@
         "[Retro Hacker Blue]": {
             "textMateRules": [
                 {
-                    "name": "Retro Hacker Blue: Brighter comments",
+                    "name": "Retro Hacker Blue: comments color",
                     "scope": [
                         "comment",
                         "punctuation.definition.comment",
                         "string.comment"
                     ],
                     "settings": {
-                        "foreground": "#7C8DD9C0",
-                        "fontStyle": "italic"
+                        "foreground": "#3B5B86",
+                        "fontStyle": ""
                     }
                 },
                 {
@@ -150,7 +150,7 @@
                     }
                 },
                 {
-                    "name": "Retro Hacker Blue: comment style",
+                    "name": "Retro Hacker Blue: comments style",
                     "scope": [
                         "comment",
                         "comment.line",
@@ -192,14 +192,7 @@
         "announcement": "auto"
     },
     "editor.accessibilitySupport": "off",
-    "yaml.disableSchemaDetection": [
-        "**/.github/workflows/*.yml",
-        "**/.github/workflows/*.yaml",
-        "**/.gitea/workflows/*.yml",
-        "**/.gitea/workflows/*.yaml",
-        "**/.forgejo/workflows/*.yml",
-        "**/.forgejo/workflows/*.yaml"
-    ],
+    "yaml.disableSchemaDetection": [],
     "workbench.activityBar.location": "hidden",
     "workbench.navigationControl.enabled": false,
     "workbench.layoutControl.enabled": false,
@@ -208,4 +201,10 @@
     "window.commandCenter": false,
     "workbench.editor.editorActionsLocation": "hidden",
     "chat.titleBar.signIn.enabled": false,
+    "quicktree.files.exclude": [
+        "**/.git",
+        "**/node_modules",
+        "**/out",
+        "**/dist-newstyle",
+    ]
 }
