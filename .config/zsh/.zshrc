@@ -11,6 +11,9 @@ alias e='emacs -nw'
 # gita fetch してから gita ll する
 alias gll='gita fetch && gita ll'
 
+# WezTerm との相性問題回避のため、lazygit は legacy キーボード入力を使う。
+alias lg='TCELL_KEYBOARD_PROTOCOL=legacy lazygit'
+
 # コマンド履歴をセッションをまたいで保存し、複数の zsh で共有する。
 HISTFILE="$ZDOTDIR/.zsh_history"
 HISTSIZE=100000
@@ -99,13 +102,15 @@ if command -v gita >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
   bindkey '^[r' gita-repo-widget
 fi
 
-# Kitty 側で Option + G を ESC + g に変換し、現在のディレクトリで lazygit を起動する。
+# WezTerm 側で Option + G を ESC + g に変換し、
+# legacy キーボード入力で lazygit を起動する。
 if command -v lazygit >/dev/null 2>&1; then
   lazygit-widget() {
     zle -I
-    lazygit
+    TCELL_KEYBOARD_PROTOCOL=legacy lazygit
     zle reset-prompt
   }
+
   zle -N lazygit-widget
   bindkey '^[g' lazygit-widget
 fi
@@ -128,3 +133,6 @@ fi
 # Haskell
 export PATH="$HOME/.ghcup/bin:$PATH"
 export PATH="$HOME/.cabal/bin:$PATH"
+
+# lem
+export PATH="$HOME/common-lisp/lem:$PATH"
