@@ -164,8 +164,9 @@ config.keys = {
       end
     end),
   },
-  -- Deleteを標準のエスケープシーケンスで送信する。
-  { key = "Delete", mods = "NONE", action = wezterm.action.SendString "\x1b[3~" },
+  -- 単語単位の削除をEmacsへ修飾キー付きで送る。
+  { key = "Delete", mods = "ALT", action = wezterm.action.SendString "\x1b[3;3~" },
+  { key = "Backspace", mods = "ALT", action = wezterm.action.SendString "\x1b[127;3u" },
   -- zshの行編集。
   { key = "LeftArrow", mods = "CMD", action = wezterm.action.SendString "\x01" },
   { key = "RightArrow", mods = "CMD", action = wezterm.action.SendString "\x05" },
