@@ -18,8 +18,8 @@ local cyber_pink = "#FF4DE1"
 local tab_bar_transparent = "rgba(0, 0, 0, 0)"
 local tab_active_background = "#000E2F"
 local tab_active_foreground = "#316CBD"
-local tab_inactive_background = "#000008"
-local tab_inactive_foreground = "#102F66"
+local tab_inactive_background = "#00091F"
+local tab_inactive_foreground = "#20467B"
 
 config.colors = {
   foreground = foreground,
