@@ -138,6 +138,7 @@ end)
 
 -- キー設定。
 config.keys = {
+  { key = "Delete", action = wezterm.action.SendKey { key = "Delete" } },
   -- Ctrl+Tab / Ctrl+Shift+Tabを端末内のアプリへ渡す。
   { key = "Tab", mods = "CTRL", action = wezterm.action.DisableDefaultAssignment },
   { key = "Tab", mods = "CTRL|SHIFT", action = wezterm.action.DisableDefaultAssignment },
