@@ -30,6 +30,10 @@ setopt INTERACTIVE_COMMENTS
 # Terminal を乗り換えても編集操作そのものはここで維持できるようにする。
 bindkey -e
 
+# Cmd+左右でコマンドラインの行頭・行末へ移動する。
+bindkey $'\e[1;9D' beginning-of-line
+bindkey $'\e[1;9C' end-of-line
+
 # Cmd + Backspace 用。
 # Kitty から送る Meta + Ctrl-U は Emacs keymap では未使用なので、
 # カーソル位置から行頭までを削除する操作だけを明示的に割り当てる。

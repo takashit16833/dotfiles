@@ -175,6 +175,9 @@ config.keys = {
   -- 単語単位の移動・削除。
   { key = "LeftArrow", mods = "ALT", action = wezterm.action.SendKey { key = "b", mods = "ALT" } },
   { key = "RightArrow", mods = "ALT", action = wezterm.action.SendKey { key = "f", mods = "ALT" } },
+  -- Cmd+左右をSuper付き矢印として端末内のアプリへ送る。
+  { key = "LeftArrow", mods = "CMD", action = wezterm.action.SendString "\x1b[1;9D" },
+  { key = "RightArrow", mods = "CMD", action = wezterm.action.SendString "\x1b[1;9C" },
   -- 暫定対応: WezTermで失われるCmd+Shiftの修飾キーを直接送信する。
   {
     key = "phys:K",
