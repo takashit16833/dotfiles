@@ -167,9 +167,6 @@ config.keys = {
   -- 単語単位の削除をEmacsへ修飾キー付きで送る。
   { key = "Delete", mods = "ALT", action = wezterm.action.SendString "\x1b[3;3~" },
   { key = "Backspace", mods = "ALT", action = wezterm.action.SendString "\x1b[127;3u" },
-  -- zshの行編集。
-  { key = "LeftArrow", mods = "CMD", action = wezterm.action.SendString "\x01" },
-  { key = "RightArrow", mods = "CMD", action = wezterm.action.SendString "\x05" },
   -- Cmd+Option+左右でタブを移動する。
   { key = "LeftArrow", mods = "CMD|ALT", action = wezterm.action.ActivateTabRelative(-1) },
   { key = "RightArrow", mods = "CMD|ALT", action = wezterm.action.ActivateTabRelative(1) },
