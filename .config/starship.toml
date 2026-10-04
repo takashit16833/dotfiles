@@ -20,7 +20,6 @@ truncate_to_repo = false
 [git_branch]
 # Git branch は Cyber Pink で表示する。
 # symbol や format は Starship 標準のまま利用する。
-symbol = " "
 style = "bold cyber_pink"
 
 [character]
