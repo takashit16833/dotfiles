@@ -162,9 +162,17 @@ config.keys = {
         window:perform_action(wezterm.action.CopyTo "Clipboard", pane)
         window:perform_action(wezterm.action.ClearSelection, pane)
       else
-        window:perform_action(wezterm.action.SendString "\x1b[99;9u", pane)
+        window:perform_action(
+          wezterm.action.SendString "\x1b[99;9u",
+          pane
+        )
       end
     end),
+  },
+  {
+    key = "v",
+    mods = "CMD",
+    action = wezterm.action.DisableDefaultAssignment,
   },
   -- Cmd+Option+左右でタブを移動する。
   { key = "LeftArrow", mods = "CMD|ALT", action = wezterm.action.ActivateTabRelative(-1) },
