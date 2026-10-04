@@ -29,6 +29,11 @@ local function showCompletionAlert(payload)
   hs.sound.getByName("Glass"):play()
 end
 
+local function isBraveFocused(braveBundleID)
+  local frontmostApp = hs.application.frontmostApplication()
+  return frontmostApp and frontmostApp:bundleID() == braveBundleID
+end
+
 function M.start(options)
   local braveBundleID = options.braveBundleID
 
@@ -42,13 +47,17 @@ function M.start(options)
         }
       end
 
-      local frontmostApp = hs.application.frontmostApplication()
-      local braveIsFocused =
-        frontmostApp
-        and frontmostApp:bundleID() == braveBundleID
+      local payload = decodePayload(body)
+      local tabFocused = payload.tabFocused
 
-      if not braveIsFocused then
-        showCompletionAlert(decodePayload(body))
+      -- 古い userscript では tabFocused が送られないため、
+      -- その場合だけ従来どおり Brave の前面判定へ戻す。
+      if tabFocused == nil then
+        tabFocused = isBraveFocused(braveBundleID)
+      end
+
+      if not tabFocused then
+        showCompletionAlert(payload)
       end
 
       return "ok", 200, {
