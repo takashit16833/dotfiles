@@ -1,7 +1,8 @@
 local wezterm = require "wezterm"
 local config = wezterm.config_builder()
 
--- 修飾キーを端末内のアプリへ伝える。
+-- Kitty Keyboard Protocolを利用可能にする。
+-- Lem側がKKPを有効化すると、Cmd/Option/Shiftなどの修飾キーを区別して受け取れる。
 config.enable_kitty_keyboard = true
 
 -- 左右のOptionを特殊文字に合成せず、修飾キーとして扱う。
@@ -137,21 +138,31 @@ wezterm.on("format-window-title", function()
 end)
 
 -- キー設定。
+--
+-- LemではKitty Keyboard Protocolを使うため、通常の修飾キーはWezTerm側で
+-- 個別に変換しない。以下はWezTerm自身のデフォルト操作と衝突するキー、
+-- または実機確認でWezTermが修飾情報を失うことを確認したキーだけを扱う。
+-- 2026-10-04にWezTerm + Lem(ncurses)で一つずつ外して確認済み。
 config.keys = {
-  -- emacsにdeleteを送る。
+  -- Deleteはこの指定を外すとLemでBackspaceとして認識されるため明示的に送る。
   { key = "Delete", action = wezterm.action.SendKey { key = "Delete" } },
-  -- Ctrl+Tab / Ctrl+Shift+Tabを端末内のアプリへ渡す。
+
+  -- WezTermのデフォルト割り当てを無効化してLemへ渡す。
+  -- これらは指定を外すとLem側でキー入力を検出できなかった。
   { key = "Tab", mods = "CTRL", action = wezterm.action.DisableDefaultAssignment },
   { key = "Tab", mods = "CTRL|SHIFT", action = wezterm.action.DisableDefaultAssignment },
-  -- Ctrl+PageUp/PageDownを端末内のアプリへ渡す。
   { key = "PageUp", mods = "CTRL", action = wezterm.action.DisableDefaultAssignment },
   { key = "PageDown", mods = "CTRL", action = wezterm.action.DisableDefaultAssignment },
-  -- Ctrl+Shift+PageUp/PageDownも端末内のアプリへ渡す。
   { key = "PageUp", mods = "CTRL|SHIFT", action = wezterm.action.DisableDefaultAssignment },
   { key = "PageDown", mods = "CTRL|SHIFT", action = wezterm.action.DisableDefaultAssignment },
-  -- Cmd+Fを端末内のアプリへ渡す。
+
+  -- Cmd+FはWezTermの検索に割り当てられているため、無効化してLemへ渡す。
   { key = "f", mods = "CMD", action = wezterm.action.DisableDefaultAssignment },
-  -- Cmd+C: 選択中ならコピーし、未選択なら端末へ渡す。
+
+  -- Cmd+CはWezTermの選択範囲があるときだけOSクリップボードへコピーする。
+  -- 未選択時はLemへCmd+Cを渡したいが、このcallback内でSendKey(CMD+c)を使うと
+  -- Cmd修飾が失われて単なる"c"になることを実機確認済み。
+  -- そのため未選択時だけKKPのCmd+C (CSI 99;9u) を直接送る。
   {
     key = "c",
     mods = "CMD",
@@ -169,15 +180,24 @@ config.keys = {
       end
     end),
   },
+
+  -- Cmd+VはWezTerm自身のPasteを無効化してLemへ渡す。
+  -- WezTermが直接貼り付けるとLemのS-vを経由せず、
+  -- 選択範囲を置き換えるmy/paste-from-clipboardが実行されない。
   {
     key = "v",
     mods = "CMD",
     action = wezterm.action.DisableDefaultAssignment,
   },
-  -- Cmd+Option+左右でタブを移動する。
+
+  -- Cmd+Option+左右はLemへ渡さず、WezTermのタブ移動として使う。
   { key = "LeftArrow", mods = "CMD|ALT", action = wezterm.action.ActivateTabRelative(-1) },
   { key = "RightArrow", mods = "CMD|ALT", action = wezterm.action.ActivateTabRelative(1) },
-  -- 暫定対応: WezTermで失われるCmd+Shiftの修飾キーを直接送信する。
+
+  -- WezTerm互換処理。
+  -- KKP flag 1を有効にした状態でも、Cmd+Shift+K/Z/Fは実機で
+  -- それぞれ bare "k"/"z"/"f" として出力され、Cmd/Shiftが失われた。
+  -- そのためこの3キーだけ正しいKKP CSI-uシーケンスを直接送る。
   {
     key = "phys:K",
     mods = "CMD|SHIFT",
@@ -188,13 +208,13 @@ config.keys = {
     mods = "CMD|SHIFT",
     action = wezterm.action.SendString "\x1b[122;10u",
   },
-  -- Cmd+Shift+Fを修飾キー付きで送信する。
   {
     key = "phys:F",
     mods = "CMD|SHIFT",
     action = wezterm.action.SendString "\x1b[102;10u",
   },
-  -- Cmd+Tからタブ操作を選択する。
+
+  -- Cmd+TはLemへ渡さず、WezTermのタブ操作メニューとして使う。
   {
     key = "t",
     mods = "CMD",
