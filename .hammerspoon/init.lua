@@ -415,6 +415,4 @@ mouseNavigationEventTap:start()
 require("modules.translation_popup").start()
 
 -- ChatGPT の回答完了通知はブラウザ側の userscript と組み合わせて使う。
-require("modules.chatgpt_notify").start({
-  braveBundleID = appBundleIDs.brave,
-})
+require("modules.chatgpt_notify").start()
