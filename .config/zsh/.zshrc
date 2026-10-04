@@ -39,6 +39,11 @@ bindkey $'\e[1;9C' end-of-line
 # WezTerm側の対応設定とセットなので、片側だけ削除しないこと。
 bindkey $'\e[127;9u' backward-kill-line
 
+# 単語移動・削除
+bindkey $'\e[1;3D' backward-word
+bindkey $'\e[1;3C' forward-word
+bindkey $'\e[3;3~' kill-word
+
 # zsh 標準の補完を有効にし、候補一覧を矢印キーで選択できるようにする。
 # Git の branch / ref なども command の文脈に応じて補完される。
 zmodload zsh/complist
