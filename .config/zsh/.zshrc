@@ -39,6 +39,16 @@ bindkey $'\e[1;9C' end-of-line
 # WezTerm側の対応設定とセットなので、片側だけ削除しないこと。
 bindkey $'\e[127;9u' backward-kill-line
 
+# Cmd+VのCSI-u入力を受け取り、macOSのクリップボードを貼り付ける。
+paste-from-clipboard-widget() {
+  local text
+  text="$(pbpaste)" || return
+  LBUFFER+="$text"
+}
+
+zle -N paste-from-clipboard-widget
+bindkey $'\e[118;9u' paste-from-clipboard-widget
+
 # 単語移動・削除
 bindkey $'\e[1;3D' backward-word
 bindkey $'\e[1;3C' forward-word

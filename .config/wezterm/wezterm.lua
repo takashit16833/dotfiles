@@ -225,6 +225,14 @@ config.keys = {
       until_unknown = true,
     },
   },
+
+  -- Cmd+VをWezTerm自身で処理せず、CSI-u形式で前面のアプリへ渡す。
+  -- LemではS-vとして処理し、zshでは対応するZLE widgetで受け取る。
+	{
+  	key = "v",
+  	mods = "CMD",
+  	action = wezterm.action.SendString "\x1b[118;9u",
+	},
 }
 
 -- タブ操作。
