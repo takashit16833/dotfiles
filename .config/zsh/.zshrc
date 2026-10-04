@@ -29,10 +29,9 @@ setopt INTERACTIVE_COMMENTS
 bindkey -e
 
 # Cmd+左右 / Cmd+Backspace のWezTerm互換シーケンス。
-# zsh/ZLEはKKPを解釈しないため、KKPを有効化すると通常のCtrl/Option/特殊キーまで
-# CSI-u形式になり、多数のキーを個別にbindkeyする必要が出る。
-# そのためzshではKKPを有効化せず、この3キーだけWezTerm側でCmd修飾を保持した
-# シーケンスへ変換し、ここで編集操作へ割り当てる。
+# zsh/ZLEはKKPを解釈しないため、zshではKKPを有効化しない。
+# 通常の端末入力ではCmd修飾を区別できないため、この3キーだけWezTerm側で
+# Cmd修飾を保持できるシーケンスへ変換し、ここで編集操作へ割り当てる。
 # WezTerm側の対応設定とセットなので、片側だけ削除しないこと。
 bindkey 
 # zsh 標準の補完を有効にし、候補一覧を矢印キーで選択できるようにする。
@@ -335,8 +334,8 @@ export PATH="$HOME/.cabal/bin:$PATH"
 export PATH="$HOME/common-lisp/lem:$PATH"
 \e[127;9u' backward-kill-line
 
-# KittyでCmd+BackspaceをMeta+Ctrl-Uとして送る構成向けの互換設定。
-# 現在のWezTermでは上のCSI-u設定を使う。削除可否は別途確認する。
+# KittyでCmd+BackspaceをMeta+Ctrl-Uとして送る構成向けの古い互換設定。
+# 現在のWezTermでは上のCSI-u設定を使うため、削除候補。
 bindkey '\e^U' backward-kill-line
 
 # zsh 標準の補完を有効にし、候補一覧を矢印キーで選択できるようにする。
