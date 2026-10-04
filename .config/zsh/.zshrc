@@ -35,11 +35,6 @@ bindkey -e
 bindkey $'\e[1;9D' beginning-of-line
 bindkey $'\e[1;9C' end-of-line
 
-# Cmd + Backspace 用。
-# Kitty から送る Meta + Ctrl-U は Emacs keymap では未使用なので、
-# カーソル位置から行頭までを削除する操作だけを明示的に割り当てる。
-bindkey '\e^U' backward-kill-line
-
 # Cmd+Backspaceも同じ理由でWezTerm側の互換シーケンスを受け取る。
 # WezTerm側の対応設定とセットなので、片側だけ削除しないこと。
 bindkey $'\e[127;9u' backward-kill-line
