@@ -138,8 +138,6 @@ end)
 
 -- キー設定。
 config.keys = {
-  -- Cmd+VをLemへSuper+vとして送る。
-  {key = "v", mods = "CMD", action = wezterm.action.SendString "\x1b[118;9u"},
   -- emacsにdeleteを送る。
   { key = "Delete", action = wezterm.action.SendKey { key = "Delete" } },
   -- Ctrl+Tab / Ctrl+Shift+Tabを端末内のアプリへ渡す。
