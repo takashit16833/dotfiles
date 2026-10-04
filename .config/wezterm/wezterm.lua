@@ -138,10 +138,6 @@ end)
 
 -- キー設定。
 config.keys = {
-	-- Option+Shift+Left
-	{key = "LeftArrow", mods = "ALT|SHIFT", action = wezterm.action.SendString "\x1b[57417;4u"},
-  -- Option+Shift+Right
-  {key = "RightArrow", mods = "ALT|SHIFT", action = wezterm.action.SendString "\x1b[57418;4u"},
   -- Cmd+VをLemへSuper+vとして送る。
   {key = "v", mods = "CMD", action = wezterm.action.SendString "\x1b[118;9u"},
   -- emacsにdeleteを送る。
