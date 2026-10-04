@@ -181,14 +181,15 @@ config.keys = {
     end),
   },
 
-  -- Cmd+VはWezTerm自身のPasteを無効化してLemへ渡す。
-  -- WezTermが直接貼り付けるとLemのS-vを経由せず、
-  -- 選択範囲を置き換えるmy/paste-from-clipboardが実行されない。
-  {
-    key = "v",
-    mods = "CMD",
-    action = wezterm.action.DisableDefaultAssignment,
-  },
+  -- zsh/ZLE向けのCmdキー互換処理。
+  -- zsh/ZLEはKKPを解釈しないため、KKPを有効化せずに使う。
+  -- その状態ではCmd+左右は通常の左右キーと同じ入力になり、Cmd修飾を区別できない。
+  -- そこでCmd+左右とCmd+Backspaceだけ、Cmd修飾を保持できるシーケンスへ変換する。
+  -- zsh側の対応するbindkeyとセットで使用するため、片側だけ削除しないこと。
+  -- Lemはこれらのシーケンスも正しく解釈できるため、Lem利用時にもそのまま使える。
+  { key = "LeftArrow", mods = "CMD", action = wezterm.action.SendString "\x1b[1;9D" },
+  { key = "RightArrow", mods = "CMD", action = wezterm.action.SendString "\x1b[1;9C" },
+  { key = "Backspace", mods = "CMD", action = wezterm.action.SendString "\x1b[127;9u" },
 
   -- Cmd+Option+左右はLemへ渡さず、WezTermのタブ移動として使う。
   { key = "LeftArrow", mods = "CMD|ALT", action = wezterm.action.ActivateTabRelative(-1) },
