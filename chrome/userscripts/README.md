@@ -6,7 +6,7 @@ Tampermonkey で使うユーザースクリプトを管理する。
 
 `chatgpt-notify.user.js` は ChatGPT の回答生成完了を検知し、localhost の Hammerspoon HTTP server へ通知する。
 
-Hammerspoon 側では Brave が前面にいる場合は何もせず、それ以外のアプリを操作している場合だけ、スレッド名と直前の質問冒頭を `hs.alert` で 4 秒表示する。
+Hammerspoon 側では通知元の ChatGPT タブがフォーカスされている場合は何もせず、別タブや別アプリを操作している場合だけ、スレッド名と直前の質問冒頭を `hs.alert` で 3 秒表示する。
 
 ### Setup
 
@@ -17,6 +17,6 @@ Hammerspoon 側では Brave が前面にいる場合は何もせず、それ以�
 
 Brave のデベロッパーモードは不要。
 
-スクリプトが実行されない場合は、Tampermonkey の拡張機能を OFF / ON するか Brave を完全終了して再起動し、ChatGPT を再読み込みする。
+スクリプトが実行されない場合は、Tampermonkey の拡張機能をいったん無効化してから有効化するか Brave を完全終了して再起動し、ChatGPT を再読み込みする。
 
 Hammerspoon 側は `.hammerspoon/modules/chatgpt_notify.lua` を `init.lua` から読み込むため、dotfiles の通常セットアップ以外の追加作業は不要。
