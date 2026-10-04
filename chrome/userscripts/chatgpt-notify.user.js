@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatGPT Response Complete Notification
 // @namespace    local
-// @version      1.1.0
+// @version      1.2.0
 // @description  ChatGPTの回答完了をHammerspoonへ通知する
 // @match        https://chatgpt.com/*
 // @grant        GM_xmlhttpRequest
@@ -12,7 +12,8 @@
 (() => {
   'use strict';
 
-  const STOP_SELECTOR = '[data-testid="stop-button"]';
+  const STOP_SELECTOR =
+    '[data-testid="stop-button"], button[aria-label="Stop"], button[aria-label="停止"]';
   const NOTIFY_URL = 'http://127.0.0.1:17365/chatgpt-done';
   const PREVIEW_LENGTH = 50;
   const COMPLETION_DELAY_MS = 500;
@@ -42,6 +43,10 @@
     return `${text.slice(0, PREVIEW_LENGTH)}…`;
   }
 
+  function isTabFocused() {
+    return document.visibilityState === 'visible' && document.hasFocus();
+  }
+
   function notifyCompletion() {
     GM_xmlhttpRequest({
       method: 'POST',
@@ -52,6 +57,7 @@
       data: JSON.stringify({
         title: document.title.trim(),
         preview: truncate(getLastUserMessage()),
+        tabFocused: isTabFocused(),
       }),
     });
   }
