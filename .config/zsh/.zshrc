@@ -25,22 +25,319 @@ setopt HIST_FIND_NO_DUPS
 # 対話中でも `#` 以降をコメントとして扱えるようにする。
 setopt INTERACTIVE_COMMENTS
 
-# 行編集の意味は zsh 側に集約する。
-# Terminal 側は OS 固有のショートカットを標準的な Emacs キーへ変換するだけにし、
-# Terminal を乗り換えても編集操作そのものはここで維持できるようにする。
+# 行編集の意味はzsh側に集約する。
 bindkey -e
 
-# Cmd+左右でコマンドラインの行頭・行末へ移動する。
-bindkey $'\e[1;9D' beginning-of-line
-bindkey $'\e[1;9C' end-of-line
+# Cmd+左右 / Cmd+Backspace のWezTerm互換シーケンス。
+# zsh/ZLEはKKPを解釈しないため、KKPを有効化すると通常のCtrl/Option/特殊キーまで
+# CSI-u形式になり、多数のキーを個別にbindkeyする必要が出る。
+# そのためzshではKKPを有効化せず、この3キーだけWezTerm側でCmd修飾を保持した
+# シーケンスへ変換し、ここで編集操作へ割り当てる。
+# WezTerm側の対応設定とセットなので、片側だけ削除しないこと。
+bindkey 
+# zsh 標準の補完を有効にし、候補一覧を矢印キーで選択できるようにする。
+# Git の branch / ref なども command の文脈に応じて補完される。
+zmodload zsh/complist
+autoload -Uz compinit
+compinit
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 
-# Cmd + Backspace 用。
-# Kitty から送る Meta + Ctrl-U は Emacs keymap では未使用なので、
-# カーソル位置から行頭までを削除する操作だけを明示的に割り当てる。
+# fzf の zsh integration。
+# Ctrl-R の履歴検索、Ctrl-T のファイル選択、**<Tab> の fuzzy completion を有効にする。
+if command -v fzf >/dev/null 2>&1; then
+  source <(fzf --zsh)
+fi
+
+# zoxide の zsh integration。
+# 移動履歴を学習し、z / zi で頻繁に使うディレクトリへ素早く移動できるようにする。
+# zi は fzf を利用するため、fzf の初期化後に配置する。
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+
+  # Kitty 側で Option + Z を ESC + z に変換し、ここで zi widget に割り当てる。
+  # bindkey の ^[z は ESC + z を表す。
+  zoxide-zi-widget() {
+    zi
+    zle reset-prompt
+  }
+  zle -N zoxide-zi-widget
+  bindkey '^[z' zoxide-zi-widget
+fi
+
+# Yazi を y で起動し、終了時は Yazi 内の現在のディレクトリへ移動する。
+if command -v yazi >/dev/null 2>&1; then
+  y() {
+    local tmp cwd
+    tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+
+    command yazi "$@" --cwd-file="$tmp"
+
+    IFS= read -r -d '' cwd < "$tmp"
+    [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd" || builtin true
+
+    command rm -f -- "$tmp"
+  }
+fi
+
+# gita に登録した Git repository を fzf で選択して移動する。
+if command -v gita >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
+  gita-repo-widget() {
+    local repo repo_path
+
+    repo="$(gita ls | tr ' ' '\n' | fzf)" || {
+      zle reset-prompt
+      return
+    }
+
+    repo_path="$(gita ls "$repo")" || return
+    cd "$repo_path"
+    zle reset-prompt
+  }
+
+  zle -N gita-repo-widget
+  bindkey '^[r' gita-repo-widget
+fi
+
+# WezTerm 側で Option + G を ESC + g に変換し、
+# legacy キーボード入力で lazygit を起動する。
+if command -v lazygit >/dev/null 2>&1; then
+  lazygit-widget() {
+    zle -I
+    TCELL_KEYBOARD_PROTOCOL=legacy lazygit
+    zle reset-prompt
+  }
+
+  zle -N lazygit-widget
+  bindkey '^[g' lazygit-widget
+fi
+
+# Starship をプロンプトとして初期化する。
+# プロンプト系は他の shell integration の後に置き、最後に見た目を確定させる。
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init zsh)"
+fi
+
+# vtermにプロンプトの終端を通知する。
+if [[ "$INSIDE_EMACS" == "vterm" ]]; then
+  my_vterm_prompt_end() {
+    printf '\e]51;A%s@%s:%s\e\\' "$USER" "$(hostname)" "$PWD"
+  }
+
+  PROMPT=$PROMPT'%{$(my_vterm_prompt_end)%}'
+fi
+
+# Haskell
+export PATH="$HOME/.ghcup/bin:$PATH"
+export PATH="$HOME/.cabal/bin:$PATH"
+
+# lem
+export PATH="$HOME/common-lisp/lem:$PATH"
+\e[1;9D' beginning-of-line
+bindkey 
+# zsh 標準の補完を有効にし、候補一覧を矢印キーで選択できるようにする。
+# Git の branch / ref なども command の文脈に応じて補完される。
+zmodload zsh/complist
+autoload -Uz compinit
+compinit
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+
+# fzf の zsh integration。
+# Ctrl-R の履歴検索、Ctrl-T のファイル選択、**<Tab> の fuzzy completion を有効にする。
+if command -v fzf >/dev/null 2>&1; then
+  source <(fzf --zsh)
+fi
+
+# zoxide の zsh integration。
+# 移動履歴を学習し、z / zi で頻繁に使うディレクトリへ素早く移動できるようにする。
+# zi は fzf を利用するため、fzf の初期化後に配置する。
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+
+  # Kitty 側で Option + Z を ESC + z に変換し、ここで zi widget に割り当てる。
+  # bindkey の ^[z は ESC + z を表す。
+  zoxide-zi-widget() {
+    zi
+    zle reset-prompt
+  }
+  zle -N zoxide-zi-widget
+  bindkey '^[z' zoxide-zi-widget
+fi
+
+# Yazi を y で起動し、終了時は Yazi 内の現在のディレクトリへ移動する。
+if command -v yazi >/dev/null 2>&1; then
+  y() {
+    local tmp cwd
+    tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+
+    command yazi "$@" --cwd-file="$tmp"
+
+    IFS= read -r -d '' cwd < "$tmp"
+    [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd" || builtin true
+
+    command rm -f -- "$tmp"
+  }
+fi
+
+# gita に登録した Git repository を fzf で選択して移動する。
+if command -v gita >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
+  gita-repo-widget() {
+    local repo repo_path
+
+    repo="$(gita ls | tr ' ' '\n' | fzf)" || {
+      zle reset-prompt
+      return
+    }
+
+    repo_path="$(gita ls "$repo")" || return
+    cd "$repo_path"
+    zle reset-prompt
+  }
+
+  zle -N gita-repo-widget
+  bindkey '^[r' gita-repo-widget
+fi
+
+# WezTerm 側で Option + G を ESC + g に変換し、
+# legacy キーボード入力で lazygit を起動する。
+if command -v lazygit >/dev/null 2>&1; then
+  lazygit-widget() {
+    zle -I
+    TCELL_KEYBOARD_PROTOCOL=legacy lazygit
+    zle reset-prompt
+  }
+
+  zle -N lazygit-widget
+  bindkey '^[g' lazygit-widget
+fi
+
+# Starship をプロンプトとして初期化する。
+# プロンプト系は他の shell integration の後に置き、最後に見た目を確定させる。
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init zsh)"
+fi
+
+# vtermにプロンプトの終端を通知する。
+if [[ "$INSIDE_EMACS" == "vterm" ]]; then
+  my_vterm_prompt_end() {
+    printf '\e]51;A%s@%s:%s\e\\' "$USER" "$(hostname)" "$PWD"
+  }
+
+  PROMPT=$PROMPT'%{$(my_vterm_prompt_end)%}'
+fi
+
+# Haskell
+export PATH="$HOME/.ghcup/bin:$PATH"
+export PATH="$HOME/.cabal/bin:$PATH"
+
+# lem
+export PATH="$HOME/common-lisp/lem:$PATH"
+\e[1;9C' end-of-line
+bindkey 
+# zsh 標準の補完を有効にし、候補一覧を矢印キーで選択できるようにする。
+# Git の branch / ref なども command の文脈に応じて補完される。
+zmodload zsh/complist
+autoload -Uz compinit
+compinit
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+
+# fzf の zsh integration。
+# Ctrl-R の履歴検索、Ctrl-T のファイル選択、**<Tab> の fuzzy completion を有効にする。
+if command -v fzf >/dev/null 2>&1; then
+  source <(fzf --zsh)
+fi
+
+# zoxide の zsh integration。
+# 移動履歴を学習し、z / zi で頻繁に使うディレクトリへ素早く移動できるようにする。
+# zi は fzf を利用するため、fzf の初期化後に配置する。
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+
+  # Kitty 側で Option + Z を ESC + z に変換し、ここで zi widget に割り当てる。
+  # bindkey の ^[z は ESC + z を表す。
+  zoxide-zi-widget() {
+    zi
+    zle reset-prompt
+  }
+  zle -N zoxide-zi-widget
+  bindkey '^[z' zoxide-zi-widget
+fi
+
+# Yazi を y で起動し、終了時は Yazi 内の現在のディレクトリへ移動する。
+if command -v yazi >/dev/null 2>&1; then
+  y() {
+    local tmp cwd
+    tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+
+    command yazi "$@" --cwd-file="$tmp"
+
+    IFS= read -r -d '' cwd < "$tmp"
+    [ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd" || builtin true
+
+    command rm -f -- "$tmp"
+  }
+fi
+
+# gita に登録した Git repository を fzf で選択して移動する。
+if command -v gita >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1; then
+  gita-repo-widget() {
+    local repo repo_path
+
+    repo="$(gita ls | tr ' ' '\n' | fzf)" || {
+      zle reset-prompt
+      return
+    }
+
+    repo_path="$(gita ls "$repo")" || return
+    cd "$repo_path"
+    zle reset-prompt
+  }
+
+  zle -N gita-repo-widget
+  bindkey '^[r' gita-repo-widget
+fi
+
+# WezTerm 側で Option + G を ESC + g に変換し、
+# legacy キーボード入力で lazygit を起動する。
+if command -v lazygit >/dev/null 2>&1; then
+  lazygit-widget() {
+    zle -I
+    TCELL_KEYBOARD_PROTOCOL=legacy lazygit
+    zle reset-prompt
+  }
+
+  zle -N lazygit-widget
+  bindkey '^[g' lazygit-widget
+fi
+
+# Starship をプロンプトとして初期化する。
+# プロンプト系は他の shell integration の後に置き、最後に見た目を確定させる。
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init zsh)"
+fi
+
+# vtermにプロンプトの終端を通知する。
+if [[ "$INSIDE_EMACS" == "vterm" ]]; then
+  my_vterm_prompt_end() {
+    printf '\e]51;A%s@%s:%s\e\\' "$USER" "$(hostname)" "$PWD"
+  }
+
+  PROMPT=$PROMPT'%{$(my_vterm_prompt_end)%}'
+fi
+
+# Haskell
+export PATH="$HOME/.ghcup/bin:$PATH"
+export PATH="$HOME/.cabal/bin:$PATH"
+
+# lem
+export PATH="$HOME/common-lisp/lem:$PATH"
+\e[127;9u' backward-kill-line
+
+# KittyでCmd+BackspaceをMeta+Ctrl-Uとして送る構成向けの互換設定。
+# 現在のWezTermでは上のCSI-u設定を使う。削除可否は別途確認する。
 bindkey '\e^U' backward-kill-line
-
-# WezTermのCmd+Backspaceでカーソルから行頭まで削除する。
-bindkey $'\e[127;9u' backward-kill-line
 
 # zsh 標準の補完を有効にし、候補一覧を矢印キーで選択できるようにする。
 # Git の branch / ref なども command の文脈に応じて補完される。
