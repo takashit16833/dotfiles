@@ -166,20 +166,9 @@ config.keys = {
       end
     end),
   },
-  -- 単語単位の削除をEmacsへ修飾キー付きで送る。
-  { key = "Delete", mods = "ALT", action = wezterm.action.SendString "\x1b[3;3~" },
-  { key = "Backspace", mods = "ALT", action = wezterm.action.SendString "\x1b[127;3u" },
   -- Cmd+Option+左右でタブを移動する。
   { key = "LeftArrow", mods = "CMD|ALT", action = wezterm.action.ActivateTabRelative(-1) },
   { key = "RightArrow", mods = "CMD|ALT", action = wezterm.action.ActivateTabRelative(1) },
-  -- Cmd+BackspaceをSuper付きBackspaceとして送信する。
-  { key = "Backspace", mods = "CMD", action = wezterm.action.SendString "\x1b[127;9u" },
-  -- 単語単位の移動・削除。
-  { key = "LeftArrow", mods = "ALT", action = wezterm.action.SendKey { key = "b", mods = "ALT" } },
-  { key = "RightArrow", mods = "ALT", action = wezterm.action.SendKey { key = "f", mods = "ALT" } },
-  -- Cmd+左右をSuper付き矢印として端末内のアプリへ送る。
-  { key = "LeftArrow", mods = "CMD", action = wezterm.action.SendString "\x1b[1;9D" },
-  { key = "RightArrow", mods = "CMD", action = wezterm.action.SendString "\x1b[1;9C" },
   -- 暫定対応: WezTermで失われるCmd+Shiftの修飾キーを直接送信する。
   {
     key = "phys:K",
