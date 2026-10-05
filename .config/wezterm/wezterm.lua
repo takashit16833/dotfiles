@@ -226,13 +226,13 @@ config.keys = {
     },
   },
 
-  -- Cmd+VをWezTerm自身で処理せず、CSI-u形式で前面のアプリへ渡す。
-  -- LemではS-vとして処理し、zshでは対応するZLE widgetで受け取る。
-	{
-  	key = "v",
-  	mods = "CMD",
-  	action = wezterm.action.SendString "\x1b[118;9u",
-	},
+  -- Cmd+VでOSのクリップボードを前面の端末アプリへ貼り付ける。
+  -- bracketed pasteに対応したEmacsなどでは、通常のペーストとして処理される。
+  {
+    key = "v",
+    mods = "CMD",
+    action = wezterm.action.PasteFrom "Clipboard",
+  },
 }
 
 -- タブ操作。
