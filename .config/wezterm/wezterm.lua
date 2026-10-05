@@ -149,15 +149,43 @@ config.keys = {
 
   -- WezTermのデフォルト割り当てを無効化してLemへ渡す。
   -- これらは指定を外すとLem側でキー入力を検出できなかった。
-  { key = "Tab", mods = "CTRL", action = wezterm.action.DisableDefaultAssignment },
-  { key = "Tab", mods = "CTRL|SHIFT", action = wezterm.action.DisableDefaultAssignment },
-  { key = "PageUp", mods = "CTRL", action = wezterm.action.DisableDefaultAssignment },
-  { key = "PageDown", mods = "CTRL", action = wezterm.action.DisableDefaultAssignment },
-  { key = "PageUp", mods = "CTRL|SHIFT", action = wezterm.action.DisableDefaultAssignment },
-  { key = "PageDown", mods = "CTRL|SHIFT", action = wezterm.action.DisableDefaultAssignment },
+  {
+    key = "Tab",
+    mods = "CTRL",
+    action = wezterm.action.DisableDefaultAssignment,
+  },
+  {
+    key = "Tab",
+    mods = "CTRL|SHIFT",
+    action = wezterm.action.DisableDefaultAssignment,
+  },
+  {
+    key = "PageUp",
+    mods = "CTRL",
+    action = wezterm.action.DisableDefaultAssignment,
+  },
+  {
+    key = "PageDown",
+    mods = "CTRL",
+    action = wezterm.action.DisableDefaultAssignment,
+  },
+  {
+    key = "PageUp",
+    mods = "CTRL|SHIFT",
+    action = wezterm.action.DisableDefaultAssignment,
+  },
+  {
+    key = "PageDown",
+    mods = "CTRL|SHIFT",
+    action = wezterm.action.DisableDefaultAssignment,
+  },
 
   -- Cmd+FはWezTermの検索に割り当てられているため、無効化してLemへ渡す。
-  { key = "f", mods = "CMD", action = wezterm.action.DisableDefaultAssignment },
+  {
+    key = "f",
+    mods = "CMD",
+    action = wezterm.action.DisableDefaultAssignment,
+  },
 
   -- Cmd+CはWezTermの選択範囲があるときだけOSクリップボードへコピーする。
   -- 未選択時はLemへCmd+Cを渡したいが、このcallback内でSendKey(CMD+c)を使うと
@@ -173,10 +201,7 @@ config.keys = {
         window:perform_action(wezterm.action.CopyTo "Clipboard", pane)
         window:perform_action(wezterm.action.ClearSelection, pane)
       else
-        window:perform_action(
-          wezterm.action.SendString "\x1b[99;9u",
-          pane
-        )
+        window:perform_action(wezterm.action.SendString "\x1b[99;9u", pane)
       end
     end),
   },
@@ -187,13 +212,33 @@ config.keys = {
   -- そこでCmd+左右とCmd+Backspaceだけ、Cmd修飾を保持できるシーケンスへ変換する。
   -- zsh側の対応するbindkeyとセットで使用するため、片側だけ削除しないこと。
   -- Lemはこれらのシーケンスも正しく解釈できるため、Lem利用時にもそのまま使える。
-  { key = "LeftArrow", mods = "CMD", action = wezterm.action.SendString "\x1b[1;9D" },
-  { key = "RightArrow", mods = "CMD", action = wezterm.action.SendString "\x1b[1;9C" },
-  { key = "Backspace", mods = "CMD", action = wezterm.action.SendString "\x1b[127;9u" },
+  {
+    key = "LeftArrow",
+    mods = "CMD",
+    action = wezterm.action.SendString "\x1b[1;9D",
+  },
+  {
+    key = "RightArrow",
+    mods = "CMD",
+    action = wezterm.action.SendString "\x1b[1;9C",
+  },
+  {
+    key = "Backspace",
+    mods = "CMD",
+    action = wezterm.action.SendString "\x1b[127;9u",
+  },
 
   -- Cmd+Option+左右はLemへ渡さず、WezTermのタブ移動として使う。
-  { key = "LeftArrow", mods = "CMD|ALT", action = wezterm.action.ActivateTabRelative(-1) },
-  { key = "RightArrow", mods = "CMD|ALT", action = wezterm.action.ActivateTabRelative(1) },
+  {
+    key = "LeftArrow",
+    mods = "CMD|ALT",
+    action = wezterm.action.ActivateTabRelative(-1),
+  },
+  {
+    key = "RightArrow",
+    mods = "CMD|ALT",
+    action = wezterm.action.ActivateTabRelative(1),
+  },
 
   -- WezTerm互換処理。
   -- KKP flag 1を有効にした状態でも、Cmd+Shift+K/Z/Fは実機で
