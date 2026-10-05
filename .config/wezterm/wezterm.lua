@@ -179,6 +179,11 @@ config.keys = {
     mods = "CTRL|SHIFT",
     action = wezterm.action.DisableDefaultAssignment,
   },
+  {
+    key = "r",
+    mods = "CMD",
+    action = wezterm.action.DisableDefaultAssignment,
+  },
 
   -- Cmd+FはWezTermの検索に割り当てられているため、無効化してLemへ渡す。
   {
