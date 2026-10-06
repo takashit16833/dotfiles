@@ -34,7 +34,7 @@ config.colors = {
   selection_fg = "#FFFFFF",
   selection_bg = "rgba(23, 51, 102, 0.70)",
   scrollbar_thumb = "#2759AA",
-  split = "#00184A",
+  split = "#153A75",
 
   ansi = {
     "#000000",
