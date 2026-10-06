@@ -16,9 +16,6 @@ LOCAL_BIN_DIR="$HOME/.local/bin"
 # VS Code の macOS 標準 User directory。
 VSCODE_USER_DIR="$HOME/Library/Application Support/Code/User"
 
-# PHP Language ServerはmacOSとDebian検証環境で同じバージョンを使用する。
-INTELEPHENSE_VERSION="1.18.5"
-
 # Marketplace 未公開の QuickJump は、固定 commit から VSIX を作って導入する。
 QUICKJUMP_VERSION="1.0.0"
 QUICKJUMP_COMMIT="af23a8c11654d9eea5a59dfe5d816490cdcced19"
@@ -72,18 +69,6 @@ install_homebrew_packages() {
 
   node --version >/dev/null 2>&1 || fail 'node is still unavailable after Homebrew setup'
   npm --version >/dev/null 2>&1 || fail 'npm is still unavailable after Homebrew setup'
-}
-
-install_intelephense() {
-  if npm list --global --depth=0 "intelephense@$INTELEPHENSE_VERSION" >/dev/null 2>&1; then
-    info "Intelephense already installed: $INTELEPHENSE_VERSION"
-  else
-    info "installing Intelephense $INTELEPHENSE_VERSION"
-    npm install --global --no-audit --no-fund "intelephense@$INTELEPHENSE_VERSION"
-  fi
-
-  command -v intelephense >/dev/null 2>&1 ||
-    fail 'intelephense was not found after npm install'
 }
 
 ensure_symlink() {
@@ -330,7 +315,6 @@ main() {
 
   install_wezterm_local_config
   install_homebrew_packages
-  install_intelephense
   install_managed_scripts
 
   ensure_symlink \
