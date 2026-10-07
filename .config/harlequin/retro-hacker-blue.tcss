@@ -3,7 +3,7 @@
 /*
  * テーマの $background 自体は #010111 のまま残す。
  * Harlequinは $background をボタン文字色などにも利用するため、
- * 透過は表示したいwidgetだけに限定する。
+ * 画面上の表示面だけ端末の既定背景へ戻す。
  */
 Screen,
 #main_panel,
@@ -18,31 +18,31 @@ CodeEditor,
 CodeEditor TextArea,
 ResultsTable,
 Lazy {
-    background: transparent;
+    background: ansi_default;
 }
 
 /* Data Catalog内部も端末背景をそのまま見せる。 */
 DataCatalog DatabaseTree,
 DataCatalog FileTree,
 DataCatalog S3Tree {
-    background: transparent;
-    background-tint: transparent;
+    background: ansi_default;
+    background-tint: ansi_default;
 }
 
 /* Query Editor / Resultsの内部widgetが持つ既定背景も消す。 */
 CodeEditor TextArea {
-    background: transparent;
+    background: ansi_default;
 }
 
 ResultsTable {
-    background: transparent;
+    background: ansi_default;
 }
 
 ResultsTable > .datatable--odd-row,
 ResultsTable > .datatable--even-row,
 ResultsTable > .datatable--header,
 ResultsTable > .datatable--fixed {
-    background: transparent;
+    background: ansi_default;
 }
 
 /* ペインタイトルの背景は描画しない。 */
@@ -58,7 +58,7 @@ HistoryScreen QueryPreview,
 Lazy {
     border: round #153A75;
     border-title-color: #153A75;
-    border-title-background: transparent;
+    border-title-background: ansi_default;
 }
 
 /* Yaziのcurrent行と同じ見た目に揃える。 */
@@ -85,8 +85,8 @@ RunQueryBar Checkbox,
 RunQueryBar Checkbox:focus > .toggle--label,
 RunQueryBar.non-responsive Checkbox,
 RunQueryBar.non-responsive Input {
-    background: transparent;
-    background-tint: transparent;
+    background: ansi_default;
+    background-tint: ansi_default;
 }
 
 /* 実行ボタンは背景透過の影響を受けないよう色を明示する。 */
