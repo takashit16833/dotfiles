@@ -8,7 +8,7 @@
 
 ## Commands
 
-現在、管理中の自作 CLI はありません。
+- `harlequin-rhb`: Homebrew版HarlequinをRetro Hacker Blue配色で起動する。
 
 CLI を追加したら、コマンド名・目的・主な使い方をこのセクションへ記録します。
 

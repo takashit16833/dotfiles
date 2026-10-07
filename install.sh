@@ -342,6 +342,11 @@ main() {
     "$DOTFILES_DIR/.config/lazygit/config.yml" \
     "$XDG_CONFIG_HOME/lazygit/config.yml"
 
+  # Harlequinのテーマ設定をdotfilesから利用する。
+  ensure_symlink \
+    "$DOTFILES_DIR/.config/harlequin" \
+    "$XDG_CONFIG_HOME/harlequin"
+
   ensure_symlink \
     "$DOTFILES_DIR/.config/yazi/yazi.toml" \
     "$XDG_CONFIG_HOME/yazi/yazi.toml"
