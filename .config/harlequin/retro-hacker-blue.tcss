@@ -1,6 +1,51 @@
 /* Harlequin用 Retro Hacker Blue の微調整。 */
 
-/* Yaziの仕切り線と同じ色で、非アクティブ領域を見分けやすくする。 */
+/*
+ * テーマの $background 自体は #010111 のまま残す。
+ * Harlequinは $background をボタン文字色などにも利用するため、
+ * 透過は表示したいwidgetだけに限定する。
+ */
+Screen,
+#main_panel,
+DataCatalog,
+EditorCollection,
+ResultsViewer,
+ResultsViewer ContentSwitcher,
+ResultsViewer TabPane,
+RunQueryBar,
+RunQueryBar Horizontal,
+CodeEditor,
+CodeEditor TextArea,
+ResultsTable,
+Lazy {
+    background: transparent;
+}
+
+/* Data Catalog内部も端末背景をそのまま見せる。 */
+DataCatalog DatabaseTree,
+DataCatalog FileTree,
+DataCatalog S3Tree {
+    background: transparent;
+    background-tint: transparent;
+}
+
+/* Query Editor / Resultsの内部widgetが持つ既定背景も消す。 */
+CodeEditor TextArea {
+    background: transparent;
+}
+
+ResultsTable {
+    background: transparent;
+}
+
+ResultsTable > .datatable--odd-row,
+ResultsTable > .datatable--even-row,
+ResultsTable > .datatable--header,
+ResultsTable > .datatable--fixed {
+    background: transparent;
+}
+
+/* ペインタイトルの背景は描画しない。 */
 DataCatalog,
 EditorCollection,
 FooterContainer > Input,
@@ -13,6 +58,7 @@ HistoryScreen QueryPreview,
 Lazy {
     border: round #153A75;
     border-title-color: #153A75;
+    border-title-background: transparent;
 }
 
 /* Yaziのcurrent行と同じ見た目に揃える。 */
@@ -29,6 +75,34 @@ CompletionList > .option-list--option-highlighted,
 HistoryScreen HistoryList > .option-list--option-highlighted {
     background: #061536;
     color: #A6CAFF;
+}
+
+/* Tx: Auto / Limitの行は背景を描画しない。 */
+RunQueryBar,
+RunQueryBar Horizontal,
+RunQueryBar Input,
+RunQueryBar Checkbox,
+RunQueryBar Checkbox:focus > .toggle--label,
+RunQueryBar.non-responsive Checkbox,
+RunQueryBar.non-responsive Input {
+    background: transparent;
+    background-tint: transparent;
+}
+
+/* 実行ボタンは背景透過の影響を受けないよう色を明示する。 */
+RunQueryBar Button#run_query {
+    background: #5EAFFF;
+    color: #010111;
+}
+
+RunQueryBar Button#run_query:hover {
+    background: #87CEEB;
+    color: #010111;
+}
+
+RunQueryBar Button#cancel_query {
+    background: #FF4DE1;
+    color: #010111;
 }
 
 /* Yaziのstatusと同じ濃紺をフッターだけに残す。 */
