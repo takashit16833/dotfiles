@@ -149,3 +149,29 @@ FooterKey .footer-key--key {
 FooterKey .footer-key--description {
     color: #316CBD;
 }
+
+/* LimitのチェックボックスはANSI既定色を使わず、Yazi系の選択色に揃える。 */
+RunQueryBar Checkbox#limit_checkbox {
+    background: ansi_default;
+    background-tint: transparent;
+    color: #5EAFFF;
+}
+
+RunQueryBar Checkbox#limit_checkbox > .toggle--button {
+    background: #061536;
+    color: #316CBD;
+    text-style: none;
+}
+
+RunQueryBar Checkbox#limit_checkbox.-on > .toggle--button {
+    background: #061536;
+    color: #A6CAFF;
+    text-style: bold;
+}
+
+RunQueryBar Checkbox#limit_checkbox:focus > .toggle--label {
+    background: ansi_default;
+    background-tint: transparent;
+    color: #5EAFFF;
+    text-style: none;
+}

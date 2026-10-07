@@ -72,6 +72,28 @@ harlequin_colors.VALID_THEMES["harlequin"] = RETRO_HACKER_BLUE_THEME
 
 # Harlequin本体のCSSは変更せず、dotfiles側の微調整を最後に読み込む。
 from harlequin.app import Harlequin
+from harlequin.components.data_catalog.tree import HarlequinTree
+from rich.style import Style
+from textual.strip import Strip
 
 THEME_CSS = Path(__file__).resolve().parents[1] / "retro-hacker-blue.tcss"
 Harlequin.CSS_PATH = [*Harlequin.CSS_PATH, THEME_CSS]
+
+
+# TextualのTreeはキーボードカーソル背景をラベル部分だけに描画する。
+# Yaziと同様に行全体を強調するため、返されたStripへ背景だけを重ねる。
+_original_tree_render_line = HarlequinTree.render_line
+
+
+def _render_tree_line_with_cursor_background(
+    self: HarlequinTree,
+    y: int,
+) -> Strip:
+    strip = _original_tree_render_line(self, y)
+    line = y + int(self.scroll_offset.y)
+    if line == self.cursor_line:
+        return strip.apply_style(Style(bgcolor="#061536"))
+    return strip
+
+
+HarlequinTree.render_line = _render_tree_line_with_cursor_background
