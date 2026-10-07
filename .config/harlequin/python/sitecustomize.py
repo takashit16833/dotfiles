@@ -72,6 +72,19 @@ harlequin_colors.VALID_THEMES["harlequin"] = RETRO_HACKER_BLUE_THEME
 
 # Harlequin本体のCSSは変更せず、dotfiles側の微調整を最後に読み込む。
 from harlequin.app import Harlequin
+from textual.binding import Binding
+import textual_textarea.text_editor as text_editor
 
 THEME_CSS = Path(__file__).resolve().parents[1] / "retro-hacker-blue.tcss"
 Harlequin.CSS_PATH = [*Harlequin.CSS_PATH, THEME_CSS]
+
+
+# TextAreaPlusはCmd+zをundoとして標準対応している。
+# macOS標準のCmd+Shift+zでもredoできるようにaliasだけ追加する。
+class RetroHackerTextAreaPlus(text_editor.TextAreaPlus):
+    BINDINGS = [
+        Binding("shift+super+z", "redo", "redo", show=False),
+    ]
+
+
+text_editor.TextAreaPlus = RetroHackerTextAreaPlus
