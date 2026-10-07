@@ -8,7 +8,7 @@ import harlequin.colors as harlequin_colors
 
 
 # emacs-retro-hacker-blue-themeの主要色をTextual Themeへ対応付ける。
-# 背景は端末の既定色を使い、WezTerm側の透過設定を妨げない。
+# 背景は描画せず、WezTerm側の背景色や透過設定をそのまま使う。
 RETRO_HACKER_BLUE_THEME = Theme(
     name="harlequin",
     primary="#5EAFFF",
@@ -18,12 +18,11 @@ RETRO_HACKER_BLUE_THEME = Theme(
     success="#6CB8F0",
     accent="#FF4DE1",
     foreground="#5EAFFF",
-    background="ansi_default",
-    surface="ansi_default",
+    background="transparent",
+    surface="transparent",
     panel="#001E4A",
-    boost="ansi_default",
+    boost="transparent",
     dark=True,
-    ansi=True,
     variables={
         # 一覧や入力欄のカーソル・選択範囲。
         "block-cursor-background": "#FF4DE1",
@@ -37,8 +36,8 @@ RETRO_HACKER_BLUE_THEME = Theme(
         "scrollbar": "#153A75",
         "scrollbar-hover": "#316CBD",
         "scrollbar-active": "#5EAFFF",
-        "scrollbar-background": "ansi_default",
-        "scrollbar-corner-color": "ansi_default",
+        "scrollbar-background": "transparent",
+        "scrollbar-corner-color": "transparent",
         # 画面下部のキーバインド表示。
         "footer-background": "#000E2F",
         "footer-foreground": "#316CBD",
