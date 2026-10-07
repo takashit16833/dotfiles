@@ -82,13 +82,7 @@ CodeEditor TextAreaPlus:focus .text-area--cursor {
     text-style: none;
 }
 
-/* Data Catalogの選択行はYaziのcurrent行と同じ色で明示する。 */
-DataCatalog DatabaseTree > .tree--cursor,
-DataCatalog FileTree > .tree--cursor,
-DataCatalog S3Tree > .tree--cursor,
-DataCatalog DatabaseTree:focus > .tree--cursor,
-DataCatalog FileTree:focus > .tree--cursor,
-DataCatalog S3Tree:focus > .tree--cursor,
+/* 一覧系widgetの選択色をYaziのcurrent行に揃える。 */
 ResultsTable > .datatable--cursor,
 ResultsTable:focus > .datatable--cursor,
 CompletionList > .option-list--option-highlighted,
