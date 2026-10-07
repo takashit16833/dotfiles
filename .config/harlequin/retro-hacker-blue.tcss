@@ -1,9 +1,8 @@
 /* Harlequin用 Retro Hacker Blue の微調整。 */
 
 /*
- * テーマの $background 自体は #010111 のまま残す。
- * Harlequinは $background をボタン文字色などにも利用するため、
- * 画面上の表示面だけ端末の既定背景へ戻す。
+ * ANSI passthroughで端末の既定背景をそのまま使う。
+ * Retro Hacker Blueの前景色や状態色だけを個別に重ねる。
  */
 Screen,
 #main_panel,
@@ -26,7 +25,13 @@ DataCatalog DatabaseTree,
 DataCatalog FileTree,
 DataCatalog S3Tree {
     background: ansi_default;
-    background-tint: ansi_default;
+    background-tint: transparent;
+}
+
+DataCatalog DatabaseTree:focus,
+DataCatalog FileTree:focus,
+DataCatalog S3Tree:focus {
+    background-tint: transparent;
 }
 
 /* Query Editor / Resultsの内部widgetが持つ既定背景も消す。 */
@@ -67,14 +72,30 @@ Lazy {
     background: #061536;
 }
 
-DataCatalog * .tree--cursor,
-DataCatalog *:focus .tree--cursor,
+/*
+ * ANSI modeではTextual本体がcursorへ reverse を付けるため、
+ * HarlequinのTextAreaPlusまで具体化してピンクの実カーソルを維持する。
+ */
+CodeEditor TextAreaPlus:focus .text-area--cursor {
+    background: #FF4DE1;
+    color: #010111;
+    text-style: none;
+}
+
+/* Data Catalogの選択行はYaziのcurrent行と同じ色で明示する。 */
+DataCatalog DatabaseTree > .tree--cursor,
+DataCatalog FileTree > .tree--cursor,
+DataCatalog S3Tree > .tree--cursor,
+DataCatalog DatabaseTree:focus > .tree--cursor,
+DataCatalog FileTree:focus > .tree--cursor,
+DataCatalog S3Tree:focus > .tree--cursor,
 ResultsTable > .datatable--cursor,
 ResultsTable:focus > .datatable--cursor,
 CompletionList > .option-list--option-highlighted,
 HistoryScreen HistoryList > .option-list--option-highlighted {
     background: #061536;
     color: #A6CAFF;
+    text-style: bold;
 }
 
 /* Tx: Auto / Limitの行は背景を描画しない。 */
@@ -86,7 +107,7 @@ RunQueryBar Checkbox:focus > .toggle--label,
 RunQueryBar.non-responsive Checkbox,
 RunQueryBar.non-responsive Input {
     background: ansi_default;
-    background-tint: ansi_default;
+    background-tint: transparent;
 }
 
 /* 実行ボタンは背景透過の影響を受けないよう色を明示する。 */
