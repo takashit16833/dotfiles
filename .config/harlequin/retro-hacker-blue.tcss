@@ -1,0 +1,56 @@
+/* Harlequin用 Retro Hacker Blue の微調整。 */
+
+/* Yaziの仕切り線と同じ色で、非アクティブ領域を見分けやすくする。 */
+DataCatalog,
+EditorCollection,
+FooterContainer > Input,
+KeysPanel,
+ResultsViewer,
+HistoryScreen #history_filter,
+HistoryScreen #history_filter_controls > Select,
+HistoryScreen HistoryList,
+HistoryScreen QueryPreview,
+Lazy {
+    border: round #153A75;
+    border-title-color: #153A75;
+}
+
+/* Yaziのcurrent行と同じ見た目に揃える。 */
+.text-area--cursor-line,
+.text-area--cursor-gutter {
+    background: #061536;
+}
+
+DataCatalog * .tree--cursor,
+DataCatalog *:focus .tree--cursor,
+ResultsTable > .datatable--cursor,
+ResultsTable:focus > .datatable--cursor,
+CompletionList > .option-list--option-highlighted,
+HistoryScreen HistoryList > .option-list--option-highlighted {
+    background: #061536;
+    color: #A6CAFF;
+}
+
+/* Yaziのstatusと同じ濃紺をフッターだけに残す。 */
+Footer,
+FooterKey,
+FooterKey .footer-key--key,
+FooterKey .footer-key--description {
+    background: #000E2F;
+}
+
+Footer {
+    color: #316CBD;
+}
+
+FooterKey {
+    color: #5EAFFF;
+}
+
+FooterKey .footer-key--key {
+    color: #5EAFFF;
+}
+
+FooterKey .footer-key--description {
+    color: #316CBD;
+}

@@ -1,11 +1,14 @@
 """HarlequinへRetro Hacker Blue配色を適用する。"""
 
+from pathlib import Path
+
 from textual.theme import Theme
 
 import harlequin.colors as harlequin_colors
 
 
 # emacs-retro-hacker-blue-themeの主要色をTextual Themeへ対応付ける。
+# 背景は端末の既定色を使い、WezTerm側の透過設定を妨げない。
 RETRO_HACKER_BLUE_THEME = Theme(
     name="harlequin",
     primary="#5EAFFF",
@@ -15,19 +18,18 @@ RETRO_HACKER_BLUE_THEME = Theme(
     success="#6CB8F0",
     accent="#FF4DE1",
     foreground="#5EAFFF",
-    background="#010111",
-    surface="#010114",
+    background="ansi_default",
+    surface="ansi_default",
     panel="#001E4A",
+    boost="ansi_default",
     dark=True,
+    ansi=True,
     variables={
-        # フォーカス中と非フォーカス時の枠線。
-        "border": "#153A75",
-        "border-blurred": "#0E264C",
         # 一覧や入力欄のカーソル・選択範囲。
         "block-cursor-background": "#FF4DE1",
         "block-cursor-foreground": "#010111",
-        "block-cursor-blurred-background": "#052A59",
-        "block-cursor-blurred-foreground": "#E6F2FF",
+        "block-cursor-blurred-background": "#061536",
+        "block-cursor-blurred-foreground": "#A6CAFF",
         "input-cursor-background": "#FF4DE1",
         "input-cursor-foreground": "#010111",
         "input-selection-background": "#13264B",
@@ -35,7 +37,8 @@ RETRO_HACKER_BLUE_THEME = Theme(
         "scrollbar": "#153A75",
         "scrollbar-hover": "#316CBD",
         "scrollbar-active": "#5EAFFF",
-        "scrollbar-background": "#010111",
+        "scrollbar-background": "ansi_default",
+        "scrollbar-corner-color": "ansi_default",
         # 画面下部のキーバインド表示。
         "footer-background": "#000E2F",
         "footer-foreground": "#316CBD",
@@ -47,3 +50,9 @@ RETRO_HACKER_BLUE_THEME = Theme(
 # Harlequinが標準で登録する "harlequin" テーマを起動時だけ差し替える。
 harlequin_colors.HARLEQUIN_TEXTUAL_THEME = RETRO_HACKER_BLUE_THEME
 harlequin_colors.VALID_THEMES["harlequin"] = RETRO_HACKER_BLUE_THEME
+
+# Harlequin本体のCSSは変更せず、dotfiles側の微調整を最後に読み込む。
+from harlequin.app import Harlequin
+
+THEME_CSS = Path(__file__).resolve().parents[1] / "retro-hacker-blue.tcss"
+Harlequin.CSS_PATH = [*Harlequin.CSS_PATH, THEME_CSS]
