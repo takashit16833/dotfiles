@@ -47,6 +47,9 @@ brew "tree"
 # JSON の確認・加工用。host と Dev Container の双方で利用する方針。
 brew "jq"
 
+# Terminal 上で PostgreSQL などを操作する SQL IDE。
+brew "harlequin"
+
 # codebase 内の高速な全文検索に利用する。
 brew "ripgrep"
 
