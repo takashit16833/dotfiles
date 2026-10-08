@@ -20,6 +20,14 @@ local file = io.open(theme_file, "r")
 if file then
   selected_theme = (file:read("*l") or ""):match("^%s*(.-)%s*$")
   file:close()
+else
+  -- 初回からファイル監視を確実に行えるよう、未作成なら既定値を書き込む。
+  -- 設定の再評価時にも、既存の選択は上書きしない。
+  local initial = io.open(theme_file, "w")
+  if initial then
+    initial:write("retro-hacker-blue\n")
+    initial:close()
+  end
 end
 
 local colors = themes[selected_theme] or themes["retro-hacker-blue"]
