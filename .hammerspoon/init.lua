@@ -49,7 +49,9 @@ englishInputSourceWatcher = hs.application.watcher.new(function(_, eventType, ap
   end
 end)
 
-englishInputSourceWatcher:start()
+-- CursorUIViewService の応答停止を切り分けるため、英数入力の自動切り替えを停止しておく。
+-- 再開する場合は、次の start() を有効にする。
+-- englishInputSourceWatcher:start()
 
 -- 現在見えている Space にある、指定アプリの標準ウィンドウだけを取得する。
 -- hs.window.allWindows() は呼び出すたびに現在の Mission Control Space を問い合わせるため、
