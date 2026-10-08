@@ -152,3 +152,8 @@ export PATH="$HOME/.cabal/bin:$PATH"
 
 # lem
 export PATH="$HOME/common-lisp/lem:$PATH"
+
+# macOS 26ではSDK 27のリンクエラーを回避する。
+if [[ "$OSTYPE" == darwin* ]]; then
+  export SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk
+fi
