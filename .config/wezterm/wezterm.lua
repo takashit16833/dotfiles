@@ -9,72 +9,28 @@ config.enable_kitty_keyboard = true
 config.send_composed_key_when_left_alt_is_pressed = false
 config.send_composed_key_when_right_alt_is_pressed = false
 
--- Retro Hacker Blue の基本色。
-local background = "#010111"
-local foreground = "#5EAFFF"
-local cyber_pink = "#FF4DE1"
+-- 選択状態は Emacs と共有し、ファイルの変更を検知して配色を再読み込みする。
+-- 未選択・未対応の名前の場合は、従来の Retro Hacker Blue を使用する。
+local themes = require "themes"
+local theme_file = wezterm.home_dir .. "/.config/retro-theme"
+wezterm.add_to_config_reload_watch_list(theme_file)
 
--- Emacsのretro-hacker-blue-core.elにあるmode-lineの背景色・文字色に揃える。
--- タブバーの余白は透明のままにする。
-local tab_bar_transparent = "rgba(0, 0, 0, 0)"
-local tab_active_background = "#000E2F"
-local tab_active_foreground = "#316CBD"
-local tab_inactive_background = "#00091F"
-local tab_inactive_foreground = "#20467B"
+local selected_theme = "retro-hacker-blue"
+local file = io.open(theme_file, "r")
+if file then
+  selected_theme = (file:read("*l") or ""):match("^%s*(.-)%s*$")
+  file:close()
+end
 
-config.colors = {
-  foreground = foreground,
-  background = background,
+local colors = themes[selected_theme] or themes["retro-hacker-blue"]
+local background = colors.background
+local tab_bar_transparent = colors.tab_bar.background
+local tab_active_background = colors.tab_bar.active_tab.bg_color
+local tab_active_foreground = colors.tab_bar.active_tab.fg_color
+local tab_inactive_background = colors.tab_bar.inactive_tab.bg_color
+local tab_inactive_foreground = colors.tab_bar.inactive_tab.fg_color
 
-  -- カーソルは Cyber Pink。
-  cursor_bg = cyber_pink,
-  cursor_fg = background,
-  cursor_border = cyber_pink,
-
-  selection_fg = "#FFFFFF",
-  selection_bg = "rgba(23, 51, 102, 0.70)",
-  scrollbar_thumb = "#2759AA",
-  split = "#153A75",
-
-  ansi = {
-    "#000000",
-    cyber_pink,
-    "#4682B4",
-    "#FFD700",
-    "#3B85D8",
-    "#8A5EC0",
-    "#00CED1",
-    "#E0EEFF",
-  },
-  brights = {
-    "#1A1A1A",
-    cyber_pink,
-    "#6CB8F0",
-    "#FFFF00",
-    foreground,
-    "#B07CFF",
-    "#00FFFF",
-    "#FFFFFF",
-  },
-  -- Emacsのアクティブ・非アクティブのモードラインとそれぞれ同じ配色にする。
-  tab_bar = {
-    background = tab_bar_transparent,
-    active_tab = {
-      bg_color = tab_active_background,
-      fg_color = tab_active_foreground,
-      intensity = "Bold",
-    },
-    inactive_tab = {
-      bg_color = tab_inactive_background,
-      fg_color = tab_inactive_foreground,
-    },
-    inactive_tab_hover = {
-      bg_color = tab_inactive_background,
-      fg_color = tab_inactive_foreground,
-    },
-    inactive_tab_edge = tab_bar_transparent,
-  },
-}
+config.colors = colors
 
 -- macOS のタイトルバーを端末の背景に馴染ませる。
 config.window_frame = {
