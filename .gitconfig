@@ -3,6 +3,7 @@
 
 [core]
     quotepath = false
+    pager = delta
 
 [init]
     defaultBranch = main
@@ -16,5 +17,7 @@
 [include]
     path = ~/.gitconfig.local
 
-[pager]
-    diff = delta
+[delta]
+    navigate = true
+    side-by-side = false
+    line-numbers = true

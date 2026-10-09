@@ -252,6 +252,18 @@ config.keys = {
     mods = "CMD",
     action = wezterm.action.PasteFrom "Clipboard",
   },
+
+  -- Shift+PageUp/DownをEmacsへ渡す。
+  {
+    key = "PageUp",
+    mods = "SHIFT",
+    action = wezterm.action.DisableDefaultAssignment,
+  },
+  {
+    key = "PageDown",
+    mods = "SHIFT",
+    action = wezterm.action.DisableDefaultAssignment,
+  },
 }
 
 -- タブ操作。
