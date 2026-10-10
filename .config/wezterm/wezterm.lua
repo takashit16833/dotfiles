@@ -30,6 +30,11 @@ else
   end
 end
 
+-- 旧名で保存された選択も、新しいテーマ名として扱う。
+if selected_theme == "retro-one-dark" then
+  selected_theme = "one-dark-blue"
+end
+
 local colors = themes[selected_theme] or themes["retro-hacker-blue"]
 local background = colors.background
 local tab_bar_transparent = colors.tab_bar.background

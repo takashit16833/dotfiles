@@ -1,6 +1,6 @@
 -- WezTerm の配色。キーは Emacs と共有するテーマ名。
 -- Retro Hacker Blue は従来の設定値をそのまま移したもの。
--- Retro One Dark は Emacs テーマの背景・モードライン・構文色に合わせる。
+-- One Dark Blue は Emacs テーマの背景・モードライン・構文色に合わせる。
 return {
   ["retro-hacker-blue"] = {
     foreground = "#5EAFFF",
@@ -38,7 +38,7 @@ return {
       inactive_tab_edge = "rgba(0, 0, 0, 0)",
     },
   },
-  ["retro-one-dark"] = {
+  ["one-dark-blue"] = {
     foreground = "#61AFEF",
     background = "#151D2A",
     cursor_bg = "#C678DD",
