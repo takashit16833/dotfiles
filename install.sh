@@ -339,6 +339,10 @@ main() {
     "$XDG_CONFIG_HOME/starship.toml"
 
   ensure_symlink \
+    "$DOTFILES_DIR/.config/starship-one-dark-blue.toml" \
+    "$XDG_CONFIG_HOME/starship-one-dark-blue.toml"
+
+  ensure_symlink \
     "$DOTFILES_DIR/.config/lazygit/config.yml" \
     "$XDG_CONFIG_HOME/lazygit/config.yml"
 

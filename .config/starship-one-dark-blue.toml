@@ -1,0 +1,19 @@
+# One Dark Blue 用。Starship 標準の表示内容は Retro Hacker Blue と同じ。
+# zsh が ~/.config/retro-theme を読み、STARSHIP_CONFIG でこちらを選択する。
+palette = "one_dark_blue"
+
+[palettes.one_dark_blue]
+blue = "#61AFEF"
+accent = "#C678DD"
+
+[directory]
+style = "bold blue"
+truncation_length = 0
+truncate_to_repo = false
+
+[git_branch]
+style = "bold accent"
+
+[character]
+success_symbol = "[❯](bold accent)"
+error_symbol = "[❯](bold accent)"

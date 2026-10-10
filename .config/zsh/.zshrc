@@ -135,6 +135,27 @@ fi
 # プロンプト系は他の shell integration の後に置き、最後に見た目を確定させる。
 if command -v starship >/dev/null 2>&1; then
   eval "$(starship init zsh)"
+
+  # Emacs / WezTerm のテーマ選択を各プロンプト表示時に読み取る。
+  # Starship の precmd より後に登録し、直前のコマンドの終了状態を壊さない。
+  my_starship_select_config() {
+    local theme=""
+    if [[ -r "$XDG_CONFIG_HOME/retro-theme" ]]; then
+      IFS= read -r theme < "$XDG_CONFIG_HOME/retro-theme"
+    fi
+
+    case "$theme" in
+      one-dark-blue|retro-one-dark)
+        export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship-one-dark-blue.toml"
+        ;;
+      *)
+        export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship.toml"
+        ;;
+    esac
+  }
+
+  autoload -Uz add-zsh-hook
+  add-zsh-hook precmd my_starship_select_config
 fi
 
 # vtermにプロンプトの終端を通知する。
