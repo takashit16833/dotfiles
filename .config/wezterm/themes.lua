@@ -40,16 +40,16 @@ return {
   },
   ["retro-one-dark"] = {
     foreground = "#61AFEF",
-    background = "#192332",
+    background = "#151D2A",
     cursor_bg = "#C678DD",
-    cursor_fg = "#192332",
+    cursor_fg = "#151D2A",
     cursor_border = "#C678DD",
     selection_fg = "#E6E8ED",
     selection_bg = "#314B6A",
     scrollbar_thumb = "#365579",
     split = "#365579",
     ansi = {
-      "#192332", "#E06C75", "#98C379", "#E5C07B",
+      "#151D2A", "#E06C75", "#98C379", "#E5C07B",
       "#61AFEF", "#C678DD", "#56B6C2", "#ABB2BF",
     },
     brights = {
@@ -64,11 +64,11 @@ return {
         intensity = "Bold",
       },
       inactive_tab = {
-        bg_color = "#151D2A",
+        bg_color = "#192332",
         fg_color = "#35566D",
       },
       inactive_tab_hover = {
-        bg_color = "#151D2A",
+        bg_color = "#192332",
         fg_color = "#35566D",
       },
       inactive_tab_edge = "rgba(0, 0, 0, 0)",
