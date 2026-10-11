@@ -217,7 +217,8 @@ config.keys = {
   -- WezTerm互換処理。
   -- KKP flag 1を有効にした状態でも、Cmd+Shift+K/Z/F/Mは実機で
   -- それぞれ bare "k"/"z"/"f"/"m" として出力され、Cmd/Shiftが失われた。
-  -- そのためこの3キーだけ正しいKKP CSI-uシーケンスを直接送る。
+  -- Cmd+Shift+Lも確実にEmacsへ送るため、同じ方式で明示的に割り当てる。
+  -- これらのキーはKKP CSI-uシーケンスを直接送る。
   {
     key = "phys:K",
     mods = "CMD|SHIFT",
@@ -237,6 +238,11 @@ config.keys = {
     key = "phys:M",
     mods = "CMD|SHIFT",
     action = wezterm.action.SendString "\x1b[109;10u",
+  },
+  {
+    key = "phys:L",
+    mods = "CMD|SHIFT",
+    action = wezterm.action.SendString "\x1b[108;10u",
   },
 
   -- Cmd+TはLemへ渡さず、WezTermのタブ操作メニューとして使う。
