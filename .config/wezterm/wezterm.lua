@@ -144,6 +144,11 @@ config.keys = {
     action = wezterm.action.DisableDefaultAssignment,
   },
   {
+    key = "phys:L",
+    mods = "CMD|SHIFT",
+    action = wezterm.action.SendString "\x1b[108;10u",
+  },
+  {
     key = "PageDown",
     mods = "CTRL|SHIFT",
     action = wezterm.action.DisableDefaultAssignment,
