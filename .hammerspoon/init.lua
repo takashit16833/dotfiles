@@ -19,6 +19,7 @@ local appBundleIDs = {
   finder = "com.apple.finder",
   obsidian = "md.obsidian",
   kitty = "net.kovidgoyal.kitty",
+  kindle = "com.amazon.Lassen",
   wezterm = "com.github.wez.wezterm",
   vscode = "com.microsoft.VSCode",
 }
@@ -221,6 +222,9 @@ local apps = {
     bundleID = appBundleIDs.vscode,
     openWindow = openVSCodeWindow,
   },
+  ["y"] = {
+    bundleID = appBundleIDs.kindle,
+  },
 }
 
 -- 指定したアプリを、現在見えている Space の範囲内だけで扱う。
@@ -259,6 +263,7 @@ end
 -- Ctrl + Cmd + Option + w: Brave Browser
 -- Ctrl + Cmd + Option + t: WezTerm
 -- Ctrl + Cmd + Option + n: Visual Studio Code
+-- Ctrl + Cmd + Option + y: Kindle
 for key, appConfig in pairs(apps) do
   hs.hotkey.bind(hyper, key, function()
     activateApp(appConfig)
