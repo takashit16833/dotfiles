@@ -166,6 +166,13 @@ config.keys = {
     action = wezterm.action.DisableDefaultAssignment,
   },
 
+  -- Alt+EnterはWezTermの全画面切り替えに使わず、Emacsへ渡す。
+  {
+    key = "Enter",
+    mods = "ALT",
+    action = wezterm.action.DisableDefaultAssignment,
+  },
+
   -- Cmd+CはWezTermの選択範囲があるときだけOSクリップボードへコピーする。
   -- 未選択時はLemへCmd+Cを渡したいが、このcallback内でSendKey(CMD+c)を使うと
   -- Cmd修飾が失われて単なる"c"になることを実機確認済み。
