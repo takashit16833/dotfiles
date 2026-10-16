@@ -296,6 +296,16 @@ local function withFocusedWindow(action)
   end
 end
 
+-- Ctrl + Cmd + Option + Enter: アクティブなウィンドウの画像をクリップボードへコピーする。
+hs.hotkey.bind(hyper, "return", function()
+  withFocusedWindow(function(window)
+    local image = window:snapshot()
+    if image then
+      hs.pasteboard.writeObjects(image)
+    end
+  end)
+end)
+
 -- Ctrl + Cmd + Option + I: 現在のウィンドウを画面の左半分へ配置する。
 hs.hotkey.bind(hyper, "i", function()
   withFocusedWindow(function(window)
