@@ -18,7 +18,7 @@ local function normalizeMermaid(text)
   end
 
   text = text:gsub("\r\n", "\n"):match("^%s*(.-)%s*$")
-  return text:match("^\`\`\`mermaid[^\n]*\n(.-)\n\`\`\`$") or text
+  return text:match("^```mermaid[^\n]*\n(.-)\n```$") or text
 end
 
 local function showPreview(svgPath)
