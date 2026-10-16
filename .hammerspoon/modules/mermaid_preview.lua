@@ -21,36 +21,50 @@ local function normalizeMermaid(text)
   return text:match("^```mermaid[^\n]*\n(.-)\n```$") or text
 end
 
-local function showPreview(svgPath)
-  if not M.preview then
-    local screen = hs.screen.mainScreen():frame()
-    local width = math.min(900, screen.w)
-    local height = math.min(640, screen.h)
+-- 標準アプリのウィンドウなら Cmd+W と既存の Hyper ウィンドウ操作が使える。
+local function openPreview(pdfPath)
+  local task = hs.task.new("/usr/bin/open", function(exitCode, stdout, stderr)
+    if exitCode ~= 0 then
+      hs.printf("[Mermaid Preview] open failed (%d): %s %s", exitCode, stdout or "", stderr or "")
+      hs.alert.show("PDF をプレビューで開けませんでした")
+      return
+    end
 
-    M.preview = hs.webview.new({
-      x = screen.x + (screen.w - width) / 2,
-      y = screen.y + (screen.h - height) / 2,
-      w = width,
-      h = height,
-    })
-      :windowStyle({ "titled", "closable", "resizable", "miniaturizable" })
-      :closeOnEscape(true)
-      :windowTitle("Mermaid Preview")
+    -- 文書のウィンドウが開くのを待ってから前面へ移す。
+    hs.timer.doAfter(0.2, function()
+      local app = hs.application.get("com.apple.Preview")
+      if app then
+        app:activate()
+      end
+    end)
+  end, { "-a", "Preview", pdfPath })
+
+  if not task or not task:start() then
+    hs.alert.show("プレビューを起動できませんでした")
+  end
+end
+
+local function runMmdc(inputPath, outputPath, finished)
+  local task = hs.task.new(MMDC_PATH, function(exitCode, stdout, stderr)
+    M.task = nil
+    finished(exitCode == 0, stdout, stderr)
+  end, { "-i", inputPath, "-o", outputPath })
+
+  if not task then
+    finished(false, "", "Mermaid CLI を起動できませんでした")
+    return
   end
 
-  -- 一時ファイル名は生成ごとに異なるので、前の SVG が再表示されることはない。
-  M.preview:url("file://" .. svgPath)
-  M.preview:show()
+  -- Hammerspoon からも Homebrew の node を見つけられるようにする。
+  local env = task:environment()
+  env.PATH = "/opt/homebrew/bin:" .. (env.PATH or "/usr/bin:/bin")
+  task:setEnvironment(env)
 
-  local window = M.preview:hswindow()
-  if window then
-    window:focus()
+  M.task = task
+  if not task:start() then
+    M.task = nil
+    finished(false, "", "Mermaid CLI を起動できませんでした")
   end
-
-  if M.outputPath then
-    os.remove(M.outputPath)
-  end
-  M.outputPath = svgPath
 end
 
 local function renderMermaid(text)
@@ -65,11 +79,12 @@ local function renderMermaid(text)
     return
   end
 
-  -- 入出力とも一意の一時ファイルにし、連続実行でも描画結果を混同しない。
+  -- 出力名を毎回変え、プレビューが開いたままでも前の文書と衝突させない。
   local base = os.tmpname()
   os.remove(base)
   local inputPath = base .. ".mmd"
-  local outputPath = base .. ".svg"
+  local svgPath = base .. ".svg"
+  local pdfPath = base .. ".pdf"
 
   local file = io.open(inputPath, "w")
   if not file then
@@ -79,37 +94,31 @@ local function renderMermaid(text)
   file:write(text)
   file:close()
 
-  local task = hs.task.new(MMDC_PATH, function(exitCode, stdout, stderr)
-    M.task = nil
+  local function fail(outputType, stdout, stderr)
     os.remove(inputPath)
+    os.remove(svgPath)
+    os.remove(pdfPath)
+    hs.printf("[Mermaid Preview] %s conversion failed: %s %s", outputType, stdout or "", stderr or "")
+    hs.alert.show("Mermaid の変換に失敗しました（Console を確認）")
+  end
 
-    if exitCode ~= 0 then
-      os.remove(outputPath)
-      hs.printf("[Mermaid Preview] mmdc failed (%d): %s %s", exitCode, stdout or "", stderr or "")
-      hs.alert.show("Mermaid の変換に失敗しました（Console を確認）")
+  -- SVG は元の用途どおり残し、macOS のプレビューで開く PDF も生成する。
+  runMmdc(inputPath, svgPath, function(svgOK, stdout, stderr)
+    if not svgOK then
+      fail("SVG", stdout, stderr)
       return
     end
 
-    showPreview(outputPath)
-  end, { "-i", inputPath, "-o", outputPath })
+    runMmdc(inputPath, pdfPath, function(pdfOK, pdfStdout, pdfStderr)
+      if not pdfOK then
+        fail("PDF", pdfStdout, pdfStderr)
+        return
+      end
 
-  if not task then
-    os.remove(inputPath)
-    hs.alert.show("Mermaid CLI を起動できませんでした")
-    return
-  end
-
-  -- GUI アプリからも Homebrew の node を見つけられるようにする。
-  local env = task:environment()
-  env.PATH = "/opt/homebrew/bin:" .. (env.PATH or "/usr/bin:/bin")
-  task:setEnvironment(env)
-
-  M.task = task
-  if not task:start() then
-    M.task = nil
-    os.remove(inputPath)
-    hs.alert.show("Mermaid CLI を起動できませんでした")
-  end
+      os.remove(inputPath)
+      openPreview(pdfPath)
+    end)
+  end)
 end
 
 local function previewSelection()
