@@ -1,6 +1,9 @@
 local M = {}
 
 local MMDC_PATH = "/opt/homebrew/bin/mmdc"
+-- 背景と接続線の色を SVG / PDF で共通にする。
+local THEME_CONFIG_PATH = hs.configdir .. "/modules/mermaid_theme.json"
+local BACKGROUND_COLOR = "#0F172A"
 local COPY_DELAY_SECONDS = 0.15
 local COPY_TIMEOUT_SECONDS = 1
 
@@ -56,7 +59,7 @@ local function runMmdc(inputPath, outputPath, finished)
   local task = hs.task.new(MMDC_PATH, function(exitCode, stdout, stderr)
     M.task = nil
     finished(exitCode == 0, stdout, stderr)
-  end, { "-i", inputPath, "-o", outputPath })
+  end, { "-i", inputPath, "-o", outputPath, "-c", THEME_CONFIG_PATH, "-b", BACKGROUND_COLOR })
 
   if not task then
     finished(false, "", "Mermaid CLI を起動できませんでした")
