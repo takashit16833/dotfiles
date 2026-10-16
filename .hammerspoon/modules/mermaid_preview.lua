@@ -24,6 +24,7 @@ end
 -- 標準アプリのウィンドウなら Cmd+W と既存の Hyper ウィンドウ操作が使える。
 local function openPreview(pdfPath)
   local task = hs.task.new("/usr/bin/open", function(exitCode, stdout, stderr)
+    M.openTask = nil
     if exitCode ~= 0 then
       hs.printf("[Mermaid Preview] open failed (%d): %s %s", exitCode, stdout or "", stderr or "")
       hs.alert.show("PDF をプレビューで開けませんでした")
@@ -39,7 +40,14 @@ local function openPreview(pdfPath)
     end)
   end, { "-a", "Preview", pdfPath })
 
-  if not task or not task:start() then
+  if not task then
+    hs.alert.show("プレビューを起動できませんでした")
+    return
+  end
+
+  M.openTask = task
+  if not task:start() then
+    M.openTask = nil
     hs.alert.show("プレビューを起動できませんでした")
   end
 end
