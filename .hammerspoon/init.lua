@@ -359,11 +359,37 @@ hs.hotkey.bind(hyper, "-", function()
   cycleWindowUnits(rightWindowUnits)
 end)
 
--- Ctrl + Cmd + Option + A: macOS の fullscreen にはせず、
--- 現在のウィンドウを利用可能な領域いっぱいまで最大化する。
+-- Ctrl + Cmd + Option + A: 最大化と、最大化する前の位置・サイズを切り替える。
+-- ウィンドウごとに記憶し、ほかの操作で配置が変わった場合は新しい位置・サイズから開始する。
+local maximizedWindowFrames = {}
+
+local function framesNearlyEqual(a, b)
+  local tolerance = 5 -- アプリによる位置・サイズの丸め誤差を許容する。
+  return math.abs(a.x - b.x) <= tolerance
+    and math.abs(a.y - b.y) <= tolerance
+    and math.abs(a.w - b.w) <= tolerance
+    and math.abs(a.h - b.h) <= tolerance
+end
+
 hs.hotkey.bind(hyper, "a", function()
   withFocusedWindow(function(window)
-    window:maximize(0)
+    local windowID = window:id()
+    if not windowID then
+      return
+    end
+
+    local frame = window:frame()
+    local saved = maximizedWindowFrames[windowID]
+    if saved and framesNearlyEqual(frame, saved.maximized) then
+      window:setFrame(saved.original, 0)
+      maximizedWindowFrames[windowID] = nil
+    else
+      window:maximize(0)
+      maximizedWindowFrames[windowID] = {
+        original = frame,
+        maximized = window:frame(),
+      }
+    end
   end)
 end)
 
