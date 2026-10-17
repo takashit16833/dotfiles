@@ -224,7 +224,7 @@
   --bold-color: var(--rhb-blue);
   --italic-color: var(--rhb-blue);
 
-  --link-color: var(--rhb-blue);
+  --link-color: var(--rhb-blue-line-number);
   --link-color-hover: var(--rhb-white);
   --link-unresolved-color: #5EAFFF80;
   --link-unresolved-decoration-color: #5EAFFF60;
@@ -256,7 +256,7 @@
    * Code syntax
    * Mapped from retro-hacker-blue tokenColors.
    * ======================================================= */
-  --code-background: var(--rhb-section);
+  --code-background: #0A1A36;
   --code-normal: var(--rhb-blue);
   --code-comment: var(--rhb-comment);
   --code-function: var(--rhb-blue-function);
@@ -496,14 +496,14 @@
 
 .theme-dark .markdown-rendered code:not(pre code),
 .theme-dark .cm-inline-code:not(.cm-formatting) {
-  background-color: #00CED126;
-  color: var(--rhb-cyan);
+  background-color: #0A1A36;
+  color: var(--rhb-blue-string);
   border: none;
 }
 
 .theme-dark .markdown-rendered pre,
 .theme-dark .markdown-source-view.mod-cm6 .HyperMD-codeblock {
-  background-color: var(--rhb-section);
+  background-color: var(--code-background);
   border-color: #5EAFFF40;
 }
 
@@ -1080,4 +1080,15 @@
 
 .theme-dark .is-flashing {
   background-color: #2759AA40;
+}
+
+/* Match Org link emphasis in both reading and editing views. */
+.theme-dark .markdown-rendered a.internal-link,
+.theme-dark .markdown-rendered a.external-link,
+.theme-dark .markdown-source-view.mod-cm6 .cm-link,
+.theme-dark .markdown-source-view.mod-cm6 .cm-hmd-internal-link,
+.theme-dark .markdown-source-view.mod-cm6 .cm-url {
+  color: var(--link-color);
+  font-weight: 700;
+  text-decoration: underline;
 }
