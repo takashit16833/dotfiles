@@ -71,6 +71,31 @@ install_homebrew_packages() {
   npm --version >/dev/null 2>&1 || fail 'npm is still unavailable after Homebrew setup'
 }
 
+install_mermaid_cli() {
+  local mmdc_path="/opt/homebrew/bin/mmdc"
+  local npm_bin_dir
+
+  # Hammerspoon から使う固定パスに動く mmdc があれば、再インストールしない。
+  if [[ -x "$mmdc_path" ]] && "$mmdc_path" --version >/dev/null 2>&1; then
+    info "Mermaid CLI already installed: $mmdc_path"
+    return
+  fi
+
+  # npm の導入先が異なる場合は、動かない状態で完了させない。
+  npm_bin_dir="$(npm prefix -g)/bin"
+  if [[ "$npm_bin_dir" != "$(dirname "$mmdc_path")" ]]; then
+    fail "npm global bin is $npm_bin_dir; Mermaid preview expects $mmdc_path"
+  fi
+
+  info 'installing Mermaid CLI'
+  npm install --global --no-audit --no-fund @mermaid-js/mermaid-cli
+
+  if [[ ! -x "$mmdc_path" ]] || ! "$mmdc_path" --version >/dev/null 2>&1; then
+    fail "Mermaid CLI was not installed correctly at $mmdc_path"
+  fi
+  info "Mermaid CLI installed: $mmdc_path"
+}
+
 ensure_symlink() {
   local source="$1"
   local target="$2"
@@ -315,6 +340,7 @@ main() {
 
   install_wezterm_local_config
   install_homebrew_packages
+  install_mermaid_cli
   install_managed_scripts
 
   ensure_symlink \
