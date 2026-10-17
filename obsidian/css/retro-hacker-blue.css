@@ -291,7 +291,7 @@
   /* =========================================================
    * Graph
    * ======================================================= */
-  --graph-line: #2759AA60;
+  --graph-line: #5EAFFF99;
   --graph-node: var(--rhb-blue-line-number);
   --graph-node-unresolved: #5EAFFF60;
   --graph-node-focused: var(--rhb-white);
