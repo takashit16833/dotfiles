@@ -214,12 +214,12 @@
    * ======================================================= */
   --inline-title-color: var(--rhb-blue);
 
-  --h1-color: var(--rhb-blue);
-  --h2-color: var(--rhb-blue);
-  --h3-color: var(--rhb-blue);
-  --h4-color: var(--rhb-blue);
-  --h5-color: var(--rhb-blue);
-  --h6-color: var(--rhb-blue);
+  --h1-color: var(--rhb-blue-pale);
+  --h2-color: var(--rhb-blue-pale);
+  --h3-color: var(--rhb-blue-pale);
+  --h4-color: var(--rhb-blue-pale);
+  --h5-color: var(--rhb-blue-pale);
+  --h6-color: var(--rhb-blue-pale);
 
   --bold-color: var(--rhb-blue);
   --italic-color: var(--rhb-blue);
