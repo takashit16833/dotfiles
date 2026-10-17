@@ -325,23 +325,6 @@ hs.hotkey.bind(hyper, "-", function()
   end)
 end)
 
--- Ctrl + Cmd + Option + Shift + U/O/J/L: ウィンドウを画面の四隅（各 1/4）へ配置する。
--- U: 左上、O: 右上、J: 左下、L: 右下。
-local quarterWindowUnits = {
-  u = { x = 0, y = 0, w = 0.5, h = 0.5 },
-  o = { x = 0.5, y = 0, w = 0.5, h = 0.5 },
-  j = { x = 0, y = 0.5, w = 0.5, h = 0.5 },
-  l = { x = 0.5, y = 0.5, w = 0.5, h = 0.5 },
-}
-
-for key, unit in pairs(quarterWindowUnits) do
-  hs.hotkey.bind(hyperShift, key, function()
-    withFocusedWindow(function(window)
-      window:moveToUnit(unit)
-    end)
-  end)
-end
-
 -- Ctrl + Cmd + Option + A: macOS の fullscreen にはせず、
 -- 現在のウィンドウを利用可能な領域いっぱいまで最大化する。
 hs.hotkey.bind(hyper, "a", function()
