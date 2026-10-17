@@ -311,18 +311,52 @@ hs.hotkey.bind(hyper, "return", function()
   end)
 end)
 
--- Ctrl + Cmd + Option + I: 現在のウィンドウを画面の左半分へ配置する。
-hs.hotkey.bind(hyper, "i", function()
+-- 現在の配置に応じて、指定した候補を順番に切り替える。
+-- 手動で移動した場合や左右を切り替えた場合は、候補の先頭（半画面）から始める。
+local function cycleWindowUnits(units)
   withFocusedWindow(function(window)
-    window:moveToUnit({ x = 0, y = 0, w = 0.5, h = 1 })
+    local screen = window:screen()
+    if not screen then
+      return
+    end
+
+    local frame = window:frame()
+    local nextUnit = units[1]
+    local tolerance = 5 -- macOS 側の丸め誤差などを許容する（画面上のポイント単位）。
+
+    for index, unit in ipairs(units) do
+      local expected = screen:fromUnitRect(unit)
+      if math.abs(frame.x - expected.x) <= tolerance
+        and math.abs(frame.y - expected.y) <= tolerance
+        and math.abs(frame.w - expected.w) <= tolerance
+        and math.abs(frame.h - expected.h) <= tolerance then
+        nextUnit = units[index % #units + 1]
+        break
+      end
+    end
+
+    window:moveToUnit(nextUnit)
   end)
+end
+
+-- Ctrl + Cmd + Option + I: 左半分 → 左上 → 左下 → 左半分…。
+local leftWindowUnits = {
+  { x = 0, y = 0, w = 0.5, h = 1 },
+  { x = 0, y = 0, w = 0.5, h = 0.5 },
+  { x = 0, y = 0.5, w = 0.5, h = 0.5 },
+}
+hs.hotkey.bind(hyper, "i", function()
+  cycleWindowUnits(leftWindowUnits)
 end)
 
--- Ctrl + Cmd + Option + -: 現在のウィンドウを画面の右半分へ配置する。
+-- Ctrl + Cmd + Option + -: 右半分 → 右上 → 右下 → 右半分…。
+local rightWindowUnits = {
+  { x = 0.5, y = 0, w = 0.5, h = 1 },
+  { x = 0.5, y = 0, w = 0.5, h = 0.5 },
+  { x = 0.5, y = 0.5, w = 0.5, h = 0.5 },
+}
 hs.hotkey.bind(hyper, "-", function()
-  withFocusedWindow(function(window)
-    window:moveToUnit({ x = 0.5, y = 0, w = 0.5, h = 1 })
-  end)
+  cycleWindowUnits(rightWindowUnits)
 end)
 
 -- Ctrl + Cmd + Option + A: macOS の fullscreen にはせず、
