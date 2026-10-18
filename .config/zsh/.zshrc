@@ -14,6 +14,9 @@ alias gll='gita fetch && gita ll'
 # WezTerm との相性問題回避のため、lazygit は legacy キーボード入力を使う。
 alias lg='TCELL_KEYBOARD_PROTOCOL=legacy lazygit'
 
+# Homebrew本体・インストール済みパッケージの更新と不要ファイルの削除
+alias brewup='brew update && brew upgrade && brew cleanup'
+
 # コマンド履歴をセッションをまたいで保存し、複数の zsh で共有する。
 HISTFILE="$ZDOTDIR/.zsh_history"
 HISTSIZE=100000
