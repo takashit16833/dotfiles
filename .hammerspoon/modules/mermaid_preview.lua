@@ -1,9 +1,7 @@
 local M = {}
 
 local MMDC_PATH = "/opt/homebrew/bin/mmdc"
-local SIPS_PATH = "/usr/bin/sips"
-local PNG_SCALE = 2 -- PDF 化しても文字がにじみにくいよう、2 倍の解像度で描画する。
--- Mermaid の背景色は SVG / PNG には使えるが、PDF には反映されない。
+local PNG_SCALE = 2 -- Preview で拡大しても文字がにじみにくいよう、2 倍の解像度で描画する。
 local THEME_CONFIG_PATH = hs.configdir .. "/modules/mermaid_theme.json"
 local BACKGROUND_COLOR = "#0F172A"
 local COPY_DELAY_SECONDS = 0.15
@@ -26,24 +24,44 @@ local function normalizeMermaid(text)
   return text:match("^```mermaid[^\n]*\n(.-)\n```$") or text
 end
 
--- 標準アプリのウィンドウなら Cmd+W と既存の Hyper ウィンドウ操作が使える。
-local function openPreview(pdfPath)
+-- PNG は Preview の「ウインドウに合わせる」で縦横とも全体表示できる。
+-- 生成ファイルのウィンドウを確認してから操作し、ほかの書類は変更しない。
+local function openPreview(imagePath)
   local task = hs.task.new("/usr/bin/open", function(exitCode, stdout, stderr)
     M.openTask = nil
     if exitCode ~= 0 then
       hs.printf("[Mermaid Preview] open failed (%d): %s %s", exitCode, stdout or "", stderr or "")
-      hs.alert.show("PDF をプレビューで開けませんでした")
+      hs.alert.show("画像をプレビューで開けませんでした")
       return
     end
 
-    -- 文書のウィンドウが開くのを待ってから前面へ移す。
-    hs.timer.doAfter(0.2, function()
+    local filename = imagePath:match("[^/]+$")
+    local function fitImage(attempts)
       local app = hs.application.get("com.apple.Preview")
       if app then
-        app:activate()
+        for _, window in ipairs(app:allWindows()) do
+          if (window:title() or ""):find(filename, 1, true) then
+            window:focus()
+            -- Preview の「ウインドウに合わせる」。PDF は幅優先になることがある。
+            hs.eventtap.keyStroke({ "cmd" }, "9", 0, app)
+            return
+          end
+        end
       end
+
+      if attempts > 0 then
+        hs.timer.doAfter(0.1, function()
+          fitImage(attempts - 1)
+        end)
+      else
+        hs.printf("[Mermaid Preview] window not found for: %s", filename)
+      end
+    end
+
+    hs.timer.doAfter(0.2, function()
+      fitImage(20)
     end)
-  end, { "-a", "Preview", pdfPath })
+  end, { "-a", "Preview", imagePath })
 
   if not task then
     hs.alert.show("プレビューを起動できませんでした")
@@ -86,26 +104,6 @@ local function runMmdc(inputPath, outputPath, finished, scale)
   end
 end
 
--- PDF は Mermaid CLI から直接出すと背景が白くなるため、背景付き PNG を経由する。
--- sips は macOS 標準のコマンドなので、追加のインストールは不要。
-local function convertPngToPdf(pngPath, pdfPath, finished)
-  local task = hs.task.new(SIPS_PATH, function(exitCode, stdout, stderr)
-    M.task = nil
-    finished(exitCode == 0, stdout, stderr)
-  end, { "-s", "format", "pdf", pngPath, "--out", pdfPath })
-
-  if not task then
-    finished(false, "", "sips を起動できませんでした")
-    return
-  end
-
-  M.task = task
-  if not task:start() then
-    M.task = nil
-    finished(false, "", "sips を起動できませんでした")
-  end
-end
-
 local function renderMermaid(text)
   text = normalizeMermaid(text)
   if not text or text == "" then
@@ -124,7 +122,6 @@ local function renderMermaid(text)
   local inputPath = base .. ".mmd"
   local svgPath = base .. ".svg"
   local pngPath = base .. ".png"
-  local pdfPath = base .. ".pdf"
 
   local file = io.open(inputPath, "w")
   if not file then
@@ -138,12 +135,11 @@ local function renderMermaid(text)
     os.remove(inputPath)
     os.remove(svgPath)
     os.remove(pngPath)
-    os.remove(pdfPath)
     hs.printf("[Mermaid Preview] %s conversion failed: %s %s", outputType, stdout or "", stderr or "")
     hs.alert.show("Mermaid の変換に失敗しました（Console を確認）")
   end
 
-  -- ベクトル形式の SVG は残し、プレビュー用 PDF は背景付き PNG から生成する。
+  -- SVG は残し、プレビューには背景付き PNG を直接渡す。
   runMmdc(inputPath, svgPath, function(svgOK, stdout, stderr)
     if not svgOK then
       fail("SVG", stdout, stderr)
@@ -156,16 +152,8 @@ local function renderMermaid(text)
         return
       end
 
-      convertPngToPdf(pngPath, pdfPath, function(pdfOK, pdfStdout, pdfStderr)
-        if not pdfOK then
-          fail("PDF", pdfStdout, pdfStderr)
-          return
-        end
-
-        os.remove(inputPath)
-        os.remove(pngPath)
-        openPreview(pdfPath)
-      end)
+      os.remove(inputPath)
+      openPreview(pngPath)
     end, PNG_SCALE)
   end)
 end
