@@ -494,7 +494,7 @@ mouseNavigationEventTap:start()
 -- Ctrl + Cmd + Option + Q: 選択中のテキストを macOS 標準の翻訳 UI で表示する。
 require("modules.translation_popup").start()
 
--- Ctrl + Cmd + Option + L: 選択した Mermaid コードを SVG / PDF に変換し、PDF をプレビューで開く。
+-- Ctrl + Cmd + Option + L: 選択した Mermaid コードを SVG / PNG に変換し、PNG をプレビューで全体表示する。
 require("modules.mermaid_preview").start()
 
 -- ChatGPT の回答完了通知はブラウザ側の userscript と組み合わせて使う。
