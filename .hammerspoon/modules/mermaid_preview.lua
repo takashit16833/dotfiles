@@ -1,4 +1,5 @@
 local M = {}
+local mermaidSource = require("modules.mermaid_source")
 
 local MMDC_PATH = "/opt/homebrew/bin/mmdc"
 local PNG_SCALE = 2 -- Preview で拡大しても文字がにじみにくいよう、2 倍の解像度で描画する。
@@ -15,14 +16,6 @@ local function restorePasteboard(saved)
   end
 end
 
-local function normalizeMermaid(text)
-  if not text then
-    return nil
-  end
-
-  text = text:gsub("\r\n", "\n"):match("^%s*(.-)%s*$")
-  return text:match("^```mermaid[^\n]*\n(.-)\n```$") or text
-end
 
 -- PNG は Preview の「ウインドウに合わせる」で縦横とも全体表示できる。
 -- 生成ファイルのウィンドウを確認してから操作し、ほかの書類は変更しない。
@@ -105,7 +98,7 @@ local function runMmdc(inputPath, outputPath, finished, scale)
 end
 
 local function renderMermaid(text)
-  text = normalizeMermaid(text)
+  text = mermaidSource.normalize(text)
   if not text or text == "" then
     hs.alert.show("Mermaid コードを選択してください")
     return
