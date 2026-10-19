@@ -311,52 +311,50 @@ hs.hotkey.bind(hyper, "return", function()
   end)
 end)
 
--- 現在の配置に応じて、指定した候補を順番に切り替える。
--- 手動で移動した場合や左右を切り替えた場合は、候補の先頭（半画面）から始める。
-local function cycleWindowUnits(units)
+-- 横幅が 2400 ポイント以上の画面では左右を 1/3、それ以外では 1/2 に配置する。
+-- 27 インチ外部モニター（3008 ポイント）と MacBook（15 / 16 インチ）を想定。
+-- 中央は画面の大きさに関係なく 1/3 とする。
+-- 現在の配置は参照せず、同じキーで常に同じ位置・サイズへ移動する。
+local wideScreenMinWidth = 2400
+
+local function placeFocusedWindow(position)
   withFocusedWindow(function(window)
     local screen = window:screen()
     if not screen then
       return
     end
 
-    local frame = window:frame()
-    local nextUnit = units[1]
-    local tolerance = 5 -- macOS 側の丸め誤差などを許容する（画面上のポイント単位）。
-
-    for index, unit in ipairs(units) do
-      local expected = screen:fromUnitRect(unit)
-      if math.abs(frame.x - expected.x) <= tolerance
-        and math.abs(frame.y - expected.y) <= tolerance
-        and math.abs(frame.w - expected.w) <= tolerance
-        and math.abs(frame.h - expected.h) <= tolerance then
-        nextUnit = units[index % #units + 1]
-        break
-      end
+    local third = 1 / 3
+    local unit
+    if position == "center" then
+      unit = { x = third, y = 0, w = third, h = 1 }
+    else
+      local width = screen:frame().w >= wideScreenMinWidth and third or 0.5
+      unit = {
+        x = position == "left" and 0 or 1 - width,
+        y = 0,
+        w = width,
+        h = 1,
+      }
     end
 
-    window:moveToUnit(nextUnit)
+    window:moveToUnit(unit)
   end)
 end
 
--- Ctrl + Cmd + Option + I: 左半分 → 左上 → 左下 → 左半分…。
-local leftWindowUnits = {
-  { x = 0, y = 0, w = 0.5, h = 1 },
-  { x = 0, y = 0, w = 0.5, h = 0.5 },
-  { x = 0, y = 0.5, w = 0.5, h = 0.5 },
-}
+-- Ctrl + Cmd + Option + I: 広い画面では左 1/3、それ以外では左 1/2。
 hs.hotkey.bind(hyper, "i", function()
-  cycleWindowUnits(leftWindowUnits)
+  placeFocusedWindow("left")
 end)
 
--- Ctrl + Cmd + Option + -: 右半分 → 右上 → 右下 → 右半分…。
-local rightWindowUnits = {
-  { x = 0.5, y = 0, w = 0.5, h = 1 },
-  { x = 0.5, y = 0, w = 0.5, h = 0.5 },
-  { x = 0.5, y = 0.5, w = 0.5, h = 0.5 },
-}
+-- Ctrl + Cmd + Option + O: どの画面でも中央 1/3。
+hs.hotkey.bind(hyper, "o", function()
+  placeFocusedWindow("center")
+end)
+
+-- Ctrl + Cmd + Option + -: 広い画面では右 1/3、それ以外では右 1/2。
 hs.hotkey.bind(hyper, "-", function()
-  cycleWindowUnits(rightWindowUnits)
+  placeFocusedWindow("right")
 end)
 
 -- Ctrl + Cmd + Option + A: 最大化と、最大化する前の位置・サイズを切り替える。
