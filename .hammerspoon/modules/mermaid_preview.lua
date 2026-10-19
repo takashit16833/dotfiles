@@ -1,7 +1,9 @@
 local M = {}
 
 local MMDC_PATH = "/opt/homebrew/bin/mmdc"
--- 背景と接続線の色を SVG / PDF で共通にする。
+local SIPS_PATH = "/usr/bin/sips"
+local PNG_SCALE = 2 -- PDF 化しても文字がにじみにくいよう、2 倍の解像度で描画する。
+-- Mermaid の背景色は SVG / PNG には使えるが、PDF には反映されない。
 local THEME_CONFIG_PATH = hs.configdir .. "/modules/mermaid_theme.json"
 local BACKGROUND_COLOR = "#0F172A"
 local COPY_DELAY_SECONDS = 0.15
@@ -55,11 +57,17 @@ local function openPreview(pdfPath)
   end
 end
 
-local function runMmdc(inputPath, outputPath, finished)
+local function runMmdc(inputPath, outputPath, finished, scale)
+  local args = { "-i", inputPath, "-o", outputPath, "-c", THEME_CONFIG_PATH, "-b", BACKGROUND_COLOR }
+  if scale then
+    table.insert(args, "-s")
+    table.insert(args, tostring(scale))
+  end
+
   local task = hs.task.new(MMDC_PATH, function(exitCode, stdout, stderr)
     M.task = nil
     finished(exitCode == 0, stdout, stderr)
-  end, { "-i", inputPath, "-o", outputPath, "-c", THEME_CONFIG_PATH, "-b", BACKGROUND_COLOR })
+  end, args)
 
   if not task then
     finished(false, "", "Mermaid CLI を起動できませんでした")
@@ -75,6 +83,26 @@ local function runMmdc(inputPath, outputPath, finished)
   if not task:start() then
     M.task = nil
     finished(false, "", "Mermaid CLI を起動できませんでした")
+  end
+end
+
+-- PDF は Mermaid CLI から直接出すと背景が白くなるため、背景付き PNG を経由する。
+-- sips は macOS 標準のコマンドなので、追加のインストールは不要。
+local function convertPngToPdf(pngPath, pdfPath, finished)
+  local task = hs.task.new(SIPS_PATH, function(exitCode, stdout, stderr)
+    M.task = nil
+    finished(exitCode == 0, stdout, stderr)
+  end, { "-s", "format", "pdf", pngPath, "--out", pdfPath })
+
+  if not task then
+    finished(false, "", "sips を起動できませんでした")
+    return
+  end
+
+  M.task = task
+  if not task:start() then
+    M.task = nil
+    finished(false, "", "sips を起動できませんでした")
   end
 end
 
@@ -95,6 +123,7 @@ local function renderMermaid(text)
   os.remove(base)
   local inputPath = base .. ".mmd"
   local svgPath = base .. ".svg"
+  local pngPath = base .. ".png"
   local pdfPath = base .. ".pdf"
 
   local file = io.open(inputPath, "w")
@@ -108,27 +137,36 @@ local function renderMermaid(text)
   local function fail(outputType, stdout, stderr)
     os.remove(inputPath)
     os.remove(svgPath)
+    os.remove(pngPath)
     os.remove(pdfPath)
     hs.printf("[Mermaid Preview] %s conversion failed: %s %s", outputType, stdout or "", stderr or "")
     hs.alert.show("Mermaid の変換に失敗しました（Console を確認）")
   end
 
-  -- SVG は元の用途どおり残し、macOS のプレビューで開く PDF も生成する。
+  -- ベクトル形式の SVG は残し、プレビュー用 PDF は背景付き PNG から生成する。
   runMmdc(inputPath, svgPath, function(svgOK, stdout, stderr)
     if not svgOK then
       fail("SVG", stdout, stderr)
       return
     end
 
-    runMmdc(inputPath, pdfPath, function(pdfOK, pdfStdout, pdfStderr)
-      if not pdfOK then
-        fail("PDF", pdfStdout, pdfStderr)
+    runMmdc(inputPath, pngPath, function(pngOK, pngStdout, pngStderr)
+      if not pngOK then
+        fail("PNG", pngStdout, pngStderr)
         return
       end
 
-      os.remove(inputPath)
-      openPreview(pdfPath)
-    end)
+      convertPngToPdf(pngPath, pdfPath, function(pdfOK, pdfStdout, pdfStderr)
+        if not pdfOK then
+          fail("PDF", pdfStdout, pdfStderr)
+          return
+        end
+
+        os.remove(inputPath)
+        os.remove(pngPath)
+        openPreview(pdfPath)
+      end)
+    end, PNG_SCALE)
   end)
 end
 
