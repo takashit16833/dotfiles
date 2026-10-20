@@ -403,6 +403,9 @@ end
 -- ターミナルの文字サイズは13.5を維持する。
 config.font_size = 13.5
 
+-- 行間
+config.line_height = 1.1
+
 -- フォント設定。
 config.font = wezterm.font_with_fallback {
   "Menlo",
