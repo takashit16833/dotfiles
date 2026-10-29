@@ -117,15 +117,13 @@ end)
 -- 端末Emacs用のスクロール量転送。
 -- 通常のホイールで実測デルタを転送する。換算とCSI形式は試験時と同じ。
 -- マウス通知中、かつローカルのEmacsが前面にある場合だけ専用入力を送る。
--- mouse_reporting=true は他のTUIでも発火するため、Emacs以外では
--- 少なくともWezTermのスクロールバック操作へ戻す。
+-- 注意: mouse_reporting=true は他のマウス対応TUIのホイールも捕捉するため、
+-- Emacs以外のTUIでは通常のホイール操作が届かなくなる可能性がある。
 -- 独自CSI 0;902;方向;行数~ はEmacs側のmy/wezterm-wheel-installが解釈する。
 local function send_emacs_wheel(window, pane, direction, delta)
   local process = pane:get_foreground_process_name()
   local name = process and process:match("([^/\\]+)$")
   if not (name and name:lower():match("^emacs")) then
-    -- ホイールを捕捉したまま捨てず、通常のスクロールバックに戻す。
-    window:perform_action(wezterm.action.ScrollByCurrentEventWheelDelta, pane)
     return
   end
 
@@ -141,21 +139,6 @@ local function send_emacs_wheel(window, pane, direction, delta)
 end
 
 config.mouse_bindings = {
-  -- zsh等のマウス通知を使わない通常画面では標準スクロールを維持する。
-  {
-    event = { Down = { streak = 1, button = { WheelUp = 1 } } },
-    mods = "NONE",
-    mouse_reporting = false,
-    alt_screen = false,
-    action = wezterm.action.ScrollByCurrentEventWheelDelta,
-  },
-  {
-    event = { Down = { streak = 1, button = { WheelDown = 1 } } },
-    mods = "NONE",
-    mouse_reporting = false,
-    alt_screen = false,
-    action = wezterm.action.ScrollByCurrentEventWheelDelta,
-  },
   {
     event = { Down = { streak = 1, button = { WheelUp = 1 } } },
     mods = "NONE",
