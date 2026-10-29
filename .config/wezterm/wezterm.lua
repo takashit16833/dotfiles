@@ -114,9 +114,11 @@ wezterm.on("format-window-title", function()
   return wezterm.mux.get_active_workspace()
 end)
 
--- 端末Emacs用のスクロール量転送（試験運用）。
--- 通常のホイールは変更せず、Ctrl+ホイールだけで動作を確認する。
+-- 端末Emacs用のスクロール量転送。
+-- 通常のホイールで実測デルタを転送する。換算とCSI形式は試験時と同じ。
 -- マウス通知中、かつローカルのEmacsが前面にある場合だけ専用入力を送る。
+-- 注意: mouse_reporting=true は他のマウス対応TUIのホイールも捕捉するため、
+-- Emacs以外のTUIでは通常のホイール操作が届かなくなる可能性がある。
 -- 独自CSI 0;902;方向;行数~ はEmacs側のmy/wezterm-wheel-installが解釈する。
 local function send_emacs_wheel(window, pane, direction, delta)
   local process = pane:get_foreground_process_name()
@@ -139,7 +141,7 @@ end
 config.mouse_bindings = {
   {
     event = { Down = { streak = 1, button = { WheelUp = 1 } } },
-    mods = "CTRL",
+    mods = "NONE",
     mouse_reporting = true,
     action = wezterm.action_callback(function(window, pane)
       local event = window:current_event()
@@ -151,7 +153,7 @@ config.mouse_bindings = {
   },
   {
     event = { Down = { streak = 1, button = { WheelDown = 1 } } },
-    mods = "CTRL",
+    mods = "NONE",
     mouse_reporting = true,
     action = wezterm.action_callback(function(window, pane)
       local event = window:current_event()
