@@ -117,7 +117,7 @@ end)
 -- 端末Emacs用のスクロール量転送（試験運用）。
 -- 通常のホイールは変更せず、Ctrl+ホイールだけで動作を確認する。
 -- マウス通知中、かつローカルのEmacsが前面にある場合だけ専用入力を送る。
--- 独自CSI 902;方向;行数~ はEmacs側のmy/wezterm-wheel-installが解釈する。
+-- 独自CSI 0;902;方向;行数~ はEmacs側のmy/wezterm-wheel-installが解釈する。
 local function send_emacs_wheel(window, pane, direction, delta)
   local process = pane:get_foreground_process_name()
   local name = process and process:match("([^/\\]+)$")
@@ -132,7 +132,7 @@ local function send_emacs_wheel(window, pane, direction, delta)
   -- 実測: ゆっくり3〜4、普通9〜34、少し速め4〜60、最速76〜99。
   -- 単純な比例換算で最大12行。短時間で連続した回数は判定しない。
   local lines = math.max(1, math.min(12, math.ceil(math.abs(amount) / 8)))
-  local sequence = string.format("\x1b[902;%d;%d~", direction, lines)
+  local sequence = string.format("\x1b[0;902;%d;%d~", direction, lines)
   window:perform_action(wezterm.action.SendString(sequence), pane)
 end
 
