@@ -114,20 +114,38 @@ wezterm.on("format-window-title", function()
   return wezterm.mux.get_active_workspace()
 end)
 
--- Emacs (-nw) のスクロール診断。
--- 通常のホイール入力には触れず、マウス通知中のCtrl+ホイールだけ
--- WezTermが受け取った移動量をログへ出す。Ctrl+Shift+Lで確認できる。
--- 移動量を使った方式が確定したら、この一時的な診断設定は削除する。
+-- 端末Emacs用のスクロール量転送（試験運用）。
+-- 通常のホイールは変更せず、Ctrl+ホイールだけで動作を確認する。
+-- マウス通知中、かつローカルのEmacsが前面にある場合だけ専用入力を送る。
+-- 独自CSI 902;方向;行数~ はEmacs側のmy/wezterm-wheel-installが解釈する。
+local function send_emacs_wheel(window, pane, direction, delta)
+  local process = pane:get_foreground_process_name()
+  local name = process and process:match("([^/\\]+)$")
+  if not (name and name:lower():match("^emacs")) then
+    return
+  end
+
+  local amount = tonumber(delta)
+  if not amount then
+    return
+  end
+  -- 実測: ゆっくり3〜4、普通9〜34、少し速め4〜60、最速76〜99。
+  -- 単純な比例換算で最大12行。短時間で連続した回数は判定しない。
+  local lines = math.max(1, math.min(12, math.ceil(math.abs(amount) / 8)))
+  local sequence = string.format("\x1b[902;%d;%d~", direction, lines)
+  window:perform_action(wezterm.action.SendString(sequence), pane)
+end
+
 config.mouse_bindings = {
   {
     event = { Down = { streak = 1, button = { WheelUp = 1 } } },
     mods = "CTRL",
     mouse_reporting = true,
-    action = wezterm.action_callback(function(window, _)
+    action = wezterm.action_callback(function(window, pane)
       local event = window:current_event()
       local delta = event and event.Down and event.Down.button.WheelUp
       if delta then
-        wezterm.log_info("WHEEL_DELTA_UP=" .. tostring(delta))
+        send_emacs_wheel(window, pane, 1, delta)
       end
     end),
   },
@@ -135,11 +153,11 @@ config.mouse_bindings = {
     event = { Down = { streak = 1, button = { WheelDown = 1 } } },
     mods = "CTRL",
     mouse_reporting = true,
-    action = wezterm.action_callback(function(window, _)
+    action = wezterm.action_callback(function(window, pane)
       local event = window:current_event()
       local delta = event and event.Down and event.Down.button.WheelDown
       if delta then
-        wezterm.log_info("WHEEL_DELTA_DOWN=" .. tostring(delta))
+        send_emacs_wheel(window, pane, 2, delta)
       end
     end),
   },
