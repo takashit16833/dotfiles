@@ -114,6 +114,37 @@ wezterm.on("format-window-title", function()
   return wezterm.mux.get_active_workspace()
 end)
 
+-- Emacs (-nw) のスクロール診断。
+-- 通常のホイール入力には触れず、マウス通知中のCtrl+ホイールだけ
+-- WezTermが受け取った移動量をログへ出す。Ctrl+Shift+Lで確認できる。
+-- 移動量を使った方式が確定したら、この一時的な診断設定は削除する。
+config.mouse_bindings = {
+  {
+    event = { Down = { streak = 1, button = { WheelUp = 1 } } },
+    mods = "CTRL",
+    mouse_reporting = true,
+    action = wezterm.action_callback(function(window, _)
+      local event = window:current_event()
+      local delta = event and event.Down and event.Down.button.WheelUp
+      if delta then
+        wezterm.log_info("WHEEL_DELTA_UP=" .. tostring(delta))
+      end
+    end),
+  },
+  {
+    event = { Down = { streak = 1, button = { WheelDown = 1 } } },
+    mods = "CTRL",
+    mouse_reporting = true,
+    action = wezterm.action_callback(function(window, _)
+      local event = window:current_event()
+      local delta = event and event.Down and event.Down.button.WheelDown
+      if delta then
+        wezterm.log_info("WHEEL_DELTA_DOWN=" .. tostring(delta))
+      end
+    end),
+  },
+}
+
 -- キー設定。
 --
 -- LemではKitty Keyboard Protocolを使うため、通常の修飾キーはWezTerm側で
