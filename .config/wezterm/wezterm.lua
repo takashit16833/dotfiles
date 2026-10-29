@@ -114,6 +114,74 @@ wezterm.on("format-window-title", function()
   return wezterm.mux.get_active_workspace()
 end)
 
+-- 端末Emacs用のスクロール量転送。
+-- 通常のホイールで実測デルタを転送する。換算とCSI形式は試験時と同じ。
+-- マウス通知中、かつローカルのEmacsが前面にある場合だけ専用入力を送る。
+-- mouse_reporting=true は他のTUIでも発火するため、Emacs以外では
+-- 少なくともWezTermのスクロールバック操作へ戻す。
+-- 独自CSI 0;902;方向;行数~ はEmacs側のmy/wezterm-wheel-installが解釈する。
+local function send_emacs_wheel(window, pane, direction, delta)
+  local process = pane:get_foreground_process_name()
+  local name = process and process:match("([^/\\]+)$")
+  if not (name and name:lower():match("^emacs")) then
+    -- ホイールを捕捉したまま捨てず、通常のスクロールバックに戻す。
+    window:perform_action(wezterm.action.ScrollByCurrentEventWheelDelta, pane)
+    return
+  end
+
+  local amount = tonumber(delta)
+  if not amount then
+    return
+  end
+  -- 実測: ゆっくり3〜4、普通9〜34、少し速め4〜60、最速76〜99。
+  -- 単純な比例換算で最大12行。短時間で連続した回数は判定しない。
+  local lines = math.max(1, math.min(12, math.ceil(math.abs(amount) / 8)))
+  local sequence = string.format("\x1b[0;902;%d;%d~", direction, lines)
+  window:perform_action(wezterm.action.SendString(sequence), pane)
+end
+
+config.mouse_bindings = {
+  -- zsh等のマウス通知を使わない通常画面では標準スクロールを維持する。
+  {
+    event = { Down = { streak = 1, button = { WheelUp = 1 } } },
+    mods = "NONE",
+    mouse_reporting = false,
+    alt_screen = false,
+    action = wezterm.action.ScrollByCurrentEventWheelDelta,
+  },
+  {
+    event = { Down = { streak = 1, button = { WheelDown = 1 } } },
+    mods = "NONE",
+    mouse_reporting = false,
+    alt_screen = false,
+    action = wezterm.action.ScrollByCurrentEventWheelDelta,
+  },
+  {
+    event = { Down = { streak = 1, button = { WheelUp = 1 } } },
+    mods = "NONE",
+    mouse_reporting = true,
+    action = wezterm.action_callback(function(window, pane)
+      local event = window:current_event()
+      local delta = event and event.Down and event.Down.button.WheelUp
+      if delta then
+        send_emacs_wheel(window, pane, 1, delta)
+      end
+    end),
+  },
+  {
+    event = { Down = { streak = 1, button = { WheelDown = 1 } } },
+    mods = "NONE",
+    mouse_reporting = true,
+    action = wezterm.action_callback(function(window, pane)
+      local event = window:current_event()
+      local delta = event and event.Down and event.Down.button.WheelDown
+      if delta then
+        send_emacs_wheel(window, pane, 2, delta)
+      end
+    end),
+  },
+}
+
 -- キー設定。
 --
 -- LemではKitty Keyboard Protocolを使うため、通常の修飾キーはWezTerm側で
