@@ -146,10 +146,14 @@ html {
     background-color: var(--rhb-wp-block-panel) !important;
   }
 
-  /* Stronger background and blur keep underlying note text from overlapping
-   * dialog text, without fading the modal's own content. */
+  /* Preserve the original panel blue while increasing opacity and blurring
+   * the note behind dialogs. Modal text and controls remain unaffected. */
   body.theme-dark .modal:not(.mod-settings) {
-    background-color: var(--rhb-wp-panel-sidebar) !important;
+    background-color: color-mix(
+      in srgb,
+      var(--rhb-panel) var(--rhb-wallpaper-sidebar-opacity),
+      transparent
+    ) !important;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
