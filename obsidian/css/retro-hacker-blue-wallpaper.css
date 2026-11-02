@@ -113,20 +113,14 @@ html {
     background-color: var(--rhb-wp-panel-main) !important;
   }
 
-  /* Settings buttons follow the existing block opacity. Keep the CTA and
-   * enabled switches blue, with light CTA text for contrast on dark wallpaper. */
-  body.theme-dark .modal.mod-settings {
-    --interactive-normal: var(--rhb-wp-block-panel);
-    --interactive-accent: var(--rhb-wp-block-accent);
-    --interactive-accent-hover: var(--rhb-wp-block-accent);
+  /* Settings controls: tint backgrounds only, without changing text,
+   * icons, borders, or Obsidian's shared interactive color variables. */
+  body.theme-dark .modal.mod-settings button:not(.mod-cta) {
+    background-color: var(--rhb-wp-block-panel);
   }
 
   body.theme-dark .modal.mod-settings button.mod-cta,
-  body.theme-dark .modal.mod-settings button.mod-cta:hover {
-    background-color: var(--rhb-wp-block-accent);
-    color: var(--rhb-white-soft);
-  }
-
+  body.theme-dark .modal.mod-settings button.mod-cta:hover,
   body.theme-dark .modal.mod-settings .checkbox-container.is-enabled {
     background-color: var(--rhb-wp-block-accent);
   }
@@ -196,14 +190,17 @@ html {
     fill: var(--rhb-wp-block-note) !important;
   }
 
+  /* SVG groups and HTML label text must not inherit a translucent fill. */
   body.theme-dark :is(.mermaid, .mermaid-zoom-modal-wrapper) :is(
     .edgeLabel,
-    .edgeLabel rect,
     .edgeLabel div,
     .edgeLabel span,
     .edgeLabel p
   ) {
     background-color: var(--rhb-wp-block-editor) !important;
+  }
+
+  body.theme-dark :is(.mermaid, .mermaid-zoom-modal-wrapper) .edgeLabel rect {
     fill: var(--rhb-wp-block-editor) !important;
   }
 
