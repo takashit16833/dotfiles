@@ -213,5 +213,15 @@
         "**/node_modules",
         "**/out",
         "**/dist-newstyle",
-    ]
+    ],
+    // 背景設定
+    "background.fullscreen": {
+        "images": [
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTo0B_13mruA23PvBIpM3AgDhrgOob9BbCQudhi6nxlaw&s=10"
+        ],
+        "opacity": 0.1,
+        "size": "cover",
+        "position": "center"
+    },
+    "background.enabled": true
 }
