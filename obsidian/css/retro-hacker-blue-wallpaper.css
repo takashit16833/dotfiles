@@ -127,6 +127,11 @@ html {
     background-color: var(--rhb-wp-block-section-strong);
   }
 
+  /* Property labels use the same opacity as other content blocks. */
+  body.theme-dark .metadata-property-key {
+    background-color: var(--rhb-wp-block-panel) !important;
+  }
+
   /* Mermaid uses SVG fill, not background-color. These cover normal diagrams
    * and the cloned SVG from the Mermaid Zoom plugin without touching text. */
   body.theme-dark :is(.mermaid, .mermaid-zoom-modal-wrapper) :is(
