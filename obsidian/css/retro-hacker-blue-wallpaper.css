@@ -146,14 +146,10 @@ html {
     background-color: var(--rhb-wp-block-panel) !important;
   }
 
-  /* Preserve the original panel blue while increasing opacity and blurring
-   * the note behind dialogs. Modal text and controls remain unaffected. */
+  /* Blur only the content behind dialogs; preserve the original panel
+   * color and shared block opacity without affecting dialog contents. */
   body.theme-dark .modal:not(.mod-settings) {
-    background-color: color-mix(
-      in srgb,
-      var(--rhb-panel) var(--rhb-wallpaper-sidebar-opacity),
-      transparent
-    ) !important;
+    background-color: var(--rhb-wp-block-panel) !important;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
