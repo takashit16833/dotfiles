@@ -30,6 +30,7 @@ html {
     --rhb-wp-panel-main: color-mix(in srgb, var(--rhb-editor) var(--rhb-wallpaper-panel-opacity), transparent);
     --rhb-wp-panel-sidebar: color-mix(in srgb, #000716 var(--rhb-wallpaper-sidebar-opacity), transparent);
     --rhb-wp-block-code: color-mix(in srgb, #0A1A36 var(--rhb-wallpaper-block-opacity), transparent);
+    --rhb-wp-inline-code: color-mix(in srgb, var(--rhb-quick-focus) var(--rhb-wallpaper-block-opacity), transparent);
     --rhb-wp-block-section: color-mix(in srgb, var(--rhb-section) var(--rhb-wallpaper-block-opacity), transparent);
     --rhb-wp-block-section-strong: color-mix(in srgb, var(--rhb-section-strong) var(--rhb-wallpaper-block-opacity), transparent);
     --rhb-wp-block-panel: color-mix(in srgb, var(--rhb-panel) var(--rhb-wallpaper-block-opacity), transparent);
@@ -192,14 +193,20 @@ html {
     background-color: var(--rhb-wp-block-panel) !important;
   }
 
-  /* Code blocks and inline code: identical transparency in both views. */
+  /* Code blocks keep their own background; inline code matches Emacs.
+   * Both follow the existing content-block opacity when a wallpaper is used. */
   body.theme-dark :is(
     .markdown-rendered pre,
-    .markdown-source-view.mod-cm6 .HyperMD-codeblock,
+    .markdown-source-view.mod-cm6 .HyperMD-codeblock
+  ) {
+    background-color: var(--rhb-wp-block-code);
+  }
+
+  body.theme-dark :is(
     .markdown-rendered code:not(pre code),
     .cm-inline-code:not(.cm-formatting)
   ) {
-    background-color: var(--rhb-wp-block-code);
+    background-color: var(--rhb-wp-inline-code);
   }
 
   /* Tables, block quotes and callouts all share the same block opacity. */
