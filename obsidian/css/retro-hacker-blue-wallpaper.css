@@ -21,13 +21,14 @@ html {
     /* Wallpaper: centered, covering the entire window without tiling. */
     --rhb-wallpaper-tint: #7085B0;
 
-    /* Two controls instead of separate values for every component. */
+    /* Separate opacity for main surfaces, sidebars and content blocks. */
     --rhb-wallpaper-panel-opacity: 70%;
+    --rhb-wallpaper-sidebar-opacity: 70%;
     --rhb-wallpaper-block-opacity: 50%;
 
     /* Derived colors preserve the base theme's blue palette. */
     --rhb-wp-panel-main: color-mix(in srgb, var(--rhb-editor) var(--rhb-wallpaper-panel-opacity), transparent);
-    --rhb-wp-panel-sidebar: color-mix(in srgb, #000716 var(--rhb-wallpaper-panel-opacity), transparent);
+    --rhb-wp-panel-sidebar: color-mix(in srgb, #000716 var(--rhb-wallpaper-sidebar-opacity), transparent);
     --rhb-wp-block-code: color-mix(in srgb, #0A1A36 var(--rhb-wallpaper-block-opacity), transparent);
     --rhb-wp-block-section: color-mix(in srgb, var(--rhb-section) var(--rhb-wallpaper-block-opacity), transparent);
     --rhb-wp-block-section-strong: color-mix(in srgb, var(--rhb-section-strong) var(--rhb-wallpaper-block-opacity), transparent);
@@ -78,7 +79,7 @@ html {
     background-color: transparent !important;
   }
 
-  /* Major areas: one opacity shared by editor, sidebars and header strips. */
+  /* Main workspace surfaces and headers use the panel opacity. */
   body.theme-dark :is(
     .workspace-split.mod-root,
     .workspace-tab-header-container,
@@ -87,6 +88,7 @@ html {
     background-color: var(--rhb-wp-panel-main);
   }
 
+  /* Sidebar surfaces use their own opacity without changing the dark-blue color. */
   body.theme-dark :is(
     .workspace-split.mod-left-split,
     .workspace-split.mod-right-split,
