@@ -12,7 +12,6 @@
  *   - Appearance: Dark
  *   - Enable this file as a CSS snippet
  */
-
 .theme-dark {
   /* =========================================================
    * Retro Hacker Blue palette
@@ -28,7 +27,6 @@
   --rhb-section-strong: #0A2D63;
   --rhb-command-active: #002C52;
   --rhb-quick-focus: #052A59;
-
   --rhb-blue: #5EAFFF;
   --rhb-blue-fg: #4C9EEB;
   --rhb-blue-soft: #7CBEFF;
@@ -43,20 +41,16 @@
   --rhb-blue-border-dark: #153A75;
   --rhb-border-subtle: #153A7566;
   --rhb-border-soft: #5EAFFF41;
-
   --rhb-purple: #8A5EC0;
   --rhb-purple-bright: #B07CFF;
   --rhb-yellow: #FFD700;
   --rhb-orange: #FFA500;
   --rhb-cyan: #00CED1;
-
   /* Requested replacement for all original red/error roles. */
   --rhb-error: #FF4DE1;
-
   --rhb-white: #FFFFFF;
   --rhb-white-soft: #DDF0FF;
   --rhb-comment: #7C8DD990;
-
   /* =========================================================
    * Obsidian foundation colors
    * ======================================================= */
@@ -72,7 +66,6 @@
   --color-base-60: var(--rhb-blue-fg);
   --color-base-70: var(--rhb-blue-soft);
   --color-base-100: var(--rhb-blue);
-
   --color-red: var(--rhb-error);
   --color-orange: var(--rhb-orange);
   --color-yellow: var(--rhb-yellow);
@@ -81,7 +74,6 @@
   --color-blue: var(--rhb-blue);
   --color-purple: var(--rhb-purple);
   --color-pink: var(--rhb-error);
-
   /* =========================================================
    * Main surfaces
    * VS Code:
@@ -96,7 +88,6 @@
   --background-modifier-form-field: var(--rhb-panel);
   --background-modifier-form-field-highlighted: var(--rhb-command-active);
   --background-modifier-box-shadow: #0040AA20;
-
   --background-modifier-hover: #2759AA20;
   --background-modifier-active-hover: #2759AA40;
   /* Keep ordinary separators quiet; reserve the bright blue for focus. */
@@ -104,11 +95,9 @@
   --background-modifier-border-hover: #2759AA80;
   --background-modifier-border-focus: var(--rhb-blue);
   --background-modifier-message: var(--rhb-panel);
-
   --background-modifier-error: color-mix(in oklch, var(--rhb-error) 20%, transparent);
   --background-modifier-error-hover: color-mix(in oklch, var(--rhb-error) 30%, transparent);
   --background-modifier-success: #2759AA40;
-
   /* =========================================================
    * Text
    * ======================================================= */
@@ -117,18 +106,15 @@
   --text-faint: color-mix(in oklch, var(--rhb-blue) 50%, transparent);
   --text-on-accent: #000000;
   --text-on-accent-inverted: var(--rhb-deep);
-
   --text-accent: var(--rhb-blue);
   --text-accent-hover: var(--rhb-white);
   --text-success: var(--rhb-blue);
   --text-warning: var(--rhb-yellow);
   --text-error: var(--rhb-error);
-
   --text-selection: #3670BD56;
   --text-highlight-bg: #FFA50026;
   --text-highlight-bg-active: #FFA50036;
   --caret-color: var(--rhb-blue);
-
   /* =========================================================
    * Interactive controls
    * ======================================================= */
@@ -137,12 +123,10 @@
   --interactive-accent: var(--rhb-blue);
   --interactive-accent-hover: var(--rhb-blue);
   --interactive-success: var(--rhb-blue);
-
   --icon-color: var(--rhb-blue);
   --icon-color-hover: var(--rhb-white);
   --icon-color-active: var(--rhb-blue);
   --icon-color-focused: var(--rhb-blue);
-
   /* =========================================================
    * Title bar / ribbon / status bar
    * ======================================================= */
@@ -150,17 +134,14 @@
   --titlebar-background-focused: var(--rhb-sidebar);
   --titlebar-text-color: #5EAFFF80;
   --titlebar-text-color-focused: var(--rhb-blue);
-
   --ribbon-background: var(--rhb-ribbon);
   --ribbon-background-collapsed: var(--rhb-ribbon);
-
   --status-bar-background: var(--rhb-status);
   --status-bar-text-color: var(--rhb-blue);
   --status-bar-border-color: var(--rhb-border-subtle);
   --titlebar-border-color: var(--rhb-border-subtle);
   --divider-color: var(--rhb-border-subtle);
   --divider-color-hover: #2759AA80;
-
   /* =========================================================
    * Tabs
    * ======================================================= */
@@ -174,7 +155,6 @@
   --tab-text-color-focused-active-current: var(--rhb-blue);
   --tab-divider-color: var(--rhb-border-subtle);
   --tab-outline-color: transparent;
-
   /* =========================================================
    * Navigation / file explorer
    * ======================================================= */
@@ -185,73 +165,58 @@
   --nav-item-background-hover: #2759AA20;
   --nav-item-background-active: #2759AA40;
   --nav-item-background-selected: #2759AA30;
-
   --nav-collapse-icon-color: var(--rhb-blue-line-number);
   --nav-collapse-icon-color-collapsed: var(--rhb-blue);
   --nav-indentation-guide-color: #2759AA40;
-
   /* =========================================================
    * Modal / prompt / menus
    * ======================================================= */
   --modal-background: var(--rhb-panel);
   --modal-border-color: var(--rhb-border-soft);
-
   --prompt-background: var(--rhb-panel);
   --prompt-border-color: var(--rhb-border-soft);
-
   --menu-background: var(--rhb-panel);
-
   /* =========================================================
    * Scrollbars
    * ======================================================= */
   --scrollbar-bg: transparent;
   --scrollbar-thumb-bg: #5EAFFF40;
   --scrollbar-active-thumb-bg: #5EAFFF80;
-
   /* =========================================================
    * Markdown editor
    * Source theme gives Markdown markup the main blue.
    * ======================================================= */
   --inline-title-color: var(--rhb-blue);
-
   --h1-color: var(--rhb-blue-pale);
   --h2-color: var(--rhb-blue-pale);
   --h3-color: var(--rhb-blue-pale);
   --h4-color: var(--rhb-blue-pale);
   --h5-color: var(--rhb-blue-pale);
   --h6-color: var(--rhb-blue-pale);
-
   --bold-color: var(--rhb-blue);
   --italic-color: var(--rhb-blue);
-
   --link-color: var(--rhb-blue-line-number);
   --link-color-hover: var(--rhb-white);
   --link-unresolved-color: #5EAFFF80;
   --link-unresolved-decoration-color: #5EAFFF60;
   --link-external-color: var(--rhb-blue-soft);
   --link-external-color-hover: var(--rhb-white);
-
   --tag-color: var(--rhb-blue);
   --tag-color-hover: var(--rhb-white);
   --tag-background: #2759AA30;
   --tag-background-hover: #2759AA50;
-
   --blockquote-color: var(--rhb-blue-fg);
   --blockquote-background-color: var(--rhb-section);
   --blockquote-border-color: var(--rhb-blue);
-
   --hr-color: #5EAFFF80;
-
   --list-marker-color: var(--rhb-blue-line-number);
   --list-marker-color-hover: var(--rhb-blue);
   --list-marker-color-collapsed: var(--rhb-blue);
-
   --checkbox-color: var(--rhb-blue);
   --checkbox-color-hover: var(--rhb-white);
   --checkbox-border-color: var(--rhb-blue);
   --checkbox-border-color-hover: var(--rhb-white);
   --checklist-done-color: #5EAFFF80;
-
   /* =========================================================
    * Code syntax
    * Mapped from retro-hacker-blue tokenColors.
@@ -268,7 +233,6 @@
   --code-string: var(--rhb-blue-string);
   --code-tag: var(--rhb-blue);
   --code-value: var(--rhb-yellow);
-
   /* =========================================================
    * Tables / metadata / embeds
    * ======================================================= */
@@ -278,16 +242,13 @@
   --table-row-background-hover: #2759AA20;
   --table-border-color: #5EAFFF80;
   --table-text-color: var(--rhb-blue);
-
   --metadata-background: transparent;
   --metadata-border-color: #5EAFFF80;
   --metadata-label-text-color: #5EAFFF80;
   --metadata-input-text-color: var(--rhb-blue);
   --metadata-input-background-active: #2759AA20;
-
   --embed-block-shadow-hover: 0 0 0 1px var(--rhb-blue);
   --embed-border-start: 2px solid var(--rhb-blue);
-
   /* =========================================================
    * Graph
    * ======================================================= */
@@ -299,11 +260,9 @@
   --graph-node-attachment: var(--rhb-purple-bright);
 }
 
-
 /* ===========================================================
  * Workspace structure
  * ========================================================= */
-
 .theme-dark .workspace-ribbon {
   background-color: var(--rhb-ribbon);
   border-color: var(--rhb-border-subtle);
@@ -345,11 +304,9 @@
   box-shadow: none;
 }
 
-
 /* ===========================================================
  * File explorer / lists
  * ========================================================= */
-
 .theme-dark .nav-files-container,
 .theme-dark .workspace-leaf-content[data-type="file-explorer"] {
   background-color: var(--rhb-sidebar);
@@ -368,11 +325,9 @@
   color: var(--rhb-white);
 }
 
-
 /* ===========================================================
  * Editor: current line, selection, search
  * ========================================================= */
-
 .theme-dark .markdown-source-view.mod-cm6 .cm-line.cm-active,
 .theme-dark .markdown-source-view.mod-cm6 .cm-activeLine {
   background-color: #0C2B5E7A;
@@ -398,12 +353,10 @@
   outline-color: var(--rhb-blue);
 }
 
-
 /* ===========================================================
  * Quick switcher / command palette / suggestion lists
  * VS Code quickInput.*
  * ========================================================= */
-
 .theme-dark .prompt,
 .theme-dark .suggestion-container {
   background-color: var(--rhb-panel);
@@ -443,11 +396,9 @@
   color: var(--rhb-white);
 }
 
-
 /* ===========================================================
  * Buttons / toggles / settings
  * ========================================================= */
-
 .theme-dark button.mod-cta {
   background-color: var(--rhb-blue);
   color: #000000;
@@ -483,11 +434,9 @@
   color: var(--rhb-white);
 }
 
-
 /* ===========================================================
  * Markdown details
  * ========================================================= */
-
 .theme-dark .markdown-rendered mark,
 .theme-dark .cm-highlight {
   background-color: #FFA50026;
@@ -512,12 +461,10 @@
   border-color: var(--rhb-blue);
 }
 
-
 /* ===========================================================
  * Extra syntax fidelity
  * Prism (Reading view) + common CodeMirror token classes
  * ========================================================= */
-
 /* Types / classes */
 .theme-dark .markdown-rendered pre code .token.class-name,
 .theme-dark .markdown-rendered pre code .token.builtin,
@@ -599,14 +546,12 @@
   text-decoration: underline;
 }
 
-
 /* ===========================================================
  * Mermaid diagrams
  * Keep the same mature, low-border look as the rest of the UI.
  * Mermaid injects its own scoped styles, so overrides use
  * !important intentionally.
  * ========================================================= */
-
 .theme-dark .mermaid {
   background: transparent !important;
   color: var(--rhb-blue) !important;
@@ -816,13 +761,11 @@
   color: var(--rhb-yellow) !important;
 }
 
-
 /* ===========================================================
  * Mermaid Zoom plugin
  * The plugin clones the rendered SVG outside the original .mermaid element,
  * so mirror the Retro Hacker Blue Mermaid rules in its fullscreen wrapper.
  * ========================================================= */
-
 .theme-dark .mermaid-zoom-modal {
   background: var(--rhb-editor) !important;
 }
@@ -1022,11 +965,9 @@
   color: var(--rhb-yellow) !important;
 }
 
-
 /* ===========================================================
  * Error / warning states
  * ========================================================= */
-
 .theme-dark .mod-error,
 .theme-dark .setting-item.mod-warning .setting-item-name,
 .theme-dark .notice.mod-error {
@@ -1048,11 +989,9 @@
   color: var(--rhb-yellow);
 }
 
-
 /* ===========================================================
  * Scrollbars — mirrors VS Code scrollbarSlider.*
  * ========================================================= */
-
 .theme-dark ::-webkit-scrollbar {
   background-color: transparent;
 }
@@ -1069,11 +1008,9 @@
   background-color: #5EAFFF80;
 }
 
-
 /* ===========================================================
  * Focus
  * ========================================================= */
-
 .theme-dark :focus-visible {
   outline-color: var(--rhb-blue);
 }
