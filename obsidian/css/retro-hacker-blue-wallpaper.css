@@ -22,9 +22,9 @@ html {
     --rhb-wallpaper-tint: #7085B0;
 
     /* Separate opacity for main surfaces, sidebars and content blocks. */
-    --rhb-wallpaper-panel-opacity: 70%;
-    --rhb-wallpaper-sidebar-opacity: 85%;
-    --rhb-wallpaper-block-opacity: 50%;
+    --rhb-wallpaper-panel-opacity: 80%;
+    --rhb-wallpaper-sidebar-opacity: 90%;
+    --rhb-wallpaper-block-opacity: 60%;
 
     /* Derived colors preserve the base theme's blue palette. */
     --rhb-wp-panel-main: color-mix(in srgb, var(--rhb-editor) var(--rhb-wallpaper-panel-opacity), transparent);
