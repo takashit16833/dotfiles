@@ -29,6 +29,9 @@
   --rhb-command-active: #002C52;
   --rhb-quick-focus: #052A59;
 
+  /* Keep foregrounds opaque and halve each background layer's existing alpha. */
+  --rhb-background-opacity: 50%;
+
   --rhb-blue: #5EAFFF;
   --rhb-blue-fg: #4C9EEB;
   --rhb-blue-soft: #7CBEFF;
@@ -60,12 +63,12 @@
   /* =========================================================
    * Obsidian foundation colors
    * ======================================================= */
-  --color-base-00: var(--rhb-editor);
-  --color-base-05: var(--rhb-editor);
-  --color-base-10: var(--rhb-sidebar);
-  --color-base-20: var(--rhb-panel);
-  --color-base-25: var(--rhb-section);
-  --color-base-30: var(--rhb-section-strong);
+  --color-base-00: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent);
+  --color-base-05: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent);
+  --color-base-10: color-mix(in srgb, var(--rhb-sidebar) var(--rhb-background-opacity), transparent);
+  --color-base-20: color-mix(in srgb, var(--rhb-panel) var(--rhb-background-opacity), transparent);
+  --color-base-25: color-mix(in srgb, var(--rhb-section) var(--rhb-background-opacity), transparent);
+  --color-base-30: color-mix(in srgb, var(--rhb-section-strong) var(--rhb-background-opacity), transparent);
   --color-base-35: #12397E;
   --color-base-40: #1C6DD7;
   --color-base-50: var(--rhb-blue-line-number);
@@ -89,25 +92,25 @@
    * sideBar.background -> #010114
    * panel.background   -> #001E4A
    * ======================================================= */
-  --background-primary: var(--rhb-editor);
-  --background-primary-alt: var(--rhb-deep);
-  --background-secondary: var(--rhb-sidebar);
-  --background-secondary-alt: var(--rhb-section);
-  --background-modifier-form-field: var(--rhb-panel);
-  --background-modifier-form-field-highlighted: var(--rhb-command-active);
+  --background-primary: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent);
+  --background-primary-alt: color-mix(in srgb, var(--rhb-deep) var(--rhb-background-opacity), transparent);
+  --background-secondary: color-mix(in srgb, var(--rhb-sidebar) var(--rhb-background-opacity), transparent);
+  --background-secondary-alt: color-mix(in srgb, var(--rhb-section) var(--rhb-background-opacity), transparent);
+  --background-modifier-form-field: color-mix(in srgb, var(--rhb-panel) var(--rhb-background-opacity), transparent);
+  --background-modifier-form-field-highlighted: color-mix(in srgb, var(--rhb-command-active) var(--rhb-background-opacity), transparent);
   --background-modifier-box-shadow: #0040AA20;
 
-  --background-modifier-hover: #2759AA20;
-  --background-modifier-active-hover: #2759AA40;
+  --background-modifier-hover: color-mix(in srgb, #2759AA20 var(--rhb-background-opacity), transparent);
+  --background-modifier-active-hover: color-mix(in srgb, #2759AA40 var(--rhb-background-opacity), transparent);
   /* Keep ordinary separators quiet; reserve the bright blue for focus. */
   --background-modifier-border: var(--rhb-border-subtle);
   --background-modifier-border-hover: #2759AA80;
   --background-modifier-border-focus: var(--rhb-blue);
-  --background-modifier-message: var(--rhb-panel);
+  --background-modifier-message: color-mix(in srgb, var(--rhb-panel) var(--rhb-background-opacity), transparent);
 
-  --background-modifier-error: color-mix(in oklch, var(--rhb-error) 20%, transparent);
-  --background-modifier-error-hover: color-mix(in oklch, var(--rhb-error) 30%, transparent);
-  --background-modifier-success: #2759AA40;
+  --background-modifier-error: color-mix(in srgb, color-mix(in oklch, var(--rhb-error) 20%, transparent) var(--rhb-background-opacity), transparent);
+  --background-modifier-error-hover: color-mix(in srgb, color-mix(in oklch, var(--rhb-error) 30%, transparent) var(--rhb-background-opacity), transparent);
+  --background-modifier-success: color-mix(in srgb, #2759AA40 var(--rhb-background-opacity), transparent);
 
   /* =========================================================
    * Text
@@ -124,19 +127,19 @@
   --text-warning: var(--rhb-yellow);
   --text-error: var(--rhb-error);
 
-  --text-selection: #3670BD56;
-  --text-highlight-bg: #FFA50026;
-  --text-highlight-bg-active: #FFA50036;
+  --text-selection: color-mix(in srgb, #3670BD56 var(--rhb-background-opacity), transparent);
+  --text-highlight-bg: color-mix(in srgb, #FFA50026 var(--rhb-background-opacity), transparent);
+  --text-highlight-bg-active: color-mix(in srgb, #FFA50036 var(--rhb-background-opacity), transparent);
   --caret-color: var(--rhb-blue);
 
   /* =========================================================
    * Interactive controls
    * ======================================================= */
-  --interactive-normal: var(--rhb-panel);
-  --interactive-hover: #2759AA40;
-  --interactive-accent: var(--rhb-blue);
-  --interactive-accent-hover: var(--rhb-blue);
-  --interactive-success: var(--rhb-blue);
+  --interactive-normal: color-mix(in srgb, var(--rhb-panel) var(--rhb-background-opacity), transparent);
+  --interactive-hover: color-mix(in srgb, #2759AA40 var(--rhb-background-opacity), transparent);
+  --interactive-accent: color-mix(in srgb, var(--rhb-blue) var(--rhb-background-opacity), transparent);
+  --interactive-accent-hover: color-mix(in srgb, var(--rhb-blue) var(--rhb-background-opacity), transparent);
+  --interactive-success: color-mix(in srgb, var(--rhb-blue) var(--rhb-background-opacity), transparent);
 
   --icon-color: var(--rhb-blue);
   --icon-color-hover: var(--rhb-white);
@@ -146,15 +149,15 @@
   /* =========================================================
    * Title bar / ribbon / status bar
    * ======================================================= */
-  --titlebar-background: var(--rhb-sidebar);
-  --titlebar-background-focused: var(--rhb-sidebar);
+  --titlebar-background: color-mix(in srgb, var(--rhb-sidebar) var(--rhb-background-opacity), transparent);
+  --titlebar-background-focused: color-mix(in srgb, var(--rhb-sidebar) var(--rhb-background-opacity), transparent);
   --titlebar-text-color: #5EAFFF80;
   --titlebar-text-color-focused: var(--rhb-blue);
 
-  --ribbon-background: var(--rhb-ribbon);
-  --ribbon-background-collapsed: var(--rhb-ribbon);
+  --ribbon-background: color-mix(in srgb, var(--rhb-ribbon) var(--rhb-background-opacity), transparent);
+  --ribbon-background-collapsed: color-mix(in srgb, var(--rhb-ribbon) var(--rhb-background-opacity), transparent);
 
-  --status-bar-background: var(--rhb-status);
+  --status-bar-background: color-mix(in srgb, var(--rhb-status) var(--rhb-background-opacity), transparent);
   --status-bar-text-color: var(--rhb-blue);
   --status-bar-border-color: var(--rhb-border-subtle);
   --titlebar-border-color: var(--rhb-border-subtle);
@@ -164,8 +167,8 @@
   /* =========================================================
    * Tabs
    * ======================================================= */
-  --tab-container-background: #2759AA1C;
-  --tab-background-active: var(--rhb-editor);
+  --tab-container-background: color-mix(in srgb, #2759AA1C var(--rhb-background-opacity), transparent);
+  --tab-background-active: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent);
   --tab-text-color: #4C9EEB80;
   --tab-text-color-active: var(--rhb-blue);
   --tab-text-color-focused: var(--rhb-blue-fg);
@@ -182,9 +185,9 @@
   --nav-item-color-hover: var(--rhb-white);
   --nav-item-color-active: var(--rhb-white);
   --nav-item-color-selected: var(--rhb-white-soft);
-  --nav-item-background-hover: #2759AA20;
-  --nav-item-background-active: #2759AA40;
-  --nav-item-background-selected: #2759AA30;
+  --nav-item-background-hover: color-mix(in srgb, #2759AA20 var(--rhb-background-opacity), transparent);
+  --nav-item-background-active: color-mix(in srgb, #2759AA40 var(--rhb-background-opacity), transparent);
+  --nav-item-background-selected: color-mix(in srgb, #2759AA30 var(--rhb-background-opacity), transparent);
 
   --nav-collapse-icon-color: var(--rhb-blue-line-number);
   --nav-collapse-icon-color-collapsed: var(--rhb-blue);
@@ -193,20 +196,20 @@
   /* =========================================================
    * Modal / prompt / menus
    * ======================================================= */
-  --modal-background: var(--rhb-panel);
+  --modal-background: color-mix(in srgb, var(--rhb-panel) var(--rhb-background-opacity), transparent);
   --modal-border-color: var(--rhb-border-soft);
 
-  --prompt-background: var(--rhb-panel);
+  --prompt-background: color-mix(in srgb, var(--rhb-panel) var(--rhb-background-opacity), transparent);
   --prompt-border-color: var(--rhb-border-soft);
 
-  --menu-background: var(--rhb-panel);
+  --menu-background: color-mix(in srgb, var(--rhb-panel) var(--rhb-background-opacity), transparent);
 
   /* =========================================================
    * Scrollbars
    * ======================================================= */
   --scrollbar-bg: transparent;
-  --scrollbar-thumb-bg: #5EAFFF40;
-  --scrollbar-active-thumb-bg: #5EAFFF80;
+  --scrollbar-thumb-bg: color-mix(in srgb, #5EAFFF40 var(--rhb-background-opacity), transparent);
+  --scrollbar-active-thumb-bg: color-mix(in srgb, #5EAFFF80 var(--rhb-background-opacity), transparent);
 
   /* =========================================================
    * Markdown editor
@@ -233,11 +236,11 @@
 
   --tag-color: var(--rhb-blue);
   --tag-color-hover: var(--rhb-white);
-  --tag-background: #2759AA30;
-  --tag-background-hover: #2759AA50;
+  --tag-background: color-mix(in srgb, #2759AA30 var(--rhb-background-opacity), transparent);
+  --tag-background-hover: color-mix(in srgb, #2759AA50 var(--rhb-background-opacity), transparent);
 
   --blockquote-color: var(--rhb-blue-fg);
-  --blockquote-background-color: var(--rhb-section);
+  --blockquote-background-color: color-mix(in srgb, var(--rhb-section) var(--rhb-background-opacity), transparent);
   --blockquote-border-color: var(--rhb-blue);
 
   --hr-color: #5EAFFF80;
@@ -256,7 +259,7 @@
    * Code syntax
    * Mapped from retro-hacker-blue tokenColors.
    * ======================================================= */
-  --code-background: #0A1A36;
+  --code-background: color-mix(in srgb, #0A1A36 var(--rhb-background-opacity), transparent);
   --code-normal: var(--rhb-blue);
   --code-comment: var(--rhb-comment);
   --code-function: var(--rhb-blue-function);
@@ -273,9 +276,9 @@
    * Tables / metadata / embeds
    * ======================================================= */
   --table-background: transparent;
-  --table-header-background: #001947;
-  --table-header-background-hover: #0A2D63;
-  --table-row-background-hover: #2759AA20;
+  --table-header-background: color-mix(in srgb, #001947 var(--rhb-background-opacity), transparent);
+  --table-header-background-hover: color-mix(in srgb, #0A2D63 var(--rhb-background-opacity), transparent);
+  --table-row-background-hover: color-mix(in srgb, #2759AA20 var(--rhb-background-opacity), transparent);
   --table-border-color: #5EAFFF80;
   --table-text-color: var(--rhb-blue);
 
@@ -283,7 +286,7 @@
   --metadata-border-color: #5EAFFF80;
   --metadata-label-text-color: #5EAFFF80;
   --metadata-input-text-color: var(--rhb-blue);
-  --metadata-input-background-active: #2759AA20;
+  --metadata-input-background-active: color-mix(in srgb, #2759AA20 var(--rhb-background-opacity), transparent);
 
   --embed-block-shadow-hover: 0 0 0 1px var(--rhb-blue);
   --embed-border-start: 2px solid var(--rhb-blue);
@@ -305,22 +308,22 @@
  * ========================================================= */
 
 .theme-dark .workspace-ribbon {
-  background-color: var(--rhb-ribbon);
+  background-color: color-mix(in srgb, var(--rhb-ribbon) var(--rhb-background-opacity), transparent);
   border-color: var(--rhb-border-subtle);
 }
 
 .theme-dark .workspace-sidedock-vault-profile,
 .theme-dark .workspace-sidedock-vault-profile:hover {
-  background-color: var(--rhb-sidebar);
+  background-color: color-mix(in srgb, var(--rhb-sidebar) var(--rhb-background-opacity), transparent);
 }
 
 .theme-dark .workspace-split.mod-left-split,
 .theme-dark .workspace-split.mod-right-split {
-  background-color: var(--rhb-sidebar);
+  background-color: color-mix(in srgb, var(--rhb-sidebar) var(--rhb-background-opacity), transparent);
 }
 
 .theme-dark .workspace-split.mod-root {
-  background-color: var(--rhb-editor);
+  background-color: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent);
 }
 
 .theme-dark .workspace-leaf-resize-handle,
@@ -337,11 +340,11 @@
 }
 
 .theme-dark .workspace-tab-header:hover {
-  background-color: var(--rhb-deep);
+  background-color: color-mix(in srgb, var(--rhb-deep) var(--rhb-background-opacity), transparent);
 }
 
 .theme-dark .workspace-tab-header.is-active {
-  background-color: var(--rhb-editor);
+  background-color: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent);
   box-shadow: none;
 }
 
@@ -352,19 +355,19 @@
 
 .theme-dark .nav-files-container,
 .theme-dark .workspace-leaf-content[data-type="file-explorer"] {
-  background-color: var(--rhb-sidebar);
+  background-color: color-mix(in srgb, var(--rhb-sidebar) var(--rhb-background-opacity), transparent);
 }
 
 .theme-dark .nav-folder-title:hover,
 .theme-dark .nav-file-title:hover,
 .theme-dark .tree-item-self:hover {
-  background-color: #2759AA20;
+  background-color: color-mix(in srgb, #2759AA20 var(--rhb-background-opacity), transparent);
   color: var(--rhb-white);
 }
 
 .theme-dark .nav-file-title.is-active,
 .theme-dark .tree-item-self.is-active {
-  background-color: #2759AA40;
+  background-color: color-mix(in srgb, #2759AA40 var(--rhb-background-opacity), transparent);
   color: var(--rhb-white);
 }
 
@@ -375,7 +378,7 @@
 
 .theme-dark .markdown-source-view.mod-cm6 .cm-line.cm-active,
 .theme-dark .markdown-source-view.mod-cm6 .cm-activeLine {
-  background-color: #0C2B5E7A;
+  background-color: color-mix(in srgb, #0C2B5E7A var(--rhb-background-opacity), transparent);
   box-shadow:
     inset 1px 0 0 #12397E7C,
     inset -1px 0 0 #12397E7C;
@@ -385,16 +388,16 @@
 .theme-dark .markdown-source-view.mod-cm6.cm-focused .cm-selectionBackground,
 .theme-dark .markdown-source-view.mod-cm6 .cm-content ::selection,
 .theme-dark .markdown-rendered ::selection {
-  background-color: #3670BD56;
+  background-color: color-mix(in srgb, #3670BD56 var(--rhb-background-opacity), transparent);
 }
 
 .theme-dark .cm-searchMatch {
-  background-color: #2759AA40;
+  background-color: color-mix(in srgb, #2759AA40 var(--rhb-background-opacity), transparent);
   outline: 1px solid #5EAFFF40;
 }
 
 .theme-dark .cm-searchMatch.cm-searchMatch-selected {
-  background-color: #2759AA50;
+  background-color: color-mix(in srgb, #2759AA50 var(--rhb-background-opacity), transparent);
   outline-color: var(--rhb-blue);
 }
 
@@ -406,7 +409,7 @@
 
 .theme-dark .prompt,
 .theme-dark .suggestion-container {
-  background-color: var(--rhb-panel);
+  background-color: color-mix(in srgb, var(--rhb-panel) var(--rhb-background-opacity), transparent);
   border: 1px solid var(--rhb-border-soft);
   box-shadow: 0 8px 30px #0040AA20;
 }
@@ -415,7 +418,7 @@
 .theme-dark .search-input-container input,
 .theme-dark input[type="text"],
 .theme-dark input[type="search"] {
-  background-color: var(--rhb-panel);
+  background-color: color-mix(in srgb, var(--rhb-panel) var(--rhb-background-opacity), transparent);
   color: var(--rhb-blue);
   border-color: var(--rhb-border-subtle);
 }
@@ -434,12 +437,12 @@
 
 .theme-dark .suggestion-item.is-selected,
 .theme-dark .suggestion-item.is-selected:hover {
-  background-color: var(--rhb-quick-focus);
+  background-color: color-mix(in srgb, var(--rhb-quick-focus) var(--rhb-background-opacity), transparent);
   color: var(--rhb-white);
 }
 
 .theme-dark .suggestion-item:hover {
-  background-color: #2759AA20;
+  background-color: color-mix(in srgb, #2759AA20 var(--rhb-background-opacity), transparent);
   color: var(--rhb-white);
 }
 
@@ -449,37 +452,37 @@
  * ========================================================= */
 
 .theme-dark button.mod-cta {
-  background-color: var(--rhb-blue);
+  background-color: color-mix(in srgb, var(--rhb-blue) var(--rhb-background-opacity), transparent);
   color: #000000;
   border-color: var(--rhb-blue);
 }
 
 .theme-dark button.mod-cta:hover {
-  background-color: var(--rhb-blue);
+  background-color: color-mix(in srgb, var(--rhb-blue) var(--rhb-background-opacity), transparent);
   color: #000000;
 }
 
 .theme-dark .checkbox-container.is-enabled {
-  background-color: var(--rhb-blue);
+  background-color: color-mix(in srgb, var(--rhb-blue) var(--rhb-background-opacity), transparent);
 }
 
 .theme-dark .modal,
 .theme-dark .modal-container .modal {
-  background-color: var(--rhb-panel);
+  background-color: color-mix(in srgb, var(--rhb-panel) var(--rhb-background-opacity), transparent);
   border: 1px solid var(--rhb-border-soft);
 }
 
 .theme-dark .vertical-tab-header,
 .theme-dark .vertical-tab-content {
-  background-color: var(--rhb-panel);
+  background-color: color-mix(in srgb, var(--rhb-panel) var(--rhb-background-opacity), transparent);
 }
 
 .theme-dark .vertical-tab-nav-item:hover {
-  background-color: #2759AA20;
+  background-color: color-mix(in srgb, #2759AA20 var(--rhb-background-opacity), transparent);
 }
 
 .theme-dark .vertical-tab-nav-item.is-active {
-  background-color: #2759AA40;
+  background-color: color-mix(in srgb, #2759AA40 var(--rhb-background-opacity), transparent);
   color: var(--rhb-white);
 }
 
@@ -490,13 +493,13 @@
 
 .theme-dark .markdown-rendered mark,
 .theme-dark .cm-highlight {
-  background-color: #FFA50026;
+  background-color: color-mix(in srgb, #FFA50026 var(--rhb-background-opacity), transparent);
   color: #FFE0A3;
 }
 
 .theme-dark .markdown-rendered code:not(pre code),
 .theme-dark .cm-inline-code:not(.cm-formatting) {
-  background-color: #0A1A36;
+  background-color: color-mix(in srgb, #0A1A36 var(--rhb-background-opacity), transparent);
   color: var(--rhb-blue-string);
   border: none;
 }
@@ -508,7 +511,7 @@
 }
 
 .theme-dark .markdown-rendered blockquote {
-  background-color: var(--rhb-section);
+  background-color: color-mix(in srgb, var(--rhb-section) var(--rhb-background-opacity), transparent);
   border-color: var(--rhb-blue);
 }
 
@@ -644,7 +647,7 @@
 .theme-dark .mermaid g.classGroup rect,
 .theme-dark .mermaid .statediagram-state rect,
 .theme-dark .mermaid .er.entityBox {
-  fill: var(--rhb-section) !important;
+  fill: color-mix(in srgb, var(--rhb-section) var(--rhb-background-opacity), transparent) !important;
   stroke: var(--rhb-blue-border-dark) !important;
   stroke-width: 1px !important;
 }
@@ -653,7 +656,7 @@
 .theme-dark .mermaid .cluster rect,
 .theme-dark .mermaid .statediagram-cluster rect,
 .theme-dark .mermaid .classGroup .namespace rect {
-  fill: #001E4A99 !important;
+  fill: color-mix(in srgb, #001E4A99 var(--rhb-background-opacity), transparent) !important;
   stroke: var(--rhb-border-subtle) !important;
   stroke-width: 1px !important;
 }
@@ -692,15 +695,15 @@
 .theme-dark .mermaid .edgeLabel div,
 .theme-dark .mermaid .edgeLabel span,
 .theme-dark .mermaid .edgeLabel p {
-  background-color: var(--rhb-editor) !important;
-  fill: var(--rhb-editor) !important;
+  background-color: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent) !important;
+  fill: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent) !important;
   color: var(--rhb-blue-soft) !important;
 }
 
 /* Sequence diagrams */
 .theme-dark .mermaid rect.actor,
 .theme-dark .mermaid .labelBox {
-  fill: var(--rhb-section) !important;
+  fill: color-mix(in srgb, var(--rhb-section) var(--rhb-background-opacity), transparent) !important;
   stroke: var(--rhb-blue-border-dark) !important;
   stroke-width: 1px !important;
 }
@@ -724,7 +727,7 @@
 .theme-dark .mermaid .activation0,
 .theme-dark .mermaid .activation1,
 .theme-dark .mermaid .activation2 {
-  fill: #00CED126 !important;
+  fill: color-mix(in srgb, #00CED126 var(--rhb-background-opacity), transparent) !important;
   stroke: var(--rhb-cyan) !important;
 }
 
@@ -734,7 +737,7 @@
 
 .theme-dark .mermaid rect.note,
 .theme-dark .mermaid polygon.note {
-  fill: #FFA50020 !important;
+  fill: color-mix(in srgb, #FFA50020 var(--rhb-background-opacity), transparent) !important;
   stroke: #FFA50088 !important;
 }
 
@@ -762,7 +765,7 @@
 .theme-dark .mermaid .aggregation,
 .theme-dark .mermaid .dependency {
   stroke: var(--rhb-blue) !important;
-  fill: var(--rhb-editor) !important;
+  fill: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent) !important;
 }
 
 /* State diagrams */
@@ -772,7 +775,7 @@
 }
 
 .theme-dark .mermaid circle.state-end {
-  fill: var(--rhb-editor) !important;
+  fill: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent) !important;
   stroke: var(--rhb-blue) !important;
   stroke-width: 2px !important;
 }
@@ -785,16 +788,16 @@
 
 /* ER diagrams */
 .theme-dark .mermaid .er.entityBox {
-  fill: var(--rhb-section) !important;
+  fill: color-mix(in srgb, var(--rhb-section) var(--rhb-background-opacity), transparent) !important;
   stroke: var(--rhb-blue-border-dark) !important;
 }
 
 .theme-dark .mermaid .er.attributeBoxOdd {
-  fill: #001947 !important;
+  fill: color-mix(in srgb, #001947 var(--rhb-background-opacity), transparent) !important;
 }
 
 .theme-dark .mermaid .er.attributeBoxEven {
-  fill: #001E4A !important;
+  fill: color-mix(in srgb, #001E4A var(--rhb-background-opacity), transparent) !important;
 }
 
 .theme-dark .mermaid .er.relationshipLine {
@@ -808,7 +811,7 @@
 }
 
 .theme-dark .mermaid .er.relationshipLabelBox {
-  fill: var(--rhb-editor) !important;
+  fill: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent) !important;
 }
 
 .theme-dark .mermaid .er.relationshipLabel {
@@ -824,7 +827,7 @@
  * ========================================================= */
 
 .theme-dark .mermaid-zoom-modal {
-  background: var(--rhb-editor) !important;
+  background: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent) !important;
 }
 
 .theme-dark .mermaid-zoom-modal-wrapper > svg {
@@ -857,7 +860,7 @@
 .theme-dark .mermaid-zoom-modal-wrapper g.classGroup rect,
 .theme-dark .mermaid-zoom-modal-wrapper .statediagram-state rect,
 .theme-dark .mermaid-zoom-modal-wrapper .er.entityBox {
-  fill: var(--rhb-section) !important;
+  fill: color-mix(in srgb, var(--rhb-section) var(--rhb-background-opacity), transparent) !important;
   stroke: var(--rhb-blue-border-dark) !important;
   stroke-width: 1px !important;
 }
@@ -865,7 +868,7 @@
 .theme-dark .mermaid-zoom-modal-wrapper .cluster rect,
 .theme-dark .mermaid-zoom-modal-wrapper .statediagram-cluster rect,
 .theme-dark .mermaid-zoom-modal-wrapper .classGroup .namespace rect {
-  fill: #001E4A99 !important;
+  fill: color-mix(in srgb, #001E4A99 var(--rhb-background-opacity), transparent) !important;
   stroke: var(--rhb-border-subtle) !important;
   stroke-width: 1px !important;
 }
@@ -902,14 +905,14 @@
 .theme-dark .mermaid-zoom-modal-wrapper .edgeLabel div,
 .theme-dark .mermaid-zoom-modal-wrapper .edgeLabel span,
 .theme-dark .mermaid-zoom-modal-wrapper .edgeLabel p {
-  background-color: var(--rhb-editor) !important;
-  fill: var(--rhb-editor) !important;
+  background-color: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent) !important;
+  fill: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent) !important;
   color: var(--rhb-blue-soft) !important;
 }
 
 .theme-dark .mermaid-zoom-modal-wrapper rect.actor,
 .theme-dark .mermaid-zoom-modal-wrapper .labelBox {
-  fill: var(--rhb-section) !important;
+  fill: color-mix(in srgb, var(--rhb-section) var(--rhb-background-opacity), transparent) !important;
   stroke: var(--rhb-blue-border-dark) !important;
   stroke-width: 1px !important;
 }
@@ -933,7 +936,7 @@
 .theme-dark .mermaid-zoom-modal-wrapper .activation0,
 .theme-dark .mermaid-zoom-modal-wrapper .activation1,
 .theme-dark .mermaid-zoom-modal-wrapper .activation2 {
-  fill: #00CED126 !important;
+  fill: color-mix(in srgb, #00CED126 var(--rhb-background-opacity), transparent) !important;
   stroke: var(--rhb-cyan) !important;
 }
 
@@ -943,7 +946,7 @@
 
 .theme-dark .mermaid-zoom-modal-wrapper rect.note,
 .theme-dark .mermaid-zoom-modal-wrapper polygon.note {
-  fill: #FFA50020 !important;
+  fill: color-mix(in srgb, #FFA50020 var(--rhb-background-opacity), transparent) !important;
   stroke: #FFA50088 !important;
 }
 
@@ -970,7 +973,7 @@
 .theme-dark .mermaid-zoom-modal-wrapper .aggregation,
 .theme-dark .mermaid-zoom-modal-wrapper .dependency {
   stroke: var(--rhb-blue) !important;
-  fill: var(--rhb-editor) !important;
+  fill: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent) !important;
 }
 
 .theme-dark .mermaid-zoom-modal-wrapper circle.state-start {
@@ -979,7 +982,7 @@
 }
 
 .theme-dark .mermaid-zoom-modal-wrapper circle.state-end {
-  fill: var(--rhb-editor) !important;
+  fill: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent) !important;
   stroke: var(--rhb-blue) !important;
   stroke-width: 2px !important;
 }
@@ -991,16 +994,16 @@
 }
 
 .theme-dark .mermaid-zoom-modal-wrapper .er.entityBox {
-  fill: var(--rhb-section) !important;
+  fill: color-mix(in srgb, var(--rhb-section) var(--rhb-background-opacity), transparent) !important;
   stroke: var(--rhb-blue-border-dark) !important;
 }
 
 .theme-dark .mermaid-zoom-modal-wrapper .er.attributeBoxOdd {
-  fill: #001947 !important;
+  fill: color-mix(in srgb, #001947 var(--rhb-background-opacity), transparent) !important;
 }
 
 .theme-dark .mermaid-zoom-modal-wrapper .er.attributeBoxEven {
-  fill: #001E4A !important;
+  fill: color-mix(in srgb, #001E4A var(--rhb-background-opacity), transparent) !important;
 }
 
 .theme-dark .mermaid-zoom-modal-wrapper .er.relationshipLine {
@@ -1014,7 +1017,7 @@
 }
 
 .theme-dark .mermaid-zoom-modal-wrapper .er.relationshipLabelBox {
-  fill: var(--rhb-editor) !important;
+  fill: color-mix(in srgb, var(--rhb-editor) var(--rhb-background-opacity), transparent) !important;
 }
 
 .theme-dark .mermaid-zoom-modal-wrapper .er.relationshipLabel {
@@ -1034,7 +1037,7 @@
 }
 
 .theme-dark .notice {
-  background-color: var(--rhb-panel);
+  background-color: color-mix(in srgb, var(--rhb-panel) var(--rhb-background-opacity), transparent);
   color: var(--rhb-blue);
   border: 1px solid var(--rhb-blue);
 }
@@ -1058,15 +1061,15 @@
 }
 
 .theme-dark ::-webkit-scrollbar-thumb {
-  background-color: #5EAFFF40;
+  background-color: color-mix(in srgb, #5EAFFF40 var(--rhb-background-opacity), transparent);
 }
 
 .theme-dark ::-webkit-scrollbar-thumb:hover {
-  background-color: #5EAFFF60;
+  background-color: color-mix(in srgb, #5EAFFF60 var(--rhb-background-opacity), transparent);
 }
 
 .theme-dark ::-webkit-scrollbar-thumb:active {
-  background-color: #5EAFFF80;
+  background-color: color-mix(in srgb, #5EAFFF80 var(--rhb-background-opacity), transparent);
 }
 
 
@@ -1079,7 +1082,7 @@
 }
 
 .theme-dark .is-flashing {
-  background-color: #2759AA40;
+  background-color: color-mix(in srgb, #2759AA40 var(--rhb-background-opacity), transparent);
 }
 
 /* Match Org link emphasis in both reading and editing views. */
