@@ -6,7 +6,7 @@
 
 body.vscode-dark {
   /* Match Obsidian's content width and breathing room. */
-  max-width: 1100px;
+  max-width: 1000px;
   box-sizing: border-box;
   margin-inline: auto;
   padding: 28px clamp(24px, 6vw, 80px);
