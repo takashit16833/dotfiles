@@ -33,6 +33,7 @@ html {
     --rhb-wp-block-section: color-mix(in srgb, var(--rhb-section) var(--rhb-wallpaper-block-opacity), transparent);
     --rhb-wp-block-section-strong: color-mix(in srgb, var(--rhb-section-strong) var(--rhb-wallpaper-block-opacity), transparent);
     --rhb-wp-block-panel: color-mix(in srgb, var(--rhb-panel) var(--rhb-wallpaper-block-opacity), transparent);
+    --rhb-wp-block-accent: color-mix(in srgb, var(--rhb-blue) var(--rhb-wallpaper-block-opacity), transparent);
     --rhb-wp-block-editor: color-mix(in srgb, var(--rhb-editor) var(--rhb-wallpaper-block-opacity), transparent);
     --rhb-wp-block-note: color-mix(in srgb, var(--rhb-orange) var(--rhb-wallpaper-block-opacity), transparent);
 
@@ -110,6 +111,24 @@ html {
 
   body.theme-dark .modal.mod-settings .vertical-tab-content {
     background-color: var(--rhb-wp-panel-main) !important;
+  }
+
+  /* Settings buttons follow the existing block opacity. Keep the CTA and
+   * enabled switches blue, with light CTA text for contrast on dark wallpaper. */
+  body.theme-dark .modal.mod-settings {
+    --interactive-normal: var(--rhb-wp-block-panel);
+    --interactive-accent: var(--rhb-wp-block-accent);
+    --interactive-accent-hover: var(--rhb-wp-block-accent);
+  }
+
+  body.theme-dark .modal.mod-settings button.mod-cta,
+  body.theme-dark .modal.mod-settings button.mod-cta:hover {
+    background-color: var(--rhb-wp-block-accent);
+    color: var(--rhb-white-soft);
+  }
+
+  body.theme-dark .modal.mod-settings .checkbox-container.is-enabled {
+    background-color: var(--rhb-wp-block-accent);
   }
 
   /* Code blocks and inline code: identical transparency in both views. */
