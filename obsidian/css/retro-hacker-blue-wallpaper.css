@@ -98,6 +98,20 @@ html {
     background-color: var(--rhb-wp-panel-sidebar);
   }
 
+  /* Settings window: reveal the wallpaper behind its otherwise opaque modal.
+   * Reuse the sidebar and main panel opacities instead of adding new controls. */
+  body.theme-dark .modal.mod-settings {
+    background-color: transparent !important;
+  }
+
+  body.theme-dark .modal.mod-settings .vertical-tab-header {
+    background-color: var(--rhb-wp-panel-sidebar) !important;
+  }
+
+  body.theme-dark .modal.mod-settings .vertical-tab-content {
+    background-color: var(--rhb-wp-panel-main) !important;
+  }
+
   /* Code blocks and inline code: identical transparency in both views. */
   body.theme-dark :is(
     .markdown-rendered pre,
