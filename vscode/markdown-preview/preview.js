@@ -5,7 +5,7 @@
 
   function updateOutline() {
     const root = document.querySelector(".markdown-body");
-    if (!root) return;
+    if (!root) return false;
 
     let currentLevel = 0;
 
@@ -34,13 +34,24 @@
         }
       }
     }
+    return true;
+  }
+
+  // VS Code appends the initial .markdown-body after the preview page loads.
+  // A contributed script may run before that insertion happens.
+  function initializeOutline() {
+    if (updateOutline()) return;
+    const observer = new MutationObserver(() => {
+      if (updateOutline()) observer.disconnect();
+    });
+    observer.observe(document.body, { childList: true });
   }
 
   window.addEventListener("vscode.markdown.updateContent", updateOutline);
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", updateOutline, { once: true });
+    document.addEventListener("DOMContentLoaded", initializeOutline, { once: true });
   } else {
-    updateOutline();
+    initializeOutline();
   }
 })();

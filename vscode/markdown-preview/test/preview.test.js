@@ -24,13 +24,29 @@ function element(tagName, text = "x") {
   };
 }
 
-function run(nodes) {
+function run(nodes, initiallyPresent = true) {
   const listeners = {};
-  const root = { children: nodes };
+  let root = initiallyPresent ? { children: nodes } : null;
+  const observer = { notified: false, disconnected: false };
   const window = { addEventListener: (type, fn) => { listeners[type] = fn; } };
-  const document = { readyState: "complete", querySelector: () => root };
-  vm.runInNewContext(source, { window, document }, { filename: "preview.js" });
-  return { listeners, nodes };
+  const document = { readyState: "complete", body: {}, querySelector: () => root };
+  class MutationObserver {
+    constructor(callback) { observer.callback = callback; }
+    observe(body, options) {
+      assert.equal(body, document.body);
+      assert.equal(options.childList, true);
+      observer.notified = true;
+    }
+    disconnect() { observer.disconnected = true; }
+  }
+  vm.runInNewContext(source, { window, document, MutationObserver }, { filename: "preview.js" });
+  return {
+    listeners, nodes, observer,
+    appendInitialMarkdown() {
+      root = { children: nodes };
+      observer.callback();
+    }
+  };
 }
 
 function depth(node) { return node.style.getPropertyValue("--rhb-outline-depth"); }
@@ -67,4 +83,15 @@ test("empty source-position sentinel and embedded styles are left alone", () => 
   run(nodes);
   assert.equal(has(nodes[1], "content"), false);
   assert.equal(has(nodes[2], "content"), false);
+});
+
+test("initial body arriving after extension script still gets indented", () => {
+  const nodes = [element("h2"), element("p")];
+  const state = run(nodes, false);
+  assert.equal(state.observer.notified, true);
+  assert.equal(depth(nodes[0]), "");
+  state.appendInitialMarkdown();
+  assert.equal(state.observer.disconnected, true);
+  assert.equal(depth(nodes[0]), "1");
+  assert.equal(depth(nodes[1]), "1");
 });
