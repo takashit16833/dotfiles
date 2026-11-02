@@ -9,7 +9,7 @@
 
 /* This variable lives on the ancestor of the UI so CSS can detect `none`. */
 html {
-  --rhb-wallpaper-image: none;
+  --rhb-wallpaper-image: url("https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg");
 }
 
 /* The `none` case deliberately applies ZERO wallpaper overrides.  The
@@ -23,7 +23,7 @@ html {
 
     /* Separate opacity for main surfaces, sidebars and content blocks. */
     --rhb-wallpaper-panel-opacity: 70%;
-    --rhb-wallpaper-sidebar-opacity: 70%;
+    --rhb-wallpaper-sidebar-opacity: 85%;
     --rhb-wallpaper-block-opacity: 50%;
 
     /* Derived colors preserve the base theme's blue palette. */
