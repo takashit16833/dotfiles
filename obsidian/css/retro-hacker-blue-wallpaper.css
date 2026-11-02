@@ -146,6 +146,12 @@ html {
     background-color: var(--rhb-wp-block-panel) !important;
   }
 
+  /* Blur the note behind the command palette without altering its colors. */
+  body.theme-dark .prompt {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
   /* Blur only the content behind dialogs; preserve the original panel
    * color and shared block opacity without affecting dialog contents. */
   body.theme-dark .modal:not(.mod-settings) {
