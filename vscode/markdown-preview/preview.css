@@ -4,12 +4,18 @@
  * Preview JavaScript supplies heading depth to every top-level block.
  */
 
+/* VS Code adds horizontal padding to html and body.
+ * Remove the outer padding so the 1000px limit applies to content itself. */
+html:has(> body.vscode-dark) {
+  padding-inline: 0;
+}
+
 body.vscode-dark {
-  /* Match Obsidian's content width and breathing room. */
+  /* Obsidian's maximum text width, with separate responsive side margins. */
   max-width: 1000px;
-  box-sizing: border-box;
+  box-sizing: content-box;
   margin-inline: auto;
-  padding: 28px clamp(24px, 6vw, 80px);
+  padding: 28px clamp(24px, 5vw, 40px);
 }
 
 body.vscode-dark .markdown-body {
