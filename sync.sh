@@ -37,7 +37,10 @@ sync_vscode_extensions() {
 
   {
     printf '# VS Code extension IDs, one per line.\n'
-    "$vscode_cli" --list-extensions | LC_ALL=C sort -u
+    # この拡張機能は Marketplace でなく dotfiles から VSIX を作って導入する。
+    "$vscode_cli" --list-extensions \
+      | awk '$0 != "takashit16833.markdown-outline-preview"' \
+      | LC_ALL=C sort -u
   } > "$tmp_file"
 
   mv "$tmp_file" "$extensions_file"

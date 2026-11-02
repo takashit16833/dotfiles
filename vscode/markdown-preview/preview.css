@@ -1,8 +1,7 @@
 /*
  * Retro Hacker Blue Markdown preview, aligned with Obsidian's reading view.
  * Applies only to dark VS Code Markdown previews, not the source editor.
- * The Markdown HTML has flat heading siblings, so exact Org-style section
- * indentation is not possible with CSS alone.
+ * Preview JavaScript supplies heading depth to every top-level block.
  */
 
 body.vscode-dark {
@@ -37,29 +36,21 @@ body.vscode-dark .markdown-body h1 {
   margin-top: 0;
 }
 
-body.vscode-dark .markdown-body h2 {
-  margin-left: 1.5rem;
+/* Indent headings and their content together based on the nearest
+ * preceding heading. The JS sets --rhb-outline-depth on direct children. */
+body.vscode-dark .markdown-body {
+  --rhb-outline-step: 1.5rem;
+  --rhb-outline-content-inset: 1.25rem;
 }
 
-body.vscode-dark .markdown-body h3 {
-  margin-left: 3rem;
+body.vscode-dark .markdown-body > .rhb-outline-heading {
+  margin-left: calc(var(--rhb-outline-depth, 0) * var(--rhb-outline-step));
 }
 
-body.vscode-dark .markdown-body h4 {
-  margin-left: 4.5rem;
-}
-
-body.vscode-dark .markdown-body h5 {
-  margin-left: 6rem;
-}
-
-body.vscode-dark .markdown-body h6 {
-  margin-left: 7.5rem;
-}
-
-/* Slightly indent content, without pretending it is nested under headings. */
-body.vscode-dark .markdown-body > :is(p, ul, ol, pre, blockquote, table) {
-  margin-left: 1.25rem;
+body.vscode-dark .markdown-body > .rhb-outline-content {
+  margin-left: calc(
+    var(--rhb-outline-depth, 0) * var(--rhb-outline-step) + var(--rhb-outline-content-inset)
+  );
 }
 
 body.vscode-dark .markdown-body p {

@@ -1,0 +1,31 @@
+{
+  "name": "markdown-outline-preview",
+  "displayName": "Markdown Outline Preview",
+  "description": "Org-style indentation and Retro Hacker Blue appearance for Markdown preview.",
+  "version": "0.0.1",
+  "publisher": "takashit16833",
+  "private": true,
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/takashit16833/dotfiles.git"
+  },
+  "contributes": {
+    "markdown.previewStyles": [
+      "./preview.css"
+    ],
+    "markdown.previewScripts": [
+      "./preview.js"
+    ]
+  },
+  "files": [
+    "preview.css",
+    "preview.js",
+    "README.md"
+  ]
+}

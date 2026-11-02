@@ -38,6 +38,8 @@
 - `sync.sh` は `code --list-extensions` から現在の extension 状態を `.config/vscode/extensions.txt` へ保存する。
 - `install.sh` は `.config/vscode/extensions.txt` に記録された extension を復元する。
 - extension 本体や VS Code が管理する内部データは repository に含めない。
+- 自作 Markdown Outline Preview 拡張は `vscode/markdown-preview/` を正本とし、VSIX を `install.sh` から生成・導入する。`sync.sh` の Marketplace extension 一覧からは除外する。
+- Markdown preview の CSS と JavaScript は自作拡張の contributions で読み込む。`markdown.styles` から公開 URL を二重に読み込まない。
 - `uninstall.sh` は VS Code の設定 symlink だけを解除し、導入済み extension は削除しない。
 - snippets や Profiles は必要になった時点で追加し、先回りして空の管理対象を増やさない。
 

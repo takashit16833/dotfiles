@@ -34,6 +34,15 @@ Raycast Local Extension の初回登録では、公式の `ray develop` を短�
 - Chrome / Brave の unpacked extension や Web アプリはブラウザ側で初回登録する。
 - Tampermonkey userscript を使う場合は `chrome/userscripts/README.md` の手順で初回登録する。
 
+### VS Code の Markdown プレビュー
+
+自作の Markdown Outline Preview 拡張機能は `install.sh` で導入する。
+CSS や階層インデントの処理を変更した場合は、次のコマンドで拡張機能を再導入し、VS Code を再読み込みする。
+
+```bash
+bash ./vscode/markdown-preview/install.sh
+```
+
 ### Obsidian の背景画像
 
 背景画像を使う場合は、Git 管理外の `obsidian/css/retro-hacker-blue-wallpaper-local.css` を作成する。
