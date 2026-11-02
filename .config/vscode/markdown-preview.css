@@ -1,0 +1,97 @@
+/*
+ * Retro Hacker Blue Markdown preview, aligned with Obsidian's reading view.
+ * Applies only to dark VS Code Markdown previews, not the source editor.
+ * The Markdown HTML has flat heading siblings, so exact Org-style section
+ * indentation is not possible with CSS alone.
+ */
+
+body.vscode-dark {
+  /* Match Obsidian's content width and breathing room. */
+  max-width: 1100px;
+  box-sizing: border-box;
+  margin-inline: auto;
+  padding: 28px clamp(24px, 6vw, 80px);
+}
+
+body.vscode-dark .markdown-body {
+  color: #5EAFFF;
+  font-family: "BIZ UDGothic", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+body.vscode-dark .markdown-body :is(h1, h2, h3, h4, h5, h6) {
+  color: #A6CAFF;
+  font-weight: 700;
+  line-height: 1.4;
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-top: 2.2rem;
+  margin-bottom: 1.15rem;
+}
+
+/* Org Modern's heading marker; this is display-only. */
+body.vscode-dark .markdown-body :is(h1, h2, h3, h4, h5, h6)::before {
+  content: "┃";
+  color: #4C9EEB;
+  font-weight: 400;
+  margin-right: 0.45em;
+}
+
+body.vscode-dark .markdown-body h1 {
+  font-size: 1.65rem;
+  margin-top: 0;
+}
+
+body.vscode-dark .markdown-body h2 {
+  font-size: 1.4rem;
+  margin-left: 1.5rem;
+}
+
+body.vscode-dark .markdown-body h3 {
+  font-size: 1.2rem;
+  margin-left: 3rem;
+}
+
+body.vscode-dark .markdown-body h4 {
+  font-size: 1.1rem;
+  margin-left: 4.5rem;
+}
+
+body.vscode-dark .markdown-body h5 {
+  font-size: 1rem;
+  margin-left: 6rem;
+}
+
+body.vscode-dark .markdown-body h6 {
+  font-size: 1rem;
+  margin-left: 7.5rem;
+}
+
+/* Slightly indent content, without pretending it is nested under headings. */
+body.vscode-dark .markdown-body > :is(p, ul, ol, pre, blockquote, table) {
+  margin-left: 1.25rem;
+}
+
+body.vscode-dark .markdown-body p {
+  margin-bottom: 1.2em;
+}
+
+/* Match Obsidian's blue inline code and filled code blocks. */
+body.vscode-dark .markdown-body :not(pre) > code {
+  color: #7CBEFF;
+  background-color: #052A59;
+  border-radius: 3px;
+  padding: 0.12em 0.28em;
+  font-size: 0.95em;
+}
+
+body.vscode-dark .markdown-body pre {
+  background-color: #0A1A36;
+  border: none;
+  border-radius: 3px;
+}
+
+body.vscode-dark .markdown-body pre code {
+  background: transparent;
+}
