@@ -125,6 +125,29 @@ html {
     background-color: var(--rhb-wp-block-accent);
   }
 
+  /* Form fields: preserve text, icons and borders, tinting only their background.
+   * Exclude checkboxes, radio buttons and sliders from the input selectors. */
+  body.theme-dark {
+    --background-modifier-form-field: var(--rhb-wp-block-panel);
+    --background-modifier-form-field-highlighted: var(--rhb-wp-block-panel);
+  }
+
+  body.theme-dark :is(
+    .prompt-input,
+    .search-input-container input,
+    input[type="text"],
+    input[type="search"],
+    input[type="password"],
+    input[type="number"],
+    input[type="email"],
+    input[type="url"],
+    input[type="tel"],
+    textarea,
+    select.dropdown
+  ) {
+    background-color: var(--rhb-wp-block-panel) !important;
+  }
+
   /* Code blocks and inline code: identical transparency in both views. */
   body.theme-dark :is(
     .markdown-rendered pre,
