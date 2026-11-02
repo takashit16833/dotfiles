@@ -59,6 +59,18 @@ html {
     --table-header-background: var(--rhb-wp-block-section);
     --table-header-background-hover: var(--rhb-wp-block-section-strong);
     --blockquote-background-color: var(--rhb-wp-block-section);
+
+    /* Built-in UI background variables; do not alter text or icon roles. */
+    --modal-background: var(--rhb-wp-block-panel);
+    --prompt-background: var(--rhb-wp-block-panel);
+    --menu-background: var(--rhb-wp-block-panel);
+    --background-modifier-message: var(--rhb-wp-block-panel);
+    --titlebar-background: var(--rhb-wp-panel-sidebar);
+    --titlebar-background-focused: var(--rhb-wp-panel-sidebar);
+    --ribbon-background: var(--rhb-wp-panel-sidebar);
+    --ribbon-background-collapsed: var(--rhb-wp-panel-sidebar);
+    --status-bar-background: var(--rhb-wp-panel-sidebar);
+    --tab-background-active: var(--rhb-wp-panel-main);
   }
 
   /* Transparent intermediate containers: wallpaper is painted only on body. */
@@ -113,16 +125,48 @@ html {
     background-color: var(--rhb-wp-panel-main) !important;
   }
 
-  /* Settings controls: tint backgrounds only, without changing text,
-   * icons, borders, or Obsidian's shared interactive color variables. */
-  body.theme-dark .modal.mod-settings button:not(.mod-cta) {
+  /* Standard buttons and enabled switches: background only. Avoid icon-only
+   * toolbar buttons and leave plugin-specific component classes untouched. */
+  body.theme-dark :is(.modal, .setting-item-control, .prompt, .notice)
+    button:not(.mod-cta):not(.clickable-icon) {
     background-color: var(--rhb-wp-block-panel);
   }
 
-  body.theme-dark .modal.mod-settings button.mod-cta,
-  body.theme-dark .modal.mod-settings button.mod-cta:hover,
-  body.theme-dark .modal.mod-settings .checkbox-container.is-enabled {
+  body.theme-dark :is(.modal, .setting-item-control, .prompt, .notice)
+    button.mod-cta,
+  body.theme-dark :is(.modal, .setting-item-control, .prompt, .notice)
+    button.mod-cta:hover,
+  body.theme-dark .checkbox-container.is-enabled {
     background-color: var(--rhb-wp-block-accent);
+  }
+
+  /* Standard overlays. Settings keep their separate sidebar/main surfaces. */
+  body.theme-dark :is(.prompt, .suggestion-container, .menu, .notice),
+  body.theme-dark .modal:not(.mod-settings) {
+    background-color: var(--rhb-wp-block-panel) !important;
+  }
+
+  /* Preserve the darker blue of the selected suggestion. */
+  body.theme-dark .suggestion-item.is-selected,
+  body.theme-dark .suggestion-item.is-selected:hover {
+    background-color: color-mix(
+      in srgb,
+      var(--rhb-quick-focus) var(--rhb-wallpaper-block-opacity),
+      transparent
+    );
+  }
+
+  /* Active/hovered tab faces; retain the original palette. */
+  body.theme-dark .workspace-tab-header.is-active {
+    background-color: var(--rhb-wp-panel-main);
+  }
+
+  body.theme-dark .workspace-tab-header:hover:not(.is-active) {
+    background-color: color-mix(
+      in srgb,
+      var(--rhb-deep) var(--rhb-wallpaper-panel-opacity),
+      transparent
+    );
   }
 
   /* Form fields: preserve text, icons and borders, tinting only their background.
