@@ -443,10 +443,11 @@
   color: #FFE0A3;
 }
 
+/* Match Emacs org-code / markdown-ts-code-span: #7CBEFF on #052A59. */
 .theme-dark .markdown-rendered code:not(pre code),
 .theme-dark .cm-inline-code:not(.cm-formatting) {
-  background-color: #0A1A36;
-  color: var(--rhb-blue-string);
+  background-color: var(--rhb-quick-focus);
+  color: var(--rhb-blue-soft);
   border: none;
 }
 
