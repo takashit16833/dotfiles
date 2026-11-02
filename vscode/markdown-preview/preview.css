@@ -63,6 +63,19 @@ body.vscode-dark .markdown-body p {
   margin-bottom: 1.2em;
 }
 
+/* Match Obsidian's muted blue ordered-list numbers, including 10+. */
+body.vscode-dark .markdown-body ol > li::marker {
+  color: #316CBD;
+}
+
+/* Obsidian blockquote: blue section background and a bright left rule. */
+body.vscode-dark .markdown-body blockquote {
+  color: #4C9EEB;
+  background-color: #001947;
+  border-left: 3px solid #5EAFFF;
+  padding-inline-start: 20px;
+}
+
 /* Match Obsidian's blue inline code and filled code blocks. */
 body.vscode-dark .markdown-body :not(pre) > code {
   color: #7CBEFF;
