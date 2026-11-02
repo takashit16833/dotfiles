@@ -127,8 +127,8 @@ html {
     background-color: var(--rhb-wp-block-section-strong);
   }
 
-  /* Property labels use the same opacity as other content blocks. */
-  body.theme-dark .metadata-property-key {
+  /* Property labels and their text fields share the content-block opacity. */
+  body.theme-dark :is(.metadata-property-key, .metadata-property-key-input) {
     background-color: var(--rhb-wp-block-panel) !important;
   }
 
