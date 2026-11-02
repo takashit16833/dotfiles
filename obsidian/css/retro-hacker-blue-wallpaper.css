@@ -9,7 +9,7 @@
 
 /* This variable lives on the ancestor of the UI so CSS can detect `none`. */
 html {
-  --rhb-wallpaper-image: none;
+  --rhb-wallpaper-image: url("https://www.nta.co.jp/media/tripa/static_contents/nta-tripa/item_images/images/000/109/000/medium/a47cb76d-08c2-48f5-a045-2e6bfc7ee6f4.png?1579313567");
 }
 
 /* The `none` case deliberately applies ZERO wallpaper overrides.  The
