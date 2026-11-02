@@ -6,12 +6,16 @@ VS Code 標準の Markdown プレビューを Retro Hacker Blue に揃えるロ�
 
 ## インストールと更新
 
+新しい Mac では dotfiles ルートの `bash ./install.sh` が、この拡張機能専用の `install.sh` を自動実行する。別途導入する必要はない。
+
+拡張機能を単独で導入・更新する場合は、dotfiles ルートで次を実行する。
+
 ```sh
-bash vscode/markdown-preview/install.sh
+git pull
+bash ./vscode/markdown-preview/install.sh
 ```
 
-編集後にこのコマンドで VSIX を再作成・再導入する。
-VS Code の「Developer: Reload Window」で再読み込みする。
+CSS や JavaScript の変更後は、この専用スクリプトで VSIX を作り直して VS Code に再導入する。`git pull` だけでは導入済み拡張機能は更新されない。導入後は VS Code の `Developer: Reload Window` を実行し、Markdown プレビューを開き直す。
 初回だけ Node.js と npm が必要（dotfiles の通常セットアップでは Homebrew で導入される）。
 
 ```sh

@@ -36,12 +36,18 @@ Raycast Local Extension の初回登録では、公式の `ray develop` を短�
 
 ### VS Code の Markdown プレビュー
 
-自作の Markdown Outline Preview 拡張機能は `install.sh` で導入する。
-CSS や階層インデントの処理を変更した場合は、次のコマンドで拡張機能を再導入し、VS Code を再読み込みする。
+自作の Markdown Outline Preview 拡張機能で、見出しとその本文を階層に合わせて字下げする。
+
+- **新しい Mac の初期セットアップ**：ルートの `bash ./install.sh` が拡張機能専用の `vscode/markdown-preview/install.sh` も自動実行するため、個別の実行は不要。
+- **拡張機能だけを導入・更新する場合**：次のコマンドを実行する。ルートの `install.sh` を再実行する必要はない。
 
 ```bash
+cd ~/dotfiles
+git pull
 bash ./vscode/markdown-preview/install.sh
 ```
+
+`git pull` だけでは VS Code に導入済みの拡張機能は更新されない。導入後は VS Code のコマンドパレットから `Developer: Reload Window` を実行し、Markdown プレビューを開き直す。
 
 ### Obsidian の背景画像
 
