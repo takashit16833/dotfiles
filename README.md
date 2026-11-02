@@ -34,6 +34,18 @@ Raycast Local Extension の初回登録では、公式の `ray develop` を短�
 - Chrome / Brave の unpacked extension や Web アプリはブラウザ側で初回登録する。
 - Tampermonkey userscript を使う場合は `chrome/userscripts/README.md` の手順で初回登録する。
 
+### Obsidian の背景画像
+
+背景画像を使う場合は、Git 管理外の `obsidian/css/retro-hacker-blue-wallpaper-local.css` を作成する。
+
+```css
+:root {
+  --rhb-wallpaper-image: url("画像のURL");
+}
+```
+
+Obsidian の Config Layer で `retro-hacker-blue-base.css`、`retro-hacker-blue-wallpaper.css`、`retro-hacker-blue-wallpaper-local.css` を有効にする。画像を使わない場合はローカル CSS を無効にする。
+
 ### Brave を ChatGPT ビューアにする
 
 Brave の起動、新しいウィンドウ、新しいタブで `https://chatgpt.com/` を開くようにする。
