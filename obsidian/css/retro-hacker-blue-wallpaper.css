@@ -169,9 +169,9 @@ html {
     .node path,
     g.classGroup rect,
     .statediagram-state rect,
-    .er.entityBox,
+    :is(rect, polygon, path).er.entityBox,
     rect.actor,
-    .labelBox
+    rect.labelBox
   ) {
     fill: var(--rhb-wp-block-section) !important;
   }
@@ -180,8 +180,8 @@ html {
     .cluster rect,
     .statediagram-cluster rect,
     .classGroup .namespace rect,
-    .er.attributeBoxOdd,
-    .er.attributeBoxEven
+    :is(rect, polygon, path).er.attributeBoxOdd,
+    :is(rect, polygon, path).er.attributeBoxEven
   ) {
     fill: var(--rhb-wp-block-panel) !important;
   }
@@ -206,7 +206,7 @@ html {
 
   body.theme-dark :is(.mermaid, .mermaid-zoom-modal-wrapper) :is(
     circle.state-end,
-    .er.relationshipLabelBox
+    :is(rect, polygon, path).er.relationshipLabelBox
   ) {
     fill: var(--rhb-wp-block-editor) !important;
   }
