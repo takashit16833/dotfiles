@@ -227,5 +227,20 @@
     {
         "key": "f4",
         "command": "quicktree.open"
+    },
+    // ファイルエクスプローラーでファイルを開いたら、パネルも非表示にする。
+    // （なぜかサイドバーが開くのでそれも抑制している）
+    {
+        "key": "cmd+down",
+        "command": "runCommands",
+        "when": "filesExplorerFocus && !explorerResourceIsFolder && !inputFocus",
+        "args": {
+            "commands": [
+                "list.select",
+                "workbench.action.closePanel",
+                "workbench.action.closeSidebar",
+                "workbench.action.focusActiveEditorGroup"
+            ]
+        }
     }
 ]
