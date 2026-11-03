@@ -408,9 +408,6 @@ main() {
     "$DOTFILES_DIR/.config/vscode/keybindings.json" \
     "$VSCODE_USER_DIR/keybindings.json"
 
-  # 壁紙 CSS と端末固有の画像パスを分けて配置する（既存ファイルは上書きしない）。
-  bash "$DOTFILES_DIR/vscode/background/install.sh"
-
   install_vscode_extensions
   bash "$DOTFILES_DIR/vscode/markdown-preview/install.sh"
   install_quickjump_extension

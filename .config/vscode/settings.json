@@ -216,12 +216,5 @@
         "**/node_modules",
         "**/out",
         "**/dist-newstyle"
-    ],
-    // Custom CSS and JS Loader は CSS を VS Code 本体へ埋め込む。
-    // file:// URL で共通 CSS と端末固有の設定を順番に読み込む。
-    // 変更後は「Reload Custom CSS and JS」で再適用する。
-    "vscode_custom_css.imports": [
-        "file://${userHome}/.config/vscode/wallpaper.css",
-        "file://${userHome}/.config/vscode/wallpaper-local.css"
     ]
 }

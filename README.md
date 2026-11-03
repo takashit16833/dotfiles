@@ -51,29 +51,9 @@ bash ./vscode/markdown-preview/install.sh
 
 ### VS Code の背景画像
 
-既存の Mac では共通 CSS の配置と拡張機能の導入を行う。
-
-```bash
-cd ~/dotfiles
-git pull
-bash ./vscode/background/install.sh
-code --install-extension be5invis.vscode-custom-css
-```
-
-`~/.config/vscode/wallpaper-local.css` の `--rhb-wallpaper-enabled` を `true` にし、
-`--rhb-wallpaper-wide` に画像 URL を設定する。狭い画面用の `--rhb-wallpaper-narrow` は
-任意で、ウィンドウ幅が 1400px 以下になると切り替わる。画像 URL は
-`vscode/background/wallpaper-local.example.css` の例を参照する。
-
-`--rhb-wallpaper-tint` が画像との乗算色。`*-opacity`（0～1）が編集領域・サイドバー・
-下部パネル・タイトル／状態／アクティビティバーの背景色の不透明度。
-無効時は元のテーマの背景を保持する。端末固有の設定は更新しても上書きしない。
-
-設定後にコマンドパレットで **Enable Custom CSS and JS** を実行し、再起動する。
-CSS と画像 URL の変更時および VS Code 更新後には **Reload Custom CSS and JS** で再適用する。
-拡張機能は VS Code 本体のファイルを変更するため、実機確認が必要。
-権限エラーが出た場合は対象ファイルとエラーを確認し、権限を無条件に変更しない。
-元に戻すときは **Disable Custom CSS and JS** を実行する。
+画面全体の背景画像は `vscode-background` で表示できるが、ウィンドウ幅に応じた画像切り替えは実装検討中。
+以前試した Apc / Custom CSS and JS Loader は VS Code 本体を書き換えるため、現在は使用しない。
+`vscode/background/` の CSS は参考として保持しているが、`install.sh` からの導入や自動読み込みはしない。
 
 ### Obsidian の背景画像
 

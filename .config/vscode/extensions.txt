@@ -1,6 +1,5 @@
 # VS Code extension IDs, one per line.
 devxi.retro-hacker-theme
-be5invis.vscode-custom-css
 ms-vscode-remote.remote-containers
 ryu1kn.text-marker
 GitHub.vscode-github-actions
