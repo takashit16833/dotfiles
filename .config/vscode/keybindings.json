@@ -1,4 +1,18 @@
 [
+    // Obsidian の Cmd+E と同じ操作: 同じ Markdown を Preview と Live Preview で切り替える。
+    // reopenActiveEditorWith は現在のタブを指定した editor ID で開き直す VS Code 内蔵コマンド。
+    {
+        "key": "cmd+e",
+        "command": "reopenActiveEditorWith",
+        "args": "mdLivePreview.editor",
+        "when": "activeCustomEditorId == 'vscode.markdown.preview.editor'"
+    },
+    {
+        "key": "cmd+e",
+        "command": "reopenActiveEditorWith",
+        "args": "vscode.markdown.preview.editor",
+        "when": "activeCustomEditorId == 'mdLivePreview.editor'"
+    },
     // タブグループが1つだけ
     // → 右に新しいグループを作って Source を開く
     {
