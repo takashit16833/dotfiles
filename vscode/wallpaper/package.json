@@ -2,7 +2,7 @@
   "name": "vscode-wallpaper",
   "displayName": "VS Code Wallpaper",
   "description": "Generate a responsive, multiply-blended VS Code wallpaper stylesheet without patching VS Code.",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "publisher": "takashit16833",
   "private": true,
   "engines": {
@@ -57,7 +57,7 @@
           "type": "boolean",
           "default": false,
           "scope": "window",
-          "description": "Enable CSS generation and preview. Does not modify VS Code application files."
+          "description": "壁紙用 CSS の生成を有効にする。VS Code 本体への自動適用は別途有効にする。"
         },
         "vscodeWallpaper.image": {
           "type": [
@@ -66,7 +66,7 @@
           ],
           "default": "",
           "scope": "window",
-          "description": "Wallpaper image URL or local path. Null or empty means no wallpaper unless a workspace overrides it."
+          "description": "通常表示する背景画像。https://、file:///、絶対パス、~/、./ などを指定する。null または空文字で非表示。"
         },
         "vscodeWallpaper.alternateImage": {
           "type": [
@@ -75,7 +75,7 @@
           ],
           "default": "",
           "scope": "window",
-          "description": "Optional image for portrait, low aspect ratio, or narrow windows; empty means always use the default image."
+          "description": "縦長・狭い画面などで使う代替画像。空文字の場合は切り替えない。"
         },
         "vscodeWallpaper.switchMode": {
           "type": "string",
@@ -86,14 +86,14 @@
           ],
           "default": "orientation",
           "scope": "window",
-          "description": "Switch between portrait and landscape, a chosen aspect ratio, or window width."
+          "description": "代替画像への切り替え条件。orientation は縦長、aspect-ratio は指定した縦横比以下、width は指定した幅以下。"
         },
         "vscodeWallpaper.maxAspectRatio": {
           "type": "string",
           "default": "16/10",
           "pattern": "^[0-9]+\\s*/\\s*[0-9]+$",
           "scope": "window",
-          "description": "Use the alternate image at or below this window aspect ratio."
+          "description": "switchMode が aspect-ratio のときに代替画像へ切り替える縦横比。例: 16/10。"
         },
         "vscodeWallpaper.maxWidth": {
           "type": "integer",
@@ -101,14 +101,14 @@
           "minimum": 1,
           "maximum": 10000,
           "scope": "window",
-          "description": "Use the alternate image at or below this window width in CSS pixels."
+          "description": "switchMode が width のときに代替画像へ切り替える最大幅（CSS ピクセル）。"
         },
         "vscodeWallpaper.tint": {
           "type": "string",
           "default": "#FFFFFF",
           "pattern": "^#[0-9a-fA-F]{6}$",
           "scope": "window",
-          "description": "Color multiplied with the image; white leaves the original image colors unchanged."
+          "description": "背景画像に乗算する色。#FFFFFF（白）なら画像の色を変えない。"
         },
         "vscodeWallpaper.opacity": {
           "type": "object",
@@ -126,35 +126,41 @@
             "editor": {
               "type": "number",
               "minimum": 0,
-              "maximum": 1
+              "maximum": 1,
+              "description": "コードなどを編集する中央の領域。"
             },
             "sidebar": {
               "type": "number",
               "minimum": 0,
-              "maximum": 1
+              "maximum": 1,
+              "description": "Explorer・検索などを表示する主サイドバー。"
             },
             "panel": {
               "type": "number",
               "minimum": 0,
-              "maximum": 1
+              "maximum": 1,
+              "description": "ターミナル・問題一覧などを表示するパネル。"
             },
             "auxiliaryBar": {
               "type": "number",
               "minimum": 0,
-              "maximum": 1
+              "maximum": 1,
+              "description": "チャットなどを表示する補助サイドバー。"
             },
             "chrome": {
               "type": "number",
               "minimum": 0,
-              "maximum": 1
+              "maximum": 1,
+              "description": "タイトルバー、ステータスバー、アクティビティバーの3か所。"
             },
             "gap": {
               "type": "number",
               "minimum": 0,
-              "maximum": 1
+              "maximum": 1,
+              "description": "浮動パネルを使う画面で、各パネルの間と外周にある余白。通常配置では対象外。"
             }
           },
-          "description": "Background opacity per area. The floating-card gutter uses gap (default 0, fully transparent). Text remains opaque."
+          "description": "各領域の背景色の不透明度。0 は透明、1 は不透明。文字は透過しない。項目ごとの対象領域は下記を参照。"
         },
         "vscodeWallpaper.backgroundColors": {
           "type": "object",
@@ -171,30 +177,36 @@
           "properties": {
             "editor": {
               "type": "string",
-              "pattern": "^(theme|#[0-9a-fA-F]{6})$"
+              "pattern": "^(theme|#[0-9a-fA-F]{6})$",
+              "description": "コードなどを編集する中央の領域。"
             },
             "sidebar": {
               "type": "string",
-              "pattern": "^(theme|#[0-9a-fA-F]{6})$"
+              "pattern": "^(theme|#[0-9a-fA-F]{6})$",
+              "description": "Explorer・検索などを表示する主サイドバー。"
             },
             "panel": {
               "type": "string",
-              "pattern": "^(theme|#[0-9a-fA-F]{6})$"
+              "pattern": "^(theme|#[0-9a-fA-F]{6})$",
+              "description": "ターミナル・問題一覧などを表示するパネル。"
             },
             "auxiliaryBar": {
               "type": "string",
-              "pattern": "^(theme|#[0-9a-fA-F]{6})$"
+              "pattern": "^(theme|#[0-9a-fA-F]{6})$",
+              "description": "チャットなどを表示する補助サイドバー。"
             },
             "chrome": {
               "type": "string",
-              "pattern": "^(theme|#[0-9a-fA-F]{6})$"
+              "pattern": "^(theme|#[0-9a-fA-F]{6})$",
+              "description": "タイトルバー、ステータスバー、アクティビティバーの3か所。"
             },
             "gap": {
               "type": "string",
-              "pattern": "^(theme|#[0-9a-fA-F]{6})$"
+              "pattern": "^(theme|#[0-9a-fA-F]{6})$",
+              "description": "浮動パネルを使う画面で、各パネルの間と外周にある余白。通常配置では対象外。"
             }
           },
-          "description": "Background colors per area, including floating-card gutters. Use 'theme' to follow the active theme or a custom #RRGGBB."
+          "description": "各領域の背景色。theme は現在の VS Code のテーマ色を使い、#RRGGBB で独自の色を指定できる。"
         },
         "vscodeWallpaper.minimapOpacity": {
           "type": [
@@ -205,7 +217,7 @@
           "minimum": 0,
           "maximum": 1,
           "scope": "window",
-          "description": "Optional minimap canvas opacity. Also fades minimap code, not the scrollbar thumb. Null preserves VS Code's default."
+          "description": "ミニマップの描画全体の不透明度。縮小コードも薄くなるが、スクロールバーのつまみは対象外。null は VS Code 標準表示。"
         },
         "vscodeWallpaper.stickyScrollBlur": {
           "type": "integer",
@@ -213,7 +225,7 @@
           "minimum": 0,
           "maximum": 30,
           "scope": "window",
-          "description": "Blur the code behind Sticky Scroll (pixels) without blurring the pinned text. Set 0 to disable."
+          "description": "エディタ上部の固定表示コード（Sticky Scroll）の背後をぼかす強さ（px）。固定文字はぼかさない。0 で無効。"
         }
       }
     }
