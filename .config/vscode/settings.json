@@ -48,6 +48,10 @@
     "workbench.editorAssociations": {
         "*.md": "vscode.markdown.preview.editor"
     },
+    // Markdown Live Preview の配色を試す。既定の Markdown Preview は変更しない。
+    "mdLivePreview.enabledStyles": [
+        "retro-hacker-blue.css"
+    ],
     // Markdown の装飾と階層インデントは自作拡張機能で適用する。
     // Text Marker は暗い背景でも色を判別しやすいよう、色相を広く散らす。
     // Retro Hacker Blue の Gold / Blue / Purple / Orange と Cyber Pink に、

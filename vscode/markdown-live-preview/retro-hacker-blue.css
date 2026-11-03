@@ -1,0 +1,69 @@
+/*
+ * Managed from dotfiles: vscode/markdown-live-preview/retro-hacker-blue.css
+ * Styles for t-shoot Markdown Live Preview Editor (CodeMirror 6).
+ * Unlike the ordinary Markdown preview, its blocks use .cm-line classes.
+ * Heading-section indentation still requires editor decorations; this
+ * stylesheet intentionally does not fake the hierarchy using CSS selectors.
+ */
+
+/* The 1080px outer column includes 40px gutters at maximum width,
+ * leaving up to 1000px for Markdown text, like the existing preview. */
+body.vscode-dark .cm-editor .cm-content {
+  max-width: 1080px;
+  padding: 28px clamp(24px, 5vw, 40px) 40vh;
+  color: #5EAFFF;
+}
+
+/* Header colors and the Org-style vertical bar in rendered headings.
+ * Hide the decorative bar on the active line to avoid obscuring editing. */
+body.vscode-dark .cm-line:is(
+  .mlp-line-h1,
+  .mlp-line-h2,
+  .mlp-line-h3,
+  .mlp-line-h4,
+  .mlp-line-h5,
+  .mlp-line-h6
+) {
+  color: #A6CAFF;
+  border-bottom: none;
+}
+
+body.vscode-dark .cm-line:is(
+  .mlp-line-h1,
+  .mlp-line-h2,
+  .mlp-line-h3,
+  .mlp-line-h4,
+  .mlp-line-h5,
+  .mlp-line-h6
+):not(.cm-activeLine)::before {
+  content: "┃";
+  color: #4C9EEB;
+  font-weight: 400;
+  margin-right: 0.45em;
+}
+
+/* List markers are actual inline spans in this editor, not ::marker. */
+body.vscode-dark .mlp-list-mark {
+  color: #316CBD;
+}
+
+/* Blockquotes use a decorated CodeMirror line instead of <blockquote>. */
+body.vscode-dark .cm-line.mlp-line-quote {
+  color: #4C9EEB;
+  background-color: #001947;
+  border-left: 3px solid #5EAFFF;
+  padding-left: 20px;
+}
+
+body.vscode-dark .mlp-inline-code {
+  color: #7CBEFF;
+  background-color: #052A59;
+  border-radius: 3px;
+  padding: 0.12em 0.28em;
+}
+
+body.vscode-dark .cm-line.mlp-line-code {
+  background-color: #0A1A36;
+  border-color: transparent;
+  border-radius: 3px;
+}
