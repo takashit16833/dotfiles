@@ -69,8 +69,19 @@ test('縦長・横長の診断は CSS の orientation 条件を表示する', ()
 
 test('未透過の編集タブ・スクロールバー・下部パネルをまとめて診断する', () => {
   const report = run(buildDiagnosticsScript(config));
-  assert.equal(report.tables.length, 4);
+  assert.equal(report.tables.length, 6);
   assert.ok(report.tables[3].some(row => row.selector === '.part.editor .tabs-container'));
   assert.ok(report.tables[3].some(row => row.selector === '.part.panel .monaco-list-rows'));
   assert.equal(report.info[4][0], 'VS Code Wallpaper: 個別要素の背景色');
+});
+
+test('子要素と実画面位置を使って追加調査する', () => {
+  const script = buildDiagnosticsScript(config);
+  assert.match(script, /getComputedStyle\(el, '::before'\)/);
+  assert.match(script, /document\.elementsFromPoint\(x, y\)/);
+  assert.doesNotMatch(script, /style\.setProperty|replaceSync|adoptedStyleSheets\s*=/);
+  const report = run(script);
+  assert.equal(report.tables.length, 6);
+  assert.equal(report.info[5][0], 'VS Code Wallpaper: タブとパンくずの背景を描く子要素');
+  assert.equal(report.info[6][0], 'VS Code Wallpaper: ターミナル切り替え欄の描画要素');
 });

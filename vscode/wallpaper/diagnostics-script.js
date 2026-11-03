@@ -93,6 +93,58 @@ function buildDiagnosticsScript(settings) {
     };
   }));
 
+  // Investigate painted descendants/pseudo-elements of tabs and breadcrumbs.
+  const isOpaqueColor = color => color !== 'transparent' && color !== 'rgba(0, 0, 0, 0)';
+  const paintedChildren = [];
+  for (const [label, selector] of [
+    ['アクティブタブ', '.part.editor .tab.active'],
+    ['非アクティブタブ', '.part.editor .tab:not(.active)'],
+    ['パンくず', '.part.editor .breadcrumbs-control'],
+    ['サイドバー見出し', '.part.sidebar > .composite.title']
+  ]) {
+    const target = document.querySelector('.monaco-workbench ' + selector);
+    if (!target) {
+      paintedChildren.push({ label, element: '要素なし' });
+      continue;
+    }
+    const rows = [target, ...target.querySelectorAll('*')].map(el => {
+      const s = getComputedStyle(el);
+      const b = getComputedStyle(el, '::before');
+      const a = getComputedStyle(el, '::after');
+      const pseudoPaint = p => p.content !== 'none' && p.content !== 'normal' &&
+        (isOpaqueColor(p.backgroundColor) || p.backgroundImage !== 'none');
+      return {
+        label, element: describe(el).element,
+        background: s.backgroundColor, image: s.backgroundImage,
+        before: pseudoPaint(b) ? b.backgroundColor : 'なし',
+        after: pseudoPaint(a) ? a.backgroundColor : 'なし'
+      };
+    }).filter(row => isOpaqueColor(row.background) || row.image !== 'none' ||
+      row.before !== 'なし' || row.after !== 'なし').slice(0, 8);
+    paintedChildren.push(...(rows.length ? rows : [{ label, element: '不透明な子要素なし' }]));
+  }
+  console.info('VS Code Wallpaper: タブとパンくずの背景を描く子要素');
+  console.table(paintedChildren);
+
+  // The terminal switcher did not match .terminal-tabs. Inspect the visible right side.
+  const terminalPanel = document.querySelector('.monaco-workbench .part.panel');
+  if (terminalPanel) {
+    const r = terminalPanel.getBoundingClientRect();
+    const painted = [];
+    for (const [label, xRatio, yRatio] of [
+      ['右上', 0.90, 0.12], ['右中央', 0.90, 0.45], ['右下', 0.90, 0.82]
+    ]) {
+      const x = r.left + r.width * xRatio;
+      const y = r.top + r.height * yRatio;
+      painted.push(...document.elementsFromPoint(x, y).slice(0, 24)
+        .filter(el => el === terminalPanel || (terminalPanel.contains && terminalPanel.contains(el)))
+        .map(el => ({ label, ...describe(el) }))
+        .filter(row => isOpaqueColor(row.background) || row.hasImage).slice(0, 8));
+    }
+    console.info('VS Code Wallpaper: ターミナル切り替え欄の描画要素');
+    console.table(painted);
+  }
+
 })();`;
 }
 
