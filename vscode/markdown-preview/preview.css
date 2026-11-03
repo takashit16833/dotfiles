@@ -63,6 +63,14 @@ body.vscode-dark .markdown-body p {
   margin-bottom: 1.2em;
 }
 
+/* A blank line between any two list items makes the whole Markdown list
+ * "loose": the renderer wraps every item in <p>. Keep spacing between
+ * actual paragraphs, but not after the final paragraph of each list item,
+ * so loose lists are as compact as tight lists in Live Preview. */
+body.vscode-dark .markdown-body li > p:last-child {
+  margin-bottom: 0;
+}
+
 /* Match Obsidian's muted blue ordered-list numbers, including 10+. */
 body.vscode-dark .markdown-body ol > li::marker {
   color: #316CBD;

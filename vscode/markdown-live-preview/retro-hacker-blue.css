@@ -33,22 +33,22 @@ body.vscode-dark .cm-line:is(
   line-height: 1.25;
 }
 
-/* A source blank line already occupies vertical space in CodeMirror.
- * Avoid adding the extension's default heading bottom padding on top of it.
- * H2/H3 retain a small top inset to approximate Preview's heading margins.
- * Padding, not margin, is required for CodeMirror's line-height mapping. */
+/* The Live Preview renderer uses different fonts and heading metrics.
+ * Reduce the visible H1-H3 sizes to match the normal Markdown Preview;
+ * keep CodeMirror's padding (never vertical margins) for cursor geometry.
+ * A source blank line already contributes space below each heading. */
 body.vscode-dark .cm-line.mlp-line-h1 {
-  font-size: 2em;
+  font-size: 1.8em;
   padding-top: 0;
   padding-bottom: 0;
 }
 body.vscode-dark .cm-line.mlp-line-h2 {
-  font-size: 1.5em;
+  font-size: 1.3em;
   padding-top: 0.65em;
   padding-bottom: 0;
 }
 body.vscode-dark .cm-line.mlp-line-h3 {
-  font-size: 1.25em;
+  font-size: 1.1em;
   padding-top: 0.6em;
   padding-bottom: 0;
 }
