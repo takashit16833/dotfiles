@@ -35,7 +35,7 @@ test('画像は画面全体に1枚、乗算、比率切り替え', () => {
   assert.doesNotMatch(css, /body::after/);
   assert.match(css, /color-mix\(in srgb, #505050 65%, transparent\)/);
   assert.match(css, /var\(--vscode-sideBar-background, #242424\) 85%/);
-  assert.match(css, /\.part\.auxiliarybar.*0\.7/);
+  assert.match(css, /\.part\.auxiliarybar.*70%, transparent/);
 });
 
 test('横幅切替と代替画像なし', () => {
