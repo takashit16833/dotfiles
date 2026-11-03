@@ -3,6 +3,7 @@
 const path = require('node:path');
 const vscode = require('vscode');
 const { readSettings, resolveImage, generateCss } = require('./wallpaper');
+const { buildApplyScript, buildRemoveScript } = require('./workbench-script');
 
 let previewPanel;
 
@@ -89,6 +90,26 @@ function activate(context) {
     } catch (error) {
       vscode.window.showErrorMessage(`VS Code Wallpaper: ${error.message}`);
     }
+  }));
+  context.subscriptions.push(vscode.commands.registerCommand('vscodeWallpaper.showWorkbenchScript', async () => {
+    try {
+      const css = cssFor(currentSettings());
+      if (!css) { vscode.window.showInformationMessage('vscodeWallpaper.enabled を true にしてください。'); return; }
+      const doc = await vscode.workspace.openTextDocument({
+        language: 'javascript',
+        content: buildApplyScript(css)
+      });
+      await vscode.window.showTextDocument(doc, { preview: false });
+    } catch (error) {
+      vscode.window.showErrorMessage(`VS Code Wallpaper: ${error.message}`);
+    }
+  }));
+  context.subscriptions.push(vscode.commands.registerCommand('vscodeWallpaper.showRemoveScript', async () => {
+    const doc = await vscode.workspace.openTextDocument({
+      language: 'javascript',
+      content: buildRemoveScript()
+    });
+    await vscode.window.showTextDocument(doc, { preview: false });
   }));
   context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(event => {
     if (event.affectsConfiguration('vscodeWallpaper') && previewPanel) renderPreview(previewPanel);
