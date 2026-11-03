@@ -228,6 +228,16 @@ ${config.minimapOpacity === null ? '' : `${root} .part.editor .monaco-editor .mi
 }
 `}
 
+/* Sticky Scroll pins enclosing code to the top of the editor.
+   VS Code stickyScroll.css gives the gutter and lines-scrollable separate opaque
+   backgrounds. Their descendants inherit them, so clear only these two layers.
+   Exclude peek editors and retain sticky-line hover/foreground styling. */
+${root} .part.editor .monaco-editor .sticky-widget:not(.peek) .sticky-widget-line-numbers,
+${root} .part.editor .monaco-editor .sticky-widget:not(.peek) .sticky-widget-lines-scrollable {
+  background-color: transparent !important;
+}
+
+
 /* The Search / Explorer title remains opaque even when the sidebar is translucent.
    Keep its buttons and text unchanged. */
 ${root} :is(.part.sidebar, .part.auxiliarybar) > .composite.title {

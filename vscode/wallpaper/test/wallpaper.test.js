@@ -241,3 +241,21 @@ test('パンくずの帯と背景変数を透明化する', () => {
   assert.match(rule, /background-image: none !important;/);
   assert.doesNotMatch(rule, /(^|\n)\s*(?:color|border|opacity):/);
 });
+
+test('Sticky Scroll の固定コードと行番号の背景のみ透過する', () => {
+  const css = generateCss(config);
+  const gutter = '.monaco-workbench .part.editor .monaco-editor .sticky-widget:not(.peek) .sticky-widget-line-numbers,';
+  const code = '.monaco-workbench .part.editor .monaco-editor .sticky-widget:not(.peek) .sticky-widget-lines-scrollable {';
+  assert.ok(css.includes(gutter));
+  assert.ok(css.includes(code));
+  const block = css.slice(css.indexOf(gutter)).split('}')[0];
+  assert.match(block, /background-color: transparent !important;/);
+  assert.doesNotMatch(block, /(?:^|\n)\s*(?:color|opacity|border|display):/);
+  assert.doesNotMatch(css, /\.sticky-line-content:hover\s*\{\s*background-color: transparent/);
+  assert.doesNotMatch(css, /\.sticky-widget\.peek\s*\{\s*background-color: transparent/);
+});
+
+test('Sticky Scroll の透明化は壁紙を無効にしたとき生成しない', () => {
+  const css = generateCss({ ...config, enabled: false });
+  assert.equal(css, '');
+});

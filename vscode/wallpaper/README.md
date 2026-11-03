@@ -137,6 +137,12 @@ VS Code 本体の `modernUI/browser/media/tabs.css` では、タブの下地を 
 
 注意：開発者ツールでコードを実行する行為には危険があるため、必ず生成コードを確認すること。今回のコードは `CSSStyleSheet` と `document.adoptedStyleSheets` を使って一時的なスタイルを追加するだけで、ディスクへの書き込みやデバッグ用ポートの開放はしない。VS Code の内部 CSS は非公開なので、実画面への適用が成功するか、どの領域の透過が必要かは実機で確認する。
 
+### Sticky Scroll（固定表示コード）の背景
+
+編集画面上部に行番号 131、132、133 … のように複数行のコードが固定表示され、その部分だけ不透明な黒い帯になる場合がある。これはエディタの Sticky Scroll である。VS Code 本体の `stickyScroll.css` では `.sticky-widget-line-numbers`（行番号）と `.sticky-widget-lines-scrollable`（コード）に別々の背景色が指定され、子要素にもその色が継承される。
+
+壁紙用 CSS では `.part.editor .monaco-editor .sticky-widget:not(.peek)` の2つの背景だけを透明化する。固定表示自体・折りたたみ・文字色・マウスを重ねたときの強調色は変更しない。`peek` の内部エディタも対象外とする。実機検証はこれからである。
+
 ### Overview Ruler の黒い帯（Canvas 内部の背景）
 
 2026-11-03 の実機診断で、スクロールバーと同じ位置にある `canvas.decorationsOverviewRuler` の5か所がすべて `rgba(1, 1, 17, 1)`（完全不透明）だった。スクロールバー本体はすでに透明であり、黒い帯の原因はこの Canvas 内で描画される背景色だと確認できた。
