@@ -217,5 +217,5 @@
         "**/out",
         "**/dist-newstyle"
     ],
-    "background.enabled": false,
+    "background.enabled": true
 }
