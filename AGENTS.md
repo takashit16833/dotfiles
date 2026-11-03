@@ -52,6 +52,7 @@
 - 編集タブの帯 `.part.editor .tabs-and-actions-container` と下部 Explorer の一覧背景 `.part.panel .monaco-list-rows` は実測で不透明だった。コンテナ背景だけを透明化し、個別タブ、行の選択色、スクロールバーのつまみは維持する。
 - サイドバーの Search 見出し `.part.sidebar > .composite.title` は不透明と実測されている。見出し背景だけ透明化し、個々のラベル・アイコンの見た目は維持する。編集タブ・パンくず・スクロールバー自体は透明と実測されたので、未確認の別要素を推測で変更しない。
 - VS Code 本体 `modernUI/browser/media/tabs.css`、`breadcrumbscontrol.css`、`terminal.css`、`scrollbars.css` で、タブ・パンくず・ターミナル切り替え欄・スクロールバーの下地を描く要素を確認。該当コンテナ背景のみ透明化し、タブ枠線・ターミナル選択行・スクロールバーのつまみは維持する。新しい背景規則は実機で再確認する。
+- パンくずの `.breadcrumbs-below-tabs` とその内部に限って背景色・背景画像を透明化する。ミニマップは Canvas が縮小コードと背景を一緒に描くため、既定の表示を変えず、明示的な `vscodeWallpaper.minimapOpacity`（null または 0～1）で Canvas 全体の透過を調整する。縮小コードも薄くなると説明し、実機で確認する。
 - ターミナルの Canvas による不透明な描画は、実機で `terminal.integrated.enableImages: true` と `terminal.background: '#00000000'` により解消した。これは VS Code 標準設定であり、拡張から勝手に変更しない。`diagnostics-script.js` は左側の表示領域と画像切り替えを読み取り専用で検査する。
 - VS Code 全画面壁紙の幅別切り替えは実装検討中。`vscode/background/` の CSS は参考用として保持するが、拡張機能による読み込みや `install.sh` からの配置は行わない。
 - Apc / Custom CSS and JS Loader は実機で本体改変や整合性警告が問題になったため、再導入しない。背景画像の再実装では既存の vscode-background の動作を前提として方式を検討し、検証前に本体へパッチを適用しない。

@@ -2,7 +2,7 @@
   "name": "vscode-wallpaper",
   "displayName": "VS Code Wallpaper",
   "description": "Generate a responsive, multiply-blended VS Code wallpaper stylesheet without patching VS Code.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "publisher": "takashit16833",
   "private": true,
   "engines": {
@@ -170,6 +170,17 @@
             }
           },
           "description": "Overlay background colors per area. Use 'theme' to follow the VS Code theme or a custom #RRGGBB."
+        },
+        "vscodeWallpaper.minimapOpacity": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "default": null,
+          "minimum": 0,
+          "maximum": 1,
+          "scope": "window",
+          "description": "Optional minimap canvas opacity. Also fades minimap code, not the scrollbar thumb. Null preserves VS Code's default."
         }
       }
     }

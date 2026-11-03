@@ -194,3 +194,27 @@ test('スクロールバーの下地のみ透過し、つまみの表示規則�
   assert.match(css.slice(css.indexOf(scrollbar)).split('}')[0], /background-color: transparent !important;/);
   assert.doesNotMatch(css, /\.scrollbar\s*>\s*\.slider\s*\{/);
 });
+
+test('パンくず行の背景と背景画像だけを透明化する', () => {
+  const css = generateCss(config);
+  const selector = '.monaco-workbench .part.editor .breadcrumbs-below-tabs,';
+  const start = css.indexOf(selector);
+  assert.ok(start >= 0);
+  const rule = css.slice(start).split('}')[0];
+  assert.match(rule, /background-color: transparent !important;/);
+  assert.match(rule, /background-image: none !important;/);
+  assert.doesNotMatch(rule, /(?:^|\n)\s*(?:border|color|opacity):/);
+});
+test('ミニマップの不透明度は明示された場合にだけ CSS に出力する', () => {
+  const defaultCss = generateCss(config);
+  assert.doesNotMatch(defaultCss, /\.minimap canvas\s*\{/);
+  const selector = '.monaco-workbench .part.editor .monaco-editor .minimap canvas {';
+  const customCss = generateCss({ ...config, minimapOpacity: 0.35 });
+  assert.ok(customCss.includes(selector));
+  assert.match(customCss.slice(customCss.indexOf(selector)).split('}')[0], /opacity: 0.35 !important;/);
+  assert.doesNotMatch(customCss.slice(customCss.indexOf(selector)).split('}')[0], /(?:^|\n)\s*background:/);
+});
+test('ミニマップの不透明度は null または 0～1 の数値に制限する', () => {
+  for (const value of [0, 0.5, 1, null]) assert.doesNotThrow(() => generateCss({ ...config, minimapOpacity: value }));
+  for (const value of [-1, 1.1, '0.5', Infinity, NaN]) assert.throws(() => generateCss({ ...config, minimapOpacity: value }), /minimapOpacity/);
+});

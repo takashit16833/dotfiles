@@ -27,6 +27,7 @@ function readSettings(configuration) {
     maxAspectRatio: get('maxAspectRatio', '16/10'),
     maxWidth: get('maxWidth', 1400),
     tint: get('tint', '#FFFFFF'),
+    minimapOpacity: get('minimapOpacity', null),
     opacity: { ...DEFAULT_OPACITY, ...get('opacity', {}) },
     backgroundColors: { ...DEFAULT_BACKGROUND_COLORS, ...get('backgroundColors', {}) }
   };
@@ -36,6 +37,7 @@ function normalizeSettings(settings) {
   const value = {
     ...settings,
     tint: settings.tint ?? '#FFFFFF',
+    minimapOpacity: settings.minimapOpacity ?? null,
     opacity: { ...DEFAULT_OPACITY, ...(settings.opacity || {}) },
     backgroundColors: { ...DEFAULT_BACKGROUND_COLORS, ...(settings.backgroundColors || {}) }
   };
@@ -52,6 +54,10 @@ function normalizeSettings(settings) {
   }
   if (!/^#[0-9a-fA-F]{6}$/.test(value.tint)) {
     throw new Error('tint は #FFFFFF のような6桁の色を指定してください。');
+  }
+  if (value.minimapOpacity !== null &&
+      (!Number.isFinite(value.minimapOpacity) || value.minimapOpacity < 0 || value.minimapOpacity > 1)) {
+    throw new Error('minimapOpacity は null または 0～1 の数値を指定してください。');
   }
   for (const [area, opacity] of Object.entries(value.opacity)) {
     if (!Object.hasOwn(DEFAULT_OPACITY, area) || !Number.isFinite(opacity) || opacity < 0 || opacity > 1) {
@@ -189,6 +195,20 @@ ${root} .part.panel .pane-body.integrated-terminal :is(.tabs-container, .tabs-li
 ${root} :is(.part.editor, .part.panel) .monaco-scrollable-element > .scrollbar {
   background-color: transparent !important;
 }
+
+/* Clear the breadcrumb row backing without changing text or borders. */
+${root} .part.editor .breadcrumbs-below-tabs,
+${root} .part.editor .breadcrumbs-below-tabs .breadcrumbs-control,
+${root} .part.editor .breadcrumbs-below-tabs .monaco-breadcrumbs {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Minimap background is painted into canvas; fade only by explicit user choice. */
+${config.minimapOpacity === null ? '' : `${root} .part.editor .monaco-editor .minimap canvas {
+  opacity: ${config.minimapOpacity} !important;
+}
+`}
 
 /* The Search / Explorer title remains opaque even when the sidebar is translucent.
    Keep its buttons and text unchanged. */
