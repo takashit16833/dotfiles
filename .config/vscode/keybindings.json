@@ -228,12 +228,12 @@
         "key": "f4",
         "command": "quicktree.open"
     },
-    // Explorer のルートで ← を押すと全フォルダを折りたたむ。
-    // ルート以外の ← は VS Code 標準の折りたたみ・親への移動を維持する。
+    // Explorer 内の Cmd+Left で全フォルダを折りたたむ。
+    // 修飾キーなしの Left は VS Code 標準の動作のままにする。
     {
-        "key": "left",
+        "key": "cmd+left",
         "command": "workbench.files.action.collapseExplorerFolders",
-        "when": "filesExplorerFocus && explorerResourceIsRoot && !inputFocus"
+        "when": "filesExplorerFocus && !inputFocus"
     },
     // Explorer の → はフォルダを展開し、ファイルなら開いて編集エリアに戻る。
     // ファイルを開いたときは従来の Cmd+Down と同様にパネルとサイドバーも閉じる。
