@@ -11,6 +11,10 @@
 body.vscode-dark .cm-editor .cm-content {
   max-width: 1080px;
   padding: 28px clamp(24px, 5vw, 40px) 40vh;
+  /* VS Code's Markdown Preview defaults to 14px / 22px, whereas this
+   * extension otherwise enforces at least 15px with 1.7 line spacing. */
+  font-size: 14px;
+  line-height: 22px;
   color: #5EAFFF;
 }
 
@@ -26,7 +30,17 @@ body.vscode-dark .cm-line:is(
 ) {
   color: #A6CAFF;
   border-bottom: none;
+  line-height: 1.25;
 }
+
+/* Match the built-in Markdown Preview's heading sizes. H1 has no top
+ * margin there; CodeMirror requires padding rather than a line margin. */
+body.vscode-dark .cm-line.mlp-line-h1 { font-size: 2em; padding-top: 0; }
+body.vscode-dark .cm-line.mlp-line-h2 { font-size: 1.5em; }
+body.vscode-dark .cm-line.mlp-line-h3 { font-size: 1.25em; }
+body.vscode-dark .cm-line.mlp-line-h4 { font-size: 1em; }
+body.vscode-dark .cm-line.mlp-line-h5 { font-size: 0.875em; }
+body.vscode-dark .cm-line.mlp-line-h6 { font-size: 0.85em; }
 
 body.vscode-dark .cm-line:is(
   .mlp-line-h1,
@@ -45,6 +59,14 @@ body.vscode-dark .cm-line:is(
 /* List markers are actual inline spans in this editor, not ::marker. */
 body.vscode-dark .mlp-list-mark {
   color: #316CBD;
+}
+
+/* Lists have an extra HTML list inset in the ordinary Markdown Preview.
+ * CodeMirror displays list markers directly on each line instead. */
+body.vscode-dark .cm-line.rhb-outline-content.mlp-line-list {
+  padding-left: calc(var(--rhb-outline-offset, 0px) + var(--rhb-outline-content-inset) + 30px);
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
 }
 
 /* Blockquotes use a decorated CodeMirror line instead of <blockquote>. */
@@ -72,17 +94,19 @@ body.vscode-dark .cm-line.mlp-line-code {
  * Section indentation uses CodeMirror line decorations from the pinned
  * Markdown Live Preview build. Padding, not margin, keeps cursor/line geometry
  * measurable by CodeMirror. Levels match the normal Markdown Preview:
- * H1=0, H2=1.5rem, H3=3rem, etc.; content adds another 1.25rem.
+ * H1=0px, H2=24px, H3=48px, etc.; content adds another 20px.
  */
 body.vscode-dark .cm-editor .cm-content {
-  --rhb-outline-content-inset: 1.25rem;
+  /* Use fixed px here: rem differs between the two webviews, causing
+   * the Live Preview to drift ~4px farther right at each heading level. */
+  --rhb-outline-content-inset: 20px;
 }
-body.vscode-dark .cm-line.rhb-outline-depth-0 { --rhb-outline-offset: 0rem; }
-body.vscode-dark .cm-line.rhb-outline-depth-1 { --rhb-outline-offset: 1.5rem; }
-body.vscode-dark .cm-line.rhb-outline-depth-2 { --rhb-outline-offset: 3rem; }
-body.vscode-dark .cm-line.rhb-outline-depth-3 { --rhb-outline-offset: 4.5rem; }
-body.vscode-dark .cm-line.rhb-outline-depth-4 { --rhb-outline-offset: 6rem; }
-body.vscode-dark .cm-line.rhb-outline-depth-5 { --rhb-outline-offset: 7.5rem; }
+body.vscode-dark .cm-line.rhb-outline-depth-0 { --rhb-outline-offset: 0px; }
+body.vscode-dark .cm-line.rhb-outline-depth-1 { --rhb-outline-offset: 24px; }
+body.vscode-dark .cm-line.rhb-outline-depth-2 { --rhb-outline-offset: 48px; }
+body.vscode-dark .cm-line.rhb-outline-depth-3 { --rhb-outline-offset: 72px; }
+body.vscode-dark .cm-line.rhb-outline-depth-4 { --rhb-outline-offset: 96px; }
+body.vscode-dark .cm-line.rhb-outline-depth-5 { --rhb-outline-offset: 120px; }
 
 body.vscode-dark .cm-line.rhb-outline-heading {
   padding-left: var(--rhb-outline-offset, 0rem);
@@ -92,10 +116,22 @@ body.vscode-dark .cm-line.rhb-outline-content {
   padding-left: calc(var(--rhb-outline-offset, 0rem) + var(--rhb-outline-content-inset));
 }
 
-/* Retain the extension's own horizontal inset within each indented block. */
+/* A line's padding moves its text, but NOT its border/background. Draw the
+ * quote's left rule and background from the section inset itself, without
+ * adding horizontal margin to a CodeMirror line (which can affect layout). */
 body.vscode-dark .cm-line.rhb-outline-content.mlp-line-quote {
-  padding-left: calc(var(--rhb-outline-offset, 0rem) + var(--rhb-outline-content-inset) + 20px);
+  --rhb-quote-left: calc(var(--rhb-outline-offset, 0px) + var(--rhb-outline-content-inset));
+  border-left: 0;
+  background: linear-gradient(
+    to right,
+    transparent 0 var(--rhb-quote-left),
+    #5EAFFF var(--rhb-quote-left) calc(var(--rhb-quote-left) + 3px),
+    #001947 calc(var(--rhb-quote-left) + 3px)
+  );
+  padding-left: calc(var(--rhb-quote-left) + 3px + 20px);
 }
+
+/* Keep the editor's code-block text inset inside the section padding. */
 body.vscode-dark .cm-line.rhb-outline-content.mlp-line-code {
-  padding-left: calc(var(--rhb-outline-offset, 0rem) + var(--rhb-outline-content-inset) + 1.1em);
+  padding-left: calc(var(--rhb-outline-offset, 0px) + var(--rhb-outline-content-inset) + 1.1em);
 }
