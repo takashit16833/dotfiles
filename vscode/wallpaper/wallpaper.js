@@ -28,6 +28,7 @@ function readSettings(configuration) {
     maxWidth: get('maxWidth', 1400),
     tint: get('tint', '#FFFFFF'),
     minimapOpacity: get('minimapOpacity', null),
+    stickyScrollBlur: get('stickyScrollBlur', 12),
     opacity: { ...DEFAULT_OPACITY, ...get('opacity', {}) },
     backgroundColors: { ...DEFAULT_BACKGROUND_COLORS, ...get('backgroundColors', {}) }
   };
@@ -38,6 +39,7 @@ function normalizeSettings(settings) {
     ...settings,
     tint: settings.tint ?? '#FFFFFF',
     minimapOpacity: settings.minimapOpacity ?? null,
+    stickyScrollBlur: settings.stickyScrollBlur ?? 12,
     opacity: { ...DEFAULT_OPACITY, ...(settings.opacity || {}) },
     backgroundColors: { ...DEFAULT_BACKGROUND_COLORS, ...(settings.backgroundColors || {}) }
   };
@@ -58,6 +60,9 @@ function normalizeSettings(settings) {
   if (value.minimapOpacity !== null &&
       (!Number.isFinite(value.minimapOpacity) || value.minimapOpacity < 0 || value.minimapOpacity > 1)) {
     throw new Error('minimapOpacity は null または 0～1 の数値を指定してください。');
+  }
+  if (!Number.isInteger(value.stickyScrollBlur) || value.stickyScrollBlur < 0 || value.stickyScrollBlur > 30) {
+    throw new Error('stickyScrollBlur は 0～30 の整数を指定してください。');
   }
   for (const [area, opacity] of Object.entries(value.opacity)) {
     if (!Object.hasOwn(DEFAULT_OPACITY, area) || !Number.isFinite(opacity) || opacity < 0 || opacity > 1) {
@@ -227,6 +232,12 @@ ${config.minimapOpacity === null ? '' : `${root} .part.editor .monaco-editor .mi
   opacity: ${config.minimapOpacity} !important;
 }
 `}
+
+/* Blur what is behind Sticky Scroll, not the pinned text itself.
+   The component backgrounds are transparent, so the wallpaper stays visible. */
+${config.stickyScrollBlur > 0 ? `${root} .part.editor .monaco-editor .sticky-widget:not(.peek) {
+  backdrop-filter: blur(${config.stickyScrollBlur}px) !important;
+}` : ''}
 
 /* Sticky Scroll pins enclosing code to the top of the editor.
    VS Code stickyScroll.css gives the gutter and lines-scrollable separate opaque

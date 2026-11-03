@@ -2,7 +2,7 @@
   "name": "vscode-wallpaper",
   "displayName": "VS Code Wallpaper",
   "description": "Generate a responsive, multiply-blended VS Code wallpaper stylesheet without patching VS Code.",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "publisher": "takashit16833",
   "private": true,
   "engines": {
@@ -181,6 +181,14 @@
           "maximum": 1,
           "scope": "window",
           "description": "Optional minimap canvas opacity. Also fades minimap code, not the scrollbar thumb. Null preserves VS Code's default."
+        },
+        "vscodeWallpaper.stickyScrollBlur": {
+          "type": "integer",
+          "default": 12,
+          "minimum": 0,
+          "maximum": 30,
+          "scope": "window",
+          "description": "Blur the code behind Sticky Scroll (pixels) without blurring the pinned text. Set 0 to disable."
         }
       }
     }

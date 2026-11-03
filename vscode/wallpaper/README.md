@@ -27,6 +27,7 @@ bash ./vscode/wallpaper/install.sh
   "vscodeWallpaper.maxAspectRatio": "16/10",
   "vscodeWallpaper.maxWidth": 1400,
   "vscodeWallpaper.tint": "#FFFFFF",
+  "vscodeWallpaper.stickyScrollBlur": 12,
   "vscodeWallpaper.backgroundColors": {
     "editor": "theme",
     "sidebar": "theme",
@@ -52,6 +53,7 @@ bash ./vscode/wallpaper/install.sh
 - `tint`：画像に乗算する色。既定の白（`#FFFFFF`）は画像の色を変えない。`background-blend-mode: multiply` を使う。
 - `backgroundColors`：領域別の背景色。`theme` で現在の VS Code テーマ色を使い、`#RRGGBB` で任意の色に変更できる。
 - `opacity`：画像の上に重ねる各領域の背景色の不透明度。文字の不透明度は変更しない。`0` が透明、`1` が不透明。
+- `stickyScrollBlur`：Sticky Scroll の固定コードの*背後*をぼかす強さ（CSS px）。既定 `12`、有効範囲 `0`～`30`、`0` ならぼかさない。固定表示の文字自体にはぼかしを適用しない。
 
 ※ 乗算するのは画像と `tint` の色である。各領域の `opacity` はその上に重ねる背景色の不透明度であり、乗算そのものとは別の設定である。
 
@@ -141,7 +143,7 @@ VS Code 本体の `modernUI/browser/media/tabs.css` では、タブの下地を 
 
 編集画面上部に行番号 131、132、133 … のように複数行のコードが固定表示され、その部分だけ不透明な黒い帯になる場合がある。これはエディタの Sticky Scroll である。VS Code 本体の `stickyScroll.css` では `.sticky-widget-line-numbers`（行番号）と `.sticky-widget-lines-scrollable`（コード）に別々の背景色が指定され、子要素にもその色が継承される。
 
-壁紙用 CSS では `.part.editor .monaco-editor .sticky-widget:not(.peek)` の2つの背景だけを透明化する。固定表示自体・折りたたみ・文字色・マウスを重ねたときの強調色は変更しない。`peek` の内部エディタも対象外とする。実機検証はこれからである。
+壁紙用 CSS では `.part.editor .monaco-editor .sticky-widget:not(.peek)` の2つの背景だけを透明化する。実機で背景が透けることを確認した一方、固定された文字とその下のコードが重なって読みにくくなったため、固定領域全体に `backdrop-filter: blur(12px)` を適用する。`backdrop-filter` は背後をぼかし、手前に固定表示された文字自体はぼかさない。`vscodeWallpaper.stickyScrollBlur` で `0`～`30` px に調整でき、`0` でぼかしなしに戻す。`peek` の内部エディタには適用しない。背景の透明化・固定表示・文字色・マウスを重ねたときの強調表示は維持する。ぼかし後の実画面での確認は未完了。
 
 ### Overview Ruler の黒い帯（Canvas 内部の背景）
 

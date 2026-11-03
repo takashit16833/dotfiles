@@ -60,7 +60,7 @@
 - Markdown Live Preview Editor の階層インデントは `vscode/markdown-live-preview/` の小さなパッチだけを管理する。公開済み拡張の内部ファイルを直接編集せず、上流の特定コミットを取得し、変更箇所を確認してから VSIX を生成する。
 - ローカルビルドは Marketplace 版と同じ拡張 ID を使うため、更新で上書きされ得る。既定のエディタを変更する前に、実機で字下げ・編集操作・コードブロック・表を確認する。
 
-- 固定表示コード（Sticky Scroll）は VS Code の `stickyScroll.css` により行番号とコードの二層が不透明となる。壁紙の一時 CSS で `.sticky-widget:not(.peek)` 内の `.sticky-widget-line-numbers` / `.sticky-widget-lines-scrollable` だけを透明化する。固定表示、文字色、hover、peek は変更しない。実機確認待ち。
+- 固定表示コード（Sticky Scroll）は VS Code の `stickyScroll.css` により行番号とコードの二層が不透明となる。壁紙の一時 CSS で `.sticky-widget:not(.peek)` 内の `.sticky-widget-line-numbers` / `.sticky-widget-lines-scrollable` を透明化する。実機で透明化すると背後のコードと文字が重なったため、固定領域に `backdrop-filter: blur(...)` を使って背後だけをぼかす。強さは `vscodeWallpaper.stickyScrollBlur`（既定12px、0～30整数、0で無効）で指定する。固定表示、文字色、hover、peek は変更しない。ぼかし効果の実機確認待ち。
 
 ## Terminal
 

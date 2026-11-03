@@ -22,6 +22,7 @@ test('readSettings には実装側のデフォルトがある', () => {
   assert.equal(actual.opacity.editor, 0.7);
   assert.equal(actual.tint, '#FFFFFF');
   assert.equal(actual.switchMode, 'orientation');
+  assert.equal(actual.stickyScrollBlur, 12);
   assert.equal(actual.backgroundColors.editor, 'theme');
 });
 
@@ -258,4 +259,33 @@ test('Sticky Scroll の固定コードと行番号の背景のみ透過する', 
 test('Sticky Scroll の透明化は壁紙を無効にしたとき生成しない', () => {
   const css = generateCss({ ...config, enabled: false });
   assert.equal(css, '');
+});
+
+test('Sticky Scroll の下にある文字だけをぼかし、固定表示の文字は変更しない', () => {
+  const css = generateCss(config);
+  const target = '.monaco-workbench .part.editor .monaco-editor .sticky-widget:not(.peek) {';
+  const index = css.indexOf(target);
+  assert.ok(index >= 0);
+  const rule = css.slice(index).split('}')[0];
+  assert.match(rule, /backdrop-filter: blur\(12px\) !important;/);
+  assert.doesNotMatch(rule, /(^|\n)\s*(?:filter|opacity|color):/);
+  assert.doesNotMatch(css, /\.sticky-widget\.peek\s*\{\s*backdrop-filter:/);
+});
+
+test('Sticky Scroll のぼかしは設定で調整・無効化できる', () => {
+  const small = generateCss({ ...config, stickyScrollBlur: 4 });
+  assert.match(small, /backdrop-filter: blur\(4px\) !important;/);
+  const off = generateCss({ ...config, stickyScrollBlur: 0 });
+  assert.doesNotMatch(off, /backdrop-filter: blur\(/);
+  const noWallpaper = generateCss({ ...config, stickyScrollBlur: 12, enabled: false });
+  assert.equal(noWallpaper, '');
+});
+
+test('Sticky Scroll のぼかしは0～30の整数のみに限定する', () => {
+  for (const value of [0, 1, 12, 30]) {
+    assert.doesNotThrow(() => normalizeSettings({ ...config, stickyScrollBlur: value }));
+  }
+  for (const value of [-1, 31, 1.5, '12', NaN, Infinity, '12; color:red']) {
+    assert.throws(() => normalizeSettings({ ...config, stickyScrollBlur: value }), /stickyScrollBlur/);
+  }
 });
