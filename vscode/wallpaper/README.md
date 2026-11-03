@@ -137,6 +137,12 @@ VS Code 本体の `modernUI/browser/media/tabs.css` では、タブの下地を 
 
 注意：開発者ツールでコードを実行する行為には危険があるため、必ず生成コードを確認すること。今回のコードは `CSSStyleSheet` と `document.adoptedStyleSheets` を使って一時的なスタイルを追加するだけで、ディスクへの書き込みやデバッグ用ポートの開放はしない。VS Code の内部 CSS は非公開なので、実画面への適用が成功するか、どの領域の透過が必要かは実機で確認する。
 
+### スクロールバーの下地とパンくずの透明化
+
+VS Code の `scrollbars.css` は黒い背景に `background: var(--vscode-scrollbar-background)` を使い、スクロールバーのつまみには別変数 `--vscode-scrollbarSlider-background` を使う。背景変数と背景指定を透明化し、つまみ・ホバー表示の色は変更しない。
+
+パンくずは `--vscode-breadcrumb-background` と帯・表示用コンテナの背景色および背景画像を透明にする。文字や選択表示は変更しない。いずれも実画面での再確認が必要である。
+
 ### パンくずとミニマップの透過
 
 パンくずの表示用行 `.breadcrumbs-below-tabs` と内部の `.breadcrumbs-control` / `.monaco-breadcrumbs` の背景を透明化する。文字や区切り線はそのまま保持する。実機で効果を確認する。

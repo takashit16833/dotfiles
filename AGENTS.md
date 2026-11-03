@@ -84,3 +84,5 @@
 - Git identity は `~/.gitconfig.local` に分離する。
 
 - 壁紙の既定の切り替えは `orientation`（縦長・横長）。既存の `aspect-ratio` 16/10 は任意の縦横比として引き続き利用できる。診断と CSS 生成は共通の `mediaQueryFor` を使う。
+
+- スクロールバーの黒い背景は `scrollbars.css` の `background: var(--vscode-scrollbar-background)` を根拠に透明化する。つまみの `--vscode-scrollbarSlider-*` と `.slider` には触れない。パンくずは `--vscode-breadcrumb-background` と帯の背景だけ透明化し、表示状態を実機で確認する。

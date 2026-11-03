@@ -218,3 +218,26 @@ test('ミニマップの不透明度は null または 0～1 の数値に制限�
   for (const value of [0, 0.5, 1, null]) assert.doesNotThrow(() => generateCss({ ...config, minimapOpacity: value }));
   for (const value of [-1, 1.1, '0.5', Infinity, NaN]) assert.throws(() => generateCss({ ...config, minimapOpacity: value }), /minimapOpacity/);
 });
+
+test('スクロールバーの黒い下地を消し白いつまみには触れない', () => {
+  const css = generateCss(config);
+  const selector = '.monaco-workbench :is(.part.editor, .part.panel) .monaco-scrollable-element > .scrollbar {';
+  assert.match(css, /--vscode-scrollbar-background: transparent !important;/);
+  assert.ok(css.includes(selector));
+  const rule = css.slice(css.indexOf(selector)).split('}')[0];
+  assert.match(rule, /background: transparent !important;/);
+  assert.match(rule, /background-color: transparent !important;/);
+  assert.doesNotMatch(css, /--vscode-scrollbarSlider-(?:background|hoverBackground|activeBackground):/);
+  assert.doesNotMatch(css, /\.scrollbar\s*>\s*\.slider\s*\{/);
+});
+
+test('パンくずの帯と背景変数を透明化する', () => {
+  const css = generateCss(config);
+  const selector = '.monaco-workbench .part.editor :is(.breadcrumbs-below-tabs, .breadcrumbs-control, .breadcrumbs-editor-type) {';
+  assert.match(css, /--vscode-breadcrumb-background: transparent !important;/);
+  assert.ok(css.includes(selector));
+  const rule = css.slice(css.indexOf(selector)).split('}')[0];
+  assert.match(rule, /background-color: transparent !important;/);
+  assert.match(rule, /background-image: none !important;/);
+  assert.doesNotMatch(rule, /(^|\n)\s*(?:color|border|opacity):/);
+});

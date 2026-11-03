@@ -191,6 +191,24 @@ ${root} .part.panel .pane-body.integrated-terminal :is(.tabs-container, .tabs-li
   background-color: transparent !important;
 }
 
+/* VS Code scrollbar CSS uses background shorthand for the track,
+   and separate variables for the slider. Keep the slider untouched. */
+${root} {
+  --vscode-scrollbar-background: transparent !important;
+  --vscode-breadcrumb-background: transparent !important;
+}
+${root} :is(.part.editor, .part.panel) .monaco-scrollable-element > .scrollbar {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Clear the breadcrumb backing but retain its text and borders. */
+${root} .part.editor :is(.breadcrumbs-below-tabs, .breadcrumbs-control, .breadcrumbs-editor-type) {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+
 /* The scrollbar track and slider are painted separately. Keep the slider. */
 ${root} :is(.part.editor, .part.panel) .monaco-scrollable-element > .scrollbar {
   background-color: transparent !important;
