@@ -146,8 +146,8 @@ html {
     background-color: var(--rhb-wp-block-panel) !important;
   }
 
-  /* Blur the note behind the command palette without altering its colors. */
-  body.theme-dark .prompt {
+  /* Blur content behind prompts and suggestion lists. */
+  body.theme-dark :is(.prompt, .suggestion-container, .cm-tooltip-autocomplete) {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
