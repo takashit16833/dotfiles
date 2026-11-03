@@ -116,3 +116,14 @@ test('サイドバー内のペインと通常時見出しを透明化する', ()
   assert.doesNotMatch(css, /\.part\.panel \.monaco-pane-view \.pane,/);
   assert.match(css, /\.monaco-workbench\.floating-panels \.part\.sidebar \{ background-color: color-mix\(/);
 });
+
+test('サイドバーの一覧コンテナのみ透明化し、行の選択色には触れない', () => {
+  const css = generateCss(config);
+  const selector = '.monaco-workbench :is(.part.sidebar, .part.auxiliarybar) .monaco-list-rows {';
+  const index = css.indexOf(selector);
+  assert.ok(index >= 0);
+  const block = css.slice(index).split('}')[0];
+  assert.match(block, /background-color: transparent !important;/);
+  assert.doesNotMatch(css, /\.monaco-list-row(?=[:.#\s,{])/);
+  assert.doesNotMatch(css, /\.part\.panel \.monaco-list-rows/);
+});

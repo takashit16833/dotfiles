@@ -151,6 +151,12 @@ ${root} .part.panel .xterm-viewport {
   background-color: transparent !important;
 }
 
+/* The Extensions list rows container was measured as opaque.
+   Keep selected/hovered rows unchanged, and only clear the list's backing layer. */
+${root} :is(.part.sidebar, .part.auxiliarybar) .monaco-list-rows {
+  background-color: transparent !important;
+}
+
 /* VS Code paneHeaders.css paints sidebar panes and headers opaque.
    Preserve header hover styling while showing the shared wallpaper. */
 ${root}.modern-ui :is(.part.sidebar, .part.auxiliarybar) .monaco-pane-view .pane,
