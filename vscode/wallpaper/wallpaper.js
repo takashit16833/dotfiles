@@ -3,9 +3,9 @@ const path = require('node:path');
 const os = require('node:os');
 const { pathToFileURL, fileURLToPath } = require('node:url');
 
-const DEFAULT_OPACITY = Object.freeze({ editor: 0.70, sidebar: 0.85, panel: 0.85, auxiliaryBar: 0.85, chrome: 0.92 });
+const DEFAULT_OPACITY = Object.freeze({ editor: 0.70, sidebar: 0.85, panel: 0.85, auxiliaryBar: 0.85, chrome: 0.92, gap: 0 });
 const DEFAULT_BACKGROUND_COLORS = Object.freeze({
-  editor: 'theme', sidebar: 'theme', panel: 'theme', auxiliaryBar: 'theme', chrome: 'theme'
+  editor: 'theme', sidebar: 'theme', panel: 'theme', auxiliaryBar: 'theme', chrome: 'theme', gap: 'theme'
 });
 const THEME_COLORS = Object.freeze({
   editor: 'var(--vscode-editor-background, #202020)',
@@ -164,6 +164,55 @@ ${root} :is(.part.sidebar, .part.auxiliarybar, .part.panel) > .content,
 ${root} .part.panel .xterm-viewport {
   background-color: transparent !important;
 }
+
+/* Floating-card gutters are margins. Paint these only, not the card surfaces. */
+${config.opacity.gap > 0 ? `
+${root}.floating-panels:not(.modern-ui-compact) .split-view-view:has(> .part:is(.editor, .sidebar, .auxiliarybar, .panel)) {
+  --vscode-wallpaper-gap-left: var(--modern-ui-floating-card-margin, 0px);
+  --vscode-wallpaper-gap-right: var(--modern-ui-floating-card-inner-margin, 0px);
+  --vscode-wallpaper-gap-top: var(--modern-ui-floating-card-inner-margin, 0px);
+  --vscode-wallpaper-gap-bottom: var(--modern-ui-floating-card-margin, 0px);
+  --vscode-wallpaper-gap-color: color-mix(in srgb, ${config.backgroundColors.gap === 'theme' ? THEME_COLORS.editor : config.backgroundColors.gap} ${config.opacity.gap * 100}%, transparent);
+}
+
+/* Keep the gap dimensions aligned with VS Code floatingPanels.css. */
+${root}.floating-panels:not(.modern-ui-compact) .split-view-view:has(> .part.floating-part-outer-right),
+${root}.floating-panels:not(.modern-ui-compact) .split-view-view:has(> .part.editor.floating-editor-outer-right) {
+  --vscode-wallpaper-gap-right: var(--modern-ui-floating-card-outer-margin, 0px);
+}
+${root}.floating-panels:not(.modern-ui-compact):not(.noactivitybar) .split-view-view:has(> .part.sidebar.left) {
+  --vscode-wallpaper-gap-left: var(--modern-ui-floating-card-inner-margin, 0px);
+}
+${root}.floating-panels.top-window-edge:not(.modern-ui-compact) .split-view-view:has(> .part:is(.sidebar, .auxiliarybar, .editor, .panel.top, .panel.left, .panel.right)),
+${root}.floating-panels.panel-position-top:not(.nopanel):not(.modern-ui-compact) .split-view-view:has(> .part.editor),
+${root}.floating-panels.panel-position-bottom:not(.nopanel):not(.nomaineditorarea):not(.modern-ui-compact) .split-view-view:has(> .part.panel.bottom) {
+  --vscode-wallpaper-gap-top: var(--modern-ui-floating-card-margin, 0px);
+}
+
+/* Four non-overlapping strips prevent extra opacity at the corners. */
+${root}.floating-panels:not(.modern-ui-compact) .split-view-view:has(> .part:is(.editor, .sidebar, .auxiliarybar, .panel))::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--vscode-wallpaper-gap-color), var(--vscode-wallpaper-gap-color)),
+    linear-gradient(var(--vscode-wallpaper-gap-color), var(--vscode-wallpaper-gap-color)),
+    linear-gradient(var(--vscode-wallpaper-gap-color), var(--vscode-wallpaper-gap-color)),
+    linear-gradient(var(--vscode-wallpaper-gap-color), var(--vscode-wallpaper-gap-color));
+  background-position:
+    left top,
+    right top,
+    var(--vscode-wallpaper-gap-left) top,
+    var(--vscode-wallpaper-gap-left) bottom;
+  background-size:
+    var(--vscode-wallpaper-gap-left) 100%,
+    var(--vscode-wallpaper-gap-right) 100%,
+    calc(100% - var(--vscode-wallpaper-gap-left) - var(--vscode-wallpaper-gap-right)) var(--vscode-wallpaper-gap-top),
+    calc(100% - var(--vscode-wallpaper-gap-left) - var(--vscode-wallpaper-gap-right)) var(--vscode-wallpaper-gap-bottom);
+  background-repeat: no-repeat;
+}
+` : ''}
 
 /* Measured opaque surfaces: editor tab strip and Explorer lists in the bottom panel.
    Preserve selected rows, individual tabs, and scrollbar thumbs. */

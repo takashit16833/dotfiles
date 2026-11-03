@@ -2,7 +2,7 @@
   "name": "vscode-wallpaper",
   "displayName": "VS Code Wallpaper",
   "description": "Generate a responsive, multiply-blended VS Code wallpaper stylesheet without patching VS Code.",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "publisher": "takashit16833",
   "private": true,
   "engines": {
@@ -104,7 +104,8 @@
             "sidebar": 0.85,
             "panel": 0.85,
             "auxiliaryBar": 0.85,
-            "chrome": 0.92
+            "chrome": 0.92,
+            "gap": 0
           },
           "additionalProperties": false,
           "properties": {
@@ -132,9 +133,14 @@
               "type": "number",
               "minimum": 0,
               "maximum": 1
+            },
+            "gap": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             }
           },
-          "description": "Background color opacity per area (0 transparent, 1 opaque). Text remains opaque."
+          "description": "Background opacity per area. The floating-card gutter uses gap (default 0, fully transparent). Text remains opaque."
         },
         "vscodeWallpaper.backgroundColors": {
           "type": "object",
@@ -144,7 +150,8 @@
             "sidebar": "theme",
             "panel": "theme",
             "auxiliaryBar": "theme",
-            "chrome": "theme"
+            "chrome": "theme",
+            "gap": "theme"
           },
           "additionalProperties": false,
           "properties": {
@@ -167,9 +174,13 @@
             "chrome": {
               "type": "string",
               "pattern": "^(theme|#[0-9a-fA-F]{6})$"
+            },
+            "gap": {
+              "type": "string",
+              "pattern": "^(theme|#[0-9a-fA-F]{6})$"
             }
           },
-          "description": "Overlay background colors per area. Use 'theme' to follow the VS Code theme or a custom #RRGGBB."
+          "description": "Background colors per area, including floating-card gutters. Use 'theme' to follow the active theme or a custom #RRGGBB."
         },
         "vscodeWallpaper.minimapOpacity": {
           "type": [

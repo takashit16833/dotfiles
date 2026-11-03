@@ -41,14 +41,16 @@ bash ./vscode/wallpaper/install.sh
     "sidebar": "theme",
     "panel": "theme",
     "auxiliaryBar": "theme",
-    "chrome": "theme"
+    "chrome": "theme",
+    "gap": "theme"
   },
   "vscodeWallpaper.opacity": {
     "editor": 0.70,
     "sidebar": 0.85,
     "panel": 0.85,
     "auxiliaryBar": 0.85,
-    "chrome": 0.92
+    "chrome": 0.92,
+    "gap": 0.70
   }
 }
 ```
@@ -60,8 +62,10 @@ bash ./vscode/wallpaper/install.sh
 - `maxWidth`：`width` モードの切り替え幅（CSS ピクセル）。
 - `tint`：画像に乗算する色。既定の白（`#FFFFFF`）は画像の色を変えない。`background-blend-mode: multiply` を使う。
 - `backgroundColors`：領域別の背景色。`theme` で現在の VS Code テーマ色を使い、`#RRGGBB` で任意の色に変更できる。
-- `opacity`：画像の上に重ねる各領域の背景色の不透明度。文字の不透明度は変更しない。`0` が透明、`1` が不透明。
+- `opacity`：画像の上に重ねる各領域の背景色の不透明度。文字の不透明度は変更しない。`0` が透明、`1` が不透明。`gap` の既定値は `0`（透明）で、上記の `0.70` は調整例である。
 - `stickyScrollBlur`：Sticky Scroll の固定コードの*背後*をぼかす強さ（CSS px）。既定 `12`、有効範囲 `0`～`30`、`0` ならぼかさない。固定表示の文字自体にはぼかしを適用しない。
+
+`gap` は VS Code の浮動パネル間と外周の余白専用である。`floatingPanels.css` の余白に合わせ、`.split-view-view` の擬似要素でカードの内側を塗らずに描く。カードの不透明度・枠線・サイズ・操作領域は変更しない。浮動パネル以外やコンパクト表示では適用しない。**実機での反映は未確認**なので、導入後に隙間とカードの見た目を確認する。
 
 ※ 乗算するのは画像と `tint` の色である。各領域の `opacity` はその上に重ねる背景色の不透明度であり、乗算そのものとは別の設定である。
 

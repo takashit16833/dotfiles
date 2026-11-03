@@ -20,6 +20,8 @@ test('readSettings には実装側のデフォルトがある', () => {
   const actual = readSettings({ get: (_key, fallback) => fallback });
   assert.equal(actual.enabled, false);
   assert.equal(actual.opacity.editor, 0.7);
+  assert.equal(actual.opacity.gap, 0);
+  assert.equal(actual.backgroundColors.gap, 'theme');
   assert.equal(actual.tint, '#FFFFFF');
   assert.equal(actual.switchMode, 'orientation');
   assert.equal(actual.stickyScrollBlur, 12);
@@ -271,4 +273,36 @@ test('Sticky Scroll のぼかしは0～30の整数のみに限定する', () => 
   for (const value of [-1, 31, 1.5, '12', NaN, Infinity, '12; color:red']) {
     assert.throws(() => normalizeSettings({ ...config, stickyScrollBlur: value }), /stickyScrollBlur/);
   }
+});
+
+test('隙間は既定では透明のままにする', () => {
+  const css = generateCss(config);
+  assert.doesNotMatch(css, /--vscode-wallpaper-gap-color:/);
+  assert.equal(generateCss({ ...config, enabled: false, opacity: { gap: 0.8 } }), '');
+});
+
+test('浮動パネルの余白だけに指定色を描く', () => {
+  const css = generateCss({
+    ...config,
+    backgroundColors: { ...config.backgroundColors, gap: '#112233' },
+    opacity: { ...config.opacity, gap: 0.65 }
+  });
+  assert.ok(css.includes('--vscode-wallpaper-gap-color: color-mix(in srgb, #112233 65%, transparent);'));
+  assert.ok(css.includes('.split-view-view:has(> .part:is(.editor, .sidebar, .auxiliarybar, .panel))::before {'));
+  assert.ok(css.includes('pointer-events: none;'));
+  assert.ok(css.includes('var(--modern-ui-floating-card-margin, 0px)'));
+  assert.ok(css.includes('calc(100% - var(--vscode-wallpaper-gap-left) - var(--vscode-wallpaper-gap-right))'));
+  assert.doesNotMatch(css, /\.part\.editor::before \{/);
+  assert.doesNotMatch(css, /\.part\.sidebar::before \{/);
+});
+
+test('隙間のテーマ色と不透明度の設定を検証する', () => {
+  const css = generateCss({ ...config, opacity: { ...config.opacity, gap: 0.85 } });
+  assert.ok(css.includes('color-mix(in srgb, var(--vscode-editor-background, #202020) 85%, transparent)'));
+  assert.throws(() => normalizeSettings({
+    ...config, opacity: { ...config.opacity, gap: 1.1 }
+  }), /opacity.gap/);
+  assert.throws(() => normalizeSettings({
+    ...config, backgroundColors: { ...config.backgroundColors, gap: 'invalid' }
+  }), /backgroundColors.gap/);
 });

@@ -61,6 +61,7 @@
 - Markdown のコードブロックは通常プレビュー（`vscode/markdown-preview/preview.css` の `pre`）と Live Preview（`vscode/markdown-live-preview/retro-hacker-blue.css` の `.cm-line.mlp-line-code`）の両方で背景色 `#0A1A36` を `color-mix(... 70%, transparent)` にして半透明にする。両方のインラインコードも元色 `#052A59` の70%半透明色とし、文字色・余白・字下げは変更しない。Live Preview の Webview は上流が `html, body { background: var(--vscode-editor-background) }` を指定しているため、自作 CSS で html/実際の body/CodeMirror の背景を透明化する。両 Markdown プレビューとも内部要素・Webview 外側の透明化と壁紙の連続表示を 2026-11-03 に実機確認済み。
 - ローカルビルドは Marketplace 版と同じ拡張 ID を使うため、更新で上書きされ得る。既定のエディタを変更する前に、実機で字下げ・編集操作・コードブロック・表を確認する。
 
+- 浮動パネルの隙間は `floatingPanels.css` の余白に由来し、実測では左サイドバーと編集領域の間が4pxだった。`backgroundColors.gap`（既定 `theme`）と `opacity.gap`（既定 `0`）で設定する。`.split-view-view:has(> .part...)::before` の余白部分にだけ色を描き、カード本体・枠線・操作領域の変更を避ける。浮動パネルと通常密度のみ対象とし、実機確認待ち。
 - 固定表示コード（Sticky Scroll）は VS Code の `stickyScroll.css` により行番号とコードの二層が不透明となる。壁紙の一時 CSS で `.sticky-widget:not(.peek)` 内の `.sticky-widget-line-numbers` / `.sticky-widget-lines-scrollable` を透明化する。実機で透明化すると背後のコードと文字が重なったため、固定領域に `backdrop-filter: blur(...)` を使って背後だけをぼかす。強さは `vscodeWallpaper.stickyScrollBlur`（既定12px、0～30整数、0で無効）で指定する。固定表示、文字色、hover、peek は変更しない。2026-11-03 にぼかしの実機動作を確認済み。
 
 - 壁紙の既定の切り替えは `orientation`（縦長・横長）。既存の `aspect-ratio` 16/10 は任意の縦横比として引き続き利用できる。診断と CSS 生成は共通の `mediaQueryFor` を使う。
