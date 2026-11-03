@@ -150,6 +150,13 @@ ${root} :is(.part.sidebar, .part.auxiliarybar, .part.panel) > .content,
 ${root} .part.panel .xterm-viewport {
   background-color: transparent !important;
 }
+
+/* VS Code paneHeaders.css paints sidebar panes and headers opaque.
+   Preserve header hover styling while showing the shared wallpaper. */
+${root}.modern-ui :is(.part.sidebar, .part.auxiliarybar) .monaco-pane-view .pane,
+${root}.modern-ui :is(.part.sidebar, .part.auxiliarybar) .monaco-pane-view .pane > .pane-header:not(:hover) {
+  background-color: transparent !important;
+}
 `;
 }
 

@@ -104,3 +104,15 @@ test('浮動サイドバーと補助サイドバーの背景色を上書きす�
   assert.ok(css.indexOf(sidebar) > css.indexOf('.monaco-workbench .part.sidebar {'));
   assert.ok(css.indexOf(auxiliary) > css.indexOf('.monaco-workbench .part.auxiliarybar {'));
 });
+
+test('サイドバー内のペインと通常時見出しを透明化する', () => {
+  const css = generateCss(config);
+  const pane = '.monaco-workbench.modern-ui :is(.part.sidebar, .part.auxiliarybar) .monaco-pane-view .pane,';
+  const header = '.monaco-workbench.modern-ui :is(.part.sidebar, .part.auxiliarybar) .monaco-pane-view .pane > .pane-header:not(:hover)';
+  assert.ok(css.includes(pane));
+  assert.ok(css.includes(header));
+  assert.match(css.slice(css.indexOf(pane)), /background-color: transparent !important;/);
+  assert.doesNotMatch(css, /\.pane-header:hover \{ background-color: transparent/);
+  assert.doesNotMatch(css, /\.part\.panel \.monaco-pane-view \.pane,/);
+  assert.match(css, /\.monaco-workbench\.floating-panels \.part\.sidebar \{ background-color: color-mix\(/);
+});
