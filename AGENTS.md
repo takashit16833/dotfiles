@@ -45,6 +45,7 @@
 - 独立した試作拡張 `vscode/wallpaper/`（`takashit16833.vscode-wallpaper`）は `vscodeWallpaper.*` の設定から CSS を生成し、Webview でプレビューする。特定のテーマに依存せず、乗算色は白、領域別の背景色は VS Code テーマの色を既定値として参照し、設定で上書きできる。`node --test` で生成処理を検証する。現在は VS Code 編集画面への CSS 適用処理を含めない。
 - `vscode/wallpaper/install.sh` は明示実行のみ。ルートの `install.sh` から導入せず、VS Code 本体を改変せず、整合性警告の隠蔽も行わない。
 - 実画面の検証用に `vscode/wallpaper/workbench-script.js` は DevTools Console で実行する一時 CSS 適用・解除コードを生成する。ユーザーの明示操作が必要であり、本体ファイル改変、デバッグ用ポートの開放、警告の隠蔽、自動適用はしない。
+- ターミナルの Canvas による不透明な描画は、実機で `terminal.integrated.enableImages: true` と `terminal.background: '#00000000'` により解消した。これは VS Code 標準設定であり、拡張から勝手に変更しない。`diagnostics-script.js` は左側の表示領域と画像切り替えを読み取り専用で検査する。
 - VS Code 全画面壁紙の幅別切り替えは実装検討中。`vscode/background/` の CSS は参考用として保持するが、拡張機能による読み込みや `install.sh` からの配置は行わない。
 - Apc / Custom CSS and JS Loader は実機で本体改変や整合性警告が問題になったため、再導入しない。背景画像の再実装では既存の vscode-background の動作を前提として方式を検討し、検証前に本体へパッチを適用しない。
 

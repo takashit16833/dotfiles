@@ -78,6 +78,29 @@ bash ./vscode/wallpaper/install.sh
 
 浮動パネル（`floating-panels`）では、VS Code 側に通常の `.part.panel` より優先される `!important` の背景色があることを実機で確認済み。生成 CSS は浮動パネル専用の半透明背景規則も出力する。
 
+### ターミナルを文字ごと透過せず、背景だけ透過する
+
+VS Code のターミナルは Canvas に不透明な背景を描画するため、背景色の CSS だけでは透けないことを実機で確認した。次の **VS Code 標準設定** を追加した状態で、文字を残しながら背景画像が表示されることを確認済み。
+
+```jsonc
+{
+  "terminal.integrated.enableImages": true,
+  "workbench.colorCustomizations": {
+    "terminal.background": "#00000000"
+  }
+}
+```
+
+既存の `workbench.colorCustomizations` がある場合は、その中へ `terminal.background` を追加する。ターミナルは設定変更後に作り直す。 `terminal.integrated.enableImages` は画像表示機能も有効にするため、背景を透過するだけの専用設定ではない。拡張機能から自動変更せず、利用するユーザーが設定する。領域としての背景色・不透明度は `vscodeWallpaper.backgroundColors.panel` と `vscodeWallpaper.opacity.panel` で調整する。
+
+### 残りの領域と画像の切り替えを診断する
+
+1. **VS Code Wallpaper: Show Read-only Workbench Diagnostics** を実行し、開いた JavaScript を開発者ツールの Console で実行する。
+2. 表示される表の `rect` が `0x0` の領域は非表示である。左側に見える領域は別の要素の場合があるため、`左側の重なり` の表を確認する。
+3. `vscodeWallpaper.alternateImage` に別の画像を指定し、ウィンドウ幅または縦横比を変更する。`queryMatches` が切り替わることと、`rootBackgroundImage` の URL が変わることを確認する。
+
+この診断は読み取り専用であり、ファイル・DOM・設定を変更しない。CSS の実画面への適用は先に実施しておく。
+
 **元に戻す場合**：**VS Code Wallpaper: Show Remove Script** で表示したコードを同じ Console で実行するか、**Developer: Reload Window** で再読み込みする。取り消しにアプリの再インストールは不要。
 
 注意：開発者ツールでコードを実行する行為には危険があるため、必ず生成コードを確認すること。今回のコードは `CSSStyleSheet` と `document.adoptedStyleSheets` を使って一時的なスタイルを追加するだけで、ディスクへの書き込みやデバッグ用ポートの開放はしない。VS Code の内部 CSS は非公開なので、実画面への適用が成功するか、どの領域の透過が必要かは実機で確認する。
