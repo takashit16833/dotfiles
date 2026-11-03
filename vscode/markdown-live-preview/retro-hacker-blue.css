@@ -6,6 +6,20 @@
  * Preview extension, installed by install-editor.sh.
  */
 
+/* The upstream webview theme paints html/body with --vscode-editor-background.
+ * Clear only the live editor's page and CodeMirror surfaces so the wallpaper
+ * behind the Webview can show through. The custom CSS adapter rewrites a
+ * standalone body selector, so target html body.vscode-dark explicitly. */
+html,
+html body.vscode-dark,
+html body.vscode-dark #mlp-root,
+html body.vscode-dark #mlp-root .cm-editor,
+html body.vscode-dark #mlp-root .cm-scroller {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+
 /* The 1080px outer column includes 40px gutters at maximum width,
  * leaving up to 1000px for Markdown text, like the existing preview. */
 body.vscode-dark .cm-editor .cm-content {
@@ -95,7 +109,7 @@ body.vscode-dark .cm-line.mlp-line-quote {
 
 body.vscode-dark .mlp-inline-code {
   color: #7CBEFF;
-  background-color: #052A59;
+  background-color: color-mix(in srgb, #052A59 70%, transparent);
   border-radius: 3px;
   padding: 0.12em 0.28em;
 }

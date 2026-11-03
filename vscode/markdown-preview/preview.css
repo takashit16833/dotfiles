@@ -87,7 +87,7 @@ body.vscode-dark .markdown-body blockquote {
 /* Match Obsidian's blue inline code and filled code blocks. */
 body.vscode-dark .markdown-body :not(pre) > code {
   color: #7CBEFF;
-  background-color: #052A59;
+  background-color: color-mix(in srgb, #052A59 70%, transparent);
   border-radius: 3px;
   padding: 0.12em 0.28em;
 }

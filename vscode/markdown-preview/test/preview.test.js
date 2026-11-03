@@ -106,3 +106,13 @@ test("fenced code blocks keep their blue shade but reveal the wallpaper", () => 
   const codeRule = css.match(/body\.vscode-dark \.markdown-body pre code\s*\{([^}]*)\}/)?.[1];
   assert.match(codeRule, /background:\s*transparent/);
 });
+
+
+test("inline code retains contrast but reveals the wallpaper", () => {
+  const css = fs.readFileSync(path.join(__dirname, "..", "preview.css"), "utf8");
+  const block = css.match(/body\.vscode-dark \.markdown-body :not\(pre\) > code\s*\{([^}]*)\}/)?.[1];
+  assert.ok(block, "inline code rule must exist");
+  assert.match(block, /background-color:\s*color-mix\(in srgb,\s*#052A59 70%,\s*transparent\)/);
+  assert.match(block, /color:\s*#7CBEFF/);
+  assert.doesNotMatch(block, /(?:^|;)\s*(?:opacity|filter):/);
+});

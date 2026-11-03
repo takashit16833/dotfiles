@@ -15,6 +15,8 @@ git pull
 bash ./vscode/markdown-preview/install.sh
 ```
 
+インラインコードとコードブロックの背景は、文字色を維持したまま70%の半透明色にしている。
+
 CSS や JavaScript の変更後は、この専用スクリプトで VSIX を作り直して VS Code に再導入する。`git pull` だけでは導入済み拡張機能は更新されない。導入後は VS Code の `Developer: Reload Window` を実行し、Markdown プレビューを開き直す。
 初回だけ Node.js と npm が必要（dotfiles の通常セットアップでは Homebrew で導入される）。
 
