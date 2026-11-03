@@ -134,6 +134,12 @@ ${overlay(`${root} .part.panel`, 'panel', THEME_COLORS.panel)}
 ${overlay(`${root} .part.titlebar`, 'chrome', THEME_COLORS.titlebar)}
 ${overlay(`${root} .part.statusbar`, 'chrome', THEME_COLORS.statusbar)}
 ${overlay(`${root} .part.activitybar`, 'chrome', THEME_COLORS.activitybar)}
+/* 実機で確認した不透明な下地を透明にする。 */
+${root} .monaco-grid-view,
+${root} .part.panel .pane.expanded.horizontal,
+${root} .part.panel .terminal-outer-container,
+${root} .part.panel .terminal.xterm,
+${root} .part.panel .xterm-scrollable-element,
 ${root} .part.editor :is(.content, .editor-group-container, .editor-container, .editor-instance, .monaco-editor, .monaco-editor-background, .margin, .title, .tabs-container),
 ${root} :is(.part.sidebar, .part.auxiliarybar, .part.panel) > .content,
 ${root} .part.panel .xterm-viewport {

@@ -74,3 +74,14 @@ test('既定色は特定のテーマに依存せず、現在のテーマ色を�
   assert.doesNotMatch(css, /\.monaco-workbench\.vs-dark/);
   assert.doesNotMatch(css, /--vscode-editor-background: transparent/);
 });
+
+test('実画面で確認された不透明な下地を透明化する', () => {
+  const css = generateCss(config);
+  assert.match(css, /\.monaco-workbench \.monaco-grid-view,/);
+  assert.match(css, /\.part\.panel \.pane\.expanded\.horizontal,/);
+  assert.match(css, /\.part\.panel \.terminal-outer-container,/);
+  assert.match(css, /\.part\.panel \.terminal\.xterm,/);
+  assert.match(css, /\.part\.panel \.xterm-scrollable-element,/);
+  assert.match(css, /background-color: transparent !important;/);
+  assert.match(css, /\.part\.panel \{ background-color: color-mix\(/);
+});

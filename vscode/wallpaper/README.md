@@ -74,6 +74,8 @@ bash ./vscode/wallpaper/install.sh
 4. コマンドパレットで **Developer: Toggle Developer Tools** を開き、**Console** で実行する。対象は VS Code 本体の画面であり、Webview の開発者ツールではない。
 5. 開発者ツールを閉じ、VS Code 全体に背景が見えるか、窓幅・縦横比による切り替えが動くか確認する。
 
+前回の一時 CSS や診断用の変更が残っている場合は、最初に **Developer: Reload Window** で再読み込みする。更新した拡張機能の CSS は実画面に自動反映されないため、新しく生成したコードを改めて実行する。
+
 **元に戻す場合**：**VS Code Wallpaper: Show Remove Script** で表示したコードを同じ Console で実行するか、**Developer: Reload Window** で再読み込みする。取り消しにアプリの再インストールは不要。
 
 注意：開発者ツールでコードを実行する行為には危険があるため、必ず生成コードを確認すること。今回のコードは `CSSStyleSheet` と `document.adoptedStyleSheets` を使って一時的なスタイルを追加するだけで、ディスクへの書き込みやデバッグ用ポートの開放はしない。VS Code の内部 CSS は非公開なので、実画面への適用が成功するか、どの領域の透過が必要かは実機で確認する。
