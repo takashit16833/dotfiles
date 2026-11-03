@@ -7,7 +7,7 @@ const { readSettings, resolveImage, generateCss } = require('./wallpaper');
 let previewPanel;
 
 function currentSettings() {
-  return readSettings(vscode.workspace.getConfiguration('rhbWallpaper'));
+  return readSettings(vscode.workspace.getConfiguration('vscodeWallpaper'));
 }
 
 function workspaceDirectory() {
@@ -37,18 +37,18 @@ function escapeHtml(value) {
 function renderPreview(panel) {
   const settings = currentSettings();
   if (!settings.enabled) {
-    panel.webview.html = '<!doctype html><meta charset="utf-8"><p>rhbWallpaper.enabled を true にしてください。</p>';
+    panel.webview.html = '<!doctype html><meta charset="utf-8"><p>vscodeWallpaper.enabled を true にしてください。</p>';
     return;
   }
   try {
     const css = cssFor(settings, panel.webview);
     const previewCss = `
-      html, body { padding: 0; margin: 0; height: 100%; color: #d9e5ff; font: 14px sans-serif; }
+      html, body { padding: 0; margin: 0; height: 100%; color: #efefef; font: 14px sans-serif; }
       .monaco-workbench { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
       .part.titlebar, .part.statusbar { padding: 10px 16px; }
-      .rhb-layout { flex: 1; min-height: 0; display: flex; }
+      .wallpaper-layout { flex: 1; min-height: 0; display: flex; }
       .part.sidebar { width: 27%; padding: 18px; box-sizing: border-box; }
-      .rhb-center { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+      .wallpaper-center { flex: 1; display: flex; flex-direction: column; min-width: 0; }
       .part.editor { flex: 1; padding: 24px; min-height: 0; }
       .part.panel { height: 25%; padding: 14px 24px; box-sizing: border-box; }
       pre { font-size: 14px; line-height: 1.7; white-space: pre-wrap; }
@@ -61,9 +61,9 @@ function renderPreview(panel) {
     panel.webview.html = `<!doctype html><html lang="ja"><head><meta charset="utf-8">
       <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https: data: ${panel.webview.cspSource}; style-src 'unsafe-inline';">
       <style>${previewCss}\n${css}</style></head><body>
-      <div class="monaco-workbench vs-dark"><div class="part titlebar">RHB Wallpaper — プレビュー</div>
-      <div class="rhb-layout"><aside class="part sidebar">EXPLORER<hr>src/<br>　Main.hs<br>　Model.hs<br>README.md</aside>
-      <div class="rhb-center"><div class="part editor"><pre>module Main where\n\nmain :: IO ()\nmain = putStrLn "Hello"</pre></div>
+      <div class="monaco-workbench vs-dark"><div class="part titlebar">VS Code Wallpaper — プレビュー</div>
+      <div class="wallpaper-layout"><aside class="part sidebar">EXPLORER<hr>src/<br>　Main.hs<br>　Model.hs<br>README.md</aside>
+      <div class="wallpaper-center"><div class="part editor"><pre>module Main where\n\nmain :: IO ()\nmain = putStrLn "Hello"</pre></div>
       <div class="part panel">TERMINAL<hr>$ cabal test</div></div></div>
       <div class="part statusbar">Preview: 背景合成と切り替えのみを確認できます</div></div></body></html>`;
   } catch (error) {
@@ -72,26 +72,26 @@ function renderPreview(panel) {
 }
 
 function activate(context) {
-  context.subscriptions.push(vscode.commands.registerCommand('rhbWallpaper.preview', () => {
+  context.subscriptions.push(vscode.commands.registerCommand('vscodeWallpaper.preview', () => {
     if (previewPanel) { previewPanel.reveal(); renderPreview(previewPanel); return; }
-    previewPanel = vscode.window.createWebviewPanel('rhbWallpaperPreview', 'RHB Wallpaper プレビュー', vscode.ViewColumn.Active, {
+    previewPanel = vscode.window.createWebviewPanel('vscodeWallpaperPreview', 'VS Code Wallpaper プレビュー', vscode.ViewColumn.Active, {
       enableScripts: false
     });
     previewPanel.onDidDispose(() => { previewPanel = undefined; }, null, context.subscriptions);
     renderPreview(previewPanel);
   }));
-  context.subscriptions.push(vscode.commands.registerCommand('rhbWallpaper.showCss', async () => {
+  context.subscriptions.push(vscode.commands.registerCommand('vscodeWallpaper.showCss', async () => {
     try {
       const css = cssFor(currentSettings());
-      if (!css) { vscode.window.showInformationMessage('rhbWallpaper.enabled を true にしてください。'); return; }
+      if (!css) { vscode.window.showInformationMessage('vscodeWallpaper.enabled を true にしてください。'); return; }
       const doc = await vscode.workspace.openTextDocument({ language: 'css', content: css });
       await vscode.window.showTextDocument(doc, { preview: false });
     } catch (error) {
-      vscode.window.showErrorMessage(`RHB Wallpaper: ${error.message}`);
+      vscode.window.showErrorMessage(`VS Code Wallpaper: ${error.message}`);
     }
   }));
   context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(event => {
-    if (event.affectsConfiguration('rhbWallpaper') && previewPanel) renderPreview(previewPanel);
+    if (event.affectsConfiguration('vscodeWallpaper') && previewPanel) renderPreview(previewPanel);
   }));
 }
 

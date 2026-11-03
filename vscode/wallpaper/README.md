@@ -1,4 +1,4 @@
-# RHB Wallpaper（試作）
+# VS Code Wallpaper（試作）
 
 VS Code 本体を変更せず、画面全体に表示する壁紙の **CSS 生成とプレビュー** を行う独立した拡張機能。
 
@@ -20,14 +20,21 @@ bash ./vscode/wallpaper/install.sh
 
 ```jsonc
 {
-  "rhbWallpaper.enabled": true,
-  "rhbWallpaper.image": "~/Pictures/wallpaper-wide.jpg",
-  "rhbWallpaper.alternateImage": "~/Pictures/wallpaper-tall.jpg",
-  "rhbWallpaper.switchMode": "aspect-ratio",
-  "rhbWallpaper.maxAspectRatio": "16/10",
-  "rhbWallpaper.maxWidth": 1400,
-  "rhbWallpaper.tint": "#7085B0",
-  "rhbWallpaper.opacity": {
+  "vscodeWallpaper.enabled": true,
+  "vscodeWallpaper.image": "~/Pictures/wallpaper-wide.jpg",
+  "vscodeWallpaper.alternateImage": "~/Pictures/wallpaper-tall.jpg",
+  "vscodeWallpaper.switchMode": "aspect-ratio",
+  "vscodeWallpaper.maxAspectRatio": "16/10",
+  "vscodeWallpaper.maxWidth": 1400,
+  "vscodeWallpaper.tint": "#FFFFFF",
+  "vscodeWallpaper.backgroundColors": {
+    "editor": "theme",
+    "sidebar": "theme",
+    "panel": "theme",
+    "auxiliaryBar": "theme",
+    "chrome": "theme"
+  },
+  "vscodeWallpaper.opacity": {
     "editor": 0.70,
     "sidebar": 0.85,
     "panel": 0.85,
@@ -42,16 +49,19 @@ bash ./vscode/wallpaper/install.sh
 - `switchMode`：縦横比で切り替える `aspect-ratio`、横幅で切り替える `width`。
 - `maxAspectRatio`：`16/10` なら縦横比が 1.6 以下で代替画像を表示する。
 - `maxWidth`：`width` モードの切り替え幅（CSS ピクセル）。
-- `tint`：画像に乗算する色。`background-blend-mode: multiply` を使う。
+- `tint`：画像に乗算する色。既定の白（`#FFFFFF`）は画像の色を変えない。`background-blend-mode: multiply` を使う。
+- `backgroundColors`：領域別の背景色。`theme` で現在の VS Code テーマ色を使い、`#RRGGBB` で任意の色に変更できる。
 - `opacity`：画像の上に重ねる各領域の背景色の不透明度。文字の不透明度は変更しない。`0` が透明、`1` が不透明。
 
 ※ 乗算するのは画像と `tint` の色である。各領域の `opacity` はその上に重ねる背景色の不透明度であり、乗算そのものとは別の設定である。
 
+旧試作版 `takashit16833.rhb-wallpaper` を導入済みなら、`code --uninstall-extension takashit16833.rhb-wallpaper` で手動削除する。拡張機能 ID が変わるため、旧 `rhbWallpaper.*` 設定は `vscodeWallpaper.*` に移行する。
+
 ## 操作と検証
 
 1. VS Code を再読み込みする。
-2. `RHB Wallpaper: Preview` を実行する。専用タブで背景画像と領域別の透過、ウィンドウ幅または縦横比に応じた切り替えを確認する。
+2. `VS Code Wallpaper: Preview` を実行する。専用タブで背景画像と領域別の透過、ウィンドウ幅または縦横比に応じた切り替えを確認する。
 3. ウィンドウサイズを変え、設定値も変更する。プレビューは変更時に再生成する。
-4. `RHB Wallpaper: Show Generated CSS` を実行する。表示された CSS は編集・保存できる。
+4. `VS Code Wallpaper: Show Generated CSS` を実行する。表示された CSS は編集・保存できる。
 
 **この時点では VS Code 本体のファイルは変更せず、破損警告の抑制処理も含まない。** 次の段階では実際の VS Code の DOM/CSS への適用方法、既存のテーマとの干渉、ローカル画像の読み込みを別環境で実測する必要がある。

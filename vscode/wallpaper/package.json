@@ -1,6 +1,6 @@
 {
-  "name": "rhb-wallpaper",
-  "displayName": "RHB Wallpaper",
+  "name": "vscode-wallpaper",
+  "displayName": "VS Code Wallpaper",
   "description": "Generate a responsive, multiply-blended VS Code wallpaper stylesheet without patching VS Code.",
   "version": "0.1.0",
   "publisher": "takashit16833",
@@ -18,36 +18,36 @@
   "contributes": {
     "commands": [
       {
-        "command": "rhbWallpaper.preview",
-        "title": "RHB Wallpaper: Preview"
+        "command": "vscodeWallpaper.preview",
+        "title": "VS Code Wallpaper: Preview"
       },
       {
-        "command": "rhbWallpaper.showCss",
-        "title": "RHB Wallpaper: Show Generated CSS"
+        "command": "vscodeWallpaper.showCss",
+        "title": "VS Code Wallpaper: Show Generated CSS"
       }
     ],
     "configuration": {
-      "title": "RHB Wallpaper",
+      "title": "VS Code Wallpaper",
       "properties": {
-        "rhbWallpaper.enabled": {
+        "vscodeWallpaper.enabled": {
           "type": "boolean",
           "default": false,
           "scope": "window",
           "description": "Enable CSS generation and preview. Does not modify VS Code application files."
         },
-        "rhbWallpaper.image": {
+        "vscodeWallpaper.image": {
           "type": "string",
           "default": "",
           "scope": "window",
           "description": "Wallpaper image URL or local path. One image is drawn across the whole window."
         },
-        "rhbWallpaper.alternateImage": {
+        "vscodeWallpaper.alternateImage": {
           "type": "string",
           "default": "",
           "scope": "window",
           "description": "Optional image for narrow windows; empty means use the default image."
         },
-        "rhbWallpaper.switchMode": {
+        "vscodeWallpaper.switchMode": {
           "type": "string",
           "enum": [
             "aspect-ratio",
@@ -57,14 +57,14 @@
           "scope": "window",
           "description": "Switch image based on window aspect ratio or width."
         },
-        "rhbWallpaper.maxAspectRatio": {
+        "vscodeWallpaper.maxAspectRatio": {
           "type": "string",
           "default": "16/10",
           "pattern": "^[0-9]+\\s*/\\s*[0-9]+$",
           "scope": "window",
           "description": "Use the alternate image at or below this window aspect ratio."
         },
-        "rhbWallpaper.maxWidth": {
+        "vscodeWallpaper.maxWidth": {
           "type": "integer",
           "default": 1400,
           "minimum": 1,
@@ -72,14 +72,14 @@
           "scope": "window",
           "description": "Use the alternate image at or below this window width in CSS pixels."
         },
-        "rhbWallpaper.tint": {
+        "vscodeWallpaper.tint": {
           "type": "string",
-          "default": "#7085B0",
+          "default": "#FFFFFF",
           "pattern": "^#[0-9a-fA-F]{6}$",
           "scope": "window",
-          "description": "Tint multiplied with the image."
+          "description": "Color multiplied with the image; white leaves the original image colors unchanged."
         },
-        "rhbWallpaper.opacity": {
+        "vscodeWallpaper.opacity": {
           "type": "object",
           "scope": "window",
           "default": {
@@ -118,6 +118,41 @@
             }
           },
           "description": "Background color opacity per area (0 transparent, 1 opaque). Text remains opaque."
+        },
+        "vscodeWallpaper.backgroundColors": {
+          "type": "object",
+          "scope": "window",
+          "default": {
+            "editor": "theme",
+            "sidebar": "theme",
+            "panel": "theme",
+            "auxiliaryBar": "theme",
+            "chrome": "theme"
+          },
+          "additionalProperties": false,
+          "properties": {
+            "editor": {
+              "type": "string",
+              "pattern": "^(theme|#[0-9a-fA-F]{6})$"
+            },
+            "sidebar": {
+              "type": "string",
+              "pattern": "^(theme|#[0-9a-fA-F]{6})$"
+            },
+            "panel": {
+              "type": "string",
+              "pattern": "^(theme|#[0-9a-fA-F]{6})$"
+            },
+            "auxiliaryBar": {
+              "type": "string",
+              "pattern": "^(theme|#[0-9a-fA-F]{6})$"
+            },
+            "chrome": {
+              "type": "string",
+              "pattern": "^(theme|#[0-9a-fA-F]{6})$"
+            }
+          },
+          "description": "Overlay background colors per area. Use 'theme' to follow the VS Code theme or a custom #RRGGBB."
         }
       }
     }

@@ -23,7 +23,7 @@ fi
 
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
-VSIX="$TMP_DIR/rhb-wallpaper.vsix"
+VSIX="$TMP_DIR/vscode-wallpaper.vsix"
 
 (
   cd "$EXTENSION_DIR"
@@ -32,4 +32,4 @@ VSIX="$TMP_DIR/rhb-wallpaper.vsix"
 )
 
 "$VSCODE_CLI" --install-extension "$VSIX" --force
-printf '[dotfiles] RHB Wallpaper preview extension installed. Reload VS Code and run RHB Wallpaper: Preview.\n'
+printf '[dotfiles] VS Code Wallpaper preview extension installed. Reload VS Code and run VS Code Wallpaper: Preview.\n'

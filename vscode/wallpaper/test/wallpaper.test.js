@@ -12,6 +12,7 @@ const config = {
   maxAspectRatio: '16/10',
   maxWidth: 1400,
   tint: '#7085B0',
+  backgroundColors: { editor: '#505050', sidebar: 'theme', panel: 'theme', auxiliaryBar: 'theme', chrome: 'theme' },
   opacity: { editor: 0.65, sidebar: 0.85, panel: 0.8, auxiliaryBar: 0.7, chrome: 0.92 }
 };
 
@@ -19,6 +20,8 @@ test('readSettings には実装側のデフォルトがある', () => {
   const actual = readSettings({ get: (_key, fallback) => fallback });
   assert.equal(actual.enabled, false);
   assert.equal(actual.opacity.editor, 0.7);
+  assert.equal(actual.tint, '#FFFFFF');
+  assert.equal(actual.backgroundColors.editor, 'theme');
 });
 
 test('無効時には CSS を生成しない', () => assert.equal(generateCss({ enabled: false }), ''));
@@ -30,7 +33,8 @@ test('画像は画面全体に1枚、乗算、比率切り替え', () => {
   assert.match(css, /url\("https:\/\/example\.org\/wide\.jpg"\)/);
   assert.match(css, /url\("https:\/\/example\.org\/narrow\.jpg"\)/);
   assert.doesNotMatch(css, /body::after/);
-  assert.match(css, /rgb\(0 24 74 \/ 0\.65\)/);
+  assert.match(css, /color-mix\(in srgb, #505050 65%, transparent\)/);
+  assert.match(css, /var\(--vscode-sideBar-background, #242424\) 85%/);
   assert.match(css, /\.part\.auxiliarybar.*0\.7/);
 });
 
@@ -45,6 +49,7 @@ test('不正な設定を拒否する', () => {
   assert.throws(() => normalizeSettings({ ...config, maxAspectRatio: '0/10' }), /maxAspectRatio/);
   assert.throws(() => normalizeSettings({ ...config, tint: 'red' }), /tint/);
   assert.throws(() => normalizeSettings({ ...config, opacity: { editor: 1.5 } }), /opacity.editor/);
+  assert.throws(() => normalizeSettings({ ...config, backgroundColors: { panel: 'rgb(0 0 0)' } }), /backgroundColors.panel/);
   assert.throws(() => generateCss({ ...config, image: '' }), /image/);
 });
 
@@ -59,4 +64,13 @@ test('CSS URL をエスケープし、HTML の混入を拒否する', () => {
   assert.equal(cssImage('https://example.org/a"b.png'), 'url("https://example.org/a\\"b.png")');
   assert.throws(() => cssImage('</style>'), /使用できない/);
   assert.throws(() => resolveImage('https://example.org/\n'), /使用できない/);
+});
+
+test('既定色は特定のテーマに依存せず、現在のテーマ色を参照する', () => {
+  const settings = readSettings({ get: (_key, fallback) => fallback });
+  const css = generateCss({ ...settings, enabled: true, image: 'https://example.org/test.jpg' });
+  assert.match(css, /linear-gradient\(#FFFFFF, #FFFFFF\)/);
+  assert.match(css, /var\(--vscode-editor-background, #202020\) 70%/);
+  assert.doesNotMatch(css, /\.monaco-workbench\.vs-dark/);
+  assert.doesNotMatch(css, /--vscode-editor-background: transparent/);
 });
