@@ -165,6 +165,31 @@ ${root} .part.panel .monaco-list-rows {
 }
 
 
+/* VS Code Modern UI paints tab fills and a title gradient independently.
+   Clear them without changing tab text or borders. */
+${root}.modern-ui-tabs .part.editor > .content .editor-group-container > .title.tabs {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+${root}.modern-ui-tabs .part.editor .tabs-container > .tab > .tab-fill {
+  background-color: transparent !important;
+}
+
+/* Breadcrumb editor-type label has its own backing color. */
+${root} .part.editor .breadcrumbs-control.with-editor-type > .breadcrumbs-editor-type {
+  background-color: transparent !important;
+}
+
+/* Clear the terminal switcher containers, leaving individual terminal rows intact. */
+${root} .part.panel .pane-body.integrated-terminal :is(.tabs-container, .tabs-list-container, .tabs-list, .monaco-list-rows) {
+  background-color: transparent !important;
+}
+
+/* The scrollbar track and slider are painted separately. Keep the slider. */
+${root} :is(.part.editor, .part.panel) .monaco-scrollable-element > .scrollbar {
+  background-color: transparent !important;
+}
+
 /* The Search / Explorer title remains opaque even when the sidebar is translucent.
    Keep its buttons and text unchanged. */
 ${root} :is(.part.sidebar, .part.auxiliarybar) > .composite.title {

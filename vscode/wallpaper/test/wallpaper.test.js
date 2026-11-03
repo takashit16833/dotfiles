@@ -164,3 +164,33 @@ test('実機で不透明と判明した Search 見出しの背景だけ透明に
   assert.doesNotMatch(rule, /(^|\n)\s*(color|opacity|display):/);
   assert.doesNotMatch(css, /\.part\.panel > \.composite\.title/);
 });
+
+test('Modern UIのタブ下地と背景画像を除去し、タブの枠線は保持する', () => {
+  const css = generateCss(config);
+  const title = '.monaco-workbench.modern-ui-tabs .part.editor > .content .editor-group-container > .title.tabs {';
+  const fill = '.monaco-workbench.modern-ui-tabs .part.editor .tabs-container > .tab > .tab-fill {';
+  assert.ok(css.includes(title));
+  assert.ok(css.includes(fill));
+  assert.match(css.slice(css.indexOf(title)).split('}')[0], /background-image: none !important;/);
+  assert.match(css.slice(css.indexOf(fill)).split('}')[0], /background-color: transparent !important;/);
+  assert.doesNotMatch(css.slice(css.indexOf(fill)).split('}')[0], /border:|outline:/);
+});
+
+test('パンくずの種類表示とターミナル切り替え一覧の背景のみ透過する', () => {
+  const css = generateCss(config);
+  const breadcrumb = '.monaco-workbench .part.editor .breadcrumbs-control.with-editor-type > .breadcrumbs-editor-type {';
+  const terminal = '.monaco-workbench .part.panel .pane-body.integrated-terminal :is(.tabs-container, .tabs-list-container, .tabs-list, .monaco-list-rows) {';
+  assert.ok(css.includes(breadcrumb));
+  assert.ok(css.includes(terminal));
+  assert.match(css.slice(css.indexOf(breadcrumb)).split('}')[0], /background-color: transparent !important;/);
+  assert.match(css.slice(css.indexOf(terminal)).split('}')[0], /background-color: transparent !important;/);
+  assert.doesNotMatch(css, /\.terminal-tabs-entry\s*\{\s*background-color: transparent/);
+});
+
+test('スクロールバーの下地のみ透過し、つまみの表示規則は変更しない', () => {
+  const css = generateCss(config);
+  const scrollbar = '.monaco-workbench :is(.part.editor, .part.panel) .monaco-scrollable-element > .scrollbar {';
+  assert.ok(css.includes(scrollbar));
+  assert.match(css.slice(css.indexOf(scrollbar)).split('}')[0], /background-color: transparent !important;/);
+  assert.doesNotMatch(css, /\.scrollbar\s*>\s*\.slider\s*\{/);
+});

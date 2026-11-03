@@ -129,6 +129,8 @@ Search 見出しの `.part.sidebar > .composite.title` は実機で不透明な 
 
 編集タブ・パンくずは対象要素自体が透明だったため、子要素と疑似要素の背景も調べる。ターミナル切り替え欄は `.terminal-tabs` が存在しなかったため、下部パネル右側の実際の重なりを調べる。追加の2表「タブとパンくずの背景を描く子要素」「ターミナル切り替え欄の描画要素」を参照する。
 
+VS Code 本体の `modernUI/browser/media/tabs.css` では、タブの下地を `.tab-fill` が、タブ帯の背景画像を `.title.tabs` が描画する。`breadcrumbscontrol.css` では `.breadcrumbs-editor-type` に別の背景色があり、`terminal.css` はターミナル切り替え欄に `.tabs-container` / `.tabs-list-container` / `.tabs-list` を使う。これらの下地を個別に透明化し、タブの枠線や個別のターミナル選択行は維持する。`scrollbars.css` は背景とつまみを別々に描くため、スクロールバー本体の背景だけを透明化する。新規 CSS の実機確認は未完了。
+
 この診断は読み取り専用であり、ファイル・DOM・設定を変更しない。CSS の実画面への適用は先に実施しておく。
 
 **元に戻す場合**：**VS Code Wallpaper: Show Remove Script** で表示したコードを同じ Console で実行するか、**Developer: Reload Window** で再読み込みする。取り消しにアプリの再インストールは不要。
