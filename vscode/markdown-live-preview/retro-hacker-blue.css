@@ -2,8 +2,8 @@
  * Managed from dotfiles: vscode/markdown-live-preview/retro-hacker-blue.css
  * Styles for t-shoot Markdown Live Preview Editor (CodeMirror 6).
  * Unlike the ordinary Markdown preview, its blocks use .cm-line classes.
- * Heading-section indentation still requires editor decorations; this
- * stylesheet intentionally does not fake the hierarchy using CSS selectors.
+ * Heading-section indentation uses a pinned, locally built Markdown Live
+ * Preview extension, installed by install-editor.sh.
  */
 
 /* The 1080px outer column includes 40px gutters at maximum width,
@@ -66,4 +66,36 @@ body.vscode-dark .cm-line.mlp-line-code {
   background-color: #0A1A36;
   border-color: transparent;
   border-radius: 3px;
+}
+
+/*
+ * Section indentation uses CodeMirror line decorations from the pinned
+ * Markdown Live Preview build. Padding, not margin, keeps cursor/line geometry
+ * measurable by CodeMirror. Levels match the normal Markdown Preview:
+ * H1=0, H2=1.5rem, H3=3rem, etc.; content adds another 1.25rem.
+ */
+body.vscode-dark .cm-editor .cm-content {
+  --rhb-outline-content-inset: 1.25rem;
+}
+body.vscode-dark .cm-line.rhb-outline-depth-0 { --rhb-outline-offset: 0rem; }
+body.vscode-dark .cm-line.rhb-outline-depth-1 { --rhb-outline-offset: 1.5rem; }
+body.vscode-dark .cm-line.rhb-outline-depth-2 { --rhb-outline-offset: 3rem; }
+body.vscode-dark .cm-line.rhb-outline-depth-3 { --rhb-outline-offset: 4.5rem; }
+body.vscode-dark .cm-line.rhb-outline-depth-4 { --rhb-outline-offset: 6rem; }
+body.vscode-dark .cm-line.rhb-outline-depth-5 { --rhb-outline-offset: 7.5rem; }
+
+body.vscode-dark .cm-line.rhb-outline-heading {
+  padding-left: var(--rhb-outline-offset, 0rem);
+}
+
+body.vscode-dark .cm-line.rhb-outline-content {
+  padding-left: calc(var(--rhb-outline-offset, 0rem) + var(--rhb-outline-content-inset));
+}
+
+/* Retain the extension's own horizontal inset within each indented block. */
+body.vscode-dark .cm-line.rhb-outline-content.mlp-line-quote {
+  padding-left: calc(var(--rhb-outline-offset, 0rem) + var(--rhb-outline-content-inset) + 20px);
+}
+body.vscode-dark .cm-line.rhb-outline-content.mlp-line-code {
+  padding-left: calc(var(--rhb-outline-offset, 0rem) + var(--rhb-outline-content-inset) + 1.1em);
 }

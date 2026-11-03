@@ -43,6 +43,9 @@
 - `uninstall.sh` は VS Code の設定 symlink だけを解除し、導入済み extension は削除しない。
 - snippets や Profiles は必要になった時点で追加し、先回りして空の管理対象を増やさない。
 
+- Markdown Live Preview Editor の階層インデントは `vscode/markdown-live-preview/` の小さなパッチだけを管理する。公開済み拡張の内部ファイルを直接編集せず、上流の特定コミットを取得し、変更箇所を確認してから VSIX を生成する。
+- ローカルビルドは Marketplace 版と同じ拡張 ID を使うため、更新で上書きされ得る。既定のエディタを変更する前に、実機で字下げ・編集操作・コードブロック・表を確認する。
+
 ## Terminal
 
 ターミナルは WezTerm を使用する。

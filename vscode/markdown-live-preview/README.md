@@ -20,9 +20,31 @@ The source of the stylesheet is `retro-hacker-blue.css`. The install script
 copies it to the extension's user-data styles directory; rerun the script after
 edits to the source. It does not overwrite unrelated style files.
 
-**Limitations:** This first stage matches heading colors and bars, ordered-list
-markers, quotes, inline code, code-block backgrounds and the content column.
-It does **not** reproduce the heading-dependent indentation of headings and
-all their following content. The standard preview does that in `preview.js`;
-Markdown Live Preview uses CodeMirror and needs its own line decorations.
-Do not use CSS-only approximations that could break editing/cursor positions.
+## Section indentation
+
+The Marketplace extension cannot infer the previous heading from CSS alone.
+The pinned upstream source (commit `b0ce2e0c005ff69e322a840f236e03efc698abf2`, version 0.5.0)
+is therefore built locally with a small CodeMirror line-decoration patch.
+The full upstream source and installed extension are **not** committed to dotfiles.
+
+```bash
+cd ~/dotfiles
+git pull
+bash vscode/markdown-live-preview/install-editor.sh
+```
+
+This script clones the pinned upstream source into a temporary directory,
+applies `patch-upstream.py`, copies the tested helper from `overlay/`, runs
+the TypeScript build and unit tests, then installs the VSIX **only if these
+checks pass**. It replaces the same extension ID you installed from Marketplace.
+Reload VS Code after installation. Do not treat the Marketplace version as
+equivalent: a future automatic extension update may replace this local build.
+
+The line decoration is attached only to existing CodeMirror lines, avoiding
+conflicts with block-replaced diagrams and tables. Horizontal indentation uses
+padding (not margins) for correct cursor measurements.
+
+**Known limitation:** Rendered block widgets such as tables and Mermaid
+diagrams are not yet assigned section padding. Heading, paragraph, list,
+blockquote and code lines are. Verify appearance and editing behavior in a
+real VS Code window before making this the default Markdown editor.
