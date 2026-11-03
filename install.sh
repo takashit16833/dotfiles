@@ -409,7 +409,6 @@ main() {
     "$VSCODE_USER_DIR/keybindings.json"
 
   install_vscode_extensions
-  bash "$DOTFILES_DIR/vscode/markdown-preview/install.sh"
   install_quickjump_extension
 
   ensure_symlink \

@@ -36,18 +36,17 @@ Raycast Local Extension の初回登録では、公式の `ray develop` を短�
 
 ### VS Code の Markdown プレビュー
 
-自作の Markdown Outline Preview 拡張機能で、見出しとその本文を階層に合わせて字下げする。
+見出しと本文を階層に沿って字下げする自作拡張機能 [`vscode-markdown-outline-preview`](https://github.com/takashit16833/vscode-markdown-outline-preview) は、独立した非公開リポジトリで管理する。dotfiles の `install.sh` からは自動導入しない。
 
-- **新しい Mac の初期セットアップ**：ルートの `bash ./install.sh` が拡張機能専用の `vscode/markdown-preview/install.sh` も自動実行するため、個別の実行は不要。
-- **拡張機能だけを導入・更新する場合**：次のコマンドを実行する。ルートの `install.sh` を再実行する必要はない。
+新しい Mac では、GitHub の SSH 認証を設定した後、次のコマンドで導入する。
 
 ```bash
-cd ~/dotfiles
-git pull
-bash ./vscode/markdown-preview/install.sh
+git clone git@github.com:takashit16833/vscode-markdown-outline-preview.git ~/work/vscode-markdown-outline-preview
+cd ~/work/vscode-markdown-outline-preview
+bash ./install.sh
 ```
 
-`git pull` だけでは VS Code に導入済みの拡張機能は更新されない。導入後は VS Code のコマンドパレットから `Developer: Reload Window` を実行し、Markdown プレビューを開き直す。
+取得済みなら、そのディレクトリで `git pull` と `bash ./install.sh` を実行する。インストール後は `Developer: Reload Window` で VS Code を再読み込みし、Markdown プレビューを開き直す。詳細は [専用 README](https://github.com/takashit16833/vscode-markdown-outline-preview/blob/main/README.md) を参照する。
 
 ### VS Code の背景画像
 

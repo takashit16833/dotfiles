@@ -38,14 +38,13 @@
 - `sync.sh` は `code --list-extensions` から現在の extension 状態を `.config/vscode/extensions.txt` へ保存する。
 - `install.sh` は `.config/vscode/extensions.txt` に記録された extension を復元する。
 - extension 本体や VS Code が管理する内部データは repository に含めない。
-- 自作 Markdown Outline Preview 拡張は `vscode/markdown-preview/` を正本とし、VSIX を `install.sh` から生成・導入する。`sync.sh` の Marketplace extension 一覧からは除外する。
-- Markdown preview の CSS と JavaScript は自作拡張の contributions で読み込む。`markdown.styles` から公開 URL を二重に読み込まない。
+- Markdown Outline Preview の本体（`takashit16833.markdown-outline-preview`）は独立した [`vscode-markdown-outline-preview`](https://github.com/takashit16833/vscode-markdown-outline-preview) を正本とする。dotfiles には拡張機能のソースを置かず、初期セットアップから自動導入しない。導入は専用リポジトリで `bash ./install.sh` を明示実行する。`sync.sh` の Marketplace extension 一覧からも除外する。
 - `uninstall.sh` は VS Code の設定 symlink だけを解除し、導入済み extension は削除しない。
 - snippets や Profiles は必要になった時点で追加し、先回りして空の管理対象を増やさない。
 
 - VS Code Wallpaper の本体（`takashit16833.vscode-wallpaper`）は独立した [`vscode-wallpaper`](https://github.com/takashit16833/vscode-wallpaper) で管理する。dotfiles は `.config/vscode/settings.json` の設定値だけを管理し、本体を複製・自動導入しない。専用リポジトリで `bash ./install.sh` を明示実行する。
 - Markdown Live Preview Editor の階層インデントは `vscode/markdown-live-preview/` の小さなパッチだけを管理する。公開済み拡張の内部ファイルを直接編集せず、上流の特定コミットを取得し、変更箇所を確認してから VSIX を生成する。
-- Markdown のコードブロックは通常プレビュー（`vscode/markdown-preview/preview.css` の `pre`）と Live Preview（`vscode/markdown-live-preview/retro-hacker-blue.css` の `.cm-line.mlp-line-code`）の両方で背景色 `#0A1A36` を `color-mix(... 70%, transparent)` にして半透明にする。両方のインラインコードも元色 `#052A59` の70%半透明色とし、文字色・余白・字下げは変更しない。Live Preview の Webview は上流が `html, body { background: var(--vscode-editor-background) }` を指定しているため、自作 CSS で html/実際の body/CodeMirror の背景を透明化する。両 Markdown プレビューとも内部要素・Webview 外側の透明化と壁紙の連続表示を 2026-11-03 に実機確認済み。
+- Markdown のコードブロックは通常プレビュー（`vscode-markdown-outline-preview` の `preview.css` にある `pre`）と Live Preview（`vscode/markdown-live-preview/retro-hacker-blue.css` の `.cm-line.mlp-line-code`）の両方で背景色 `#0A1A36` を `color-mix(... 70%, transparent)` にして半透明にする。両方のインラインコードも元色 `#052A59` の70%半透明色とし、文字色・余白・字下げは変更しない。Live Preview の Webview は上流が `html, body { background: var(--vscode-editor-background) }` を指定しているため、自作 CSS で html/実際の body/CodeMirror の背景を透明化する。両 Markdown プレビューとも内部要素・Webview 外側の透明化と壁紙の連続表示を 2026-11-03 に実機確認済み。
 - ローカルビルドは Marketplace 版と同じ拡張 ID を使うため、更新で上書きされ得る。既定のエディタを変更する前に、実機で字下げ・編集操作・コードブロック・表を確認する。
 
 ## Terminal
