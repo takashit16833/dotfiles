@@ -94,3 +94,13 @@ test('浮動パネルの背景色は VS Code 本体と同じ詳細度の規則�
   assert.ok(css.includes(floatingRule));
   assert.ok(css.indexOf(floatingRule) > css.indexOf(normalRule));
 });
+
+test('浮動サイドバーと補助サイドバーの背景色を上書きする', () => {
+  const css = generateCss(config);
+  const sidebar = '.monaco-workbench.floating-panels .part.sidebar { background-color: color-mix(in srgb, var(--vscode-sideBar-background, #242424) 85%, transparent) !important; }';
+  const auxiliary = '.monaco-workbench.floating-panels .part.auxiliarybar { background-color: color-mix(in srgb, var(--vscode-sideBar-background, #242424) 70%, transparent) !important; }';
+  assert.ok(css.includes(sidebar));
+  assert.ok(css.includes(auxiliary));
+  assert.ok(css.indexOf(sidebar) > css.indexOf('.monaco-workbench .part.sidebar {'));
+  assert.ok(css.indexOf(auxiliary) > css.indexOf('.monaco-workbench .part.auxiliarybar {'));
+});

@@ -130,6 +130,9 @@ ${alternateUrl ? `@media ${query} {
 ${overlay(`${root} .part.editor`, 'editor', THEME_COLORS.editor)}
 ${overlay(`${root} .part.sidebar`, 'sidebar', THEME_COLORS.sidebar)}
 ${overlay(`${root} .part.auxiliarybar`, 'auxiliaryBar', THEME_COLORS.auxiliaryBar)}
+/* Floating sidebars use more specific !important rules in VS Code floatingPanels.css. */
+${overlay(`${root}.floating-panels .part.sidebar`, 'sidebar', THEME_COLORS.sidebar)}
+${overlay(`${root}.floating-panels .part.auxiliarybar`, 'auxiliaryBar', THEME_COLORS.auxiliaryBar)}
 ${overlay(`${root} .part.panel`, 'panel', THEME_COLORS.panel)}
 /* 浮動パネルには VS Code 本体のより詳細な !important 規則があるため、同じ条件で上書きする。 */
 ${overlay(`${root}.floating-panels .part.panel`, 'panel', THEME_COLORS.panel)}
