@@ -101,20 +101,6 @@
         "command": "textmarker.clearAllHighlight",
         "when": "editorTextFocus"
     },
-    // Explorer: 選択中のファイルを開いたあと、そのまま Sidebar を閉じる。
-    // フォルダ上では発火しないため、ツリーを辿っている途中では Sidebar は残る。
-    // Cmd+Shift+E で Explorer を開く → Cmd+Down でファイルを開く → Explorer が消える、という流れにする。
-    {
-        "key": "cmd+down",
-        "command": "runCommands",
-        "when": "filesExplorerFocus && !explorerResourceIsFolder",
-        "args": {
-            "commands": [
-                "list.select",
-                "workbench.action.toggleSidebarVisibility"
-            ]
-        }
-    },
     // Explorer: 選択中のフォルダ配下（ファイル選択時は同じ階層）に新しいファイルを作成する。
     // Explorer 以外では VS Code 標準の Cmd+N（Untitled File）をそのまま利用できる。
     {
@@ -242,10 +228,15 @@
         "key": "f4",
         "command": "quicktree.open"
     },
-    // ファイルエクスプローラーでファイルを開いたら、パネルも非表示にする。
-    // （なぜかサイドバーが開くのでそれも抑制している）
+    // Explorer の → はフォルダを展開し、ファイルなら開いて編集エリアに戻る。
+    // ファイルを開いたときは従来の Cmd+Down と同様にパネルとサイドバーも閉じる。
     {
-        "key": "cmd+down",
+        "key": "right",
+        "command": "list.expand",
+        "when": "filesExplorerFocus && explorerResourceIsFolder && !inputFocus"
+    },
+    {
+        "key": "right",
         "command": "runCommands",
         "when": "filesExplorerFocus && !explorerResourceIsFolder && !inputFocus",
         "args": {
@@ -256,5 +247,16 @@
                 "workbench.action.focusActiveEditorGroup"
             ]
         }
+    },
+    // Explorer の先頭・末尾へ移動する。編集エリアの Cmd+Up/Down は変更しない。
+    {
+        "key": "cmd+up",
+        "command": "list.focusFirst",
+        "when": "filesExplorerFocus && !inputFocus"
+    },
+    {
+        "key": "cmd+down",
+        "command": "list.focusLast",
+        "when": "filesExplorerFocus && !inputFocus"
     }
 ]
