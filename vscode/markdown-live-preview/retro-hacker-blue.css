@@ -33,11 +33,25 @@ body.vscode-dark .cm-line:is(
   line-height: 1.25;
 }
 
-/* Match the built-in Markdown Preview's heading sizes. H1 has no top
- * margin there; CodeMirror requires padding rather than a line margin. */
-body.vscode-dark .cm-line.mlp-line-h1 { font-size: 2em; padding-top: 0; }
-body.vscode-dark .cm-line.mlp-line-h2 { font-size: 1.5em; }
-body.vscode-dark .cm-line.mlp-line-h3 { font-size: 1.25em; }
+/* A source blank line already occupies vertical space in CodeMirror.
+ * Avoid adding the extension's default heading bottom padding on top of it.
+ * H2/H3 retain a small top inset to approximate Preview's heading margins.
+ * Padding, not margin, is required for CodeMirror's line-height mapping. */
+body.vscode-dark .cm-line.mlp-line-h1 {
+  font-size: 2em;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+body.vscode-dark .cm-line.mlp-line-h2 {
+  font-size: 1.5em;
+  padding-top: 0.65em;
+  padding-bottom: 0;
+}
+body.vscode-dark .cm-line.mlp-line-h3 {
+  font-size: 1.25em;
+  padding-top: 0.6em;
+  padding-bottom: 0;
+}
 body.vscode-dark .cm-line.mlp-line-h4 { font-size: 1em; }
 body.vscode-dark .cm-line.mlp-line-h5 { font-size: 0.875em; }
 body.vscode-dark .cm-line.mlp-line-h6 { font-size: 0.85em; }
@@ -62,11 +76,13 @@ body.vscode-dark .mlp-list-mark {
 }
 
 /* Lists have an extra HTML list inset in the ordinary Markdown Preview.
- * CodeMirror displays list markers directly on each line instead. */
+ * CodeMirror displays list markers directly on each line instead.
+ * Remove per-line vertical padding: unlike HTML list margins, that padding
+ * accumulates on every wrapped line and expands long lists considerably. */
 body.vscode-dark .cm-line.rhb-outline-content.mlp-line-list {
   padding-left: calc(var(--rhb-outline-offset, 0px) + var(--rhb-outline-content-inset) + 30px);
-  padding-top: 0.2em;
-  padding-bottom: 0.2em;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 /* Blockquotes use a decorated CodeMirror line instead of <blockquote>. */
