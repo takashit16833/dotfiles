@@ -25,7 +25,6 @@ test('ワークスペースごとの CSS を起動用 HTML から読み分ける
     { installed: true, newlyInstalled: true });
   assert.equal(await fs.readFile(files.backup, 'utf8'), original);
   assert.equal(await fs.readFile(files.html, 'utf8'), patchedHtml(original));
-  assert.equal(await fs.readFile(files.css, 'utf8'), CSS_HEADER);
   assert.equal(await fs.readFile(workspaceStylePath(files, 'folder-a'), 'utf8'),
     CSS_HEADER + 'body { color: red; }');
   assert.equal(await fs.readFile(files.loader, 'utf8'),
@@ -42,7 +41,7 @@ test('ワークスペースごとの CSS を起動用 HTML から読み分ける
 
   assert.deepEqual(await disable(root), { installed: false, changed: true });
   assert.equal(await fs.readFile(files.html, 'utf8'), original);
-  for (const filename of [files.backup, files.css, files.loader,
+  for (const filename of [files.backup, files.loader,
     workspaceStylePath(files, 'folder-a'), workspaceStylePath(files, 'folder-b')]) {
     await assert.rejects(fs.stat(filename), { code: 'ENOENT' });
   }
@@ -65,16 +64,14 @@ test('VS Code 本体が別の方法で変更された場合は復元・同期を
   assert.equal(await fs.readFile(files.backup, 'utf8'), original);
 });
 
-test('管理外 CSS・スクリプト・非対応 HTML を上書きしない', async t => {
+test('既存の読み込みスクリプトや非対応 HTML は変更しない', async t => {
   const { root, files } = await fixture(t);
   await fs.writeFile(files.html, '<html><body></body></html>');
   await assert.rejects(enable(root, 'a{}', 'project'), /対応する/);
   await fs.writeFile(files.html, original);
-  await fs.writeFile(files.css, 'not owned');
-  await assert.rejects(enable(root, 'a{}', 'project'), /管理外/);
-  await fs.unlink(files.css);
   await fs.writeFile(files.loader, 'not owned');
   await assert.rejects(enable(root, 'a{}', 'project'), /以前の壁紙ファイル/);
+  assert.equal(await fs.readFile(files.html, 'utf8'), original);
 });
 
 test('ワークスペース ID を使ったファイル名の逸脱を拒否する', async t => {

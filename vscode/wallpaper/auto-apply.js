@@ -7,7 +7,6 @@ const path = require('node:path');
 
 const HTML_RELATIVE_PATH = 'out/vs/code/electron-browser/workbench/workbench.html';
 const BACKUP_NAME = 'workbench.html.vscode-wallpaper.backup';
-const STYLE_NAME = 'vscode-wallpaper.css';
 const LOADER_NAME = 'vscode-wallpaper-loader.js';
 const CSS_HEADER = '/* VS Code Wallpaper: managed stylesheet; generated from user settings. */\n';
 const WORKBENCH_CSS = '<link rel="stylesheet" href="../../../workbench/workbench.desktop.main.css">';
@@ -19,7 +18,7 @@ function pathsFor(appRoot) {
   }
   const html = path.join(appRoot, HTML_RELATIVE_PATH);
   const dir = path.dirname(html);
-  return { html, dir, backup: path.join(dir, BACKUP_NAME), css: path.join(dir, STYLE_NAME), loader: path.join(dir, LOADER_NAME) };
+  return { html, dir, backup: path.join(dir, BACKUP_NAME), loader: path.join(dir, LOADER_NAME) };
 }
 
 function workspaceStylePath(files, id) {
@@ -66,7 +65,6 @@ async function inspect(appRoot) {
   const html = await fs.readFile(files.html, 'utf8');
   const backupStat = await regularOrAbsent(files.backup);
   const loaderStat = await regularOrAbsent(files.loader);
-  const css = await readOwnedCss(files.css);
   const installed = html.includes(LINK);
   if (installed) {
     if (!backupStat) throw new Error('元の workbench.html のバックアップがありません。');
@@ -80,10 +78,10 @@ async function inspect(appRoot) {
     if (actual !== expected) {
       throw new Error('壁紙読み込みスクリプトが変更されています。');
     }
-    return { installed: true, files, stat, backup, html, css };
+    return { installed: true, files, stat, backup, html };
   }
 
-  if (backupStat || loaderStat || css || html.includes('vscode-wallpaper')) {
+  if (backupStat || loaderStat || html.includes('vscode-wallpaper')) {
     throw new Error('以前の壁紙ファイルが残っています。確認せずに上書きしません。');
   }
   return { installed: false, files, stat, html };
@@ -126,7 +124,6 @@ async function enable(appRoot, css, id) {
     if (await regularOrAbsent(info.files.loader)) throw new Error('既存の壁紙スクリプトがあります。');
     await fs.writeFile(info.files.loader, loader, { flag: 'wx', mode: 0o644 });
     await writeWorkspaceCss(info.files, css, id);
-    await fs.writeFile(info.files.css, CSS_HEADER, { flag: 'wx', mode: 0o644 });
     await atomicWrite(info.files.html, patched, info.stat.mode);
   } catch (error) {
     const current = await fs.readFile(info.files.html, 'utf8').catch(() => null);
@@ -137,7 +134,6 @@ async function enable(appRoot, css, id) {
       } else {
         await atomicWrite(stylePath, previousWorkspaceCss, 0o644).catch(() => {});
       }
-      await fs.unlink(info.files.css).catch(() => {});
       await fs.unlink(info.files.backup).catch(() => {});
     }
     throw error;
@@ -164,7 +160,6 @@ async function disable(appRoot) {
   await atomicWrite(info.files.html, info.backup, info.stat.mode);
   for (const name of names) await fs.unlink(path.join(info.files.dir, name));
   await fs.unlink(info.files.loader);
-  if (info.css) await fs.unlink(info.files.css);
   await fs.unlink(info.files.backup);
   return { installed: false, changed: true };
 }

@@ -70,8 +70,8 @@
 - その後の Canvas 画素診断で `canvas.decorationsOverviewRuler` は5地点すべて `rgba(1, 1, 17, 1)` と確定した。VS Code `decorationsOverviewRuler.ts` は `editorOverviewRuler.background` を Canvas に塗るため、CSS ではなく VS Code の正式な配色設定を利用する。`.config/vscode/settings.json` の `workbench.colorCustomizations` にテーマ非依存で `"editorOverviewRuler.background": "#00000000"` を追加し、目印や `.slider` の色は変更しない。壁紙の一時 CSS を解除しても設定は残る点に注意。
 
 
-- 起動時に読み込む `renderer-loader.js` は `vscode-file:`（Fetch API 対応）から作業領域別の CSS を約2秒ごとに確認し、内容が変わった場合だけ `link` 要素を差し替える。以前の CSS は新しい読み込みが成功するまで残す。設定変更時に Reload Window は要求しない。旧版 loader の自動移行やチェックサム判定は保持せず、現在の loader と一致しない場合は操作を拒否する。整合性警告は隠さない。
-- 自動適用の設定は `vscode.workspace.getConfiguration` の有効値を使い、ユーザー設定をプロジェクト設定で上書きできる。`workspace-id.js` は VS Code `workspaces/node/workspaces.ts` と同じ作業領域 ID（ローカルフォルダーなら MD5(path+birthtime)、複数ルートの設定ファイルなら MD5(lowercased path)、リモートなら MD5(uri)）を計算する。Renderer は `window.vscode.context.resolveConfiguration().workspace.id` を使って対応する CSS を選ぶ。未生成の場合は読み込みを再試行する。ユーザープロファイル別の CSS 分離は未対応。`image: null` と空文字は壁紙なしとして扱う。アプリ更新後の再導入は手動とし、既知の HTML 以外を検出したら拒否する。実機検証は未完了。
+- `renderer-loader.js` は起動時に一度だけ、作業領域 ID に対応する CSS を読み込む。定期的な `fetch` / `setInterval` や、非公式な変更通知経路は作らない。設定変更は拡張機能の `onDidChangeConfiguration` で CSS ファイルを更新し、変更があれば `Reload Window` を案内する。初めて開く作業領域は CSS 生成が画面読み込みより後になる場合があり、初回のみ再読み込みが必要。既知でない loader は書き換えず、整合性警告も隠さない。
+- 自動適用の設定は `vscode.workspace.getConfiguration` の有効値を使い、ユーザー設定をプロジェクト設定で上書きできる。`workspace-id.js` は VS Code `workspaces/node/workspaces.ts` と同じ作業領域 ID（ローカルフォルダーなら MD5(path+birthtime)、複数ルートの設定ファイルなら MD5(lowercased path)、リモートなら MD5(uri)）を計算する。Renderer は `window.vscode.context.resolveConfiguration().workspace.id` を使って対応する CSS を選ぶ。未生成の場合は画面で再試行せず、拡張機能から `Reload Window` を案内する。ユーザープロファイル別の CSS 分離は未対応。`image: null` と空文字は壁紙なしとして扱う。アプリ更新後の再導入は手動とし、既知の HTML 以外を検出したら拒否する。実機検証は未完了。
 
 ## Terminal
 
