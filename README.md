@@ -54,6 +54,7 @@ bash ./vscode/markdown-preview/install.sh
 画面全体の背景画像は `vscode-background` で表示できるが、ウィンドウ幅に応じた画像切り替えは実装検討中。
 以前試した Apc / Custom CSS and JS Loader は VS Code 本体を書き換えるため、現在は使用しない。
 `vscode/background/` の CSS は参考として保持しているが、`install.sh` からの導入や自動読み込みはしない。
+独立した試作拡張 `vscode/wallpaper/` で設定に応じた CSS 生成と専用タブのプレビューができる。導入と設定方法は [`vscode/wallpaper/README.md`](vscode/wallpaper/README.md) を参照する。VS Code 本体には自動適用しない。
 
 ### Obsidian の背景画像
 

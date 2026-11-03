@@ -42,6 +42,8 @@
 - Markdown preview の CSS と JavaScript は自作拡張の contributions で読み込む。`markdown.styles` から公開 URL を二重に読み込まない。
 - `uninstall.sh` は VS Code の設定 symlink だけを解除し、導入済み extension は削除しない。
 - snippets や Profiles は必要になった時点で追加し、先回りして空の管理対象を増やさない。
+- 独立した試作拡張 `vscode/wallpaper/` は `rhbWallpaper.*` の設定から CSS を生成し、Webview でプレビューする。`node --test` で生成処理を検証する。現在は VS Code 編集画面への CSS 適用処理を含めない。
+- `vscode/wallpaper/install.sh` は明示実行のみ。ルートの `install.sh` から導入せず、VS Code 本体を改変せず、整合性警告の隠蔽も行わない。
 - VS Code 全画面壁紙の幅別切り替えは実装検討中。`vscode/background/` の CSS は参考用として保持するが、拡張機能による読み込みや `install.sh` からの配置は行わない。
 - Apc / Custom CSS and JS Loader は実機で本体改変や整合性警告が問題になったため、再導入しない。背景画像の再実装では既存の vscode-background の動作を前提として方式を検討し、検証前に本体へパッチを適用しない。
 

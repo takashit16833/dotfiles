@@ -1,0 +1,130 @@
+{
+  "name": "rhb-wallpaper",
+  "displayName": "RHB Wallpaper",
+  "description": "Generate a responsive, multiply-blended VS Code wallpaper stylesheet without patching VS Code.",
+  "version": "0.1.0",
+  "publisher": "takashit16833",
+  "private": true,
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./extension.js",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "rhbWallpaper.preview",
+        "title": "RHB Wallpaper: Preview"
+      },
+      {
+        "command": "rhbWallpaper.showCss",
+        "title": "RHB Wallpaper: Show Generated CSS"
+      }
+    ],
+    "configuration": {
+      "title": "RHB Wallpaper",
+      "properties": {
+        "rhbWallpaper.enabled": {
+          "type": "boolean",
+          "default": false,
+          "scope": "window",
+          "description": "Enable CSS generation and preview. Does not modify VS Code application files."
+        },
+        "rhbWallpaper.image": {
+          "type": "string",
+          "default": "",
+          "scope": "window",
+          "description": "Wallpaper image URL or local path. One image is drawn across the whole window."
+        },
+        "rhbWallpaper.alternateImage": {
+          "type": "string",
+          "default": "",
+          "scope": "window",
+          "description": "Optional image for narrow windows; empty means use the default image."
+        },
+        "rhbWallpaper.switchMode": {
+          "type": "string",
+          "enum": [
+            "aspect-ratio",
+            "width"
+          ],
+          "default": "aspect-ratio",
+          "scope": "window",
+          "description": "Switch image based on window aspect ratio or width."
+        },
+        "rhbWallpaper.maxAspectRatio": {
+          "type": "string",
+          "default": "16/10",
+          "pattern": "^[0-9]+\\s*/\\s*[0-9]+$",
+          "scope": "window",
+          "description": "Use the alternate image at or below this window aspect ratio."
+        },
+        "rhbWallpaper.maxWidth": {
+          "type": "integer",
+          "default": 1400,
+          "minimum": 1,
+          "maximum": 10000,
+          "scope": "window",
+          "description": "Use the alternate image at or below this window width in CSS pixels."
+        },
+        "rhbWallpaper.tint": {
+          "type": "string",
+          "default": "#7085B0",
+          "pattern": "^#[0-9a-fA-F]{6}$",
+          "scope": "window",
+          "description": "Tint multiplied with the image."
+        },
+        "rhbWallpaper.opacity": {
+          "type": "object",
+          "scope": "window",
+          "default": {
+            "editor": 0.7,
+            "sidebar": 0.85,
+            "panel": 0.85,
+            "auxiliaryBar": 0.85,
+            "chrome": 0.92
+          },
+          "additionalProperties": false,
+          "properties": {
+            "editor": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "sidebar": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "panel": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "auxiliaryBar": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "chrome": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "description": "Background color opacity per area (0 transparent, 1 opaque). Text remains opaque."
+        }
+      }
+    }
+  },
+  "files": [
+    "extension.js",
+    "wallpaper.js",
+    "README.md"
+  ]
+}
