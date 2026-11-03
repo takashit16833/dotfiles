@@ -93,6 +93,11 @@ cask "obsidian"
 # 開発のメイン editor。
 cask "visual-studio-code"
 
+# --- Python CLI -------------------------------------------------------------
+
+# Python製CLIを他のPython環境と分離して管理する。
+brew "pipx"
+
 # --- Emacs / Lua development -----------------------------------------------
 
 # CLI EmacsとTree-sitter文法のビルドに使用する。
