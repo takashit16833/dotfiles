@@ -71,6 +71,19 @@ install_homebrew_packages() {
   npm --version >/dev/null 2>&1 || fail 'npm is still unavailable after Homebrew setup'
 }
 
+install_entangled() {
+  # pipx は ~/.local/bin に CLI を配置する。zsh の .zshenv で PATH に追加済み。
+  if pipx list --short | grep -Eq '^entangled-cli([[:space:]]|$)'; then
+    info 'Entangled CLI already installed'
+    return
+  fi
+
+  info 'installing Entangled CLI'
+  pipx install entangled-cli
+  "$LOCAL_BIN_DIR/entangled" --version >/dev/null 2>&1 \
+    || fail 'Entangled CLI was not installed correctly'
+}
+
 install_mermaid_cli() {
   local mmdc_path="/opt/homebrew/bin/mmdc"
   local npm_bin_dir
@@ -372,6 +385,7 @@ main() {
 
   install_wezterm_local_config
   install_homebrew_packages
+  install_entangled
   install_mermaid_cli
   install_managed_scripts
 
