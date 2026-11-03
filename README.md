@@ -49,27 +49,31 @@ bash ./vscode/markdown-preview/install.sh
 
 `git pull` だけでは VS Code に導入済みの拡張機能は更新されない。導入後は VS Code のコマンドパレットから `Developer: Reload Window` を実行し、Markdown プレビューを開き直す。
 
-### VS Code の背景画像（Apc）
+### VS Code の背景画像
 
-新しい Mac では `install.sh` が CSS を配置し、Apc を導入する。既存環境へ追加する場合：
+既存の Mac では共通 CSS の配置と拡張機能の導入を行う。
 
 ```bash
 cd ~/dotfiles
 git pull
 bash ./vscode/background/install.sh
-code --install-extension drcika.apc-extension
+code --install-extension be5invis.vscode-custom-css
 ```
 
-`~/.config/vscode/wallpaper-local.css` で `--rhb-wallpaper-enabled: true` にし、
-`--rhb-wallpaper-wide` / `--rhb-wallpaper-narrow` をローカル画像の URL に変更する。
-記述例は同ファイルのコメントを参照。1400px 以下では狭い画面向け画像に切り替わる。
-切り替え幅は `vscode/background/wallpaper.css` の `@media` で変更できる。
-`--rhb-wallpaper-tint` が画像との乗算色、不透明度は `*-opacity` で調整できる。
-画像を使わない場合は `--rhb-wallpaper-enabled: false` のままにする。
+`~/.config/vscode/wallpaper-local.css` の `--rhb-wallpaper-enabled` を `true` にし、
+`--rhb-wallpaper-wide` に画像 URL を設定する。狭い画面用の `--rhb-wallpaper-narrow` は
+任意で、ウィンドウ幅が 1400px 以下になると切り替わる。画像 URL は
+`vscode/background/wallpaper-local.example.css` の例を参照する。
 
-Apc は VS Code の内部ファイルを書き換えるため、現行版との互換性は実機確認が必要。
-適用されない場合はコマンドパレットの `Enable Apc extension` を確認する。
-問題が起きた場合は `Disable Apc extension` で Apc の変更を無効化する。
+`--rhb-wallpaper-tint` が画像との乗算色。`*-opacity`（0～1）が編集領域・サイドバー・
+下部パネル・タイトル／状態／アクティビティバーの背景色の不透明度。
+無効時は元のテーマの背景を保持する。端末固有の設定は更新しても上書きしない。
+
+設定後にコマンドパレットで **Enable Custom CSS and JS** を実行し、再起動する。
+CSS と画像 URL の変更時および VS Code 更新後には **Reload Custom CSS and JS** で再適用する。
+拡張機能は VS Code 本体のファイルを変更するため、実機確認が必要。
+権限エラーが出た場合は対象ファイルとエラーを確認し、権限を無条件に変更しない。
+元に戻すときは **Disable Custom CSS and JS** を実行する。
 
 ### Obsidian の背景画像
 

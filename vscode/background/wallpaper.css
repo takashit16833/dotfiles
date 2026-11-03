@@ -1,47 +1,55 @@
 /*
- * VS Code 全画面壁紙 (Apc Customize UI++)。
- * 画像のパスや不透明度は ~/.config/vscode/wallpaper-local.css で上書きする。
- * 初期状態は無効。無効な間は VS Code の元のテーマを変更しない。
+ * VS Code 全画面壁紙 (Custom CSS and JS Loader)。
+ * 画像と不透明度は ~/.config/vscode/wallpaper-local.css で上書きする。
+ * 無効な間は通常テーマの背景色を変更しない。
  */
 :root {
   --rhb-wallpaper-enabled: false;
   --rhb-wallpaper-wide: none;
   --rhb-wallpaper-narrow: var(--rhb-wallpaper-wide);
-  --rhb-wallpaper-tint: #00184a;
-  --rhb-wallpaper-editor-opacity: 0.7;
-  --rhb-wallpaper-sidebar-opacity: 0.86;
-  --rhb-wallpaper-panel-opacity: 0.86;
+  --rhb-wallpaper-tint: #7085b0;
+  /* 不透明度は 0～1。文字とアイコンの opacity は変更しない。 */
+  --rhb-wallpaper-editor-opacity: 0.70;
+  --rhb-wallpaper-sidebar-opacity: 0.90;
+  --rhb-wallpaper-panel-opacity: 0.83;
   --rhb-wallpaper-chrome-opacity: 0.92;
 }
 
-/* 画像機能を有効にしたときだけ、背景と各領域の透過を適用する。 */
+/* 壁紙が無効なら VS Code テーマへ干渉しない。 */
 @container style(--rhb-wallpaper-enabled: true) {
+  /* Obsidian と同じく、上に重ねた色を画像へ乗算する。 */
   body:has(> .monaco-workbench.vs-dark) {
-    background-color: var(--rhb-wallpaper-tint);
-    background-image: var(--rhb-wallpaper-wide);
-    background-blend-mode: multiply;
-    background-position: center;
+    background-color: #00184a;
+    background-image:
+      linear-gradient(var(--rhb-wallpaper-tint), var(--rhb-wallpaper-tint)),
+      var(--rhb-wallpaper-wide);
+    background-blend-mode: multiply, normal;
     background-size: cover;
+    background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
   }
 
-  /* VS Code のウィンドウ幅で切り替える（モニター解像度ではない）。 */
+  /* モニターの解像度ではなく、VS Code のウィンドウ幅で切り替える。 */
   @media (max-width: 1400px) {
     body:has(> .monaco-workbench.vs-dark) {
-      background-image: var(--rhb-wallpaper-narrow);
+      background-image:
+        linear-gradient(var(--rhb-wallpaper-tint), var(--rhb-wallpaper-tint)),
+        var(--rhb-wallpaper-narrow);
     }
   }
 
-  /* VS Code 標準の不透明な背景を透かし、下の壁紙を見せる。 */
+  /* VS Code の標準の背景色が壁紙を隠さないようにする。 */
   .monaco-workbench.vs-dark {
     background-color: transparent !important;
     --vscode-editor-background: transparent !important;
     --vscode-sideBar-background: transparent !important;
     --vscode-panel-background: transparent !important;
     --vscode-terminal-background: transparent !important;
+    --vscode-editorGroupHeader-tabsBackground: transparent !important;
   }
 
+  /* 背景色だけを半透明にする。テキストは薄くしない。 */
   .monaco-workbench.vs-dark .part.editor {
     background-color: rgb(0 24 74 / var(--rhb-wallpaper-editor-opacity)) !important;
   }
@@ -58,7 +66,7 @@
     background-color: rgb(0 7 22 / var(--rhb-wallpaper-chrome-opacity)) !important;
   }
 
-  /* エディタとターミナル内部の塗りつぶしだけを透過する。 */
+  /* 内側の不透明な塗りつぶしを除去して各領域の背景色を見せる。 */
   .monaco-workbench.vs-dark .part.editor :is(
     .content,
     .editor-group-container,
@@ -66,8 +74,11 @@
     .editor-instance,
     .monaco-editor,
     .monaco-editor-background,
-    .margin
+    .margin,
+    .title,
+    .tabs-container
   ),
+  .monaco-workbench.vs-dark :is(.part.sidebar, .part.auxiliarybar, .part.panel) > .content,
   .monaco-workbench.vs-dark .part.panel .xterm-viewport {
     background-color: transparent !important;
   }

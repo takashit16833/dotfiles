@@ -42,9 +42,10 @@
 - Markdown preview の CSS と JavaScript は自作拡張の contributions で読み込む。`markdown.styles` から公開 URL を二重に読み込まない。
 - `uninstall.sh` は VS Code の設定 symlink だけを解除し、導入済み extension は削除しない。
 - snippets や Profiles は必要になった時点で追加し、先回りして空の管理対象を増やさない。
-- 全画面背景は Apc の `apc.imports` で `vscode/background/wallpaper.css` を読み込む。画像のパスは `~/.config/vscode/wallpaper-local.css` に分離する。壁紙の初期状態は無効とし、元のテーマへ干渉しない。
-- `vscode/background/install.sh` は共通 CSS の symlink と端末固有 CSS の初期ファイルだけを安全に用意する。通常の `install.sh` からも呼ぶ。
-- Apc は VS Code 本体にパッチを適用する非公式拡張で、現在の VS Code との互換性は保証しない。Apc を VS Code で有効化できるかは実機確認が必要。
+- 全画面背景は Custom CSS and JS Loader（`be5invis.vscode-custom-css`）の `vscode_custom_css.imports` から共通の `vscode/background/wallpaper.css` と端末固有の `~/.config/vscode/wallpaper-local.css` を順に読み込む。`file://${userHome}/...` 形式の URL を使う。
+- `vscode/background/install.sh` は共通 CSS の symlink と端末固有 CSS の初期ファイルだけを安全に用意する。通常の `install.sh` からも呼び、既存のローカル設定は上書きしない。
+- 壁紙の初期状態は無効で、通常テーマを変更しない。有効時のみ全画面の乗算合成、幅 1400px 以下での切替、編集領域・左右サイドバー・下部パネル・周辺バー別の背景色の不透明度を適用する。
+- Custom CSS and JS Loader は VS Code 本体を変更する非公式拡張。CSS や画像 URL を変更した場合と VS Code 更新後は「Reload Custom CSS and JS」で再適用する。VS Code 1.144.1 での動作は実機未確認。権限変更と本体のパッチ適用は手動確認を前提とする。
 
 - Markdown Live Preview Editor の階層インデントは `vscode/markdown-live-preview/` の小さなパッチだけを管理する。公開済み拡張の内部ファイルを直接編集せず、上流の特定コミットを取得し、変更箇所を確認してから VSIX を生成する。
 - ローカルビルドは Marketplace 版と同じ拡張 ID を使うため、更新で上書きされ得る。既定のエディタを変更する前に、実機で字下げ・編集操作・コードブロック・表を確認する。
