@@ -217,5 +217,11 @@
         "**/out",
         "**/dist-newstyle"
     ],
-    "background.enabled": true
+    // Apc は共通 CSS の後に端末固有の画像設定を読み込む。
+    // 従来の vscode-background と重複させない。
+    "background.enabled": false,
+    "apc.imports": [
+        "${userHome}/.config/vscode/wallpaper.css",
+        "${userHome}/.config/vscode/wallpaper-local.css"
+    ]
 }

@@ -1,0 +1,22 @@
+/*
+ * このファイルはインストール時に ~/.config/vscode/wallpaper-local.css へコピーする。
+ * 実際の画像パスはローカルで指定し、dotfiles に記録しない。
+ * 画像を無効にして元の VS Code テーマへ戻すには enabled を false にする。
+ */
+:root {
+  --rhb-wallpaper-enabled: false;
+  --rhb-wallpaper-wide: none;
+  --rhb-wallpaper-narrow: var(--rhb-wallpaper-wide);
+  --rhb-wallpaper-tint: #7085b0;
+  --rhb-wallpaper-editor-opacity: 0.7;
+  --rhb-wallpaper-sidebar-opacity: 0.86;
+  --rhb-wallpaper-panel-opacity: 0.86;
+  --rhb-wallpaper-chrome-opacity: 0.92;
+}
+
+/* 設定例：上の enabled と画像の2行を次のように変更する。
+ * --rhb-wallpaper-enabled: true;
+ * --rhb-wallpaper-wide: url("vscode-file://vscode-app/Users/USER/Pictures/wide.jpg");
+ * --rhb-wallpaper-narrow: url("vscode-file://vscode-app/Users/USER/Pictures/narrow.jpg");
+ * ※ USER は macOS のユーザー名に置き換える。
+ */

@@ -1,0 +1,74 @@
+/*
+ * VS Code 全画面壁紙 (Apc Customize UI++)。
+ * 画像のパスや不透明度は ~/.config/vscode/wallpaper-local.css で上書きする。
+ * 初期状態は無効。無効な間は VS Code の元のテーマを変更しない。
+ */
+:root {
+  --rhb-wallpaper-enabled: false;
+  --rhb-wallpaper-wide: none;
+  --rhb-wallpaper-narrow: var(--rhb-wallpaper-wide);
+  --rhb-wallpaper-tint: #00184a;
+  --rhb-wallpaper-editor-opacity: 0.7;
+  --rhb-wallpaper-sidebar-opacity: 0.86;
+  --rhb-wallpaper-panel-opacity: 0.86;
+  --rhb-wallpaper-chrome-opacity: 0.92;
+}
+
+/* 画像機能を有効にしたときだけ、背景と各領域の透過を適用する。 */
+@container style(--rhb-wallpaper-enabled: true) {
+  body:has(> .monaco-workbench.vs-dark) {
+    background-color: var(--rhb-wallpaper-tint);
+    background-image: var(--rhb-wallpaper-wide);
+    background-blend-mode: multiply;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+
+  /* VS Code のウィンドウ幅で切り替える（モニター解像度ではない）。 */
+  @media (max-width: 1400px) {
+    body:has(> .monaco-workbench.vs-dark) {
+      background-image: var(--rhb-wallpaper-narrow);
+    }
+  }
+
+  /* VS Code 標準の不透明な背景を透かし、下の壁紙を見せる。 */
+  .monaco-workbench.vs-dark {
+    background-color: transparent !important;
+    --vscode-editor-background: transparent !important;
+    --vscode-sideBar-background: transparent !important;
+    --vscode-panel-background: transparent !important;
+    --vscode-terminal-background: transparent !important;
+  }
+
+  .monaco-workbench.vs-dark .part.editor {
+    background-color: rgb(0 24 74 / var(--rhb-wallpaper-editor-opacity)) !important;
+  }
+
+  .monaco-workbench.vs-dark :is(.part.sidebar, .part.auxiliarybar) {
+    background-color: rgb(0 7 22 / var(--rhb-wallpaper-sidebar-opacity)) !important;
+  }
+
+  .monaco-workbench.vs-dark .part.panel {
+    background-color: rgb(0 7 22 / var(--rhb-wallpaper-panel-opacity)) !important;
+  }
+
+  .monaco-workbench.vs-dark :is(.part.titlebar, .part.statusbar, .part.activitybar) {
+    background-color: rgb(0 7 22 / var(--rhb-wallpaper-chrome-opacity)) !important;
+  }
+
+  /* エディタとターミナル内部の塗りつぶしだけを透過する。 */
+  .monaco-workbench.vs-dark .part.editor :is(
+    .content,
+    .editor-group-container,
+    .editor-container,
+    .editor-instance,
+    .monaco-editor,
+    .monaco-editor-background,
+    .margin
+  ),
+  .monaco-workbench.vs-dark .part.panel .xterm-viewport {
+    background-color: transparent !important;
+  }
+}
