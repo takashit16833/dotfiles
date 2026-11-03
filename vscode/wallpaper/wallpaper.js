@@ -120,7 +120,7 @@ function generateCss(settings, options = {}) {
   const config = normalizeSettings(settings);
   const resolver = options.resolveUrl || (value => resolveImage(value, options)?.url);
   const defaultUrl = resolver(config.image);
-  if (!defaultUrl) throw new Error('vscodeWallpaper.image を設定してください。');
+  if (!defaultUrl) return ''; // No image configured for this workspace.
   const alternateUrl = config.alternateImage ? resolver(config.alternateImage) : null;
   const root = options.rootSelector || '.monaco-workbench';
   const imageRule = image => `linear-gradient(${config.tint}, ${config.tint}), ${cssImage(image)}`;

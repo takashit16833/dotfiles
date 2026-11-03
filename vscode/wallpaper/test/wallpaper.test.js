@@ -54,7 +54,9 @@ test('不正な設定を拒否する', () => {
   assert.throws(() => normalizeSettings({ ...config, tint: 'red' }), /tint/);
   assert.throws(() => normalizeSettings({ ...config, opacity: { editor: 1.5 } }), /opacity.editor/);
   assert.throws(() => normalizeSettings({ ...config, backgroundColors: { panel: 'rgb(0 0 0)' } }), /backgroundColors.panel/);
-  assert.throws(() => generateCss({ ...config, image: '' }), /image/);
+  assert.equal(generateCss({ ...config, image: '' }), '');
+  assert.equal(generateCss({ ...config, image: null }), '');
+  assert.equal(generateCss({ ...config, image: null, enabled: false }), '');
 });
 
 test('画像のローカルパス変換と相対パスの基準', () => {

@@ -46,7 +46,7 @@
 - `vscode/wallpaper/install.sh` は明示実行のみ。ルートの `install.sh` から導入せず、このスクリプト自体は VS Code 本体を改変しない。整合性警告は隠さない。
 - 実画面の検証用に `vscode/wallpaper/workbench-script.js` は DevTools Console で実行する一時 CSS 適用・解除コードを生成する。この一時適用は自動適用と独立しており、本体ファイル改変やデバッグ用ポートは使わない。
 - `vscode/wallpaper/responsive-test.js` は実際の CSS 生成関数に2枚の埋め込み PNG を与え、縦長・横長（`orientation: portrait`）・横幅800pxでの切り替えを一時検証する。設定は書き換えず、通常の適用スクリプトで元の壁紙へ戻せる。
-- VS Code 公開 API から本体 DOM/CSS は直接操作できない。自動適用は明示的な同意後、`auto-apply.js` が `workbench.html` にローカル CSS のリンクだけを追加する方式とする。導入時に元 HTML をバックアップし、解除時に元に戻す。他の本体改変や整合性警告の隠蔽は行わない。起動時はリンク先の CSS を VS Code が読み込む。設定変更後は CSS を更新するが、画面への反映には再読み込みが必要。
+- VS Code 公開 API から本体 DOM/CSS は直接操作できない。明示的な同意後に `auto-apply.js` が `workbench.html` に `renderer-loader.js` の読み込みを追加する。起動時の画面側スクリプトは VS Code が渡す作業領域 ID に対応する CSS を読み込む。元 HTML をバックアップし、解除時に復元する。他の本体改変や整合性警告の隠蔽は行わない。
 - サイドバー内部のペインと見出しは `paneHeaders.css` の不透明な背景色を持つため、共通壁紙表示時に通常背景を透明化する。見出しのホバー表示は維持し、コードは `vscode/wallpaper/wallpaper.js` にまとめる。
 - Extensions の一覧コンテナ `.monaco-list-rows` も不透明だったため（実機で確認）、サイドバーと補助サイドバー内のコンテナ背景だけを透明化する。各行の選択・ホバー表示は維持する。
 - 編集タブの帯 `.part.editor .tabs-and-actions-container` と下部 Explorer の一覧背景 `.part.panel .monaco-list-rows` は実測で不透明だった。コンテナ背景だけを透明化し、個別タブ、行の選択色、スクロールバーのつまみは維持する。
@@ -70,7 +70,7 @@
 - その後の Canvas 画素診断で `canvas.decorationsOverviewRuler` は5地点すべて `rgba(1, 1, 17, 1)` と確定した。VS Code `decorationsOverviewRuler.ts` は `editorOverviewRuler.background` を Canvas に塗るため、CSS ではなく VS Code の正式な配色設定を利用する。`.config/vscode/settings.json` の `workbench.colorCustomizations` にテーマ非依存で `"editorOverviewRuler.background": "#00000000"` を追加し、目印や `.slider` の色は変更しない。壁紙の一時 CSS を解除しても設定は残る点に注意。
 
 
-- 自動適用は `vscode/wallpaper/auto-apply.js` が管理し、最初に明示的な確認を経て有効化する。CSS の生成元はユーザー設定のみ（ワークスペース設定は対象外）。複数ウィンドウ・プロファイルで異なる CSS はサポートしない。アプリ更新後の再導入は手動とし、既知の HTML 以外を検出したら拒否する。導入直後からの実画面の検証は未完了。
+- 自動適用の設定は `vscode.workspace.getConfiguration` の有効値を使い、ユーザー設定をプロジェクト設定で上書きできる。`workspace-id.js` は VS Code `workspaces/node/workspaces.ts` と同じ作業領域 ID（ローカルフォルダーなら MD5(path+birthtime)、複数ルートの設定ファイルなら MD5(lowercased path)、リモートなら MD5(uri)）を計算する。Renderer は `window.vscode.context.resolveConfiguration().workspace.id` を使って対応する CSS を選ぶ。未生成の場合は読み込みを再試行する。ユーザープロファイル別の CSS 分離は未対応。`image: null` と空文字は壁紙なしとして扱う。アプリ更新後の再導入は手動とし、既知の HTML 以外を検出したら拒否する。実機検証は未完了。
 
 ## Terminal
 

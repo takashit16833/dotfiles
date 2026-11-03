@@ -2,7 +2,7 @@
   "name": "vscode-wallpaper",
   "displayName": "VS Code Wallpaper",
   "description": "Generate a responsive, multiply-blended VS Code wallpaper stylesheet without patching VS Code.",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "publisher": "takashit16833",
   "private": true,
   "engines": {
@@ -60,13 +60,19 @@
           "description": "Enable CSS generation and preview. Does not modify VS Code application files."
         },
         "vscodeWallpaper.image": {
-          "type": "string",
+          "type": [
+            "string",
+            "null"
+          ],
           "default": "",
           "scope": "window",
-          "description": "Wallpaper image URL or local path. One image is drawn across the whole window."
+          "description": "Wallpaper image URL or local path. Null or empty means no wallpaper unless a workspace overrides it."
         },
         "vscodeWallpaper.alternateImage": {
-          "type": "string",
+          "type": [
+            "string",
+            "null"
+          ],
           "default": "",
           "scope": "window",
           "description": "Optional image for portrait, low aspect ratio, or narrow windows; empty means always use the default image."

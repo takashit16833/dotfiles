@@ -2,6 +2,7 @@
 
 const path = require('node:path');
 const automatic = require('./auto-apply');
+const { currentWorkspaceId } = require('./workspace-id');
 const vscode = require('vscode');
 const { readSettings, resolveImage, generateCss } = require('./wallpaper');
 const { buildApplyScript, buildRemoveScript } = require('./workbench-script');
@@ -12,18 +13,6 @@ let previewPanel;
 
 function currentSettings() {
   return readSettings(vscode.workspace.getConfiguration('vscodeWallpaper'));
-}
-
-// The automatic stylesheet is shared by all VS Code windows: use User settings,
-// not a project's .vscode/settings.json overrides.
-function automaticSettings() {
-  const configuration = vscode.workspace.getConfiguration('vscodeWallpaper');
-  return readSettings({
-    get(key, fallback) {
-      const entry = configuration.inspect(key);
-      return entry?.globalValue ?? entry?.defaultValue ?? fallback;
-    }
-  });
 }
 
 function workspaceDirectory() {
@@ -86,10 +75,11 @@ function renderPreview(panel) {
   }
 }
 
-async function autoCss() {
-  // ./image.jpg is intentionally unsupported in automatic mode because
-  // there is no single workspace for a stylesheet shared by all windows.
-  return cssFor(automaticSettings(), undefined, null);
+async function autoState() {
+  return {
+    css: cssFor(currentSettings()),
+    workspaceId: await currentWorkspaceId(vscode.workspace)
+  };
 }
 
 async function refreshAutomatic(context, notify = false) {
@@ -99,7 +89,8 @@ async function refreshAutomatic(context, notify = false) {
     if (notify) vscode.window.showWarningMessage('VS Code の更新などで自動壁紙の読み込みが外れています。Enable Automatic Wallpaper を再実行してください。');
     return;
   }
-  const result = await automatic.sync(vscode.env.appRoot, await autoCss());
+  const { css, workspaceId } = await autoState();
+  const result = await automatic.sync(vscode.env.appRoot, css, workspaceId);
   if (result.changed && notify) {
     vscode.window.showInformationMessage('壁紙の CSS を更新しました。Developer: Reload Window で反映してください。');
   }
@@ -113,8 +104,8 @@ function activate(context) {
     );
     if (choice !== '自動適用を有効にする') return;
     try {
-      const css = await autoCss();
-      const result = await automatic.enable(vscode.env.appRoot, css);
+      const { css, workspaceId } = await autoState();
+      const result = await automatic.enable(vscode.env.appRoot, css, workspaceId);
       await context.globalState.update('vscodeWallpaper.autoEnabled', true);
       const reload = await vscode.window.showInformationMessage(
         result.newlyInstalled ? '自動適用を導入しました。VS Code の再読み込み後から有効になります。' : '壁紙 CSS を更新しました。',
