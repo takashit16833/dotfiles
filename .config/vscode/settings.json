@@ -70,6 +70,9 @@
     // Retro Hacker Blue を利用している場合だけ、UI カラーを Cyber Pink へ上書きする。
     // 他のテーマへ切り替えた場合には、ここで指定した色は適用されない。
     "workbench.colorCustomizations": {
+        // Overview Ruler は Canvas 内に背景色を描くため、CSS ではなく VS Code の配色設定で透明にする。
+        // 右端の目印やスクロールバーのつまみの色は変更しない。テーマを問わず適用する。
+        "editorOverviewRuler.background": "#00000000",
         // quickJumpのヒントの色
         "quickJump.hintBackground": "#FF4DE1CC",
         "quickJump.hintForeground": "#00184A",
