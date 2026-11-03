@@ -198,6 +198,38 @@ install_vscode_extensions() {
   fi
 }
 
+install_private_vscode_extension() {
+  local repository="$1"
+  local directory="$HOME/$repository"
+  local ssh_url="git@github.com:takashit16833/$repository.git"
+  local origin
+
+  # 既存ディレクトリは内容・履歴を勝手に上書きしない。
+  if [[ -e "$directory" || -L "$directory" ]]; then
+    [[ -d "$directory" && -d "$directory/.git" ]] \
+      || fail "$directory exists but is not a Git clone; leaving it untouched"
+    origin="$(git -C "$directory" remote get-url origin)" \
+      || fail "failed to read origin for $directory"
+    case "$origin" in
+      "$ssh_url"|"https://github.com/takashit16833/$repository.git"|"https://github.com/takashit16833/$repository")
+        info "using existing repository: $directory"
+        ;;
+      *)
+        fail "$directory points to unexpected origin: $origin; leaving it untouched"
+        ;;
+    esac
+  else
+    info "cloning $repository into $directory (GitHub SSH authentication required)"
+    git clone "$ssh_url" "$directory" \
+      || fail "failed to clone $repository; configure GitHub SSH access and retry"
+  fi
+
+  [[ -f "$directory/install.sh" ]] || fail "missing install script: $directory/install.sh"
+
+  info "installing VS Code extension from $directory"
+  (cd "$directory" && bash ./install.sh)
+}
+
 install_quickjump_extension() {
   local vscode_cli=''
   local tmp_dir
@@ -410,6 +442,8 @@ main() {
 
   install_vscode_extensions
   install_quickjump_extension
+  install_private_vscode_extension vscode-wallpaper
+  install_private_vscode_extension vscode-markdown-outline-preview
 
   ensure_symlink \
     "$DOTFILES_DIR/.hammerspoon" \

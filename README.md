@@ -12,7 +12,7 @@ cd ~/dotfiles
 bash ./install.sh
 ```
 
-公開リポジトリを HTTPS で clone するため、初回セットアップ時点では GitHub の SSH 鍵や `gh` の認証は不要。
+dotfiles 自体は公開リポジトリなので HTTPS で認証なしに clone できる。ただし初期インストールで非公開の自作 VS Code 拡張を取得するため、`bash ./install.sh` の実行前に GitHub の SSH 認証を設定する。
 
 `install.sh` は `Brewfile` に宣言した CLI / アプリのインストール、設定ファイルの symlink、VS Code extension、Raycast Local Extension などのセットアップを行う。
 
@@ -36,33 +36,33 @@ Raycast Local Extension の初回登録では、公式の `ray develop` を短�
 
 ### VS Code の Markdown プレビュー
 
-見出しと本文を階層に沿って字下げする自作拡張機能 [`vscode-markdown-outline-preview`](https://github.com/takashit16833/vscode-markdown-outline-preview) は、独立した非公開リポジトリで管理する。dotfiles の `install.sh` からは自動導入しない。
+自作拡張機能 [`vscode-markdown-outline-preview`](https://github.com/takashit16833/vscode-markdown-outline-preview) は、`install.sh` から `~/vscode-markdown-outline-preview` に取得し、専用の `install.sh` で導入する。見出し階層に沿った字下げと配色を適用する。
 
-新しい Mac では、GitHub の SSH 認証を設定した後、次のコマンドで導入する。
+取得済みのディレクトリがある場合は、その内容を勝手に更新せず、インストール処理だけ再実行する。最新版への更新は次のとおり。
 
 ```bash
-git clone git@github.com:takashit16833/vscode-markdown-outline-preview.git ~/work/vscode-markdown-outline-preview
-cd ~/work/vscode-markdown-outline-preview
+cd ~/vscode-markdown-outline-preview
+git pull --ff-only
 bash ./install.sh
 ```
 
-取得済みなら、そのディレクトリで `git pull` と `bash ./install.sh` を実行する。インストール後は `Developer: Reload Window` で VS Code を再読み込みし、Markdown プレビューを開き直す。詳細は [専用 README](https://github.com/takashit16833/vscode-markdown-outline-preview/blob/main/README.md) を参照する。
+導入後は VS Code の `Developer: Reload Window` で再読み込みし、Markdown プレビューを開き直す。詳細は [専用 README](https://github.com/takashit16833/vscode-markdown-outline-preview/blob/main/README.md) を参照する。
 
 ### VS Code の背景画像
 
-壁紙の設定値は `.config/vscode/settings.json` で管理する。拡張機能の本体は独立した非公開リポジトリ [`vscode-wallpaper`](https://github.com/takashit16833/vscode-wallpaper) で管理し、dotfiles の `install.sh` からは導入しない。
+自作拡張機能 [`vscode-wallpaper`](https://github.com/takashit16833/vscode-wallpaper) は、`install.sh` から `~/vscode-wallpaper` に取得し、専用の `install.sh` で導入する。壁紙の設定値は `.config/vscode/settings.json` で管理する。
 
-新しい Mac への導入や拡張機能の更新は、GitHub の SSH 認証を設定した後、次のコマンドを実行する。
+取得済みのディレクトリがある場合は、その内容を勝手に更新せず、インストール処理だけ再実行する。最新版への更新は次のとおり。
 
 ```bash
-git clone git@github.com:takashit16833/vscode-wallpaper.git ~/work/vscode-wallpaper
-cd ~/work/vscode-wallpaper
+cd ~/vscode-wallpaper
+git pull --ff-only
 bash ./install.sh
 ```
 
-既に clone 済みなら `git pull` して `bash ./install.sh` を実行する。拡張機能の設定・本体への自動適用と解除方法は [専用の README](https://github.com/takashit16833/vscode-wallpaper/blob/main/README.md) を参照する。
+**拡張機能の導入だけでは VS Code 本体に壁紙を自動適用しない。** 本体への適用は、必要なときに拡張機能の `VS Code Wallpaper: Enable Automatic Wallpaper` コマンドから明示的に有効化する。詳細は [専用 README](https://github.com/takashit16833/vscode-wallpaper/blob/main/README.md) を参照する。
 
-`vscode/background/` は旧方式の参考コードとして保持するが、現在の拡張機能には使わない。
+`vscode/background/` は旧方式の参考コードであり、現在の拡張機能には使わない。
 
 ### Obsidian の背景画像
 
