@@ -4,15 +4,24 @@
 // The renderer selects a different stylesheet for each window's workspace ID.
 const fs = require('node:fs/promises');
 const path = require('node:path');
+const { createHash } = require('node:crypto');
 
 const HTML_RELATIVE_PATH = 'out/vs/code/electron-browser/workbench/workbench.html';
 const BACKUP_NAME = 'workbench.html.vscode-wallpaper.backup';
 const STYLE_NAME = 'vscode-wallpaper.css'; // Retained for migration from v0.4.
 const LOADER_NAME = 'vscode-wallpaper-loader.js';
+// Git blob SHA-1 of the v0.5.0 loader. Only this known file may be upgraded.
+const PREVIOUS_LOADER_BLOB = '2b1f76258146980cccc989a36376b7318cd4bc9b';
 const CSS_HEADER = '/* VS Code Wallpaper: managed stylesheet; generated from user settings. */\n';
 const WORKBENCH_CSS = '<link rel="stylesheet" href="../../../workbench/workbench.desktop.main.css">';
 const LEGACY_LINK = '<!-- VS Code Wallpaper: managed automatic stylesheet -->\n\t\t<link rel="stylesheet" href="./vscode-wallpaper.css">';
 const LINK = '<!-- VS Code Wallpaper: managed per-workspace stylesheet -->\n\t\t<script type="module" src="./vscode-wallpaper-loader.js"></script>';
+
+function knownPreviousLoader(contents) {
+  const bytes = Buffer.from(contents, 'utf8');
+  const blob = createHash('sha1').update('blob ' + bytes.length + '\0').update(bytes).digest('hex');
+  return blob === PREVIOUS_LOADER_BLOB;
+}
 
 function pathsFor(appRoot) {
   if (typeof appRoot !== 'string' || !path.isAbsolute(appRoot)) {
@@ -71,6 +80,7 @@ async function inspect(appRoot) {
   const css = await readOwnedCss(files.css);
   const modern = html.includes(LINK);
   const legacy = !modern && html.includes(LEGACY_LINK);
+  let outdatedLoader = false;
 
   if (modern || legacy) {
     if (!backupStat) throw new Error('元の workbench.html のバックアップがありません。');
@@ -83,9 +93,12 @@ async function inspect(appRoot) {
       if (!loaderStat) throw new Error('壁紙読み込みスクリプトがありません。');
       const actual = await fs.readFile(files.loader, 'utf8');
       const expected = await fs.readFile(path.join(__dirname, 'renderer-loader.js'), 'utf8');
-      if (actual !== expected) throw new Error('壁紙読み込みスクリプトが変更されています。');
+      if (actual !== expected && !knownPreviousLoader(actual)) {
+        throw new Error('壁紙読み込みスクリプトが変更されています。');
+      }
+      outdatedLoader = actual !== expected;
     }
-    return { installed: true, legacy, files, stat, backup, html, css };
+    return { installed: true, legacy, files, stat, backup, html, css, outdatedLoader };
   }
 
   if (backupStat || loaderStat || css || html.includes('vscode-wallpaper')) {
@@ -120,8 +133,8 @@ async function enable(appRoot, css, id) {
   const stylePath = workspaceStylePath(info.files, id);
   const previousWorkspaceCss = await readOwnedCss(stylePath);
   if (info.installed && !info.legacy) {
-    await writeWorkspaceCss(info.files, css, id);
-    return { installed: true, newlyInstalled: false };
+    const result = await sync(appRoot, css, id);
+    return { installed: true, newlyInstalled: false, ...(result.loaderChanged ? { loaderChanged: true } : {}) };
   }
 
   const loader = await fs.readFile(path.join(__dirname, 'renderer-loader.js'), 'utf8');
@@ -171,7 +184,11 @@ async function sync(appRoot, css, id) {
     return { installed: true, changed: true };
   }
   const changed = await writeWorkspaceCss(info.files, css, id);
-  return { installed: true, changed };
+  if (info.outdatedLoader) {
+    const loader = await fs.readFile(path.join(__dirname, 'renderer-loader.js'), 'utf8');
+    await atomicWrite(info.files.loader, loader, 0o644);
+  }
+  return { installed: true, changed, ...(info.outdatedLoader ? { loaderChanged: true } : {}) };
 }
 
 async function disable(appRoot) {

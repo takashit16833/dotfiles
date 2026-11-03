@@ -91,8 +91,14 @@ async function refreshAutomatic(context, notify = false) {
   }
   const { css, workspaceId } = await autoState();
   const result = await automatic.sync(vscode.env.appRoot, css, workspaceId);
-  if (result.changed && notify) {
-    vscode.window.showInformationMessage('壁紙の CSS を更新しました。Developer: Reload Window で反映してください。');
+  if (result.loaderChanged && notify) {
+    const action = await vscode.window.showInformationMessage(
+      'VS Code Wallpaper: 設定変更をすぐ反映する機能に更新しました。読み込み処理を切り替えるため、一度だけウィンドウを再読み込みしてください。',
+      'Reload Window'
+    );
+    if (action === 'Reload Window') {
+      await vscode.commands.executeCommand('workbench.action.reloadWindow');
+    }
   }
 }
 

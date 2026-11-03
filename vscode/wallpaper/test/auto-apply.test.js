@@ -100,3 +100,29 @@ test('ワークスペース ID を使ったファイル名の逸脱を拒否す�
   assert.throws(() => workspaceStylePath(files, ''), /不正な/);
   await assert.rejects(enable(root, 'a{}', '../other'), /不正な/);
 });
+
+test('v0.5 の読み込みスクリプトを識別し、CSS を保ったまま更新する', async t => {
+  const { root, files } = await fixture(t);
+  await enable(root, 'body { color: old; }', 'project');
+  const previous = await fs.readFile(
+    path.join(__dirname, 'fixtures', 'renderer-loader-v0.5.js'), 'utf8');
+  await fs.writeFile(files.loader, previous);
+  assert.equal((await inspect(root)).outdatedLoader, true);
+
+  const changed = await sync(root, 'body { color: new; }', 'project');
+  assert.deepEqual(changed, { installed: true, changed: true, loaderChanged: true });
+  assert.equal((await inspect(root)).outdatedLoader, false);
+  assert.equal(await fs.readFile(workspaceStylePath(files, 'project'), 'utf8'),
+    CSS_HEADER + 'body { color: new; }');
+  await disable(root);
+  assert.equal(await fs.readFile(files.html, 'utf8'), original);
+});
+
+test('不明な読み込みスクリプトは更新も解除も拒否する', async t => {
+  const { root, files } = await fixture(t);
+  await enable(root, 'body{}', 'project');
+  await fs.writeFile(files.loader, 'unrelated changes');
+  await assert.rejects(sync(root, 'body{color:red}', 'project'), /読み込みスクリプト/);
+  await assert.rejects(disable(root), /読み込みスクリプト/);
+  assert.equal(await fs.readFile(files.backup, 'utf8'), original);
+});

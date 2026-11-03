@@ -70,6 +70,7 @@
 - その後の Canvas 画素診断で `canvas.decorationsOverviewRuler` は5地点すべて `rgba(1, 1, 17, 1)` と確定した。VS Code `decorationsOverviewRuler.ts` は `editorOverviewRuler.background` を Canvas に塗るため、CSS ではなく VS Code の正式な配色設定を利用する。`.config/vscode/settings.json` の `workbench.colorCustomizations` にテーマ非依存で `"editorOverviewRuler.background": "#00000000"` を追加し、目印や `.slider` の色は変更しない。壁紙の一時 CSS を解除しても設定は残る点に注意。
 
 
+- 起動時に読み込む `renderer-loader.js` は `vscode-file:`（Fetch API 対応）から作業領域別の CSS を約2秒ごとに確認し、内容が変わった場合だけ `link` 要素を差し替える。以前の CSS は新しい読み込みが成功するまで残す。設定変更時に Reload Window は要求しない。v0.5.0 の旧 loader から移行する際だけ、Git blob SHA-1 が既知の旧コードに一致することを検証して書き換え、再読み込みを案内する。未知の変更は拒否し、整合性警告は隠さない。
 - 自動適用の設定は `vscode.workspace.getConfiguration` の有効値を使い、ユーザー設定をプロジェクト設定で上書きできる。`workspace-id.js` は VS Code `workspaces/node/workspaces.ts` と同じ作業領域 ID（ローカルフォルダーなら MD5(path+birthtime)、複数ルートの設定ファイルなら MD5(lowercased path)、リモートなら MD5(uri)）を計算する。Renderer は `window.vscode.context.resolveConfiguration().workspace.id` を使って対応する CSS を選ぶ。未生成の場合は読み込みを再試行する。ユーザープロファイル別の CSS 分離は未対応。`image: null` と空文字は壁紙なしとして扱う。アプリ更新後の再導入は手動とし、既知の HTML 以外を検出したら拒否する。実機検証は未完了。
 
 ## Terminal
