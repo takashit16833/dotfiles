@@ -217,7 +217,7 @@
     // メインの背景画像
     "vscodeWallpaper.image": "/Users/suzukitakashi/Desktop/warehouse/wall/11.png",
     // 2枚目の画像（不要なら空文字）
-    "vscodeWallpaper.alternateImage": "/Users/suzukitakashi/Desktop/warehouse/wall/1.jpg",
+    "vscodeWallpaper.alternateImage": "/Users/suzukitakashi/Desktop/warehouse/wall/10.png",
     // 画像の切り替え方法
     "vscodeWallpaper.switchMode": "orientation",
     // 画像に乗算する色（白なら元画像の色を維持）
