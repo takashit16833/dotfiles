@@ -5,7 +5,7 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const os = require('node:os');
 const { pathsFor, workspaceStylePath, inspect, enable, sync, disable,
-  patchedHtml, LEGACY_LINK, CSS_HEADER } = require('../auto-apply');
+  patchedHtml, CSS_HEADER } = require('../auto-apply');
 
 const cssAnchor = '<link rel="stylesheet" href="../../../workbench/workbench.desktop.main.css">';
 const original = '<!doctype html>\n<html><head>\n\t' + cssAnchor + '\n</head><body></body></html>\n';
@@ -56,23 +56,6 @@ test('画像が設定されていないワークスペースも空の CSS で管
   assert.equal((await inspect(root)).installed, true);
 });
 
-test('以前の全ウィンドウ共通 CSS から安全に移行して元のバックアップを保つ', async t => {
-  const { root, files } = await fixture(t);
-  const legacy = original.replace(cssAnchor, cssAnchor + '\n\t\t' + LEGACY_LINK);
-  await fs.writeFile(files.html, legacy);
-  await fs.writeFile(files.backup, original);
-  await fs.writeFile(files.css, CSS_HEADER + 'body { background: old; }');
-  assert.equal((await inspect(root)).legacy, true);
-  await sync(root, 'body { background: project; }', 'project');
-  assert.equal((await inspect(root)).legacy, false);
-  assert.equal(await fs.readFile(files.backup, 'utf8'), original);
-  assert.equal(await fs.readFile(files.css, 'utf8'), CSS_HEADER);
-  assert.equal(await fs.readFile(workspaceStylePath(files, 'project'), 'utf8'),
-    CSS_HEADER + 'body { background: project; }');
-  await disable(root);
-  assert.equal(await fs.readFile(files.html, 'utf8'), original);
-});
-
 test('VS Code 本体が別の方法で変更された場合は復元・同期を拒否する', async t => {
   const { root, files } = await fixture(t);
   await enable(root, 'a{}', 'project');
@@ -99,23 +82,6 @@ test('ワークスペース ID を使ったファイル名の逸脱を拒否す�
   assert.throws(() => workspaceStylePath(files, '../other'), /不正な/);
   assert.throws(() => workspaceStylePath(files, ''), /不正な/);
   await assert.rejects(enable(root, 'a{}', '../other'), /不正な/);
-});
-
-test('v0.5 の読み込みスクリプトを識別し、CSS を保ったまま更新する', async t => {
-  const { root, files } = await fixture(t);
-  await enable(root, 'body { color: old; }', 'project');
-  const previous = await fs.readFile(
-    path.join(__dirname, 'fixtures', 'renderer-loader-v0.5.js'), 'utf8');
-  await fs.writeFile(files.loader, previous);
-  assert.equal((await inspect(root)).outdatedLoader, true);
-
-  const changed = await sync(root, 'body { color: new; }', 'project');
-  assert.deepEqual(changed, { installed: true, changed: true, loaderChanged: true });
-  assert.equal((await inspect(root)).outdatedLoader, false);
-  assert.equal(await fs.readFile(workspaceStylePath(files, 'project'), 'utf8'),
-    CSS_HEADER + 'body { color: new; }');
-  await disable(root);
-  assert.equal(await fs.readFile(files.html, 'utf8'), original);
 });
 
 test('不明な読み込みスクリプトは更新も解除も拒否する', async t => {

@@ -4,24 +4,14 @@
 // The renderer selects a different stylesheet for each window's workspace ID.
 const fs = require('node:fs/promises');
 const path = require('node:path');
-const { createHash } = require('node:crypto');
 
 const HTML_RELATIVE_PATH = 'out/vs/code/electron-browser/workbench/workbench.html';
 const BACKUP_NAME = 'workbench.html.vscode-wallpaper.backup';
-const STYLE_NAME = 'vscode-wallpaper.css'; // Retained for migration from v0.4.
+const STYLE_NAME = 'vscode-wallpaper.css';
 const LOADER_NAME = 'vscode-wallpaper-loader.js';
-// Git blob SHA-1 of the v0.5.0 loader. Only this known file may be upgraded.
-const PREVIOUS_LOADER_BLOB = '2b1f76258146980cccc989a36376b7318cd4bc9b';
 const CSS_HEADER = '/* VS Code Wallpaper: managed stylesheet; generated from user settings. */\n';
 const WORKBENCH_CSS = '<link rel="stylesheet" href="../../../workbench/workbench.desktop.main.css">';
-const LEGACY_LINK = '<!-- VS Code Wallpaper: managed automatic stylesheet -->\n\t\t<link rel="stylesheet" href="./vscode-wallpaper.css">';
 const LINK = '<!-- VS Code Wallpaper: managed per-workspace stylesheet -->\n\t\t<script type="module" src="./vscode-wallpaper-loader.js"></script>';
-
-function knownPreviousLoader(contents) {
-  const bytes = Buffer.from(contents, 'utf8');
-  const blob = createHash('sha1').update('blob ' + bytes.length + '\0').update(bytes).digest('hex');
-  return blob === PREVIOUS_LOADER_BLOB;
-}
 
 function pathsFor(appRoot) {
   if (typeof appRoot !== 'string' || !path.isAbsolute(appRoot)) {
@@ -48,7 +38,6 @@ function patchWith(original, link) {
 }
 
 function patchedHtml(original) { return patchWith(original, LINK); }
-function patchedLegacyHtml(original) { return patchWith(original, LEGACY_LINK); }
 
 async function regularOrAbsent(filename) {
   try {
@@ -78,27 +67,20 @@ async function inspect(appRoot) {
   const backupStat = await regularOrAbsent(files.backup);
   const loaderStat = await regularOrAbsent(files.loader);
   const css = await readOwnedCss(files.css);
-  const modern = html.includes(LINK);
-  const legacy = !modern && html.includes(LEGACY_LINK);
-  let outdatedLoader = false;
-
-  if (modern || legacy) {
+  const installed = html.includes(LINK);
+  if (installed) {
     if (!backupStat) throw new Error('元の workbench.html のバックアップがありません。');
     const backup = await fs.readFile(files.backup, 'utf8');
-    if ((modern ? patchedHtml(backup) : patchedLegacyHtml(backup)) !== html) {
+    if (patchedHtml(backup) !== html) {
       throw new Error('VS Code 本体の HTML に別の変更があります。操作を中止しました。');
     }
-    if (legacy && !css) throw new Error('旧方式の CSS がありません。');
-    if (modern) {
-      if (!loaderStat) throw new Error('壁紙読み込みスクリプトがありません。');
-      const actual = await fs.readFile(files.loader, 'utf8');
-      const expected = await fs.readFile(path.join(__dirname, 'renderer-loader.js'), 'utf8');
-      if (actual !== expected && !knownPreviousLoader(actual)) {
-        throw new Error('壁紙読み込みスクリプトが変更されています。');
-      }
-      outdatedLoader = actual !== expected;
+    if (!loaderStat) throw new Error('壁紙読み込みスクリプトがありません。');
+    const actual = await fs.readFile(files.loader, 'utf8');
+    const expected = await fs.readFile(path.join(__dirname, 'renderer-loader.js'), 'utf8');
+    if (actual !== expected) {
+      throw new Error('壁紙読み込みスクリプトが変更されています。');
     }
-    return { installed: true, legacy, files, stat, backup, html, css, outdatedLoader };
+    return { installed: true, files, stat, backup, html, css };
   }
 
   if (backupStat || loaderStat || css || html.includes('vscode-wallpaper')) {
@@ -132,27 +114,19 @@ async function enable(appRoot, css, id) {
   const info = await inspect(appRoot);
   const stylePath = workspaceStylePath(info.files, id);
   const previousWorkspaceCss = await readOwnedCss(stylePath);
-  if (info.installed && !info.legacy) {
-    const result = await sync(appRoot, css, id);
-    return { installed: true, newlyInstalled: false, ...(result.loaderChanged ? { loaderChanged: true } : {}) };
+  if (info.installed) {
+    await sync(appRoot, css, id);
+    return { installed: true, newlyInstalled: false };
   }
 
   const loader = await fs.readFile(path.join(__dirname, 'renderer-loader.js'), 'utf8');
-  const isUpgrade = info.installed && info.legacy;
-  const original = isUpgrade ? info.backup : info.html;
-  const patched = patchedHtml(original);
-  if (!isUpgrade) {
-    await fs.writeFile(info.files.backup, original, { flag: 'wx', mode: 0o600 });
-  }
+  const patched = patchedHtml(info.html);
+  await fs.writeFile(info.files.backup, info.html, { flag: 'wx', mode: 0o600 });
   try {
     if (await regularOrAbsent(info.files.loader)) throw new Error('既存の壁紙スクリプトがあります。');
     await fs.writeFile(info.files.loader, loader, { flag: 'wx', mode: 0o644 });
     await writeWorkspaceCss(info.files, css, id);
-    if (isUpgrade) {
-      await atomicWrite(info.files.css, CSS_HEADER, 0o644);
-    } else {
-      await fs.writeFile(info.files.css, CSS_HEADER, { flag: 'wx', mode: 0o644 });
-    }
+    await fs.writeFile(info.files.css, CSS_HEADER, { flag: 'wx', mode: 0o644 });
     await atomicWrite(info.files.html, patched, info.stat.mode);
   } catch (error) {
     const current = await fs.readFile(info.files.html, 'utf8').catch(() => null);
@@ -163,32 +137,20 @@ async function enable(appRoot, css, id) {
       } else {
         await atomicWrite(stylePath, previousWorkspaceCss, 0o644).catch(() => {});
       }
-      if (isUpgrade) {
-        await atomicWrite(info.files.css, info.css, 0o644).catch(() => {});
-      } else {
-        await fs.unlink(info.files.css).catch(() => {});
-        await fs.unlink(info.files.backup).catch(() => {});
-      }
+      await fs.unlink(info.files.css).catch(() => {});
+      await fs.unlink(info.files.backup).catch(() => {});
     }
     throw error;
   }
-  return { installed: true, newlyInstalled: !isUpgrade };
+  return { installed: true, newlyInstalled: true };
 }
 
 async function sync(appRoot, css, id) {
   if (typeof css !== 'string') throw new Error('CSS が不正です。');
   const info = await inspect(appRoot);
   if (!info.installed) return { installed: false, changed: false };
-  if (info.legacy) {
-    await enable(appRoot, css, id);
-    return { installed: true, changed: true };
-  }
   const changed = await writeWorkspaceCss(info.files, css, id);
-  if (info.outdatedLoader) {
-    const loader = await fs.readFile(path.join(__dirname, 'renderer-loader.js'), 'utf8');
-    await atomicWrite(info.files.loader, loader, 0o644);
-  }
-  return { installed: true, changed, ...(info.outdatedLoader ? { loaderChanged: true } : {}) };
+  return { installed: true, changed };
 }
 
 async function disable(appRoot) {
@@ -201,13 +163,13 @@ async function disable(appRoot) {
   for (const name of names) await readOwnedCss(path.join(info.files.dir, name));
   await atomicWrite(info.files.html, info.backup, info.stat.mode);
   for (const name of names) await fs.unlink(path.join(info.files.dir, name));
-  if (!info.legacy) await fs.unlink(info.files.loader);
+  await fs.unlink(info.files.loader);
   if (info.css) await fs.unlink(info.files.css);
   await fs.unlink(info.files.backup);
   return { installed: false, changed: true };
 }
 
 module.exports = {
-  HTML_RELATIVE_PATH, CSS_HEADER, LEGACY_LINK, LINK, pathsFor, patchedHtml,
+  HTML_RELATIVE_PATH, CSS_HEADER, LINK, pathsFor, patchedHtml,
   workspaceStylePath, inspect, enable, sync, disable
 };

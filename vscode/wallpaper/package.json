@@ -2,7 +2,7 @@
   "name": "vscode-wallpaper",
   "displayName": "VS Code Wallpaper",
   "description": "Generate a responsive, multiply-blended VS Code wallpaper stylesheet without patching VS Code.",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "publisher": "takashit16833",
   "private": true,
   "engines": {
