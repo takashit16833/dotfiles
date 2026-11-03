@@ -263,7 +263,7 @@ test('Sticky Scroll のぼかしは設定で調整・無効化できる', () => 
   const small = generateCss({ ...config, stickyScrollBlur: 4 });
   assert.match(small, /backdrop-filter: blur\(4px\) !important;/);
   const off = generateCss({ ...config, stickyScrollBlur: 0 });
-  assert.doesNotMatch(off, /backdrop-filter: blur\(/);
+  assert.doesNotMatch(off, /\.sticky-widget:not\(\.peek\) \{\s*backdrop-filter:/);
   const noWallpaper = generateCss({ ...config, stickyScrollBlur: 12, enabled: false });
   assert.equal(noWallpaper, '');
 });
@@ -307,4 +307,57 @@ test('隙間のテーマ色と不透明度の設定を検証する', () => {
   assert.throws(() => normalizeSettings({
     ...config, backgroundColors: { ...config.backgroundColors, gap: 'invalid' }
   }), /backgroundColors.gap/);
+});
+
+test('補完パネルの背景はテーマ色を使い、背後だけをぼかす', () => {
+  const settings = readSettings({ get: (_key, fallback) => fallback });
+  assert.deepEqual(settings.suggestWidget, { backgroundColor: 'theme', opacity: 0.85, blur: 12 });
+  const css = generateCss({ ...settings, enabled: true, image: 'https://example.org/wallpaper.jpg' });
+  const suggest = '.monaco-workbench .monaco-editor .suggest-widget,';
+  const details = '.monaco-workbench .monaco-editor .suggest-details {';
+  const list = '.monaco-workbench .monaco-editor .suggest-widget .monaco-list,';
+  const listRows = '.monaco-workbench .monaco-editor .suggest-widget .monaco-list-rows {';
+  assert.ok(css.includes(suggest));
+  assert.ok(css.includes(details));
+  assert.ok(css.includes(list));
+  assert.ok(css.includes(listRows));
+  const panelRule = css.slice(css.indexOf(suggest), css.indexOf(list));
+  assert.match(panelRule, /background-color: color-mix\(in srgb, var\(--vscode-editorSuggestWidget-background, #252526\) 85%, transparent\) !important;/);
+  assert.match(panelRule, /backdrop-filter: blur\(12px\) !important;/);
+  assert.doesNotMatch(panelRule, /(^|\n)\s*(?:filter|opacity|color|border):/);
+  const listRule = css.slice(css.indexOf(list)).split('}')[0];
+  assert.match(listRule, /background-color: transparent !important;/);
+  assert.doesNotMatch(css, /\.suggest-widget \.monaco-list-row(?=[:.#\s,{])/);
+});
+
+test('補完パネルの色・透過率・ぼかしを個別に変更できる', () => {
+  const css = generateCss({
+    ...config, suggestWidget: { backgroundColor: '#01010D', opacity: 0.7, blur: 0 }
+  });
+  const start = css.indexOf('.monaco-workbench .monaco-editor .suggest-widget,');
+  const end = css.indexOf('.monaco-workbench .monaco-editor .suggest-widget .monaco-list,');
+  const panelRule = css.slice(start, end);
+  assert.match(panelRule, /color-mix\(in srgb, #01010D 70%, transparent\)/);
+  assert.doesNotMatch(panelRule, /backdrop-filter/);
+  assert.match(generateCss({ ...config, suggestWidget: { blur: 4 } }), /backdrop-filter: blur\(4px\) !important;/);
+});
+
+test('補完パネルの設定値は安全な範囲に制限する', () => {
+  for (const blur of [0, 12, 30]) {
+    assert.doesNotThrow(() => normalizeSettings({ ...config, suggestWidget: { blur } }));
+  }
+  for (const backgroundColor of ['theme', '#01010D']) {
+    assert.doesNotThrow(() => normalizeSettings({ ...config, suggestWidget: { backgroundColor } }));
+  }
+  for (const backgroundColor of ['red', '#fff', 'url(x)', 3]) {
+    assert.throws(() => normalizeSettings({ ...config, suggestWidget: { backgroundColor } }), /suggestWidget.backgroundColor/);
+  }
+  for (const opacity of [-1, 1.1, NaN, '0.5']) {
+    assert.throws(() => normalizeSettings({ ...config, suggestWidget: { opacity } }), /suggestWidget.opacity/);
+  }
+  for (const blur of [-1, 31, 2.3, '12']) {
+    assert.throws(() => normalizeSettings({ ...config, suggestWidget: { blur } }), /suggestWidget.blur/);
+  }
+  assert.throws(() => normalizeSettings({ ...config, suggestWidget: { unknown: 1 } }), /suggestWidget.unknown/);
+  assert.equal(generateCss({ ...config, enabled: false }), '');
 });

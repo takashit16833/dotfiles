@@ -4,6 +4,7 @@ const os = require('node:os');
 const { pathToFileURL, fileURLToPath } = require('node:url');
 
 const DEFAULT_OPACITY = Object.freeze({ editor: 0.70, sidebar: 0.85, panel: 0.85, auxiliaryBar: 0.85, chrome: 0.92, gap: 0 });
+const DEFAULT_SUGGEST_WIDGET = Object.freeze({ backgroundColor: 'theme', opacity: 0.85, blur: 12 });
 const DEFAULT_BACKGROUND_COLORS = Object.freeze({
   editor: 'theme', sidebar: 'theme', panel: 'theme', auxiliaryBar: 'theme', chrome: 'theme', gap: 'theme'
 });
@@ -29,6 +30,7 @@ function readSettings(configuration) {
     tint: get('tint', '#FFFFFF'),
     minimapOpacity: get('minimapOpacity', null),
     stickyScrollBlur: get('stickyScrollBlur', 12),
+    suggestWidget: { ...DEFAULT_SUGGEST_WIDGET, ...get('suggestWidget', {}) },
     opacity: { ...DEFAULT_OPACITY, ...get('opacity', {}) },
     backgroundColors: { ...DEFAULT_BACKGROUND_COLORS, ...get('backgroundColors', {}) }
   };
@@ -40,6 +42,7 @@ function normalizeSettings(settings) {
     tint: settings.tint ?? '#FFFFFF',
     minimapOpacity: settings.minimapOpacity ?? null,
     stickyScrollBlur: settings.stickyScrollBlur ?? 12,
+    suggestWidget: { ...DEFAULT_SUGGEST_WIDGET, ...(settings.suggestWidget || {}) },
     opacity: { ...DEFAULT_OPACITY, ...(settings.opacity || {}) },
     backgroundColors: { ...DEFAULT_BACKGROUND_COLORS, ...(settings.backgroundColors || {}) }
   };
@@ -63,6 +66,21 @@ function normalizeSettings(settings) {
   }
   if (!Number.isInteger(value.stickyScrollBlur) || value.stickyScrollBlur < 0 || value.stickyScrollBlur > 30) {
     throw new Error('stickyScrollBlur は 0～30 の整数を指定してください。');
+  }
+  for (const key of Object.keys(value.suggestWidget)) {
+    if (!Object.hasOwn(DEFAULT_SUGGEST_WIDGET, key)) {
+      throw new Error(`suggestWidget.${key} は未対応の設定項目です。`);
+    }
+  }
+  const { backgroundColor, opacity: suggestOpacity, blur } = value.suggestWidget;
+  if (backgroundColor !== 'theme' && !(typeof backgroundColor === 'string' && /^#[0-9a-fA-F]{6}$/.test(backgroundColor))) {
+    throw new Error('suggestWidget.backgroundColor は theme または #RRGGBB を指定してください。');
+  }
+  if (!Number.isFinite(suggestOpacity) || suggestOpacity < 0 || suggestOpacity > 1) {
+    throw new Error('suggestWidget.opacity は 0～1 を指定してください。');
+  }
+  if (!Number.isInteger(blur) || blur < 0 || blur > 30) {
+    throw new Error('suggestWidget.blur は 0～30 の整数を指定してください。');
   }
   for (const [area, opacity] of Object.entries(value.opacity)) {
     if (!Object.hasOwn(DEFAULT_OPACITY, area) || !Number.isFinite(opacity) || opacity < 0 || opacity > 1) {
@@ -125,6 +143,12 @@ function generateCss(settings, options = {}) {
   const root = options.rootSelector || '.monaco-workbench';
   const imageRule = image => `linear-gradient(${config.tint}, ${config.tint}), ${cssImage(image)}`;
   const query = mediaQueryFor(config);
+  const suggestColor = config.suggestWidget.backgroundColor === 'theme'
+    ? 'var(--vscode-editorSuggestWidget-background, #252526)'
+    : config.suggestWidget.backgroundColor;
+  const suggestBlur = config.suggestWidget.blur > 0
+    ? `  backdrop-filter: blur(${config.suggestWidget.blur}px) !important;\n`
+    : '';
   const overlay = (selector, area, themeColor) => {
     const specified = config.backgroundColors[area];
     const color = specified === 'theme' ? themeColor : specified;
@@ -255,6 +279,17 @@ ${root} .part.editor .breadcrumbs-below-tabs .monaco-breadcrumbs,
 ${root} .part.editor .breadcrumbs-control.with-editor-type > .breadcrumbs-editor-type {
   background-color: transparent !important;
   background-image: none !important;
+}
+
+/* Suggest popup: blur the editor behind the panel without fading the suggestion text.
+   Keep focused/hovered row styling, outlines and scrollbar thumbs unchanged. */
+${root} .monaco-editor .suggest-widget,
+${root} .monaco-editor .suggest-details {
+  background-color: color-mix(in srgb, ${suggestColor} ${config.suggestWidget.opacity * 100}%, transparent) !important;
+${suggestBlur}}
+${root} .monaco-editor .suggest-widget .monaco-list,
+${root} .monaco-editor .suggest-widget .monaco-list-rows {
+  background-color: transparent !important;
 }
 
 /* Minimap background is painted into canvas; fade only by explicit user choice. */

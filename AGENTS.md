@@ -62,6 +62,7 @@
 - ローカルビルドは Marketplace 版と同じ拡張 ID を使うため、更新で上書きされ得る。既定のエディタを変更する前に、実機で字下げ・編集操作・コードブロック・表を確認する。
 
 - 浮動パネルの隙間は `floatingPanels.css` の余白に由来し、実測では左サイドバーと編集領域の間が4pxだった。`backgroundColors.gap`（既定 `theme`）と `opacity.gap`（既定 `0`）で設定する。`.split-view-view:has(> .part...)::before` の余白部分にだけ色を描き、カード本体・枠線・操作領域の変更を避ける。浮動パネルと通常密度のみ対象とし、実機確認待ち。
+- 補完候補のポップアップは VS Code `suggest.css` の `.monaco-editor .suggest-widget`、説明欄は `.monaco-editor .suggest-details` を対象とし、`suggestWidget.backgroundColor`（`theme` または `#RRGGBB`）、`suggestWidget.opacity`（0～1）、`suggestWidget.blur`（0～30px）で背景だけを調整する。補完一覧の `.monaco-list` と `.monaco-list-rows` の下地は透明化するが、選択・ホバー行の背景色、候補文字、枠線、スクロールバーのつまみは変更しない。タイマーや再読み込み通知は追加しない。実機確認待ち。
 - 固定表示コード（Sticky Scroll）は VS Code の `stickyScroll.css` により行番号とコードの二層が不透明となる。壁紙の一時 CSS で `.sticky-widget:not(.peek)` 内の `.sticky-widget-line-numbers` / `.sticky-widget-lines-scrollable` を透明化する。実機で透明化すると背後のコードと文字が重なったため、固定領域に `backdrop-filter: blur(...)` を使って背後だけをぼかす。強さは `vscodeWallpaper.stickyScrollBlur`（既定12px、0～30整数、0で無効）で指定する。固定表示、文字色、hover、peek は変更しない。2026-11-03 にぼかしの実機動作を確認済み。
 
 - 壁紙の既定の切り替えは `orientation`（縦長・横長）。既存の `aspect-ratio` 16/10 は任意の縦横比として引き続き利用できる。診断と CSS 生成は共通の `mediaQueryFor` を使う。

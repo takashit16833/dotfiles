@@ -86,6 +86,11 @@ VS Code の **Preferences: Open User Settings (JSON)** から開くユーザー�
   "vscodeWallpaper.maxWidth": 1400,
   "vscodeWallpaper.tint": "#FFFFFF",
   "vscodeWallpaper.stickyScrollBlur": 12,
+  "vscodeWallpaper.suggestWidget": {
+    "backgroundColor": "theme",
+    "opacity": 0.85,
+    "blur": 12
+  },
   "vscodeWallpaper.backgroundColors": {
     "editor": "theme",
     "sidebar": "theme",
@@ -128,6 +133,7 @@ VS Code の **Preferences: Open User Settings (JSON)** から開くユーザー�
 `backgroundColors.chrome` は上記3か所の背景色をまとめて指定し、`opacity.chrome` はその背景色の不透明度をまとめて指定する。3か所を個別には設定できない。
 - `minimapOpacity`：ミニマップの描画全体の不透明度。`null`（既定）は VS Code 標準の表示、`0` は透明、`1` は不透明。縮小コードも同時に薄くなり、スクロールバーのつまみは対象外。
 - `stickyScrollBlur`：Sticky Scroll の固定コードの*背後*をぼかす強さ（CSS px）。既定 `12`、有効範囲 `0`～`30`、`0` ならぼかさない。固定表示の文字自体にはぼかしを適用しない。
+- `suggestWidget`：コード入力時に表示される**補完候補一覧と説明欄**の背景を設定する。`backgroundColor` は `theme`（VS Code の補完用テーマ色）または `#RRGGBB`、`opacity` は背景色の不透明度（`0`～`1`、既定 `0.85`）、`blur` は背後のぼかし（`0`～`30` px、既定 `12`）。文字色・選択行の背景・枠線・スクロールバーのつまみは変更しない。実機での表示は要確認。
 
 `gap` は VS Code の浮動パネル間と外周の余白専用である。`floatingPanels.css` の余白に合わせ、`.split-view-view` の擬似要素でカードの内側を塗らずに描く。カードの不透明度・枠線・サイズ・操作領域は変更しない。浮動パネル以外やコンパクト表示では適用しない。**実機での反映は未確認**なので、導入後に隙間とカードの見た目を確認する。
 

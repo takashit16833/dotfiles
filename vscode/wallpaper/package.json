@@ -2,7 +2,7 @@
   "name": "vscode-wallpaper",
   "displayName": "VS Code Wallpaper",
   "description": "Generate a responsive, multiply-blended VS Code wallpaper stylesheet without patching VS Code.",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "publisher": "takashit16833",
   "private": true,
   "engines": {
@@ -226,6 +226,36 @@
           "maximum": 30,
           "scope": "window",
           "description": "エディタ上部の固定表示コード（Sticky Scroll）の背後をぼかす強さ（px）。固定文字はぼかさない。0 で無効。"
+        },
+        "vscodeWallpaper.suggestWidget": {
+          "type": "object",
+          "scope": "window",
+          "default": {
+            "backgroundColor": "theme",
+            "opacity": 0.85,
+            "blur": 12
+          },
+          "additionalProperties": false,
+          "properties": {
+            "backgroundColor": {
+              "type": "string",
+              "pattern": "^(theme|#[0-9a-fA-F]{6})$",
+              "description": "補完候補一覧と説明欄の背景色。theme は VS Code の補完用テーマ色を使用し、#RRGGBB で独自の色を指定する。"
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "補完パネルの背景色の不透明度。0 は透明、1 は不透明。候補の文字や選択行は透過させない。"
+            },
+            "blur": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 30,
+              "description": "補完パネルの背後の文字や画像をぼかす強さ（px）。0 はぼかしなし。"
+            }
+          },
+          "description": "入力補完の候補一覧と説明欄の背景色・不透明度・背後のぼかしを設定する。"
         }
       }
     }
