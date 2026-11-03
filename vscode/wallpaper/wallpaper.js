@@ -157,6 +157,14 @@ ${root} .part.panel .xterm-viewport {
   background-color: transparent !important;
 }
 
+/* Measured opaque surfaces: editor tab strip and Explorer lists in the bottom panel.
+   Preserve selected rows, individual tabs, and scrollbar thumbs. */
+${root} .part.editor .tabs-and-actions-container,
+${root} .part.panel .monaco-list-rows {
+  background-color: transparent !important;
+}
+
+
 /* The Extensions list rows container was measured as opaque.
    Keep selected/hovered rows unchanged, and only clear the list's backing layer. */
 ${root} :is(.part.sidebar, .part.auxiliarybar) .monaco-list-rows {

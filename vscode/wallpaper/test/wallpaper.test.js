@@ -126,7 +126,7 @@ test('サイドバーの一覧コンテナのみ透明化し、行の選択色�
   const block = css.slice(index).split('}')[0];
   assert.match(block, /background-color: transparent !important;/);
   assert.doesNotMatch(css, /\.monaco-list-row(?=[:.#\s,{])/);
-  assert.doesNotMatch(css, /\.part\.panel \.monaco-list-rows/);
+  assert.doesNotMatch(block, /\.part\.panel/);
 });
 
 test('縦長・横長は画面幅の数値ではなく orientation で切り替える', () => {
@@ -139,4 +139,17 @@ test('縦長・横長は画面幅の数値ではなく orientation で切り替�
     generateCss({ ...config, switchMode: 'orientation', alternateImage: '' }),
     /@media/
   );
+});
+
+test('編集タブの帯と下部パネルの一覧下地のみ透明にする', () => {
+  const css = generateCss(config);
+  const tabStrip = '.monaco-workbench .part.editor .tabs-and-actions-container,';
+  const panelRows = '.monaco-workbench .part.panel .monaco-list-rows {';
+  const index = css.indexOf(tabStrip);
+  assert.ok(index >= 0);
+  assert.ok(css.indexOf(panelRows) > index);
+  assert.match(css.slice(index).split('}')[0], /background-color: transparent !important;/);
+  assert.doesNotMatch(css, /\.part\.editor \.tab\.active\s*{/);
+  assert.doesNotMatch(css, /\.scrollbar\.vertical \.slider\s*{/);
+  assert.doesNotMatch(css, /\.part\.panel \.monaco-list-row\s*{/);
 });
