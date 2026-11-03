@@ -11,10 +11,6 @@
     "editor.suggest.showWords": true,
     // 近くで使われている単語を少し優先する
     "editor.suggest.localityBonus": true,
-    // ジャンプ後はなるべく上にカーソルを持っていく
-    "quickJump.revealMode": "position",
-    "quickJump.revealPosition": 10,
-    "quickJump.hintCharacters": "otaniseh",
     // WezTerm と見た目を揃えるため、Retro Hacker の Blue variant を利用する。
     "workbench.colorTheme": "Retro Hacker Blue",
     // エディタのフォントサイズ
@@ -70,6 +66,7 @@
     // Retro Hacker Blue を利用している場合だけ、UI カラーを Cyber Pink へ上書きする。
     // 他のテーマへ切り替えた場合には、ここで指定した色は適用されない。
     "workbench.colorCustomizations": {
+        "terminal.background": "#00000000",
         // Overview Ruler は Canvas 内に背景色を描くため、CSS ではなく VS Code の配色設定で透明にする。
         // 右端の目印やスクロールバーのつまみの色は変更しない。テーマを問わず適用する。
         "editorOverviewRuler.background": "#00000000",
@@ -214,19 +211,13 @@
     "window.commandCenter": false,
     "workbench.editor.editorActionsLocation": "hidden",
     "chat.titleBar.signIn.enabled": false,
-    "quicktree.files.exclude": [
-        "**/.git",
-        "**/node_modules",
-        "**/out",
-        "**/dist-newstyle"
-    ],
     // 背景 -----------------------------------
     // 壁紙機能の有効・無効
     "vscodeWallpaper.enabled": true,
     // メインの背景画像
     "vscodeWallpaper.image": "/Users/suzukitakashi/Desktop/warehouse/wall/11.png",
     // 2枚目の画像（不要なら空文字）
-    "vscodeWallpaper.alternateImage": "/Users/suzukitakashi/Desktop/warehouse/wall/10.png",
+    "vscodeWallpaper.alternateImage": "/Users/suzukitakashi/Desktop/warehouse/wall/1.jpg",
     // 画像の切り替え方法
     "vscodeWallpaper.switchMode": "orientation",
     // 画像に乗算する色（白なら元画像の色を維持）
@@ -252,5 +243,11 @@
     // Sticky Scroll の背後のぼかし（px）
     "vscodeWallpaper.stickyScrollBlur": 12,
     // ミニマップの不透明度（null は変更しない）
-    "vscodeWallpaper.minimapOpacity": null
+    "vscodeWallpaper.minimapOpacity": null,
+    "vscodeWallpaper.suggestWidget": {
+        "backgroundColor": "#0A1A36",
+        "opacity": 0.5,
+        "blur": 12
+    },
+    "terminal.integrated.enableImages": true,
 }
