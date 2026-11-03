@@ -157,9 +157,8 @@
       }
     }
   },
-  "files": [
-    "extension.js",
-    "wallpaper.js",
-    "README.md"
-  ]
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/takashit16833/dotfiles.git"
+  }
 }
