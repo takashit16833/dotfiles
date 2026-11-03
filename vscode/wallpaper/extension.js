@@ -5,6 +5,7 @@ const vscode = require('vscode');
 const { readSettings, resolveImage, generateCss } = require('./wallpaper');
 const { buildApplyScript, buildRemoveScript } = require('./workbench-script');
 const { buildDiagnosticsScript } = require('./diagnostics-script');
+const { generateResponsiveTestCss } = require('./responsive-test');
 
 let previewPanel;
 
@@ -117,6 +118,30 @@ function activate(context) {
       const doc = await vscode.workspace.openTextDocument({
         language: 'javascript',
         content: buildDiagnosticsScript(currentSettings())
+      });
+      await vscode.window.showTextDocument(doc, { preview: false });
+    } catch (error) {
+      vscode.window.showErrorMessage(`VS Code Wallpaper: ${error.message}`);
+    }
+  }));
+  context.subscriptions.push(vscode.commands.registerCommand('vscodeWallpaper.showResponsiveTestScript', async () => {
+    const choice = await vscode.window.showQuickPick([
+      { label: '縦横比：1/2', description: '幅÷高さが0.5以下なら青、超えたら赤', mode: 'aspect-ratio' },
+      { label: '横幅：800px', description: '幅が800px以下なら青、超えたら赤', mode: 'width' }
+    ], { placeHolder: '画像切り替えの検証方法を選んでください' });
+    if (!choice) return;
+    try {
+      const css = generateResponsiveTestCss(currentSettings(), choice.mode);
+      const comment = choice.mode === 'aspect-ratio'
+        ? '縦横比：幅÷高さが0.5以下なら青、超えたら赤'
+        : '横幅：800px以下なら青、超えたら赤';
+      const script = `/* ${comment}。
+一時壁紙を入れ替えるが、設定・VS Code本体ファイルは変更しない。
+元に戻すには Show Temporary Workbench Script を再実行するか、
+Show Remove Script / Developer: Reload Window を使う。 */
+${buildApplyScript(css)}`;
+      const doc = await vscode.workspace.openTextDocument({
+        language: 'javascript', content: script
       });
       await vscode.window.showTextDocument(doc, { preview: false });
     } catch (error) {

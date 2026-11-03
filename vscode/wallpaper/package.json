@@ -2,7 +2,7 @@
   "name": "vscode-wallpaper",
   "displayName": "VS Code Wallpaper",
   "description": "Generate a responsive, multiply-blended VS Code wallpaper stylesheet without patching VS Code.",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "publisher": "takashit16833",
   "private": true,
   "engines": {
@@ -36,6 +36,10 @@
       {
         "command": "vscodeWallpaper.showDiagnosticsScript",
         "title": "VS Code Wallpaper: Show Read-only Workbench Diagnostics"
+      },
+      {
+        "command": "vscodeWallpaper.showResponsiveTestScript",
+        "title": "VS Code Wallpaper: Show Responsive Test Script"
       }
     ],
     "configuration": {
