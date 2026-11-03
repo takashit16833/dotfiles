@@ -17,9 +17,10 @@
 
 /* 壁紙が無効なら VS Code テーマへ干渉しない。 */
 @container style(--rhb-wallpaper-enabled: true) {
-  /* Obsidian と同じく、上に重ねた色を画像へ乗算する。 */
-  body:has(> .monaco-workbench.vs-dark) {
-    background-color: #00184a;
+  /* body ではなく画面全体を占める workbench に描く。
+     body 側への描画では、背景画像が取得できても画面に見えない場合がある。 */
+  .monaco-workbench.vs-dark {
+    background-color: #00184a !important;
     background-image:
       linear-gradient(var(--rhb-wallpaper-tint), var(--rhb-wallpaper-tint)),
       var(--rhb-wallpaper-wide);
@@ -32,7 +33,7 @@
 
   /* モニターの解像度ではなく、VS Code のウィンドウ幅で切り替える。 */
   @media (max-width: 1400px) {
-    body:has(> .monaco-workbench.vs-dark) {
+    .monaco-workbench.vs-dark {
       background-image:
         linear-gradient(var(--rhb-wallpaper-tint), var(--rhb-wallpaper-tint)),
         var(--rhb-wallpaper-narrow);
@@ -41,7 +42,6 @@
 
   /* VS Code の標準の背景色が壁紙を隠さないようにする。 */
   .monaco-workbench.vs-dark {
-    background-color: transparent !important;
     --vscode-editor-background: transparent !important;
     --vscode-sideBar-background: transparent !important;
     --vscode-panel-background: transparent !important;
