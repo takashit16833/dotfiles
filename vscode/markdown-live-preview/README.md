@@ -16,9 +16,17 @@ Open a Markdown file with **Reopen Editor With... → Markdown Live Preview**.
 The user settings activate `retro-hacker-blue.css` but leave the current
 Markdown Preview as the default. If necessary, reload the VS Code window.
 
+Fenced code blocks use a 70% opaque dark-blue background instead of a fully opaque block. This matches the ordinary Markdown Preview and lets the shared VS Code wallpaper show through while preserving code text contrast.
+
 The source of the stylesheet is `retro-hacker-blue.css`. The install script
 copies it to the extension's user-data styles directory; rerun the script after
 edits to the source. It does not overwrite unrelated style files.
+
+To verify the stylesheet's code-block background after updating:
+
+```bash
+node --test vscode/markdown-live-preview/test/style.test.js
+```
 
 ## Section indentation
 

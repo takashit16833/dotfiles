@@ -95,3 +95,14 @@ test("initial body arriving after extension script still gets indented", () => {
   assert.equal(depth(nodes[0]), "1");
   assert.equal(depth(nodes[1]), "1");
 });
+
+
+test("fenced code blocks keep their blue shade but reveal the wallpaper", () => {
+  const css = fs.readFileSync(path.join(__dirname, "..", "preview.css"), "utf8");
+  const preRule = css.match(/body\.vscode-dark \.markdown-body pre\s*\{([^}]*)\}/)?.[1];
+  assert.ok(preRule, "preview pre rule must exist");
+  assert.match(preRule, /background-color:\s*color-mix\(in srgb,\s*#0A1A36 70%,\s*transparent\)/);
+  assert.doesNotMatch(preRule, /(?:^|;)\s*(?:opacity|filter):/);
+  const codeRule = css.match(/body\.vscode-dark \.markdown-body pre code\s*\{([^}]*)\}/)?.[1];
+  assert.match(codeRule, /background:\s*transparent/);
+});

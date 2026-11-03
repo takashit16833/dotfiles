@@ -58,6 +58,7 @@
 - Apc / Custom CSS and JS Loader は実機で本体改変や整合性警告が問題になったため、再導入しない。背景画像の再実装では既存の vscode-background の動作を前提として方式を検討し、検証前に本体へパッチを適用しない。
 
 - Markdown Live Preview Editor の階層インデントは `vscode/markdown-live-preview/` の小さなパッチだけを管理する。公開済み拡張の内部ファイルを直接編集せず、上流の特定コミットを取得し、変更箇所を確認してから VSIX を生成する。
+- Markdown のコードブロックは通常プレビュー（`vscode/markdown-preview/preview.css` の `pre`）と Live Preview（`vscode/markdown-live-preview/retro-hacker-blue.css` の `.cm-line.mlp-line-code`）の両方で背景色 `#0A1A36` を `color-mix(... 70%, transparent)` にして半透明にする。文字・インラインコード・行間・字下げは変更しない。実機での確認待ち。
 - ローカルビルドは Marketplace 版と同じ拡張 ID を使うため、更新で上書きされ得る。既定のエディタを変更する前に、実機で字下げ・編集操作・コードブロック・表を確認する。
 
 - 固定表示コード（Sticky Scroll）は VS Code の `stickyScroll.css` により行番号とコードの二層が不透明となる。壁紙の一時 CSS で `.sticky-widget:not(.peek)` 内の `.sticky-widget-line-numbers` / `.sticky-widget-lines-scrollable` を透明化する。実機で透明化すると背後のコードと文字が重なったため、固定領域に `backdrop-filter: blur(...)` を使って背後だけをぼかす。強さは `vscodeWallpaper.stickyScrollBlur`（既定12px、0～30整数、0で無効）で指定する。固定表示、文字色、hover、peek は変更しない。ぼかし効果の実機確認待ち。

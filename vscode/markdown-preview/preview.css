@@ -92,8 +92,10 @@ body.vscode-dark .markdown-body :not(pre) > code {
   padding: 0.12em 0.28em;
 }
 
+/* Keep code legible while allowing the wallpaper beneath a preview to show.
+ * Only the block background becomes translucent; text and inline code are unchanged. */
 body.vscode-dark .markdown-body pre {
-  background-color: #0A1A36;
+  background-color: color-mix(in srgb, #0A1A36 70%, transparent);
   border: none;
   border-radius: 3px;
 }

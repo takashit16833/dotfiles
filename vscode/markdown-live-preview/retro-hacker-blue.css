@@ -100,8 +100,10 @@ body.vscode-dark .mlp-inline-code {
   padding: 0.12em 0.28em;
 }
 
+/* Match the ordinary Markdown preview: show the wallpaper through fenced
+ * code blocks without reducing the opacity of the source text. */
 body.vscode-dark .cm-line.mlp-line-code {
-  background-color: #0A1A36;
+  background-color: color-mix(in srgb, #0A1A36 70%, transparent);
   border-color: transparent;
   border-radius: 3px;
 }
