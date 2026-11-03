@@ -125,6 +125,8 @@ VS Code の公開拡張 API では本体画面の DOM と CSS に直接アクセ
 
 2026-11-03 の実機診断で、編集タブの帯 `.part.editor .tabs-and-actions-container` は `rgb(5, 10, 33)`、下部 Explorer の一覧背景 `.part.panel .monaco-list-rows` は `rgb(0, 30, 74)` で不透明と確認できた。この2つのコンテナ背景だけを透明化する。個別タブ、選択行、スクロールバーのつまみには触れない。Source Control を下部に表示したときの計測位置では、パネル本体以外の不透明な要素は検出されなかった。修正後の実機表示は要確認。
 
+Search 見出しの `.part.sidebar > .composite.title` は実機で不透明な `rgb(1, 1, 20)` と確認できたため、背景色だけを透明化した。タブ・パンくず・スクロールバーの調査対象自体は透明なので、追加の背景色変更は描画元が特定できるまで行わない。
+
 この診断は読み取り専用であり、ファイル・DOM・設定を変更しない。CSS の実画面への適用は先に実施しておく。
 
 **元に戻す場合**：**VS Code Wallpaper: Show Remove Script** で表示したコードを同じ Console で実行するか、**Developer: Reload Window** で再読み込みする。取り消しにアプリの再インストールは不要。

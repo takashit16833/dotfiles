@@ -50,6 +50,7 @@
 - サイドバー内部のペインと見出しは `paneHeaders.css` の不透明な背景色を持つため、共通壁紙表示時に通常背景を透明化する。見出しのホバー表示は維持し、コードは `vscode/wallpaper/wallpaper.js` にまとめる。
 - Extensions の一覧コンテナ `.monaco-list-rows` も不透明だったため（実機で確認）、サイドバーと補助サイドバー内のコンテナ背景だけを透明化する。各行の選択・ホバー表示は維持する。
 - 編集タブの帯 `.part.editor .tabs-and-actions-container` と下部 Explorer の一覧背景 `.part.panel .monaco-list-rows` は実測で不透明だった。コンテナ背景だけを透明化し、個別タブ、行の選択色、スクロールバーのつまみは維持する。
+- サイドバーの Search 見出し `.part.sidebar > .composite.title` は不透明と実測されている。見出し背景だけ透明化し、個々のラベル・アイコンの見た目は維持する。編集タブ・パンくず・スクロールバー自体は透明と実測されたので、未確認の別要素を推測で変更しない。
 - ターミナルの Canvas による不透明な描画は、実機で `terminal.integrated.enableImages: true` と `terminal.background: '#00000000'` により解消した。これは VS Code 標準設定であり、拡張から勝手に変更しない。`diagnostics-script.js` は左側の表示領域と画像切り替えを読み取り専用で検査する。
 - VS Code 全画面壁紙の幅別切り替えは実装検討中。`vscode/background/` の CSS は参考用として保持するが、拡張機能による読み込みや `install.sh` からの配置は行わない。
 - Apc / Custom CSS and JS Loader は実機で本体改変や整合性警告が問題になったため、再導入しない。背景画像の再実装では既存の vscode-background の動作を前提として方式を検討し、検証前に本体へパッチを適用しない。

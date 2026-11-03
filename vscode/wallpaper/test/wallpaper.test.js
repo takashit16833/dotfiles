@@ -153,3 +153,14 @@ test('編集タブの帯と下部パネルの一覧下地のみ透明にする',
   assert.doesNotMatch(css, /\.scrollbar\.vertical \.slider\s*{/);
   assert.doesNotMatch(css, /\.part\.panel \.monaco-list-row\s*{/);
 });
+
+test('実機で不透明と判明した Search 見出しの背景だけ透明にする', () => {
+  const css = generateCss(config);
+  const selector = '.monaco-workbench :is(.part.sidebar, .part.auxiliarybar) > .composite.title {';
+  const index = css.indexOf(selector);
+  assert.ok(index >= 0);
+  const rule = css.slice(index).split('}')[0];
+  assert.match(rule, /background-color: transparent !important;/);
+  assert.doesNotMatch(rule, /(^|\n)\s*(color|opacity|display):/);
+  assert.doesNotMatch(css, /\.part\.panel > \.composite\.title/);
+});

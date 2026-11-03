@@ -165,6 +165,13 @@ ${root} .part.panel .monaco-list-rows {
 }
 
 
+/* The Search / Explorer title remains opaque even when the sidebar is translucent.
+   Keep its buttons and text unchanged. */
+${root} :is(.part.sidebar, .part.auxiliarybar) > .composite.title {
+  background-color: transparent !important;
+}
+
+
 /* The Extensions list rows container was measured as opaque.
    Keep selected/hovered rows unchanged, and only clear the list's backing layer. */
 ${root} :is(.part.sidebar, .part.auxiliarybar) .monaco-list-rows {
