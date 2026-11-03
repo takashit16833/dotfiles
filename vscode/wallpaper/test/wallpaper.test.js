@@ -85,3 +85,12 @@ test('実画面で確認された不透明な下地を透明化する', () => {
   assert.match(css, /background-color: transparent !important;/);
   assert.match(css, /\.part\.panel \{ background-color: color-mix\(/);
 });
+
+test('浮動パネルの背景色は VS Code 本体と同じ詳細度の規則で上書きする', () => {
+  const css = generateCss(config);
+  const normalRule = '.monaco-workbench .part.panel { background-color: color-mix(in srgb, var(--vscode-panel-background, #202020) 80%, transparent) !important; }';
+  const floatingRule = '.monaco-workbench.floating-panels .part.panel { background-color: color-mix(in srgb, var(--vscode-panel-background, #202020) 80%, transparent) !important; }';
+  assert.ok(css.includes(normalRule));
+  assert.ok(css.includes(floatingRule));
+  assert.ok(css.indexOf(floatingRule) > css.indexOf(normalRule));
+});
