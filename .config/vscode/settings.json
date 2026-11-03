@@ -45,9 +45,7 @@
         "editor.defaultFormatter": "vscode.json-language-features"
     },
     // マークダウンはプレビューで開く
-    "workbench.editorAssociations": {
-        "*.md": "vscode.markdown.preview.editor"
-    },
+    "workbench.editorAssociations": {},
     // Markdown Live Preview の配色を試す。既定の Markdown Preview は変更しない。
     "mdLivePreview.enabledStyles": [
         "retro-hacker-blue.css"
@@ -219,5 +217,5 @@
         "**/out",
         "**/dist-newstyle"
     ],
-    "background.enabled": true,
+    "background.enabled": false,
 }
