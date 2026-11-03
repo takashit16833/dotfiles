@@ -51,10 +51,19 @@ bash ./vscode/markdown-preview/install.sh
 
 ### VS Code の背景画像
 
-画面全体の背景画像は `vscode-background` で表示できるが、ウィンドウ幅に応じた画像切り替えは実装検討中。
-以前試した Apc / Custom CSS and JS Loader は VS Code 本体を書き換えるため、現在は使用しない。
-`vscode/background/` の CSS は参考として保持しているが、`install.sh` からの導入や自動読み込みはしない。
-独立した試作拡張 `vscode/wallpaper/` で設定に応じた CSS 生成と専用タブのプレビューができる。導入と設定方法は [`vscode/wallpaper/README.md`](vscode/wallpaper/README.md) を参照する。VS Code 本体には自動適用しない。
+壁紙の設定値は `.config/vscode/settings.json` で管理する。拡張機能の本体は独立した非公開リポジトリ [`vscode-wallpaper`](https://github.com/takashit16833/vscode-wallpaper) で管理し、dotfiles の `install.sh` からは導入しない。
+
+新しい Mac への導入や拡張機能の更新は、GitHub の SSH 認証を設定した後、次のコマンドを実行する。
+
+```bash
+git clone git@github.com:takashit16833/vscode-wallpaper.git ~/work/vscode-wallpaper
+cd ~/work/vscode-wallpaper
+bash ./install.sh
+```
+
+既に clone 済みなら `git pull` して `bash ./install.sh` を実行する。拡張機能の設定・本体への自動適用と解除方法は [専用の README](https://github.com/takashit16833/vscode-wallpaper/blob/main/README.md) を参照する。
+
+`vscode/background/` は旧方式の参考コードとして保持するが、現在の拡張機能には使わない。
 
 ### Obsidian の背景画像
 

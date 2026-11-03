@@ -37,9 +37,9 @@ sync_vscode_extensions() {
 
   {
     printf '# VS Code extension IDs, one per line.\n'
-    # この拡張機能は Marketplace でなく dotfiles から VSIX を作って導入する。
+    # 自作拡張は Marketplace ではなく、それぞれのソースから VSIX を導入する。
     "$vscode_cli" --list-extensions \
-      | awk '$0 != "takashit16833.markdown-outline-preview"' \
+      | awk '$0 != "takashit16833.markdown-outline-preview" && $0 != "takashit16833.vscode-wallpaper"' \
       | LC_ALL=C sort -u
   } > "$tmp_file"
 
