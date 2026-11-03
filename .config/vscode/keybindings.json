@@ -1,18 +1,4 @@
 [
-    // Source Control: Cmd ではなく Ctrl+Shift+G で変更一覧へ直接移動する。
-    // 通常の workbench.view.scm はコミットメッセージ欄へフォーカスするため、
-    // ビューを開きつつ変更グループへフォーカスする標準コマンドを使う。
-    {
-        "key": "ctrl+shift+g",
-        "command": "workbench.scm.action.focusNextResourceGroup"
-    },
-    // Source Control の変更一覧からコミットメッセージ入力欄へ移動する。
-    // 入力欄の編集や他のビューのキー操作には干渉しない。
-    {
-        "key": "ctrl+shift+i",
-        "command": "workbench.scm.action.focusNextInput",
-        "when": "focusedView == 'workbench.scm'"
-    },
     // Obsidian の Cmd+E と同じ操作: 同じ Markdown を Preview と Live Preview で切り替える。
     // reopenActiveEditorWith は現在のタブを指定した editor ID で開き直す VS Code 内蔵コマンド。
     {
