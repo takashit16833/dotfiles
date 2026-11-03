@@ -141,10 +141,7 @@ ${root} {
 }
 ${alternateUrl ? `@media ${query} {
   ${root} { background-image: ${imageRule(alternateUrl)} !important; }
-}\n` : ''}${root} {
-  /* テーマの色変数は保持し、領域別の色として利用する。 */
-}
-${overlay(`${root} .part.editor`, 'editor', THEME_COLORS.editor)}
+}\n` : ''}${overlay(`${root} .part.editor`, 'editor', THEME_COLORS.editor)}
 ${overlay(`${root} .part.sidebar`, 'sidebar', THEME_COLORS.sidebar)}
 ${overlay(`${root} .part.auxiliarybar`, 'auxiliaryBar', THEME_COLORS.auxiliaryBar)}
 /* Floating sidebars use more specific !important rules in VS Code floatingPanels.css. */
@@ -175,7 +172,6 @@ ${root} .part.panel .monaco-list-rows {
   background-color: transparent !important;
 }
 
-
 /* VS Code Modern UI paints tab fills and a title gradient independently.
    Clear them without changing tab text or borders. */
 ${root}.modern-ui-tabs .part.editor > .content .editor-group-container > .title.tabs {
@@ -183,11 +179,6 @@ ${root}.modern-ui-tabs .part.editor > .content .editor-group-container > .title.
   background-image: none !important;
 }
 ${root}.modern-ui-tabs .part.editor .tabs-container > .tab > .tab-fill {
-  background-color: transparent !important;
-}
-
-/* Breadcrumb editor-type label has its own backing color. */
-${root} .part.editor .breadcrumbs-control.with-editor-type > .breadcrumbs-editor-type {
   background-color: transparent !important;
 }
 
@@ -207,22 +198,12 @@ ${root} :is(.part.editor, .part.panel) .monaco-scrollable-element > .scrollbar {
   background-color: transparent !important;
 }
 
-/* Clear the breadcrumb backing but retain its text and borders. */
-${root} .part.editor :is(.breadcrumbs-below-tabs, .breadcrumbs-control, .breadcrumbs-editor-type) {
-  background-color: transparent !important;
-  background-image: none !important;
-}
-
-
-/* The scrollbar track and slider are painted separately. Keep the slider. */
-${root} :is(.part.editor, .part.panel) .monaco-scrollable-element > .scrollbar {
-  background-color: transparent !important;
-}
-
-/* Clear the breadcrumb row backing without changing text or borders. */
-${root} .part.editor .breadcrumbs-below-tabs,
+/* Breadcrumbs include a row, nested controls, and an editor-type label.
+   Keep the more specific selectors for independently painted layers. */
+${root} .part.editor :is(.breadcrumbs-below-tabs, .breadcrumbs-control, .breadcrumbs-editor-type),
 ${root} .part.editor .breadcrumbs-below-tabs .breadcrumbs-control,
-${root} .part.editor .breadcrumbs-below-tabs .monaco-breadcrumbs {
+${root} .part.editor .breadcrumbs-below-tabs .monaco-breadcrumbs,
+${root} .part.editor .breadcrumbs-control.with-editor-type > .breadcrumbs-editor-type {
   background-color: transparent !important;
   background-image: none !important;
 }
@@ -248,13 +229,11 @@ ${root} .part.editor .monaco-editor .sticky-widget:not(.peek) .sticky-widget-lin
   background-color: transparent !important;
 }
 
-
 /* The Search / Explorer title remains opaque even when the sidebar is translucent.
    Keep its buttons and text unchanged. */
 ${root} :is(.part.sidebar, .part.auxiliarybar) > .composite.title {
   background-color: transparent !important;
 }
-
 
 /* The Extensions list rows container was measured as opaque.
    Keep selected/hovered rows unchanged, and only clear the list's backing layer. */

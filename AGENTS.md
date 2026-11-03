@@ -54,14 +54,19 @@
 - VS Code 本体 `modernUI/browser/media/tabs.css`、`breadcrumbscontrol.css`、`terminal.css`、`scrollbars.css` で、タブ・パンくず・ターミナル切り替え欄・スクロールバーの下地を描く要素を確認。該当コンテナ背景のみ透明化し、タブ枠線・ターミナル選択行・スクロールバーのつまみは維持する。新しい背景規則は実機で再確認する。
 - パンくずの `.breadcrumbs-below-tabs` とその内部に限って背景色・背景画像を透明化する。ミニマップは Canvas が縮小コードと背景を一緒に描くため、既定の表示を変えず、明示的な `vscodeWallpaper.minimapOpacity`（null または 0～1）で Canvas 全体の透過を調整する。縮小コードも薄くなると説明し、実機で確認する。
 - ターミナルの Canvas による不透明な描画は、実機で `terminal.integrated.enableImages: true` と `terminal.background: '#00000000'` により解消した。これは VS Code 標準設定であり、拡張から勝手に変更しない。`diagnostics-script.js` は左側の表示領域と画像切り替えを読み取り専用で検査する。
-- VS Code 全画面壁紙の幅別切り替えは実装検討中。`vscode/background/` の CSS は参考用として保持するが、拡張機能による読み込みや `install.sh` からの配置は行わない。
-- Apc / Custom CSS and JS Loader は実機で本体改変や整合性警告が問題になったため、再導入しない。背景画像の再実装では既存の vscode-background の動作を前提として方式を検討し、検証前に本体へパッチを適用しない。
+- 壁紙は縦長・横長（既定）、任意の縦横比、画面幅による画像切り替えを実装済み。`vscode/background/` は旧方式の参考コードとしてのみ保持し、拡張機能や `install.sh` から読み込まない。
+- Apc / Custom CSS and JS Loader は実機で本体改変や整合性警告が問題になったため、再導入しない。壁紙の実装は現在の自作拡張と一時 CSS 適用方式を維持し、本体へパッチを適用しない。
 
 - Markdown Live Preview Editor の階層インデントは `vscode/markdown-live-preview/` の小さなパッチだけを管理する。公開済み拡張の内部ファイルを直接編集せず、上流の特定コミットを取得し、変更箇所を確認してから VSIX を生成する。
-- Markdown のコードブロックは通常プレビュー（`vscode/markdown-preview/preview.css` の `pre`）と Live Preview（`vscode/markdown-live-preview/retro-hacker-blue.css` の `.cm-line.mlp-line-code`）の両方で背景色 `#0A1A36` を `color-mix(... 70%, transparent)` にして半透明にする。両方のインラインコードも元色 `#052A59` の70%半透明色とし、文字色・余白・字下げは変更しない。Live Preview の Webview は上流が `html, body { background: var(--vscode-editor-background) }` を指定しているため、自作 CSS で html/実際の body/CodeMirror の背景を透明化する。Webview 自体の外側まで壁紙が透けるかは実機未検証であり、成功と断定しない。
+- Markdown のコードブロックは通常プレビュー（`vscode/markdown-preview/preview.css` の `pre`）と Live Preview（`vscode/markdown-live-preview/retro-hacker-blue.css` の `.cm-line.mlp-line-code`）の両方で背景色 `#0A1A36` を `color-mix(... 70%, transparent)` にして半透明にする。両方のインラインコードも元色 `#052A59` の70%半透明色とし、文字色・余白・字下げは変更しない。Live Preview の Webview は上流が `html, body { background: var(--vscode-editor-background) }` を指定しているため、自作 CSS で html/実際の body/CodeMirror の背景を透明化する。両 Markdown プレビューとも内部要素・Webview 外側の透明化と壁紙の連続表示を 2026-11-03 に実機確認済み。
 - ローカルビルドは Marketplace 版と同じ拡張 ID を使うため、更新で上書きされ得る。既定のエディタを変更する前に、実機で字下げ・編集操作・コードブロック・表を確認する。
 
-- 固定表示コード（Sticky Scroll）は VS Code の `stickyScroll.css` により行番号とコードの二層が不透明となる。壁紙の一時 CSS で `.sticky-widget:not(.peek)` 内の `.sticky-widget-line-numbers` / `.sticky-widget-lines-scrollable` を透明化する。実機で透明化すると背後のコードと文字が重なったため、固定領域に `backdrop-filter: blur(...)` を使って背後だけをぼかす。強さは `vscodeWallpaper.stickyScrollBlur`（既定12px、0～30整数、0で無効）で指定する。固定表示、文字色、hover、peek は変更しない。ぼかし効果の実機確認待ち。
+- 固定表示コード（Sticky Scroll）は VS Code の `stickyScroll.css` により行番号とコードの二層が不透明となる。壁紙の一時 CSS で `.sticky-widget:not(.peek)` 内の `.sticky-widget-line-numbers` / `.sticky-widget-lines-scrollable` を透明化する。実機で透明化すると背後のコードと文字が重なったため、固定領域に `backdrop-filter: blur(...)` を使って背後だけをぼかす。強さは `vscodeWallpaper.stickyScrollBlur`（既定12px、0～30整数、0で無効）で指定する。固定表示、文字色、hover、peek は変更しない。2026-11-03 にぼかしの実機動作を確認済み。
+
+- 壁紙の既定の切り替えは `orientation`（縦長・横長）。既存の `aspect-ratio` 16/10 は任意の縦横比として引き続き利用できる。診断と CSS 生成は共通の `mediaQueryFor` を使う。
+
+- スクロールバーの下地は `scrollbars.css` の `background: var(--vscode-scrollbar-background)` を根拠に透明化する。つまみの `--vscode-scrollbarSlider-*` と `.slider` には触れない。パンくずは `--vscode-breadcrumb-background` と下地を透明化し、いずれも実機確認済み。
+- その後の Canvas 画素診断で `canvas.decorationsOverviewRuler` は5地点すべて `rgba(1, 1, 17, 1)` と確定した。VS Code `decorationsOverviewRuler.ts` は `editorOverviewRuler.background` を Canvas に塗るため、CSS ではなく VS Code の正式な配色設定を利用する。`.config/vscode/settings.json` の `workbench.colorCustomizations` にテーマ非依存で `"editorOverviewRuler.background": "#00000000"` を追加し、目印や `.slider` の色は変更しない。壁紙の一時 CSS を解除しても設定は残る点に注意。
 
 ## Terminal
 
@@ -85,8 +90,3 @@
 - Homebrew package の一覧は `Brewfile` を正本とし、`install.sh` に package 名を重複して列挙しない。Homebrew 外で配布される CLI は上記 `Local CLI tools` の方針で個別管理する。
 - マシン固有または公開すべきでない設定は repository に含めない。
 - Git identity は `~/.gitconfig.local` に分離する。
-
-- 壁紙の既定の切り替えは `orientation`（縦長・横長）。既存の `aspect-ratio` 16/10 は任意の縦横比として引き続き利用できる。診断と CSS 生成は共通の `mediaQueryFor` を使う。
-
-- スクロールバーの黒い背景は `scrollbars.css` の `background: var(--vscode-scrollbar-background)` を根拠に透明化する。つまみの `--vscode-scrollbarSlider-*` と `.slider` には触れない。パンくずは `--vscode-breadcrumb-background` と帯の背景だけ透明化し、表示状態を実機で確認する。
-- その後の Canvas 画素診断で `canvas.decorationsOverviewRuler` は5地点すべて `rgba(1, 1, 17, 1)` と確定した。VS Code `decorationsOverviewRuler.ts` は `editorOverviewRuler.background` を Canvas に塗るため、CSS ではなく VS Code の正式な配色設定を利用する。`.config/vscode/settings.json` の `workbench.colorCustomizations` にテーマ非依存で `"editorOverviewRuler.background": "#00000000"` を追加し、目印や `.slider` の色は変更しない。壁紙の一時 CSS を解除しても設定は残る点に注意。

@@ -177,35 +177,29 @@ test('Modern UIのタブ下地と背景画像を除去し、タブの枠線は�
   assert.doesNotMatch(css.slice(css.indexOf(fill)).split('}')[0], /border:|outline:/);
 });
 
-test('パンくずの種類表示とターミナル切り替え一覧の背景のみ透過する', () => {
+test('パンくずの各下地とターミナル切り替え欄だけを透明にする', () => {
   const css = generateCss(config);
-  const breadcrumb = '.monaco-workbench .part.editor .breadcrumbs-control.with-editor-type > .breadcrumbs-editor-type {';
+  const breadcrumbSelectors = [
+    '.monaco-workbench .part.editor :is(.breadcrumbs-below-tabs, .breadcrumbs-control, .breadcrumbs-editor-type),',
+    '.monaco-workbench .part.editor .breadcrumbs-below-tabs .breadcrumbs-control,',
+    '.monaco-workbench .part.editor .breadcrumbs-below-tabs .monaco-breadcrumbs,',
+    '.monaco-workbench .part.editor .breadcrumbs-control.with-editor-type > .breadcrumbs-editor-type {'
+  ];
+  for (const selector of breadcrumbSelectors) {
+    assert.ok(css.includes(selector));
+  }
+  const rule = css.slice(css.indexOf(breadcrumbSelectors[0])).split('}')[0];
+  assert.match(rule, /background-color: transparent !important;/);
+  assert.match(rule, /background-image: none !important;/);
+  assert.doesNotMatch(rule, /(^|\n)\s*(?:color|border|opacity):/);
+  assert.match(css, /--vscode-breadcrumb-background: transparent !important;/);
+
   const terminal = '.monaco-workbench .part.panel .pane-body.integrated-terminal :is(.tabs-container, .tabs-list-container, .tabs-list, .monaco-list-rows) {';
-  assert.ok(css.includes(breadcrumb));
   assert.ok(css.includes(terminal));
-  assert.match(css.slice(css.indexOf(breadcrumb)).split('}')[0], /background-color: transparent !important;/);
   assert.match(css.slice(css.indexOf(terminal)).split('}')[0], /background-color: transparent !important;/);
   assert.doesNotMatch(css, /\.terminal-tabs-entry\s*\{\s*background-color: transparent/);
 });
 
-test('スクロールバーの下地のみ透過し、つまみの表示規則は変更しない', () => {
-  const css = generateCss(config);
-  const scrollbar = '.monaco-workbench :is(.part.editor, .part.panel) .monaco-scrollable-element > .scrollbar {';
-  assert.ok(css.includes(scrollbar));
-  assert.match(css.slice(css.indexOf(scrollbar)).split('}')[0], /background-color: transparent !important;/);
-  assert.doesNotMatch(css, /\.scrollbar\s*>\s*\.slider\s*\{/);
-});
-
-test('パンくず行の背景と背景画像だけを透明化する', () => {
-  const css = generateCss(config);
-  const selector = '.monaco-workbench .part.editor .breadcrumbs-below-tabs,';
-  const start = css.indexOf(selector);
-  assert.ok(start >= 0);
-  const rule = css.slice(start).split('}')[0];
-  assert.match(rule, /background-color: transparent !important;/);
-  assert.match(rule, /background-image: none !important;/);
-  assert.doesNotMatch(rule, /(?:^|\n)\s*(?:border|color|opacity):/);
-});
 test('ミニマップの不透明度は明示された場合にだけ CSS に出力する', () => {
   const defaultCss = generateCss(config);
   assert.doesNotMatch(defaultCss, /\.minimap canvas\s*\{/);
@@ -230,17 +224,6 @@ test('スクロールバーの黒い下地を消し白いつまみには触れ�
   assert.match(rule, /background-color: transparent !important;/);
   assert.doesNotMatch(css, /--vscode-scrollbarSlider-(?:background|hoverBackground|activeBackground):/);
   assert.doesNotMatch(css, /\.scrollbar\s*>\s*\.slider\s*\{/);
-});
-
-test('パンくずの帯と背景変数を透明化する', () => {
-  const css = generateCss(config);
-  const selector = '.monaco-workbench .part.editor :is(.breadcrumbs-below-tabs, .breadcrumbs-control, .breadcrumbs-editor-type) {';
-  assert.match(css, /--vscode-breadcrumb-background: transparent !important;/);
-  assert.ok(css.includes(selector));
-  const rule = css.slice(css.indexOf(selector)).split('}')[0];
-  assert.match(rule, /background-color: transparent !important;/);
-  assert.match(rule, /background-image: none !important;/);
-  assert.doesNotMatch(rule, /(^|\n)\s*(?:color|border|opacity):/);
 });
 
 test('Sticky Scroll の固定コードと行番号の背景のみ透過する', () => {

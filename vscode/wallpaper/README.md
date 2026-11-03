@@ -4,6 +4,14 @@ VS Code 本体を変更せず、画面全体に表示する壁紙の **CSS 生�
 
 現段階で **VS Code の編集画面全体への自動適用は行わない**。公式拡張機能 API にその操作がなく、未検証の本体書き換えによる破損警告を再発させないためである。プレビューは専用タブに擬似的な画面構成を表示するものであり、実際の VS Code の画面で動作することを保証しない。
 
+## 現在の状態
+
+- 全画面壁紙、乗算、領域別不透明度、画像の縦横切り替えを実機で確認済み。
+- スクロールバーの黒い帯、パンくず、Sticky Scroll のぼかしも実機で確認済み。
+- Markdown Preview / Markdown Live Preview では、背景とインライン・ブロックコードの半透明化を実機で確認済み（各 Markdown 拡張の CSS で設定）。
+- VS Code 内蔵の Markdown Editor は独自 CSS の適用対象外。
+- 本体への自動適用は行わず、開発者ツールでの一時適用のみ。
+
 ## 導入・テスト
 
 ```bash
@@ -143,7 +151,7 @@ VS Code 本体の `modernUI/browser/media/tabs.css` では、タブの下地を 
 
 編集画面上部に行番号 131、132、133 … のように複数行のコードが固定表示され、その部分だけ不透明な黒い帯になる場合がある。これはエディタの Sticky Scroll である。VS Code 本体の `stickyScroll.css` では `.sticky-widget-line-numbers`（行番号）と `.sticky-widget-lines-scrollable`（コード）に別々の背景色が指定され、子要素にもその色が継承される。
 
-壁紙用 CSS では `.part.editor .monaco-editor .sticky-widget:not(.peek)` の2つの背景だけを透明化する。実機で背景が透けることを確認した一方、固定された文字とその下のコードが重なって読みにくくなったため、固定領域全体に `backdrop-filter: blur(12px)` を適用する。`backdrop-filter` は背後をぼかし、手前に固定表示された文字自体はぼかさない。`vscodeWallpaper.stickyScrollBlur` で `0`～`30` px に調整でき、`0` でぼかしなしに戻す。`peek` の内部エディタには適用しない。背景の透明化・固定表示・文字色・マウスを重ねたときの強調表示は維持する。ぼかし後の実画面での確認は未完了。
+壁紙用 CSS では `.part.editor .monaco-editor .sticky-widget:not(.peek)` の2つの背景だけを透明化する。実機で背景が透けることを確認した一方、固定された文字とその下のコードが重なって読みにくくなったため、固定領域全体に `backdrop-filter: blur(12px)` を適用する。`backdrop-filter` は背後をぼかし、手前に固定表示された文字自体はぼかさない。`vscodeWallpaper.stickyScrollBlur` で `0`～`30` px に調整でき、`0` でぼかしなしに戻す。`peek` の内部エディタには適用しない。背景の透明化・固定表示・文字色・マウスを重ねたときの強調表示は維持する。2026-11-03 に実機でぼかしと文字の読みやすさを確認済み。
 
 ### Overview Ruler の黒い帯（Canvas 内部の背景）
 
@@ -161,27 +169,13 @@ VS Code の `decorationsOverviewRuler.ts` は、標準の配色キー `editorOve
 
 この指定は拡張機能の CSS ではなく VS Code の**標準配色設定**として適用され、壁紙を一時的に外した場合にも残る。マーカーやスクロールバーのつまみの配色は変更しない。実機では設定を読み込んだ後、同じ Canvas の画素の `alpha` が 0 に変わるか確認する。なお、個々のマーカーが重なる画素では `alpha` が 0 以外になることがある。
 
-### スクロールバーの下地とパンくずの透明化
+### スクロールバー・パンくず・ミニマップ
 
-VS Code の `scrollbars.css` は黒い背景に `background: var(--vscode-scrollbar-background)` を使い、スクロールバーのつまみには別変数 `--vscode-scrollbarSlider-background` を使う。背景変数と背景指定を透明化し、つまみ・ホバー表示の色は変更しない。
+スクロールバーの下地（`--vscode-scrollbar-background`）とパンくずの帯・内側の背景を透明化する。文字、境界線、スクロールバーのつまみは変更しない。実機で表示を確認済み。
 
-パンくずは `--vscode-breadcrumb-background` と帯・表示用コンテナの背景色および背景画像を透明にする。文字や選択表示は変更しない。いずれも実画面での再確認が必要である。
+右端のミニマップは縮小コードと背景を同じ Canvas に描くため、背景だけを CSS で透明化できない。任意の設定 `vscodeWallpaper.minimapOpacity` に `0`～`1` を指定すると、縮小コードごと薄くする。既定値 `null` では変更しない。スクロールバーのつまみは対象外である。
 
-### パンくずとミニマップの透過
-
-パンくずの表示用行 `.breadcrumbs-below-tabs` と内部の `.breadcrumbs-control` / `.monaco-breadcrumbs` の背景を透明化する。文字や区切り線はそのまま保持する。実機で効果を確認する。
-
-画面右端の幅広い部分は **ミニマップ**（コードの縮小表示）であり、スクロールバーとは別である。VS Code はミニマップのコードと背景を Canvas に描くため、背景色だけを透明にする CSS では消せない。代わりに次の任意設定を追加した。
-
-```jsonc
-{
-  "vscodeWallpaper.minimapOpacity": 0.35
-}
-```
-
-`0` はミニマップを完全に見えなくし、`1` は完全に不透明とする。**縮小表示したコードも一緒に薄くなる**ことに注意する。設定なし（`null`）では VS Code 標準表示を変えない。スクロールバーのつまみは変更しない。表示自体が不要なら VS Code 標準の `"editor.minimap.enabled": false` で無効化できる。
-
-設定を変えたら `Show Temporary Workbench Script` を再生成し、Console から適用する。適用中の CSS には自動反映されない。
+スクロールバーと重なる `canvas.decorationsOverviewRuler` の黒い背景は別の Canvas 描画であり、VS Code 標準設定 `"editorOverviewRuler.background": "#00000000"` で透明にする。これは `workbench.colorCustomizations` に指定するもので、壁紙の CSS を解除しても残る。
 
 **現段階では自動適用は未実装。** 拡張機能が VS Code の本体ファイルを書き換えたり、破損警告を隠したりすることはない。
 
