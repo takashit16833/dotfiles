@@ -1,0 +1,35 @@
+name: Markdown Live Preview patch
+
+on:
+  push:
+    paths:
+      - "vscode/markdown-live-preview/**"
+      - ".github/workflows/markdown-live-preview.yml"
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check patch against pinned upstream
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --quiet https://github.com/t-shoot/md-live-preview-editor.git "$RUNNER_TEMP/editor"
+          git -C "$RUNNER_TEMP/editor" checkout --quiet --detach b0ce2e0c005ff69e322a840f236e03efc698abf2
+          python3 vscode/markdown-live-preview/patch-upstream.py "$RUNNER_TEMP/editor/src/webview-editor/livePreviewPlugin.ts"
+          cp vscode/markdown-live-preview/overlay/outlineIndent.ts "$RUNNER_TEMP/editor/src/webview-editor/outlineIndent.ts"
+          cp vscode/markdown-live-preview/overlay/outlineIndent.test.ts "$RUNNER_TEMP/editor/src/webview-editor/outlineIndent.test.ts"
+      - name: Build and test
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/editor"
+          npm ci --no-audit --no-fund
+          npm run compile
+          npm test
+          ./node_modules/.bin/vsce package --no-dependencies --skip-license --out "$RUNNER_TEMP/markdown-live-preview-rhb.vsix"
