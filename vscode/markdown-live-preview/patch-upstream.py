@@ -33,7 +33,7 @@ replace_once(
     "\t// decorations inside block-replaced tables/diagrams drops their widgets.\n"
     "\tfor (const [lineFrom, cls] of seenLine) {\n"
     "\t\tconst outline = outlineIndentClassForLine(headings, doc.lineAt(lineFrom).number);\n"
-    "\t\tdecorations.push(Decoration.line({ class: outline ? `\${cls} \${outline}` : cls }).range(lineFrom));\n"
+    "\t\tdecorations.push(Decoration.line({ class: outline ? `${cls} ${outline}` : cls }).range(lineFrom));\n"
     "\t}",
 )
 replace_once(
