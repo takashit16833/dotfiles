@@ -45,7 +45,7 @@
 - 独立した試作拡張 `vscode/wallpaper/`（`takashit16833.vscode-wallpaper`）は `vscodeWallpaper.*` の設定から CSS を生成し、Webview でプレビューする。特定のテーマに依存せず、乗算色は白、領域別の背景色は VS Code テーマの色を既定値として参照し、設定で上書きできる。`node --test` で生成処理を検証する。現在は VS Code 編集画面への CSS 適用処理を含めない。
 - `vscode/wallpaper/install.sh` は明示実行のみ。ルートの `install.sh` から導入せず、VS Code 本体を改変せず、整合性警告の隠蔽も行わない。
 - 実画面の検証用に `vscode/wallpaper/workbench-script.js` は DevTools Console で実行する一時 CSS 適用・解除コードを生成する。ユーザーの明示操作が必要であり、本体ファイル改変、デバッグ用ポートの開放、警告の隠蔽、自動適用はしない。
-- `vscode/wallpaper/responsive-test.js` は実際の CSS 生成関数に2枚の埋め込み PNG を与え、縦横比1/2・横幅800pxでの切り替えを一時検証する。設定は書き換えず、通常の適用スクリプトで元の壁紙へ戻せる。
+- `vscode/wallpaper/responsive-test.js` は実際の CSS 生成関数に2枚の埋め込み PNG を与え、縦長・横長（`orientation: portrait`）・横幅800pxでの切り替えを一時検証する。設定は書き換えず、通常の適用スクリプトで元の壁紙へ戻せる。
 - VS Code 公式 API から本体 DOM/CSS を直接操作できないため、非公開 API や本体ファイル改変による自動適用は行わない。
 - サイドバー内部のペインと見出しは `paneHeaders.css` の不透明な背景色を持つため、共通壁紙表示時に通常背景を透明化する。見出しのホバー表示は維持し、コードは `vscode/wallpaper/wallpaper.js` にまとめる。
 - Extensions の一覧コンテナ `.monaco-list-rows` も不透明だったため（実機で確認）、サイドバーと補助サイドバー内のコンテナ背景だけを透明化する。各行の選択・ホバー表示は維持する。
@@ -78,3 +78,5 @@
 - Homebrew package の一覧は `Brewfile` を正本とし、`install.sh` に package 名を重複して列挙しない。Homebrew 外で配布される CLI は上記 `Local CLI tools` の方針で個別管理する。
 - マシン固有または公開すべきでない設定は repository に含めない。
 - Git identity は `~/.gitconfig.local` に分離する。
+
+- 壁紙の既定の切り替えは `orientation`（縦長・横長）。既存の `aspect-ratio` 16/10 は任意の縦横比として引き続き利用できる。診断と CSS 生成は共通の `mediaQueryFor` を使う。

@@ -2,7 +2,7 @@
   "name": "vscode-wallpaper",
   "displayName": "VS Code Wallpaper",
   "description": "Generate a responsive, multiply-blended VS Code wallpaper stylesheet without patching VS Code.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "publisher": "takashit16833",
   "private": true,
   "engines": {
@@ -61,17 +61,18 @@
           "type": "string",
           "default": "",
           "scope": "window",
-          "description": "Optional image for narrow windows; empty means use the default image."
+          "description": "Optional image for portrait, low aspect ratio, or narrow windows; empty means always use the default image."
         },
         "vscodeWallpaper.switchMode": {
           "type": "string",
           "enum": [
+            "orientation",
             "aspect-ratio",
             "width"
           ],
-          "default": "aspect-ratio",
+          "default": "orientation",
           "scope": "window",
-          "description": "Switch image based on window aspect ratio or width."
+          "description": "Switch between portrait and landscape, a chosen aspect ratio, or window width."
         },
         "vscodeWallpaper.maxAspectRatio": {
           "type": "string",

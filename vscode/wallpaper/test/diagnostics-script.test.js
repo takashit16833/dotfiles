@@ -60,3 +60,9 @@ test('診断コードは DOM や設定を変更しない', () => {
   assert.doesNotMatch(script, /writeFile|style\.setProperty|\.remove\(|replaceSync|adoptedStyleSheets\s*=/);
   assert.doesNotMatch(script, /fetch\(|XMLHttpRequest|WebSocket/);
 });
+
+test('縦長・横長の診断は CSS の orientation 条件を表示する', () => {
+  const report = run(buildDiagnosticsScript({ ...config, switchMode: 'orientation' }));
+  assert.equal(report.info[0][1].query, '(orientation: portrait)');
+  assert.equal(report.info[0][1].alternateImageConfigured, true);
+});

@@ -23,7 +23,7 @@ function readSettings(configuration) {
     enabled: get('enabled', false),
     image: get('image', ''),
     alternateImage: get('alternateImage', ''),
-    switchMode: get('switchMode', 'aspect-ratio'),
+    switchMode: get('switchMode', 'orientation'),
     maxAspectRatio: get('maxAspectRatio', '16/10'),
     maxWidth: get('maxWidth', 1400),
     tint: get('tint', '#FFFFFF'),
@@ -39,8 +39,8 @@ function normalizeSettings(settings) {
     opacity: { ...DEFAULT_OPACITY, ...(settings.opacity || {}) },
     backgroundColors: { ...DEFAULT_BACKGROUND_COLORS, ...(settings.backgroundColors || {}) }
   };
-  if (!['aspect-ratio', 'width'].includes(value.switchMode)) {
-    throw new Error('switchMode は aspect-ratio または width を指定してください。');
+  if (!['orientation', 'aspect-ratio', 'width'].includes(value.switchMode)) {
+    throw new Error('switchMode は orientation、aspect-ratio、width のいずれかを指定してください。');
   }
   const match = /^(\d+)\s*\/\s*(\d+)$/.exec(String(value.maxAspectRatio));
   if (!match || !Number(match[1]) || !Number(match[2]) || +match[1] > 10000 || +match[2] > 10000) {
@@ -96,6 +96,14 @@ function cssImage(url) {
   return `url("${url.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}")`;
 }
 
+function mediaQueryFor(config) {
+  if (config.switchMode === 'orientation') return '(orientation: portrait)';
+  if (config.switchMode === 'aspect-ratio') {
+    return `(max-aspect-ratio: ${config.maxAspectRatio.replace('/', ' / ')})`;
+  }
+  return `(max-width: ${config.maxWidth}px)`;
+}
+
 function generateCss(settings, options = {}) {
   if (!settings.enabled) return '';
   const config = normalizeSettings(settings);
@@ -105,9 +113,7 @@ function generateCss(settings, options = {}) {
   const alternateUrl = config.alternateImage ? resolver(config.alternateImage) : null;
   const root = options.rootSelector || '.monaco-workbench';
   const imageRule = image => `linear-gradient(${config.tint}, ${config.tint}), ${cssImage(image)}`;
-  const query = config.switchMode === 'aspect-ratio'
-    ? `(max-aspect-ratio: ${config.maxAspectRatio.replace('/', ' / ')})`
-    : `(max-width: ${config.maxWidth}px)`;
+  const query = mediaQueryFor(config);
   const overlay = (selector, area, themeColor) => {
     const specified = config.backgroundColors[area];
     const color = specified === 'theme' ? themeColor : specified;
@@ -166,4 +172,4 @@ ${root}.modern-ui :is(.part.sidebar, .part.auxiliarybar) .monaco-pane-view .pane
 `;
 }
 
-module.exports = { DEFAULT_OPACITY, DEFAULT_BACKGROUND_COLORS, readSettings, normalizeSettings, resolveImage, cssImage, generateCss };
+module.exports = { DEFAULT_OPACITY, DEFAULT_BACKGROUND_COLORS, readSettings, normalizeSettings, resolveImage, cssImage, mediaQueryFor, generateCss };

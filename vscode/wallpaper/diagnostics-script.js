@@ -1,13 +1,11 @@
 'use strict';
 
-const { normalizeSettings } = require('./wallpaper');
+const { normalizeSettings, mediaQueryFor } = require('./wallpaper');
 
 // Read-only diagnostics to run manually in the VS Code workbench DevTools.
 function buildDiagnosticsScript(settings) {
   const config = normalizeSettings(settings);
-  const query = config.switchMode === 'aspect-ratio'
-    ? `(max-aspect-ratio: ${config.maxAspectRatio.replace('/', ' / ')})`
-    : `(max-width: ${config.maxWidth}px)`;
+  const query = mediaQueryFor(config);
   const hasAlternateImage = !!config.alternateImage;
   return `/* VS Code Wallpaper: 読み取り専用の実画面診断 */
 (() => {
@@ -34,6 +32,7 @@ function buildDiagnosticsScript(settings) {
   console.info('VS Code Wallpaper: サイズと切り替え', {
     width: window.innerWidth, height: window.innerHeight,
     aspectRatio: (window.innerWidth / window.innerHeight).toFixed(3),
+    orientation: matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape',
     query: media, queryMatches: matchMedia(media).matches,
     alternateImageConfigured: alt,
     rootBackgroundImage: getComputedStyle(root).backgroundImage

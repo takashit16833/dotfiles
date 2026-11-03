@@ -7,10 +7,10 @@ const TEST_IMAGES = Object.freeze({
   wide: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAJElEQVR42mP47xgARx/uRMERLnGGQaiBGEXI4oNRw2g8DAoNACg42xB/2REDAAAAAElFTkSuQmCC',
   narrow: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAJElEQVR42mPQLfgKR44Pr8MRLnGGQaiBGEXI4oNRw2g8DAoNAOirxZA6dGQ0AAAAAElFTkSuQmCC'
 });
-const TEST_THRESHOLDS = Object.freeze({ 'aspect-ratio': '1/2', width: 800 });
+const TEST_THRESHOLDS = Object.freeze({ width: 800 });
 
 function generateResponsiveTestCss(settings, mode) {
-  if (!Object.hasOwn(TEST_THRESHOLDS, mode)) {
+  if (mode !== 'orientation' && mode !== 'width') {
     throw new Error('テストする切り替え条件を指定してください。');
   }
   const opacity = Object.fromEntries(
@@ -22,7 +22,7 @@ function generateResponsiveTestCss(settings, mode) {
     image: TEST_IMAGES.wide,
     alternateImage: TEST_IMAGES.narrow,
     switchMode: mode,
-    maxAspectRatio: TEST_THRESHOLDS['aspect-ratio'],
+    maxAspectRatio: '16/10',
     maxWidth: TEST_THRESHOLDS.width,
     tint: '#FFFFFF',
     opacity,

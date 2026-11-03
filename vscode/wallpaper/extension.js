@@ -126,14 +126,14 @@ function activate(context) {
   }));
   context.subscriptions.push(vscode.commands.registerCommand('vscodeWallpaper.showResponsiveTestScript', async () => {
     const choice = await vscode.window.showQuickPick([
-      { label: '縦横比：1/2', description: '幅÷高さが0.5以下なら青、超えたら赤', mode: 'aspect-ratio' },
+      { label: '縦長・横長', description: '高さが横幅以上なら青、横幅の方が大きければ赤', mode: 'orientation' },
       { label: '横幅：800px', description: '幅が800px以下なら青、超えたら赤', mode: 'width' }
     ], { placeHolder: '画像切り替えの検証方法を選んでください' });
     if (!choice) return;
     try {
       const css = generateResponsiveTestCss(currentSettings(), choice.mode);
-      const comment = choice.mode === 'aspect-ratio'
-        ? '縦横比：幅÷高さが0.5以下なら青、超えたら赤'
+      const comment = choice.mode === 'orientation'
+        ? '縦長・横長：高さが横幅以上なら青、横幅の方が大きければ赤'
         : '横幅：800px以下なら青、超えたら赤';
       const script = `/* ${comment}。
 一時壁紙を入れ替えるが、設定・VS Code本体ファイルは変更しない。

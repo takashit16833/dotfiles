@@ -21,6 +21,7 @@ test('readSettings には実装側のデフォルトがある', () => {
   assert.equal(actual.enabled, false);
   assert.equal(actual.opacity.editor, 0.7);
   assert.equal(actual.tint, '#FFFFFF');
+  assert.equal(actual.switchMode, 'orientation');
   assert.equal(actual.backgroundColors.editor, 'theme');
 });
 
@@ -126,4 +127,16 @@ test('サイドバーの一覧コンテナのみ透明化し、行の選択色�
   assert.match(block, /background-color: transparent !important;/);
   assert.doesNotMatch(css, /\.monaco-list-row(?=[:.#\s,{])/);
   assert.doesNotMatch(css, /\.part\.panel \.monaco-list-rows/);
+});
+
+test('縦長・横長は画面幅の数値ではなく orientation で切り替える', () => {
+  const css = generateCss({ ...config, switchMode: 'orientation' });
+  assert.match(css, /@media \(orientation: portrait\)/);
+  assert.doesNotMatch(css, /@media \(max-width:/);
+  assert.match(css, /url\("https:\/\/example\.org\/wide\.jpg"\)/);
+  assert.match(css, /url\("https:\/\/example\.org\/narrow\.jpg"\)/);
+  assert.doesNotMatch(
+    generateCss({ ...config, switchMode: 'orientation', alternateImage: '' }),
+    /@media/
+  );
 });

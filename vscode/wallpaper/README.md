@@ -23,7 +23,7 @@ bash ./vscode/wallpaper/install.sh
   "vscodeWallpaper.enabled": true,
   "vscodeWallpaper.image": "~/Pictures/wallpaper-wide.jpg",
   "vscodeWallpaper.alternateImage": "~/Pictures/wallpaper-tall.jpg",
-  "vscodeWallpaper.switchMode": "aspect-ratio",
+  "vscodeWallpaper.switchMode": "orientation",
   "vscodeWallpaper.maxAspectRatio": "16/10",
   "vscodeWallpaper.maxWidth": 1400,
   "vscodeWallpaper.tint": "#FFFFFF",
@@ -46,7 +46,7 @@ bash ./vscode/wallpaper/install.sh
 
 - `image`：全画面共通の画像。`https://`、`file:///`、絶対パス、`~/`、`./` で指定できる。`./` は最初の作業フォルダーを基準にする。
 - `alternateImage`：縦長・狭いウィンドウで使う画像。空文字なら切り替えない。
-- `switchMode`：縦横比で切り替える `aspect-ratio`、横幅で切り替える `width`。
+- `switchMode`：縦長・横長で切り替える `orientation`（既定）、任意の縦横比で切り替える `aspect-ratio`、横幅で切り替える `width`。
 - `maxAspectRatio`：`16/10` なら縦横比が 1.6 以下で代替画像を表示する。
 - `maxWidth`：`width` モードの切り替え幅（CSS ピクセル）。
 - `tint`：画像に乗算する色。既定の白（`#FFFFFF`）は画像の色を変えない。`background-blend-mode: multiply` を使う。
@@ -103,9 +103,9 @@ VS Code のターミナルは Canvas に不透明な背景を描画するため�
 
 2枚目の画像を準備せずに切り替えを確認できる `VS Code Wallpaper: Show Responsive Test Script` を追加した。
 
-1. コマンドパレットで実行し、「縦横比：1/2」または「横幅：800px」を選ぶ。
+1. コマンドパレットで実行し、「縦長・横長」または「横幅：800px」を選ぶ。
 2. 表示された JavaScript を確認し、VS Code 本体の開発者ツール Console で実行する。
-3. 小さなPNGの赤系（広い画面）・青系（狭い画面）が表示される。ウィンドウの幅を調整して、切り替わるか確認する。
+3. テスト画像は赤系（横長または800pxより広い）・青系（縦長または800px以下）。「縦長・横長」はウィンドウの幅と高さの大小関係が逆転したときに切り替わる。
 
 現在の一時壁紙と置き換わるが、ユーザー設定は変更しない。画像は拡張機能内に埋め込んであり、外部へ通信しない。元の壁紙に戻すには `Show Temporary Workbench Script` を再実行する。一時適用自体を解除するには `Show Remove Script` か `Developer: Reload Window` を使う。
 
@@ -128,3 +128,5 @@ VS Code の公開拡張 API では本体画面の DOM と CSS に直接アクセ
 注意：開発者ツールでコードを実行する行為には危険があるため、必ず生成コードを確認すること。今回のコードは `CSSStyleSheet` と `document.adoptedStyleSheets` を使って一時的なスタイルを追加するだけで、ディスクへの書き込みやデバッグ用ポートの開放はしない。VS Code の内部 CSS は非公開なので、実画面への適用が成功するか、どの領域の透過が必要かは実機で確認する。
 
 **現段階では自動適用は未実装。** 拡張機能が VS Code の本体ファイルを書き換えたり、破損警告を隠したりすることはない。
+
+縦長・横長の判定は CSS の `(orientation: portrait)` を使う。横幅と高さが同じ場合は縦長扱い。縦長から横長へ切り替えるには、横幅が高さを超えるようにウィンドウの幅と高さを調整する。

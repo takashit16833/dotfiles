@@ -4,9 +4,9 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 const { generateResponsiveTestCss, TEST_IMAGES } = require('../responsive-test');
 
-test('縦横比で2枚の埋め込み画像を切り替えるCSSを生成する', () => {
-  const css = generateResponsiveTestCss({ enabled: false, image: '', alternateImage: '' }, 'aspect-ratio');
-  assert.match(css, /@media \(max-aspect-ratio: 1 \/ 2\)/);
+test('縦長・横長で2枚の埋め込み画像を切り替えるCSSを生成する', () => {
+  const css = generateResponsiveTestCss({ enabled: false, image: '', alternateImage: '' }, 'orientation');
+  assert.match(css, /@media \(orientation: portrait\)/);
   assert.match(css, /background-blend-mode: multiply, normal/);
   assert.ok(css.includes(TEST_IMAGES.wide));
   assert.ok(css.includes(TEST_IMAGES.narrow));
