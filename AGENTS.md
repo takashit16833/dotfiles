@@ -42,11 +42,11 @@
 - Markdown preview の CSS と JavaScript は自作拡張の contributions で読み込む。`markdown.styles` から公開 URL を二重に読み込まない。
 - `uninstall.sh` は VS Code の設定 symlink だけを解除し、導入済み extension は削除しない。
 - snippets や Profiles は必要になった時点で追加し、先回りして空の管理対象を増やさない。
-- 独立した試作拡張 `vscode/wallpaper/`（`takashit16833.vscode-wallpaper`）は `vscodeWallpaper.*` の設定から CSS を生成し、Webview でプレビューする。特定のテーマに依存せず、乗算色は白、領域別の背景色は VS Code テーマの色を既定値として参照し、設定で上書きできる。`node --test` で生成処理を検証する。現在は VS Code 編集画面への CSS 適用処理を含めない。
-- `vscode/wallpaper/install.sh` は明示実行のみ。ルートの `install.sh` から導入せず、VS Code 本体を改変せず、整合性警告の隠蔽も行わない。
-- 実画面の検証用に `vscode/wallpaper/workbench-script.js` は DevTools Console で実行する一時 CSS 適用・解除コードを生成する。ユーザーの明示操作が必要であり、本体ファイル改変、デバッグ用ポートの開放、警告の隠蔽、自動適用はしない。
+- 独立した試作拡張 `vscode/wallpaper/`（`takashit16833.vscode-wallpaper`）は `vscodeWallpaper.*` の設定から CSS を生成し、Webview でプレビューする。特定のテーマに依存せず、乗算色は白、領域別の背景色は VS Code テーマの色を既定値として参照し、設定で上書きできる。`node --test` で生成処理を検証する。本体への直接適用は一時 CSS またはユーザーの明示的な自動適用コマンドのどちらかで行う。
+- `vscode/wallpaper/install.sh` は明示実行のみ。ルートの `install.sh` から導入せず、このスクリプト自体は VS Code 本体を改変しない。整合性警告は隠さない。
+- 実画面の検証用に `vscode/wallpaper/workbench-script.js` は DevTools Console で実行する一時 CSS 適用・解除コードを生成する。この一時適用は自動適用と独立しており、本体ファイル改変やデバッグ用ポートは使わない。
 - `vscode/wallpaper/responsive-test.js` は実際の CSS 生成関数に2枚の埋め込み PNG を与え、縦長・横長（`orientation: portrait`）・横幅800pxでの切り替えを一時検証する。設定は書き換えず、通常の適用スクリプトで元の壁紙へ戻せる。
-- VS Code 公式 API から本体 DOM/CSS を直接操作できないため、非公開 API や本体ファイル改変による自動適用は行わない。
+- VS Code 公開 API から本体 DOM/CSS は直接操作できない。自動適用は明示的な同意後、`auto-apply.js` が `workbench.html` にローカル CSS のリンクだけを追加する方式とする。導入時に元 HTML をバックアップし、解除時に元に戻す。他の本体改変や整合性警告の隠蔽は行わない。起動時はリンク先の CSS を VS Code が読み込む。設定変更後は CSS を更新するが、画面への反映には再読み込みが必要。
 - サイドバー内部のペインと見出しは `paneHeaders.css` の不透明な背景色を持つため、共通壁紙表示時に通常背景を透明化する。見出しのホバー表示は維持し、コードは `vscode/wallpaper/wallpaper.js` にまとめる。
 - Extensions の一覧コンテナ `.monaco-list-rows` も不透明だったため（実機で確認）、サイドバーと補助サイドバー内のコンテナ背景だけを透明化する。各行の選択・ホバー表示は維持する。
 - 編集タブの帯 `.part.editor .tabs-and-actions-container` と下部 Explorer の一覧背景 `.part.panel .monaco-list-rows` は実測で不透明だった。コンテナ背景だけを透明化し、個別タブ、行の選択色、スクロールバーのつまみは維持する。
@@ -55,7 +55,7 @@
 - パンくずの `.breadcrumbs-below-tabs` とその内部に限って背景色・背景画像を透明化する。ミニマップは Canvas が縮小コードと背景を一緒に描くため、既定の表示を変えず、明示的な `vscodeWallpaper.minimapOpacity`（null または 0～1）で Canvas 全体の透過を調整する。縮小コードも薄くなると説明し、実機で確認する。
 - ターミナルの Canvas による不透明な描画は、実機で `terminal.integrated.enableImages: true` と `terminal.background: '#00000000'` により解消した。これは VS Code 標準設定であり、拡張から勝手に変更しない。`diagnostics-script.js` は左側の表示領域と画像切り替えを読み取り専用で検査する。
 - 壁紙は縦長・横長（既定）、任意の縦横比、画面幅による画像切り替えを実装済み。`vscode/background/` は旧方式の参考コードとしてのみ保持し、拡張機能や `install.sh` から読み込まない。
-- Apc / Custom CSS and JS Loader は実機で本体改変や整合性警告が問題になったため、再導入しない。壁紙の実装は現在の自作拡張と一時 CSS 適用方式を維持し、本体へパッチを適用しない。
+- Apc / Custom CSS and JS Loader は実機で本体改変や整合性警告が問題になったため再導入しない。自作拡張の自動適用は明示コマンドでのみ許可し、`workbench.html` 以外の既存ファイルを変更しない。チェックサムの書き換えや警告隠蔽はしない。権限不足・別の変更・バックアップ欠損時には安全に失敗させる。
 
 - Markdown Live Preview Editor の階層インデントは `vscode/markdown-live-preview/` の小さなパッチだけを管理する。公開済み拡張の内部ファイルを直接編集せず、上流の特定コミットを取得し、変更箇所を確認してから VSIX を生成する。
 - Markdown のコードブロックは通常プレビュー（`vscode/markdown-preview/preview.css` の `pre`）と Live Preview（`vscode/markdown-live-preview/retro-hacker-blue.css` の `.cm-line.mlp-line-code`）の両方で背景色 `#0A1A36` を `color-mix(... 70%, transparent)` にして半透明にする。両方のインラインコードも元色 `#052A59` の70%半透明色とし、文字色・余白・字下げは変更しない。Live Preview の Webview は上流が `html, body { background: var(--vscode-editor-background) }` を指定しているため、自作 CSS で html/実際の body/CodeMirror の背景を透明化する。両 Markdown プレビューとも内部要素・Webview 外側の透明化と壁紙の連続表示を 2026-11-03 に実機確認済み。
@@ -68,6 +68,9 @@
 
 - スクロールバーの下地は `scrollbars.css` の `background: var(--vscode-scrollbar-background)` を根拠に透明化する。つまみの `--vscode-scrollbarSlider-*` と `.slider` には触れない。パンくずは `--vscode-breadcrumb-background` と下地を透明化し、いずれも実機確認済み。
 - その後の Canvas 画素診断で `canvas.decorationsOverviewRuler` は5地点すべて `rgba(1, 1, 17, 1)` と確定した。VS Code `decorationsOverviewRuler.ts` は `editorOverviewRuler.background` を Canvas に塗るため、CSS ではなく VS Code の正式な配色設定を利用する。`.config/vscode/settings.json` の `workbench.colorCustomizations` にテーマ非依存で `"editorOverviewRuler.background": "#00000000"` を追加し、目印や `.slider` の色は変更しない。壁紙の一時 CSS を解除しても設定は残る点に注意。
+
+
+- 自動適用は `vscode/wallpaper/auto-apply.js` が管理し、最初に明示的な確認を経て有効化する。CSS の生成元はユーザー設定のみ（ワークスペース設定は対象外）。複数ウィンドウ・プロファイルで異なる CSS はサポートしない。アプリ更新後の再導入は手動とし、既知の HTML 以外を検出したら拒否する。導入直後からの実画面の検証は未完了。
 
 ## Terminal
 

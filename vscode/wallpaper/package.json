@@ -2,7 +2,7 @@
   "name": "vscode-wallpaper",
   "displayName": "VS Code Wallpaper",
   "description": "Generate a responsive, multiply-blended VS Code wallpaper stylesheet without patching VS Code.",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "publisher": "takashit16833",
   "private": true,
   "engines": {
@@ -40,6 +40,14 @@
       {
         "command": "vscodeWallpaper.showResponsiveTestScript",
         "title": "VS Code Wallpaper: Show Responsive Test Script"
+      },
+      {
+        "command": "vscodeWallpaper.enableAutomatic",
+        "title": "VS Code Wallpaper: Enable Automatic Wallpaper"
+      },
+      {
+        "command": "vscodeWallpaper.disableAutomatic",
+        "title": "VS Code Wallpaper: Disable Automatic Wallpaper"
       }
     ],
     "configuration": {
@@ -210,5 +218,8 @@
   },
   "extensionKind": [
     "ui"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
   ]
 }

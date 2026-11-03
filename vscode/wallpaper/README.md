@@ -1,8 +1,8 @@
 # VS Code Wallpaper（試作）
 
-VS Code 本体を変更せず、画面全体に表示する壁紙の **CSS 生成・プレビュー・実画面での一時適用テスト** を行う独立した拡張機能。
+画面全体の壁紙の **CSS 生成・プレビュー・一時適用・任意の自動適用** を行う拡張機能。
 
-現段階で **VS Code の編集画面全体への自動適用は行わない**。公式拡張機能 API にその操作がなく、未検証の本体書き換えによる破損警告を再発させないためである。プレビューは専用タブに擬似的な画面構成を表示するものであり、実際の VS Code の画面で動作することを保証しない。
+自動適用は既定で無効である。手動で有効化する場合に限り、VS Code 本体の起動用 HTML に CSS 読み込み用のリンクを追加する。元の HTML を保管し、安全に復元できることを確認する。自動適用の実機検証は未完了である。
 
 ## 現在の状態
 
@@ -10,7 +10,7 @@ VS Code 本体を変更せず、画面全体に表示する壁紙の **CSS 生�
 - スクロールバーの黒い帯、パンくず、Sticky Scroll のぼかしも実機で確認済み。
 - Markdown Preview / Markdown Live Preview では、背景とインライン・ブロックコードの半透明化を実機で確認済み（各 Markdown 拡張の CSS で設定）。
 - VS Code 内蔵の Markdown Editor は独自 CSS の適用対象外。
-- 本体への自動適用は行わず、開発者ツールでの一時適用のみ。
+- 開発者ツールでの一時適用に加え、任意の起動時自動適用に対応（実機検証待ち）。
 
 ## 導入・テスト
 
@@ -21,6 +21,23 @@ bash ./vscode/wallpaper/install.sh
 ```
 
 `install.sh` は明示的に実行する。ルートの `install.sh` から自動実行しない。初回実行時には VSIX 作成用の `@vscode/vsce` を `npx` が取得する。拡張機能の実行時に npm 依存はない。
+
+## 起動時の自動適用（任意）
+
+自動適用には初回だけ導入操作が必要である。VS Code 本体の起動用 HTML に同じディレクトリの壁紙 CSS を読み込むリンクを追加するため、**VS Code のインストール整合性警告が発生する可能性がある**。本体の元ファイルはバックアップし、整合性検査や警告表示には手を加えない。既存の一時適用方式も利用できる。
+
+1. `bash ./vscode/wallpaper/install.sh` で拡張機能を更新し、VS Code を再読み込みする。
+2. **Preferences: Open User Settings (JSON)** でユーザー設定を開き、`vscodeWallpaper.enabled` を `true` にし、`vscodeWallpaper.image` を設定する。
+3. コマンド **VS Code Wallpaper: Enable Automatic Wallpaper** を実行する。確認画面で許可した場合だけ導入する。
+4. 表示される **Reload Window** で再読み込みする。その後は起動時に壁紙が読み込まれる。
+
+設定はすべてユーザー設定（`settings.json`）で行う。画像には `~/Pictures/...`、絶対パス、HTTPS URL を使用する。相対パス `./` は自動適用ではサポートしない。複数の VS Code ウィンドウで1つの CSS を共有するため、プロジェクト固有の `.vscode/settings.json` の値は自動適用には使用しない。
+
+設定を変更した場合、拡張機能は自動適用用 CSS を更新するが、画面への反映には **Developer: Reload Window** が必要である。VS Code の更新によりリンクがなくなった場合は、コマンドによる再導入が必要になる。
+
+**元に戻す：** コマンド **VS Code Wallpaper: Disable Automatic Wallpaper** でバックアップから HTML を復元し、管理している CSS を削除する。バックアップが不明な場合や別の変更が加わった場合は、安全のため操作を中止する。自動適用だけを無効にし、既存の一時適用コマンドは残す。
+
+アプリの配置場所への書き込み権限がない場合は導入できない。拡張機能は権限を勝手に変更しない。
 
 ## 設定
 
@@ -80,7 +97,7 @@ bash ./vscode/wallpaper/install.sh
 
 ## 実際の VS Code で一時的に試す（実機検証）
 
-**この操作は自動では実行されない。** 公式 API から VS Code 本体の画面へ CSS を適用できないため、開発者ツールから現在の画面に一時的な CSS を適用する。VS Code 本体のファイル・整合性検査・設定ファイルには触れない。
+**この一時適用操作は自動では実行されない。** 公式 API から VS Code 本体の画面へ CSS を適用できないため、開発者ツールから現在の画面に一時的な CSS を適用する。VS Code 本体のファイル・整合性検査・設定ファイルには触れない。
 
 1. `vscodeWallpaper.enabled` と `vscodeWallpaper.image` を設定する。まずは `https://` 画像 URL で確認する。
 2. コマンドパレットで **VS Code Wallpaper: Show Temporary Workbench Script** を実行する。
@@ -127,7 +144,7 @@ VS Code のターミナルは Canvas に不透明な背景を描画するため�
 
 ### 実画面への自動適用について
 
-VS Code の公開拡張 API では本体画面の DOM と CSS に直接アクセスできない。Webview も本体画面から隔離されている。現段階では、本体ファイルの変更や非公開 API に依存しない自動適用の実装方法は確認できていないため、自動適用は行わない。
+VS Code の公開拡張 API では本体画面の DOM と CSS に直接アクセスできない。Webview も本体画面から隔離されている。そのため自動適用は、本体 HTML に管理用の CSS リンクを追加する任意の方式として実装した。手動の一時適用方式では本体を変更しない。
 
 ### 残りの領域と画像の切り替えを診断する
 
@@ -181,6 +198,6 @@ VS Code の `decorationsOverviewRuler.ts` は、標準の配色キー `editorOve
 
 スクロールバーと重なる `canvas.decorationsOverviewRuler` の黒い背景は別の Canvas 描画であり、VS Code 標準設定 `"editorOverviewRuler.background": "#00000000"` で透明にする。これは `workbench.colorCustomizations` に指定するもので、壁紙の CSS を解除しても残る。
 
-**現段階では自動適用は未実装。** 拡張機能が VS Code の本体ファイルを書き換えたり、破損警告を隠したりすることはない。
+**自動適用は任意で、既定では無効。** 自動適用を許可した場合だけ起動用 HTML を変更するが、整合性警告を隠したり、既存のチェックサムを書き換えたりする処理は行わない。
 
 縦長・横長の判定は CSS の `(orientation: portrait)` を使う。横幅と高さが同じ場合は縦長扱い。縦長から横長へ切り替えるには、横幅が高さを超えるようにウィンドウの幅と高さを調整する。

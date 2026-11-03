@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build and install the isolated preview extension. Does not patch VS Code itself.
+# Install the wallpaper extension. This script does not patch VS Code itself.
 set -euo pipefail
 
 EXTENSION_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
