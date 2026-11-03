@@ -43,6 +43,56 @@ function buildDiagnosticsScript(settings) {
   )].map(describe));
   console.info('VS Code Wallpaper: 左側の重なり（上から順）');
   console.table(document.elementsFromPoint(leftX, midY).slice(0, 16).map(describe));
+
+  // Probe opaque surfaces at several points, without editing VS Code.
+  const samples = [
+    ['編集タブ', '.part.editor', 0.50, 0.02],
+    ['編集右端・スクロールバー', '.part.editor', 0.98, 0.55],
+    ['パネルタブ', '.part.panel', 0.50, 0.025],
+    ['パネル左上', '.part.panel', 0.20, 0.30],
+    ['パネル左下', '.part.panel', 0.20, 0.75],
+    ['パネル中央', '.part.panel', 0.55, 0.40],
+    ['パネル右上', '.part.panel', 0.85, 0.30],
+    ['パネル右下', '.part.panel', 0.85, 0.75]
+  ];
+  const opaque = [];
+  for (const [position, selector, xPart, yPart] of samples) {
+    const part = document.querySelector('.monaco-workbench ' + selector);
+    if (!part) continue;
+    const r = part.getBoundingClientRect();
+    if (r.width < 1 || r.height < 1) continue;
+    const x = r.left + r.width * xPart;
+    const y = r.top + r.height * yPart;
+    const painted = document.elementsFromPoint(x, y).slice(0, 24)
+      .filter(el => el !== root)
+      .map(el => ({ position, ...describe(el) }))
+      .filter(row => !['transparent', 'rgba(0, 0, 0, 0)'].includes(row.background) || row.hasImage)
+      .slice(0, 6);
+    opaque.push(...painted);
+  }
+  console.info('VS Code Wallpaper: 編集タブ・スクロールバー・パネル内の背景');
+  console.table(opaque);
+  const selectors = [
+    '.part.editor .tabs-container',
+    '.part.editor .tab.active',
+    '.part.editor .scrollbar.vertical',
+    '.part.editor .scrollbar.vertical .slider',
+    '.part.panel .monaco-list-rows',
+    '.part.panel .pane.expanded',
+    '.part.panel .scrollbar.vertical',
+    '.part.panel .scrollbar.vertical .slider'
+  ];
+  console.info('VS Code Wallpaper: 個別要素の背景色');
+  console.table(selectors.map(selector => {
+    const el = document.querySelector('.monaco-workbench ' + selector);
+    const style = el && getComputedStyle(el);
+    return {
+      selector,
+      background: style?.backgroundColor || '要素なし',
+      image: style?.backgroundImage || 'none'
+    };
+  }));
+
 })();`;
 }
 

@@ -121,6 +121,8 @@ VS Code の公開拡張 API では本体画面の DOM と CSS に直接アクセ
 2. 表示される表の `rect` が `0x0` の領域は非表示である。左側に見える領域は別の要素の場合があるため、`左側の重なり` の表を確認する。
 3. `vscodeWallpaper.alternateImage` に別の画像を指定し、ウィンドウ幅または縦横比を変更する。`queryMatches` が切り替わることと、`rootBackgroundImage` の URL が変わることを確認する。
 
+診断結果には「編集タブ・スクロールバー・パネル内の背景」と「個別要素の背景色」の表も出力する。Explorer・Source Control を下部パネルで表示している状態で実行すると、それぞれの表示領域の背景色をまとめて調べられる。
+
 この診断は読み取り専用であり、ファイル・DOM・設定を変更しない。CSS の実画面への適用は先に実施しておく。
 
 **元に戻す場合**：**VS Code Wallpaper: Show Remove Script** で表示したコードを同じ Console で実行するか、**Developer: Reload Window** で再読み込みする。取り消しにアプリの再インストールは不要。

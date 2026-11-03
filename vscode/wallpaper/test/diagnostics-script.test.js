@@ -66,3 +66,11 @@ test('縦長・横長の診断は CSS の orientation 条件を表示する', ()
   assert.equal(report.info[0][1].query, '(orientation: portrait)');
   assert.equal(report.info[0][1].alternateImageConfigured, true);
 });
+
+test('未透過の編集タブ・スクロールバー・下部パネルをまとめて診断する', () => {
+  const report = run(buildDiagnosticsScript(config));
+  assert.equal(report.tables.length, 4);
+  assert.ok(report.tables[3].some(row => row.selector === '.part.editor .tabs-container'));
+  assert.ok(report.tables[3].some(row => row.selector === '.part.panel .monaco-list-rows'));
+  assert.equal(report.info[4][0], 'VS Code Wallpaper: 個別要素の背景色');
+});
