@@ -85,7 +85,7 @@ function fixture(changesCss = true) {
   };
 }
 
-test('設定変更時だけ CSS を同期し、変更があれば Reload Window を案内する', async () => {
+test('設定変更時は CSS のみ更新し、再読み込み通知や実行はしない', async () => {
   const session = fixture();
   await session.flush();
   assert.equal(session.syncCalls.length, 1);
@@ -100,8 +100,8 @@ test('設定変更時だけ CSS を同期し、変更があれば Reload Window 
   assert.equal(session.syncCalls.length, 2);
   assert.equal(session.syncCalls[1][0], '/app');
   assert.equal(session.syncCalls[1][2], 'project-a');
-  assert.equal(session.notices.length, 1);
-  assert.deepEqual(session.commands, ['workbench.action.reloadWindow']);
+  assert.equal(session.notices.length, 0);
+  assert.deepEqual(session.commands, []);
 });
 
 test('CSS が変わらなければ通知せず、画面を再読み込みしない', async () => {

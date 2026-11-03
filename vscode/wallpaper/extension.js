@@ -82,24 +82,15 @@ async function autoState() {
   };
 }
 
-async function refreshAutomatic(context, notify = false) {
+async function refreshAutomatic(context, warnIfUnavailable = false) {
   if (!context.globalState.get('vscodeWallpaper.autoEnabled', false)) return;
   const state = await automatic.inspect(vscode.env.appRoot);
   if (!state.installed) {
-    if (notify) vscode.window.showWarningMessage('VS Code の更新などで自動壁紙の読み込みが外れています。Enable Automatic Wallpaper を再実行してください。');
+    if (warnIfUnavailable) vscode.window.showWarningMessage('VS Code の更新などで自動壁紙の読み込みが外れています。Enable Automatic Wallpaper を再実行してください。');
     return;
   }
   const { css, workspaceId } = await autoState();
-  const result = await automatic.sync(vscode.env.appRoot, css, workspaceId);
-  if (result.changed && notify) {
-    const action = await vscode.window.showInformationMessage(
-      'VS Code Wallpaper: 壁紙 CSS を更新しました。Reload Window で表示に反映できます。',
-      'Reload Window'
-    );
-    if (action === 'Reload Window') {
-      await vscode.commands.executeCommand('workbench.action.reloadWindow');
-    }
-  }
+  await automatic.sync(vscode.env.appRoot, css, workspaceId);
 }
 
 function activate(context) {
@@ -211,7 +202,7 @@ ${buildApplyScript(css)}`;
   context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(event => {
     if (!event.affectsConfiguration('vscodeWallpaper')) return;
     if (previewPanel) renderPreview(previewPanel);
-    refreshAutomatic(context, true).catch(error => {
+    refreshAutomatic(context).catch(error => {
       vscode.window.showErrorMessage('VS Code Wallpaper: ' + error.message);
     });
   }));
