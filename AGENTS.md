@@ -38,15 +38,19 @@
 - `sync.sh` は `code --list-extensions` から現在の extension 状態を `.config/vscode/extensions.txt` へ保存する。
 - `install.sh` は `.config/vscode/extensions.txt` に記録された extension を復元する。
 - extension 本体や VS Code が管理する内部データは repository に含めない。
-- Markdown Outline Preview の本体（`takashit16833.markdown-outline-preview`）は独立した [`vscode-markdown-outline-preview`](https://github.com/takashit16833/vscode-markdown-outline-preview) を正本とする。標準 Markdown Preview と Markdown Live Preview、両者の共通配色を1つの VSIX に含める。初期セットアップ時は `~/vscode-markdown-outline-preview` に取得し、専用の `install.sh` を呼び出す。`sync.sh` の Marketplace extension 一覧からは除外する。
+- Markdown Outline Preview の本体（`takashit16833.markdown-outline-preview`）は独立した [`vscode-markdown-outline-preview`](https://github.com/takashit16833/vscode-markdown-outline-preview) を正本とする。標準 Markdown Preview と Markdown Live Preview、両者の共通配色を1つの VSIX に含める。初期セットアップ時は `~/vscode-markdown-outline-preview` に取得し、専用の `install.sh` を呼び出す。
 - `uninstall.sh` は VS Code の設定 symlink だけを解除し、導入済み extension は削除しない。
 - snippets や Profiles は必要になった時点で追加し、先回りして空の管理対象を増やさない。
 
 - VS Code Wallpaper の本体（`takashit16833.vscode-wallpaper`）は独立した [`vscode-wallpaper`](https://github.com/takashit16833/vscode-wallpaper) で管理する。dotfiles は `.config/vscode/settings.json` の設定値を管理し、初期セットアップ時は `~/vscode-wallpaper` に取得して専用の `install.sh` を呼び出す。拡張の導入と VS Code 本体への壁紙の自動適用は別であり、本体への変更は利用者の明示操作のみとする。
+- Noctis Blue（`takashit16833.noctis-blue`）は独立した [`vscode-noctis-blue`](https://github.com/takashit16833/vscode-noctis-blue) を正本とする。配色・領域別透過・ぼかしは Noctis Blue 側で管理し、dotfiles ではテーマ選択と `noctisBlue.opacity` などの利用者設定だけを管理する。初期セットアップ時は `~/vscode-noctis-blue` に取得して専用の `install.sh` を呼び出す。
+- `vscode-wallpaper` は背景画像・乗算・画像切り替え・共通 CSS ローダーだけを担当する。領域別背景色・不透明度・Sticky Scroll・補完候補のぼかしを dotfiles の `vscodeWallpaper.*` 設定へ戻さない。
+- テーマ固有の UI 色・トークン色は Noctis Blue 本体で管理し、`workbench.colorCustomizations` / `editor.tokenColorCustomizations` / `editor.semanticTokenColorCustomizations` に Noctis Blue の配色を重複定義しない。QuickJump や Text Marker など拡張固有の設定は dotfiles に置いてよい。
+- `sync.sh` の Marketplace extension snapshot から `takashit16833.vscode-wallpaper` / `takashit16833.noctis-blue` / `takashit16833.markdown-outline-preview` を除外し、各リポジトリの `install.sh` から導入する。
 - Markdown の CSS、Live Preview の上流差分、ビルド処理はすべて `vscode-markdown-outline-preview` で管理する。dotfiles へ同じソースを置かず、設定値と統合拡張の導入だけを管理する。
 - 統合拡張は Marketplace 版 `t-shoot.markdown-live-preview-editor` と同時利用しない。導入スクリプトが統合版のインストール成功後に旧拡張を削除する。既定のエディタを変更する前に、実機で字下げ・編集操作・コードブロック・表を確認する。
 
-- 非公開の2リポジトリの取得には GitHub SSH 認証が必要である。取得先はホーム直下に固定し、既存パスが Git clone でない場合や origin が一致しない場合は中止する。既存 clone は自動 pull せず、専用の `install.sh` を再実行する。既存ディレクトリを削除・上書きしない。
+- ソースから導入する3つの VS Code 拡張（`vscode-wallpaper` / `vscode-noctis-blue` / `vscode-markdown-outline-preview`）はホーム直下に取得する。取得には GitHub SSH を使い、既存パスが Git clone でない場合や origin が一致しない場合は中止する。既存 clone は自動 pull せず、専用の `install.sh` を再実行する。既存ディレクトリを削除・上書きしない。
 
 ## Terminal
 
