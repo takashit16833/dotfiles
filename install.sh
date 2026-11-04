@@ -216,8 +216,8 @@ install_source_vscode_extension() {
   local directory="$HOME/$repository"
   local ssh_url="git@github.com:takashit16833/$repository.git"
   local origin
+  local current_branch
 
-  # ソース管理の自作拡張は既存ディレクトリの内容・履歴を勝手に上書きしない。
   if [[ -e "$directory" || -L "$directory" ]]; then
     [[ -d "$directory" && -d "$directory/.git" ]] \
       || fail "$directory exists but is not a Git clone; leaving it untouched"
@@ -225,15 +225,26 @@ install_source_vscode_extension() {
       || fail "failed to read origin for $directory"
     case "$origin" in
       "$ssh_url"|"https://github.com/takashit16833/$repository.git"|"https://github.com/takashit16833/$repository")
-        info "using existing repository: $directory"
         ;;
       *)
         fail "$directory points to unexpected origin: $origin; leaving it untouched"
         ;;
     esac
+
+    # 自作拡張は最新 main を組み合わせて使う。開発中の clone は勝手に
+    # branch 切り替えや stash をせず、安全に更新できない場合は停止する。
+    [[ -z "$(git -C "$directory" status --porcelain)" ]] \
+      || fail "$directory has uncommitted changes; leaving it untouched"
+    current_branch="$(git -C "$directory" branch --show-current)"
+    [[ "$current_branch" == "main" ]] \
+      || fail "$directory is on $current_branch; switch to main before running install.sh"
+
+    info "updating existing repository: $directory"
+    git -C "$directory" pull --ff-only origin main \
+      || fail "failed to fast-forward $directory to origin/main"
   else
     info "cloning $repository into $directory (GitHub SSH authentication required)"
-    git clone "$ssh_url" "$directory" \
+    git clone --branch main "$ssh_url" "$directory" \
       || fail "failed to clone $repository; configure GitHub SSH access and retry"
   fi
 

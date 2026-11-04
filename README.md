@@ -38,7 +38,7 @@ Raycast Local Extension の初回登録では、公式の `ray develop` を短�
 
 自作拡張機能 [`vscode-markdown-outline-preview`](https://github.com/takashit16833/vscode-markdown-outline-preview) は、`install.sh` から `~/vscode-markdown-outline-preview` に取得し、専用の `install.sh` で導入する。見出し階層に沿った字下げと配色を適用する。
 
-取得済みのディレクトリがある場合は、その内容を勝手に更新せず、インストール処理だけ再実行する。最新版への更新は次のとおり。
+取得済みのディレクトリがある場合、`install.sh` は未コミット変更がなく `main` にいることを確認し、`origin/main` へ fast-forward してから導入する。開発中の変更や別ブランチは勝手に切り替えない。手動更新する場合は次のとおり。
 
 ```bash
 cd ~/vscode-markdown-outline-preview
@@ -57,7 +57,7 @@ bash ./install.sh
 
 設定値は `.config/vscode/settings.json` で管理する。標準構成は `Noctis Blue Transparent` と背景画像2枚の `orientation` 切り替えである。
 
-取得済みのディレクトリがある場合、dotfiles の `install.sh` は内容を勝手に更新せず、それぞれの `install.sh` だけを実行する。最新版へ更新する場合は次を実行する。
+自作拡張は固定コミットではなく最新 `main` の組み合わせを使う。取得済みのディレクトリは、未コミット変更がなく `main` にいる場合だけ `origin/main` へ fast-forward する。別ブランチや未コミット変更がある場合は中止する。手動更新する場合は次を実行する。
 
 ```bash
 cd ~/vscode-wallpaper
@@ -75,7 +75,7 @@ bash ./install.sh
 
 設定変更やテーマ切り替えでは CSS ファイルだけを更新するため、画面へ反映したいタイミングで **Developer: Reload Window** を実行する。拡張側から勝手な再読み込みや再読み込み通知は行わない。
 
-背景画像の変更は `vscodeWallpaper.image` / `vscodeWallpaper.alternateImage`、透過率の変更は `noctisBlue.opacity` を編集する。詳細は各専用 README を参照する。
+背景画像の変更は `vscodeWallpaper.image` / `vscodeWallpaper.alternateImage` を編集する。領域別透過率は Noctis Blue の既定値を使用し、個別に変えたい場合だけ `noctisBlue.opacity` を追加する。詳細は各専用 README を参照する。
 
 ### Obsidian の背景画像
 
