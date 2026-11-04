@@ -40,8 +40,10 @@
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "vscode.json-language-features"
     },
-    // マークダウンはプレビューで開く
-    "workbench.editorAssociations": {},
+    // Markdown は VS Code 標準プレビューで開く。
+    "workbench.editorAssociations": {
+        "*.md": "vscode.markdown.preview.editor"
+    },
     // Markdown Live Preview の配色を試す。既定の Markdown Preview は変更しない。
     "mdLivePreview.enabledStyles": [
         "retro-hacker-blue.css"
@@ -116,14 +118,7 @@
     "vscodeWallpaper.switchMode": "orientation",
     // 画像に乗算する色（白なら元画像の色を維持）
     "vscodeWallpaper.tint": "#FFFFFF",
-    // 領域別の背景色と透過は Noctis Blue が担当する。
-    "noctisBlue.opacity": {
-        "editor": 0.91,
-        "sidebar": 0.93,
-        "panel": 0.94,
-        "auxiliaryBar": 0.86,
-        "chrome": 0.93,
-        "gap": 0.91
-    },
+    // 領域別の透過率は Noctis Blue の既定値を使う。
+    // 個別に変えたい場合だけ noctisBlue.opacity をここへ追加する。
     "terminal.integrated.enableImages": true,
 }
