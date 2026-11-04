@@ -211,13 +211,13 @@ install_vscode_extensions() {
   fi
 }
 
-install_private_vscode_extension() {
+install_source_vscode_extension() {
   local repository="$1"
   local directory="$HOME/$repository"
   local ssh_url="git@github.com:takashit16833/$repository.git"
   local origin
 
-  # 既存ディレクトリは内容・履歴を勝手に上書きしない。
+  # ソース管理の自作拡張は既存ディレクトリの内容・履歴を勝手に上書きしない。
   if [[ -e "$directory" || -L "$directory" ]]; then
     [[ -d "$directory" && -d "$directory/.git" ]] \
       || fail "$directory exists but is not a Git clone; leaving it untouched"
@@ -456,8 +456,9 @@ main() {
 
   install_vscode_extensions
   install_quickjump_extension
-  install_private_vscode_extension vscode-wallpaper
-  install_private_vscode_extension vscode-markdown-outline-preview
+  install_source_vscode_extension vscode-wallpaper
+  install_source_vscode_extension vscode-noctis-blue
+  install_source_vscode_extension vscode-markdown-outline-preview
 
   ensure_symlink \
     "$DOTFILES_DIR/.hammerspoon" \
