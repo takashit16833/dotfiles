@@ -12,7 +12,7 @@ cd ~/dotfiles
 bash ./install.sh
 ```
 
-dotfiles 自体は公開リポジトリなので HTTPS で認証なしに clone できる。ただし初期インストールで非公開の自作 VS Code 拡張を取得するため、`bash ./install.sh` の実行前に GitHub の SSH 認証を設定する。
+dotfiles 自体は公開リポジトリなので HTTPS で認証なしに clone できる。初期インストールでは自作 VS Code 拡張を GitHub SSH で取得するため、`bash ./install.sh` の実行前に SSH 認証を設定する。
 
 `install.sh` は `Brewfile` に宣言した CLI / アプリのインストール、設定ファイルの symlink、VS Code extension、Raycast Local Extension などのセットアップを行う。
 
@@ -48,21 +48,34 @@ bash ./install.sh
 
 導入後は VS Code の `Developer: Reload Window` で再読み込みし、Markdown プレビューを開き直す。詳細は [専用 README](https://github.com/takashit16833/vscode-markdown-outline-preview/blob/main/README.md) を参照する。
 
-### VS Code の背景画像
+### VS Code のテーマと背景画像
 
-自作拡張機能 [`vscode-wallpaper`](https://github.com/takashit16833/vscode-wallpaper) は、`install.sh` から `~/vscode-wallpaper` に取得し、専用の `install.sh` で導入する。壁紙の設定値は `.config/vscode/settings.json` で管理する。
+初期セットアップでは、次の2つをソースから導入する。
 
-取得済みのディレクトリがある場合は、その内容を勝手に更新せず、インストール処理だけ再実行する。最新版への更新は次のとおり。
+- [`vscode-noctis-blue`](https://github.com/takashit16833/vscode-noctis-blue): 配色・領域別透過・ぼかし。
+- [`vscode-wallpaper`](https://github.com/takashit16833/vscode-wallpaper): 背景画像・乗算・画像切り替え・共通 CSS ローダー。
+
+設定値は `.config/vscode/settings.json` で管理する。標準構成は `Noctis Blue Transparent` と背景画像2枚の `orientation` 切り替えである。
+
+取得済みのディレクトリがある場合、dotfiles の `install.sh` は内容を勝手に更新せず、それぞれの `install.sh` だけを実行する。最新版へ更新する場合は次を実行する。
 
 ```bash
 cd ~/vscode-wallpaper
+git switch main
+git pull --ff-only
+bash ./install.sh
+
+cd ~/vscode-noctis-blue
+git switch main
 git pull --ff-only
 bash ./install.sh
 ```
 
-**拡張機能の導入だけでは VS Code 本体に壁紙を自動適用しない。** 本体への適用は、必要なときに拡張機能の `VS Code Wallpaper: Enable Automatic Wallpaper` コマンドから明示的に有効化する。詳細は [専用 README](https://github.com/takashit16833/vscode-wallpaper/blob/main/README.md) を参照する。
+初めて自動適用を有効にする場合は、VS Code で `Noctis Blue Transparent` を選び、**Noctis Blue: Enable Automatic Appearance** を実行する。VS Code Wallpaper が表示する本体変更の説明を確認して許可した後、**Developer: Reload Window** を実行する。
 
-`vscode/background/` は旧方式の参考コードであり、現在の拡張機能には使わない。
+設定変更やテーマ切り替えでは CSS ファイルだけを更新するため、画面へ反映したいタイミングで **Developer: Reload Window** を実行する。拡張側から勝手な再読み込みや再読み込み通知は行わない。
+
+背景画像の変更は `vscodeWallpaper.image` / `vscodeWallpaper.alternateImage`、透過率の変更は `noctisBlue.opacity` を編集する。詳細は各専用 README を参照する。
 
 ### Obsidian の背景画像
 
