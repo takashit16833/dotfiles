@@ -50,32 +50,34 @@ bash ./install.sh
 
 ### VS Code のテーマと背景画像
 
-初期セットアップでは、次の2つをソースから導入する。
+テーマ、壁紙、背景画像の切り替え、透過・ぼかしは
+[Noctis Blue](https://github.com/takashit16833/vscode-noctis-blue)
+**1つの拡張**で管理する。初期セットアップの `install.sh` が
+`~/vscode-noctis-blue` の最新 `main` を取得・導入し、旧 Wallpaper 拡張は
+新しい拡張の導入を確認した後にアンインストールする。
 
-- [`vscode-noctis-blue`](https://github.com/takashit16833/vscode-noctis-blue): 配色・領域別透過・ぼかし。
-- [`vscode-wallpaper`](https://github.com/takashit16833/vscode-wallpaper): 背景画像・乗算・画像切り替え・共通 CSS ローダー。
+設定の正本は `.config/vscode/settings.json` である。画像は
+`noctisBlue.wallpaper.image` / `noctisBlue.wallpaper.alternateImage`、
+領域別の透過率は `noctisBlue.opacity` で設定する。
 
-設定値は `.config/vscode/settings.json` で管理する。標準構成は `Noctis Blue Transparent` と背景画像2枚の `orientation` 切り替えである。
-
-自作拡張は固定コミットではなく最新 `main` の組み合わせを使う。取得済みのディレクトリは、未コミット変更がなく `main` にいる場合だけ `origin/main` へ fast-forward する。別ブランチや未コミット変更がある場合は中止する。手動更新する場合は次を実行する。
+手動で更新する場合：
 
 ```bash
-cd ~/vscode-wallpaper
-git switch main
-git pull --ff-only
-bash ./install.sh
-
 cd ~/vscode-noctis-blue
-git switch main
 git pull --ff-only
 bash ./install.sh
 ```
 
-初めて自動適用を有効にする場合は、VS Code で `Noctis Blue Transparent` を選び、**Noctis Blue: Enable Automatic Appearance** を実行する。VS Code Wallpaper が表示する本体変更の説明を確認して許可した後、**Developer: Reload Window** を実行する。
+初回は VS Code の `Noctis Blue Transparent` を選び、
+**Noctis Blue: Enable Automatic Appearance** の説明を確認して許可する。
+旧 Wallpaper の管理ファイルを検証できた場合は自動適用状態を引き継ぐ。
+適用後は **Developer: Reload Window** を実行する。
 
-設定変更やテーマ切り替えでは CSS ファイルだけを更新するため、画面へ反映したいタイミングで **Developer: Reload Window** を実行する。拡張側から勝手な再読み込みや再読み込み通知は行わない。
-
-背景画像の変更は `vscodeWallpaper.image` / `vscodeWallpaper.alternateImage` を編集する。領域別透過率は Noctis Blue の既定値を使用し、個別に変えたい場合だけ `noctisBlue.opacity` を追加する。詳細は各専用 README を参照する。
+VS Code の組み込み Markdown Editor 用 CSS は別のファイルに適用する。
+必要なら **Noctis Blue: Enable Markdown Editor Appearance** から有効にし、
+アンインストール前には Markdown Editor と Automatic Appearance の両方を解除する。
+安全上の制約と Dev Container での扱いは
+[Noctis Blue の README](https://github.com/takashit16833/vscode-noctis-blue#readme) を参照する。
 
 ### Obsidian の背景画像
 
