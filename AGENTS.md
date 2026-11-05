@@ -43,8 +43,8 @@
 - snippets や Profiles は必要になった時点で追加し、先回りして空の管理対象を増やさない。
 
 - Noctis Blue（`takashit16833.noctis-blue`）は [`vscode-noctis-blue`](https://github.com/takashit16833/vscode-noctis-blue) を唯一の拡張の正本とする。配色・壁紙・乗算・画像切替・領域別透過・ぼかしを一つの VSIX に含む。初期セットアップは `~/vscode-noctis-blue/install.sh` のみを実行する。
-- 旧 `takashit16833.vscode-wallpaper` は新規導入しない。Noctis Blue `install.sh` は新拡張のインストールと一覧確認に成功した場合だけ旧拡張を削除する。既存の workbench.html・バックアップ・ローダーの整合性を検査できたときだけ自動適用状態を1回引き継ぐ。新規の本体変更には明示同意が必要。
-- 背景画像設定の正本は `.config/vscode/settings.json` の `noctisBlue.wallpaper.*`。旧 `vscodeWallpaper.*` は読み取り互換のため残るが、新規追加しない。領域背景や配色を `workbench.colorCustomizations` に重複定義しない。
+- Noctis Blue の `install.sh` は Noctis Blue のインストールだけを担当し、ほかの拡張は変更しない。本体への初回 CSS 適用には明示同意が必要であり、管理済みファイルがあるだけで自動有効化しない。
+- 背景画像設定の正本は `.config/vscode/settings.json` の `noctisBlue.wallpaper.*`。同じ背景設定を別の拡張設定へ重複定義しない。領域背景や配色を `workbench.colorCustomizations` に重複定義しない。
 - `noctisBlue.markdownActiveBlockOpacity` は共有 CSS に対応するアプリ全体の設定であり、ワークスペース別に重複指定しない。Dev Container のファイル所有者は自動変更しない。
 - テーマ固有の UI 色・トークン色は Noctis Blue 本体で管理し、`workbench.colorCustomizations` / `editor.tokenColorCustomizations` / `editor.semanticTokenColorCustomizations` に Noctis Blue の配色を重複定義しない。QuickJump や Text Marker など拡張固有の設定は dotfiles に置いてよい。
 - `sync.sh` の Marketplace extension snapshot から `takashit16833.vscode-wallpaper`（旧版）/ `takashit16833.noctis-blue` / `takashit16833.markdown-outline-preview` を除外する。Noctis と Markdown Preview は各正本の `install.sh` から導入する。
