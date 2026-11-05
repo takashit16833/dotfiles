@@ -48,6 +48,7 @@
 - テーマ固有の UI 色・トークン色は Noctis Blue 本体で管理し、`workbench.colorCustomizations` / `editor.tokenColorCustomizations` / `editor.semanticTokenColorCustomizations` に Noctis Blue の配色を重複定義しない。QuickJump や Text Marker など拡張固有の設定は dotfiles に置いてよい。
 - `sync.sh` の Marketplace extension snapshot から `takashit16833.vscode-wallpaper` / `takashit16833.noctis-blue` / `takashit16833.markdown-outline-preview` を除外し、各リポジトリの `install.sh` から導入する。
 - Markdown の CSS、Live Preview の上流差分、ビルド処理はすべて `vscode-markdown-outline-preview` で管理する。dotfiles へ同じソースを置かず、設定値と統合拡張の導入だけを管理する。
+- 内蔵 Markdown Editor の Rich Links は無効化し、GitHub 等の URL も通常リンクとして Noctis Blue のリンク配色を使う。
 - 統合拡張は Marketplace 版 `t-shoot.markdown-live-preview-editor` と同時利用しない。導入スクリプトが統合版のインストール成功後に旧拡張を削除する。既定のエディタを変更する前に、実機で字下げ・編集操作・コードブロック・表を確認する。
 
 - ソースから導入する3つの VS Code 拡張（`vscode-wallpaper` / `vscode-noctis-blue` / `vscode-markdown-outline-preview`）はホーム直下に取得し、固定コミットではなく最新 `main` を使う。取得には GitHub SSH を使う。既存 clone は origin が一致し、未コミット変更がなく、現在ブランチが `main` の場合だけ `git pull --ff-only origin main` で更新する。それ以外は中止し、branch 切り替え・stash・reset を自動実行しない。既存ディレクトリを削除・上書きしない。
