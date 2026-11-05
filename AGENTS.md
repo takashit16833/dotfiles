@@ -38,7 +38,6 @@
 - `sync.sh` は `code --list-extensions` から現在の extension 状態を `.config/vscode/extensions.txt` へ保存する。
 - `install.sh` は `.config/vscode/extensions.txt` に記録された extension を復元する。
 - extension 本体や VS Code が管理する内部データは repository に含めない。
-- Markdown Outline Preview の本体（`takashit16833.markdown-outline-preview`）は独立した [`vscode-markdown-outline-preview`](https://github.com/takashit16833/vscode-markdown-outline-preview) を正本とする。標準 Markdown Preview と Markdown Live Preview、両者の共通配色を1つの VSIX に含める。初期セットアップ時は `~/vscode-markdown-outline-preview` に取得し、専用の `install.sh` を呼び出す。
 - `uninstall.sh` は VS Code の設定 symlink だけを解除し、導入済み extension は削除しない。
 - snippets や Profiles は必要になった時点で追加し、先回りして空の管理対象を増やさない。
 
@@ -48,11 +47,9 @@
 - `noctisBlue.markdownActiveBlockOpacity` は共有 CSS に対応するアプリ全体の設定であり、ワークスペース別に重複指定しない。Dev Container のファイル所有者は自動変更しない。
 - テーマ固有の UI 色・トークン色は Noctis Blue 本体で管理し、`workbench.colorCustomizations` / `editor.tokenColorCustomizations` / `editor.semanticTokenColorCustomizations` に Noctis Blue の配色を重複定義しない。QuickJump や Text Marker など拡張固有の設定は dotfiles に置いてよい。
 - `sync.sh` の Marketplace 拡張一覧には、自作拡張（ID が `takashit16833.` で始まるもの）を含めない。自作拡張はそれぞれの正本リポジトリから導入する。
-- Markdown の CSS、Live Preview の上流差分、ビルド処理はすべて `vscode-markdown-outline-preview` で管理する。dotfiles へ同じソースを置かず、設定値と拡張の導入だけを管理する。
 - 内蔵 Markdown Editor の Rich Links は無効化し、GitHub 等の URL も通常リンクとして Noctis Blue のリンク配色を使う。
-- Markdown Outline Preview は Marketplace 版 `t-shoot.markdown-live-preview-editor` と同時利用しない。導入スクリプトはインストール成功を確認してから競合する拡張を削除する。既定のエディタを変更する前に、実機で字下げ・編集操作・コードブロック・表を確認する。
 
-- ソースから導入する2つの VS Code 拡張（`vscode-noctis-blue` / `vscode-markdown-outline-preview`）はホーム直下に取得し、固定コミットではなく最新 `main` を使う。取得には GitHub SSH を使う。既存 clone は origin が一致し、未コミット変更がなく、現在ブランチが `main` の場合だけ `git pull --ff-only origin main` で更新する。それ以外は中止し、branch 切り替え・stash・reset を自動実行しない。既存ディレクトリを削除・上書きしない。
+- ソースから導入する Noctis Blue（`vscode-noctis-blue`）はホーム直下に取得し、固定コミットではなく最新 `main` を使う。取得には GitHub SSH を使う。既存 clone は origin が一致し、未コミット変更がなく、現在ブランチが `main` の場合だけ `git pull --ff-only origin main` で更新する。それ以外は中止し、branch 切り替え・stash・reset を自動実行しない。既存ディレクトリを削除・上書きしない。
 
 ## Terminal
 

@@ -468,7 +468,6 @@ main() {
   install_vscode_extensions
   install_quickjump_extension
   install_source_vscode_extension vscode-noctis-blue
-  install_source_vscode_extension vscode-markdown-outline-preview
 
   ensure_symlink \
     "$DOTFILES_DIR/.hammerspoon" \

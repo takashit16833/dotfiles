@@ -34,20 +34,6 @@ Raycast Local Extension の初回登録では、公式の `ray develop` を短�
 - Chrome / Brave の unpacked extension や Web アプリはブラウザ側で初回登録する。
 - Tampermonkey userscript を使う場合は `chrome/userscripts/README.md` の手順で初回登録する。
 
-### VS Code の Markdown プレビュー
-
-自作拡張機能 [`vscode-markdown-outline-preview`](https://github.com/takashit16833/vscode-markdown-outline-preview) は、`install.sh` から `~/vscode-markdown-outline-preview` に取得し、専用の `install.sh` で導入する。見出し階層に沿った字下げと配色を適用する。
-
-取得済みのディレクトリがある場合、`install.sh` は未コミット変更がなく `main` にいることを確認し、`origin/main` へ fast-forward してから導入する。開発中の変更や別ブランチは勝手に切り替えない。手動更新する場合は次のとおり。
-
-```bash
-cd ~/vscode-markdown-outline-preview
-git pull --ff-only
-bash ./install.sh
-```
-
-導入後は VS Code の `Developer: Reload Window` で再読み込みし、Markdown プレビューを開き直す。詳細は [専用 README](https://github.com/takashit16833/vscode-markdown-outline-preview/blob/main/README.md) を参照する。
-
 ### VS Code のテーマと背景画像
 
 テーマ、壁紙、画像切り替え、透過、ぼかしは
