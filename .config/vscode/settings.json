@@ -87,12 +87,12 @@
     "noctisBlue.wallpaper.switchMode": "orientation",
     // 画像に乗算する色（白なら元画像の色を維持）
     "noctisBlue.wallpaper.tint": "#7085B0",
-    // 領域別の透過率は Noctis Blue の既定値を使う。
-    // 個別に変えたい場合だけ noctisBlue.opacity をここへ追加する。
     "terminal.integrated.enableImages": true,
     // Noctis Blue の領域別透過
     "noctisBlue.opacity": {
         "editor": 0.88,
+    // ミニマップはエディタ領域の背景に重ねて描く（設定値は追加背景の不透明度）。
+        "minimap": 0.5,
         "sidebar": 0.90,
         "panel": 0.85,
         "auxiliaryBar": 0.86,
