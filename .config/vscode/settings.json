@@ -75,16 +75,16 @@
     "workbench.editor.editorActionsLocation": "hidden",
     "chat.titleBar.signIn.enabled": false,
     // 背景 -----------------------------------
-    // 壁紙機能の有効・無効
-    "vscodeWallpaper.enabled": true,
+    // Noctis Blue に統合した壁紙機能の有効・無効
+    "noctisBlue.wallpaper.enabled": true,
     // メインの背景画像
-    "vscodeWallpaper.image": "/Users/suzukitakashi/Desktop/warehouse/wall/11.png",
+    "noctisBlue.wallpaper.image": "/Users/suzukitakashi/Desktop/warehouse/wall/11.png",
     // 2枚目の画像（不要なら空文字）
-    "vscodeWallpaper.alternateImage": "/Users/suzukitakashi/Desktop/warehouse/wall/10.png",
+    "noctisBlue.wallpaper.alternateImage": "/Users/suzukitakashi/Desktop/warehouse/wall/10.png",
     // 画像の切り替え方法
-    "vscodeWallpaper.switchMode": "orientation",
+    "noctisBlue.wallpaper.switchMode": "orientation",
     // 画像に乗算する色（白なら元画像の色を維持）
-    "vscodeWallpaper.tint": "#FFFFFF",
+    "noctisBlue.wallpaper.tint": "#FFFFFF",
     // 領域別の透過率は Noctis Blue の既定値を使う。
     // 個別に変えたい場合だけ noctisBlue.opacity をここへ追加する。
     "terminal.integrated.enableImages": true,
