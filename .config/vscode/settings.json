@@ -84,15 +84,15 @@
     // 画像の切り替え方法
     "noctisBlue.wallpaper.switchMode": "orientation",
     // 画像に乗算する色（白なら元画像の色を維持）
-    "noctisBlue.wallpaper.tint": "#FFFFFF",
+    "noctisBlue.wallpaper.tint": "#7085B0",
     // 領域別の透過率は Noctis Blue の既定値を使う。
     // 個別に変えたい場合だけ noctisBlue.opacity をここへ追加する。
     "terminal.integrated.enableImages": true,
     // Noctis Blue の領域別透過
     "noctisBlue.opacity": {
-        "editor": 0.91,
-        "sidebar": 0.93,
-        "panel": 0.94,
+        "editor": 0.83,
+        "sidebar": 0.90,
+        "panel": 0.85,
         "auxiliaryBar": 0.86,
         "chrome": 0.93,
         "gap": 0.91
