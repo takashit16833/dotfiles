@@ -14,10 +14,12 @@
     // Noctis Blue の透過版を標準テーマとして利用する。
     "workbench.colorTheme": "Noctis Blue Transparent",
     // エディタのフォントサイズ
-    "editor.fontSize": 12.5,
+    "editor.fontSize": 13,
     // エディタのフォント
     "editor.fontFamily": "'Menlo', 'BIZ UDGothic', monospace",
     "terminal.integrated.fontFamily": "'Menlo', 'BIZ UDGothic', monospace",
+    // 行間
+    "editor.lineHeight": 1.35,
     // スムースアニメーション
     "editor.smoothScrolling": true,
     "editor.cursorSmoothCaretAnimation": "on",
