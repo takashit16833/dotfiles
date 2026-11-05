@@ -41,7 +41,6 @@ sync_vscode_extensions() {
     "$vscode_cli" --list-extensions \
       | awk '
           $0 != "takashit16833.markdown-outline-preview" &&
-          $0 != "takashit16833.vscode-wallpaper" &&
           $0 != "takashit16833.noctis-blue"
         ' \
       | LC_ALL=C sort -u

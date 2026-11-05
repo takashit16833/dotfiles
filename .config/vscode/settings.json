@@ -75,7 +75,7 @@
     "workbench.editor.editorActionsLocation": "hidden",
     "chat.titleBar.signIn.enabled": false,
     // 背景 -----------------------------------
-    // Noctis Blue に統合した壁紙機能の有効・無効
+    // Noctis Blue の背景画像の有効・無効
     "noctisBlue.wallpaper.enabled": true,
     // メインの背景画像
     "noctisBlue.wallpaper.image": "/Users/suzukitakashi/Desktop/warehouse/wall/11.png",
