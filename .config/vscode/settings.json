@@ -91,8 +91,9 @@
     // Noctis Blue の領域別透過
     "noctisBlue.opacity": {
         "editor": 0.88,
-    // ミニマップはエディタ領域の背景に重ねて描く（設定値は追加背景の不透明度）。
+        // ミニマップとタブ領域は、エディタ背景の上に追加する背景色の不透明度。
         "minimap": 0.5,
+        "tabs": 0.75,
         "sidebar": 0.90,
         "panel": 0.85,
         "auxiliaryBar": 0.86,
