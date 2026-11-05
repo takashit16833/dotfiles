@@ -86,6 +86,22 @@ bash ./install.sh
 }
 ```
 
+Obsidian ウィンドウの縦横比で2枚の画像を切り替える場合は、同じローカル CSS に次のように記述する。
+
+```css
+:root {
+  --rhb-wallpaper-image: url("横長画面用の画像URL");
+}
+
+@media (max-aspect-ratio: 16/10) {
+  :root {
+    --rhb-wallpaper-image: url("縦長画面用の画像URL");
+  }
+}
+```
+
+縦横比は Obsidian ウィンドウの幅 ÷ 高さで判定する。ここでは `16:10` 以下で2枚目に切り替わり、それより横長なら1枚目を使う。切替条件は `16/10` を変更して調整できる。背景画像は引き続き画面全体に1枚だけ描画し、既存の乗算と透過の設定は変わらない。
+
 Obsidian の Config Layer で `retro-hacker-blue-base.css`、`retro-hacker-blue-wallpaper.css`、`retro-hacker-blue-wallpaper-local.css` を有効にする。画像を使わない場合はローカル CSS を無効にする。
 
 ### Brave を ChatGPT ビューアにする
