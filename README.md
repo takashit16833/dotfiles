@@ -50,17 +50,15 @@ bash ./install.sh
 
 ### VS Code のテーマと背景画像
 
-テーマ、壁紙、背景画像の切り替え、透過・ぼかしは
+テーマ、壁紙、画像切り替え、透過、ぼかしは
 [Noctis Blue](https://github.com/takashit16833/vscode-noctis-blue)
-**1つの拡張**で管理する。初期セットアップの `install.sh` が
-`~/vscode-noctis-blue` の最新 `main` を取得・導入し、旧 Wallpaper 拡張は
-新しい拡張の導入を確認した後にアンインストールする。
+1つで管理する。初期セットアップでは `~/vscode-noctis-blue` の最新 `main` を取得して導入する。
 
-設定の正本は `.config/vscode/settings.json` である。画像は
+設定の正本は `.config/vscode/settings.json` であり、画像は
 `noctisBlue.wallpaper.image` / `noctisBlue.wallpaper.alternateImage`、
 領域別の透過率は `noctisBlue.opacity` で設定する。
 
-手動で更新する場合：
+手動更新：
 
 ```bash
 cd ~/vscode-noctis-blue
@@ -68,16 +66,15 @@ git pull --ff-only
 bash ./install.sh
 ```
 
-初回は VS Code の `Noctis Blue Transparent` を選び、
+初回は VS Code で `Noctis Blue Transparent` を選択し、
 **Noctis Blue: Enable Automatic Appearance** の説明を確認して許可する。
-旧 Wallpaper の管理ファイルを検証できた場合は自動適用状態を引き継ぐ。
-適用後は **Developer: Reload Window** を実行する。
+同意がない場合、管理ファイルが存在しても自動適用を有効化しない。
+有効化後は **Developer: Reload Window** を実行する。
 
-VS Code の組み込み Markdown Editor 用 CSS は別のファイルに適用する。
-必要なら **Noctis Blue: Enable Markdown Editor Appearance** から有効にし、
-アンインストール前には Markdown Editor と Automatic Appearance の両方を解除する。
-安全上の制約と Dev Container での扱いは
-[Noctis Blue の README](https://github.com/takashit16833/vscode-noctis-blue#readme) を参照する。
+内蔵 Markdown Editor の表示を変更する場合は、別途
+**Noctis Blue: Enable Markdown Editor Appearance** から有効化する。
+アンインストール前には Markdown Editor Appearance と Automatic Appearance の両方を解除する。
+詳細は [Noctis Blue の README](https://github.com/takashit16833/vscode-noctis-blue#readme) に従う。
 
 ### Obsidian の背景画像
 
