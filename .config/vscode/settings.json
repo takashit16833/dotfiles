@@ -44,6 +44,8 @@
     "workbench.editorAssociations": {
         "*.md": "vscode.markdown.editor"
     },
+    // GitHub 等のリンクをカード化せず、通常の Markdown リンクとして表示する。
+    "markdown.experimental.richLinks.enabled": false,
     "accessibility.signals.format": {
         "sound": "userGesture",
         "announcement": "never"
