@@ -58,7 +58,7 @@ bash ./install.sh
 `noctisBlue.wallpaper.image` / `noctisBlue.wallpaper.alternateImage`、
 領域別の透過率は `noctisBlue.opacity` で設定する。
 
-手動更新：
+手動更新：ワークベンチの読み込み方式が変わる版では、更新前に VS Code で **Noctis Blue: Disable Automatic Appearance** を実行し、**Developer: Reload Window** で解除を確認する。更新後は明示的に再有効化する。
 
 ```bash
 cd ~/vscode-noctis-blue
