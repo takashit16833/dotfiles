@@ -80,7 +80,7 @@
     // メインの背景画像
     "noctisBlue.wallpaper.image": "/Users/suzukitakashi/Desktop/warehouse/wall/11.png",
     // 2枚目の画像（不要なら空文字）
-    "noctisBlue.wallpaper.alternateImage": "/Users/suzukitakashi/Desktop/warehouse/wall/10.png",
+    "noctisBlue.wallpaper.alternateImage": "/Users/suzukitakashi/Desktop/warehouse/wall/17.png",
     // 画像の切り替え方法
     "noctisBlue.wallpaper.switchMode": "orientation",
     // 画像に乗算する色（白なら元画像の色を維持）
@@ -90,7 +90,7 @@
     "terminal.integrated.enableImages": true,
     // Noctis Blue の領域別透過
     "noctisBlue.opacity": {
-        "editor": 0.83,
+        "editor": 0.88,
         "sidebar": 0.90,
         "panel": 0.85,
         "auxiliaryBar": 0.86,
