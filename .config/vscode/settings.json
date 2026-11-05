@@ -93,6 +93,7 @@
         "editor": 0.88,
         "minimap": 0.5,
         "tabs": 0.3,
+        "breadcrumbs": 0.3,
         "sidebar": 0.90,
         "panel": 0.85,
         "auxiliaryBar": 0.86,
