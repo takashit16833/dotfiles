@@ -44,33 +44,6 @@
     "workbench.editorAssociations": {
         "*.md": "vscode.markdown.editor"
     },
-    // Markdown Live Preview の配色を試す。既定の Markdown Preview は変更しない。
-    "mdLivePreview.enabledStyles": [
-        "retro-hacker-blue.css"
-    ],
-    // Markdown の装飾と階層インデントは自作拡張機能で適用する。
-    // Text Marker は暗い背景でも色を判別しやすいよう、色相を広く散らす。
-    // Noctis Blue の Gold / Blue / Purple / Orange と Cyber Pink に、
-    // テーマの雰囲気になじむ Hacker Green を加える。Cyan は単語ハイライトと競合するため避ける。
-    "textmarker.highlightColors": [
-        "#FFD700",
-        "#39FF88",
-        "#5EAFFF",
-        "#B07CFF",
-        "#FF4DE1",
-        "#FFA500"
-    ],
-    "textmarker.defaultHighlightColor": "#8A5EC0",
-    "textmarker.defaultHighlightOpacity": 0.36,
-    "textmarker.enableWholeMatch": true,
-    "textmarker.autoSelectDistinctiveTextColor": false,
-    "textmarker.useHighlightColorOnRuler": true,
-    // テーマ固有の配色は Noctis Blue 本体で管理する。
-    // ここでは各拡張固有の色だけを設定する。
-    "workbench.colorCustomizations": {
-        "quickJump.hintBackground": "#FF4DE1CC",
-        "quickJump.hintForeground": "#00184A"
-    },
     "accessibility.signals.format": {
         "sound": "userGesture",
         "announcement": "never"
@@ -91,14 +64,6 @@
         "announcement": "auto"
     },
     "editor.accessibilitySupport": "off",
-    "yaml.disableSchemaDetection": [
-        "**/.github/workflows/*.yml",
-        "**/.github/workflows/*.yaml",
-        "**/.gitea/workflows/*.yml",
-        "**/.gitea/workflows/*.yaml",
-        "**/.forgejo/workflows/*.yml",
-        "**/.forgejo/workflows/*.yaml"
-    ],
     "workbench.activityBar.location": "hidden",
     "workbench.navigationControl.enabled": false,
     "workbench.layoutControl.enabled": false,
@@ -121,4 +86,13 @@
     // 領域別の透過率は Noctis Blue の既定値を使う。
     // 個別に変えたい場合だけ noctisBlue.opacity をここへ追加する。
     "terminal.integrated.enableImages": true,
+    // Noctis Blue の領域別透過
+    "noctisBlue.opacity": {
+        "editor": 0.91,
+        "sidebar": 0.93,
+        "panel": 0.94,
+        "auxiliaryBar": 0.86,
+        "chrome": 0.93,
+        "gap": 0.91
+    }
 }
