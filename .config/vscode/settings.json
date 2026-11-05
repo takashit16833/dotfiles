@@ -40,9 +40,9 @@
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "vscode.json-language-features"
     },
-    // Markdown は VS Code 標準プレビューで開く。
+    // Markdown は VS Code 内蔵のリッチ Markdown Editor で開く。
     "workbench.editorAssociations": {
-        "*.md": "vscode.markdown.preview.editor"
+        "*.md": "vscode.markdown.editor"
     },
     // Markdown Live Preview の配色を試す。既定の Markdown Preview は変更しない。
     "mdLivePreview.enabledStyles": [
