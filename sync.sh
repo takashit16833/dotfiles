@@ -39,10 +39,7 @@ sync_vscode_extensions() {
     printf '# VS Code extension IDs, one per line.\n'
     # 自作拡張は Marketplace ではなく、それぞれのソースから VSIX を導入する。
     "$vscode_cli" --list-extensions \
-      | awk '
-          $0 != "takashit16833.markdown-outline-preview" &&
-          $0 != "takashit16833.noctis-blue"
-        ' \
+      | awk '$0 !~ /^takashit16833[.]/' \
       | LC_ALL=C sort -u
   } > "$tmp_file"
 
