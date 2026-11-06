@@ -149,28 +149,30 @@ ensure_symlink() {
   info "linked: $target -> $source"
 }
 
-# PC固有の設定は初回だけ作成し、dotfilesが生成した場合のみ管理印を付ける。
+# ワークスペースの登録内容だけを初回作成する。既存のローカル設定は変更しない。
 install_wezterm_local_config() {
-  local template="$DOTFILES_DIR/.config/wezterm/local.example.lua"
+  local template="$DOTFILES_DIR/.config/wezterm/workspaces.example.lua"
   local directory="$XDG_CONFIG_HOME/wezterm-local"
-  local target="$directory/local.lua"
-  local marker="$directory/.dotfiles-created"
+  local target="$directory/workspaces.lua"
 
   if [[ -e "$target" || -L "$target" ]]; then
-    info "WezTerm local config already exists: $target"
+    info "WezTerm workspace config already exists: $target"
     return
   fi
 
   [[ -f "$template" ]] || fail "$template does not exist"
   [[ ! -L "$directory" ]] || fail "$directory is a symlink; leaving it untouched"
-  if [[ -e "$marker" || -L "$marker" ]]; then
-    fail "$marker exists without local.lua; leaving it untouched"
+  if [[ -e "$directory" && ! -d "$directory" ]]; then
+    fail "$directory exists but is not a directory; leaving it untouched"
   fi
 
   mkdir -p "$directory"
   cp -n "$template" "$target"
-  printf '%s\n' 'created by dotfiles install.sh' > "$marker"
-  info "created WezTerm local config: $target"
+  info "created WezTerm workspace config: $target"
+
+  if [[ -e "$directory/local.lua" || -L "$directory/local.lua" ]]; then
+    info "legacy WezTerm local.lua was left untouched; move workspace entries to workspaces.lua"
+  fi
 }
 
 install_managed_scripts() {
