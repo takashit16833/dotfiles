@@ -46,18 +46,6 @@
         "command": "markdown.editor.toggleLocked",
         "when": "activeCustomEditorId == 'vscode.markdown.editor' && !inputFocus"
     },
-    // Markdown Editor の本文にフォーカスがない場合も上下キーで移動できるようにする。
-    // フォーカスがある場合は VS Code 標準のキーバインドに任せる。
-    {
-        "key": "up",
-        "command": "markdown.editor.cursorUp",
-        "when": "activeCustomEditorId == 'vscode.markdown.editor' && !markdownEditorFocus && !inputFocus && !panelFocus && !sideBarFocus"
-    },
-    {
-        "key": "down",
-        "command": "markdown.editor.cursorDown",
-        "when": "activeCustomEditorId == 'vscode.markdown.editor' && !markdownEditorFocus && !inputFocus && !panelFocus && !sideBarFocus"
-    },
     // ========================================================================
     // テキストエディタ：補完・スクロール
     // ========================================================================
