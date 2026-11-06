@@ -12,7 +12,7 @@ cd ~/dotfiles
 bash ./install.sh
 ```
 
-dotfiles 自体は公開リポジトリなので HTTPS で認証なしに clone できる。初期インストールでは自作 VS Code 拡張を GitHub SSH で取得するため、`bash ./install.sh` の実行前に SSH 認証を設定する。
+dotfiles 自体は公開リポジトリなので HTTPS で認証なしに clone できる。自作 VS Code 拡張の取得には GitHub CLI の認証を利用するため、`bash ./install.sh` の実行前に `gh auth login` を済ませる（SSH 鍵は不要）。
 
 `install.sh` は `Brewfile` に宣言した CLI / アプリのインストール、設定ファイルの symlink、VS Code extension、Raycast Local Extension などのセットアップを行う。
 
@@ -28,7 +28,6 @@ Raycast Local Extension の初回登録では、公式の `ray develop` を短�
 
 `install.sh` 完了後、必要に応じて以下を手動で設定する。
 
-- GitHub CLI を利用する場合は `gh auth login` で認証する。
 - Hammerspoon を初回起動し、アクセシビリティ権限を許可する。以後は設定からログイン時に自動起動する。
 - Docker を利用する場合は `colima start` で container runtime を起動する。
 - Chrome / Brave の unpacked extension や Web アプリはブラウザ側で初回登録する。
