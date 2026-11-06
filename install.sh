@@ -246,7 +246,7 @@ ensure_github_auth() {
 
 install_source_vscode_extension() {
   local repository="$1"
-  local directory="$HOME/$repository"
+  local directory="$HOME/workspace/$repository"
   local ssh_url="git@github.com:takashit16833/$repository.git"
   local https_url="https://github.com/takashit16833/$repository.git"
   local origin
@@ -285,6 +285,7 @@ install_source_vscode_extension() {
       info "updated origin to HTTPS: $directory"
     fi
   else
+    mkdir -p "$(dirname "$directory")"
     info "cloning $repository into $directory (GitHub CLI authentication)"
     git -c credential.helper= -c credential.helper='!gh auth git-credential' \
       clone --branch main "$https_url" "$directory" \
