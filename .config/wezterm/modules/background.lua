@@ -124,7 +124,7 @@ local function make_background(workspaces, workspace_name, portrait)
   }
 end
 
-function M.setup(wezterm, config, workspaces)
+function M.setup(wezterm, workspaces)
   -- 起動時は WezTerm 標準の背景を使い、ワークスペースごとに切り替える。
   local function update_background(window)
     local overrides = window:get_config_overrides() or {}
