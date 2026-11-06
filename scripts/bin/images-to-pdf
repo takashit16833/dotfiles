@@ -1,0 +1,61 @@
+#!/bin/zsh
+
+# macOS の PDFKit で画像をまとめる。変換処理は同梱の Swift に任せる。
+emulate zsh
+setopt ERR_EXIT NO_UNSET PIPE_FAIL
+
+usage() {
+  print -r -- 'Usage: images-to-pdf DIRECTORY'
+  print -r -- 'Combine images directly inside DIRECTORY into ../DIRECTORY.pdf.'
+}
+
+if (( $# == 1 )) && [[ "$1" == -h || "$1" == --help ]]; then
+  usage
+  exit 0
+fi
+
+if (( $# != 1 )); then
+  usage >&2
+  exit 2
+fi
+
+folder=${1:A}
+if [[ ! -d "$folder" || "$folder" == / ]]; then
+  print -u2 -r -- "Directory not found or unsupported: $1"
+  exit 1
+fi
+
+output="${folder:h}/${folder:t}.pdf"
+if [[ -e "$output" || -L "$output" ]]; then
+  print -u2 -r -- "Output already exists: $output"
+  exit 1
+fi
+
+# zsh の glob によるファイル名順を使い、下位ディレクトリは探索しない。
+# (N) は一致なしを許可、(D) は隠しファイルも対象、(.) は通常ファイルのみ。
+images=()
+for file in "$folder"/*(ND.); do
+  case "${file:e:l}" in
+    jpg|jpeg|png|tif|tiff|bmp|gif|webp) images+=("$file") ;;
+  esac
+done
+
+if (( ${#images} == 0 )); then
+  print -u2 -r -- "No supported images found in: $folder"
+  exit 1
+fi
+
+if ! command -v swift >/dev/null 2>&1; then
+  print -u2 -r -- 'Swift is unavailable. Install the Xcode Command Line Tools.'
+  exit 1
+fi
+
+# :A は ~/.local/bin の symlink を解決し、dotfiles 側の実体を参照する。
+backend="${0:A:h:h}/lib/images-to-pdf.swift"
+if [[ ! -f "$backend" ]]; then
+  print -u2 -r -- "PDF converter not found: $backend"
+  exit 1
+fi
+
+swift "$backend" "$output" "${images[@]}"
+print -r -- "Created: $output (${#images} pages)"

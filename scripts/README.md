@@ -8,8 +8,20 @@
 
 ## Commands
 
+### images-to-pdf
 
-CLI を追加したら、コマンド名・目的・主な使い方をこのセクションへ記録します。
+指定フォルダ直下の画像をファイル名順に1ページずつまとめて、親フォルダへ `<フォルダ名>.pdf` を生成します。
+画像ファイルは変更せず、既存のPDFは上書きしません。下位フォルダは探索しません。
+
+```zsh
+images-to-pdf ~/Documents/capture/chapter2
+# ~/Documents/capture/chapter2.pdf を生成
+```
+
+対象拡張子は JPEG (`.jpg`/`.jpeg`)、PNG、TIFF (`.tif`/`.tiff`)、BMP、GIF、WebP（大文字も可）です。
+GIF・複数ページTIFFは先頭画像だけを使います。読み込めない画像がある場合はエラーで停止します。
+macOS の PDFKit と Swift を利用するため、Xcode Command Line Tools が必要です。追加の Python パッケージは不要です。
+`install.sh` が `scripts/bin/images-to-pdf` を `~/.local/bin` にリンクします。
 
 ## Installation
 
