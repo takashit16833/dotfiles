@@ -215,8 +215,14 @@ install_source_vscode_extension() {
   local repository="$1"
   local directory="$HOME/$repository"
   local ssh_url="git@github.com:takashit16833/$repository.git"
+  local https_url="https://github.com/takashit16833/$repository.git"
   local origin
   local current_branch
+
+  # SSH 鍵は要求せず、GitHub CLI のログイン情報で HTTPS 認証する。
+  command -v gh >/dev/null 2>&1 || fail "GitHub CLI (gh) is not installed"
+  gh auth status --hostname github.com >/dev/null 2>&1 \
+    || fail "GitHub CLI is not logged in; run gh auth login and retry"
 
   if [[ -e "$directory" || -L "$directory" ]]; then
     [[ -d "$directory" && -d "$directory/.git" ]] \
@@ -240,12 +246,21 @@ install_source_vscode_extension() {
       || fail "$directory is on $current_branch; switch to main before running install.sh"
 
     info "updating existing repository: $directory"
-    git -C "$directory" pull --ff-only origin main \
-      || fail "failed to fast-forward $directory to origin/main"
+    git -C "$directory" \
+      -c credential.helper= -c credential.helper='!gh auth git-credential' \
+      pull --ff-only "$https_url" main \
+      || fail "failed to fast-forward $directory to main"
+
+    # SSH origin だった clone も今後は gh の HTTPS 認証で更新できるようにする。
+    if [[ "$origin" == "$ssh_url" ]]; then
+      git -C "$directory" remote set-url origin "$https_url"
+      info "updated origin to HTTPS: $directory"
+    fi
   else
-    info "cloning $repository into $directory (GitHub SSH authentication required)"
-    git clone --branch main "$ssh_url" "$directory" \
-      || fail "failed to clone $repository; configure GitHub SSH access and retry"
+    info "cloning $repository into $directory (GitHub CLI authentication)"
+    git -c credential.helper= -c credential.helper='!gh auth git-credential' \
+      clone --branch main "$https_url" "$directory" \
+      || fail "failed to clone $repository using GitHub CLI authentication"
   fi
 
   [[ -f "$directory/install.sh" ]] || fail "missing install script: $directory/install.sh"
