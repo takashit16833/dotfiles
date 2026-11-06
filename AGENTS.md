@@ -49,7 +49,7 @@
 - `sync.sh` の Marketplace 拡張一覧には、自作拡張（ID が `takashit16833.` で始まるもの）を含めない。自作拡張はそれぞれの正本リポジトリから導入する。
 - 内蔵 Markdown Editor の Rich Links は無効化し、GitHub 等の URL も通常リンクとして Noctis Blue のリンク配色を使う。
 
-- ソースから導入する Noctis Blue（`vscode-noctis-blue`）はホーム直下に取得し、固定コミットではなく最新 `main` を使う。取得には GitHub SSH を使う。既存 clone は origin が一致し、未コミット変更がなく、現在ブランチが `main` の場合だけ `git pull --ff-only origin main` で更新する。それ以外は中止し、branch 切り替え・stash・reset を自動実行しない。既存ディレクトリを削除・上書きしない。
+- ソースから導入する Noctis Blue（`vscode-noctis-blue`）はホーム直下に取得し、固定コミットではなく最新 `main` を使う。取得には GitHub CLI（`gh auth login`）の認証を使い、HTTPS 経由で clone / pull する。Git の credential helper はコマンド単位で `gh auth git-credential` を指定し、Git のグローバル設定は変更しない。既存 clone は origin が一致し、未コミット変更がなく、現在ブランチが `main` の場合だけ `git pull --ff-only` 相当で更新する。SSH 形式の origin は更新成功後に HTTPS 形式へ切り替える。それ以外は中止し、branch 切り替え・stash・reset を自動実行しない。既存ディレクトリを削除・上書きしない。
 
 ## Terminal
 
