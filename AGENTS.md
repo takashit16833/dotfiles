@@ -49,7 +49,9 @@
 - `sync.sh` の Marketplace 拡張一覧には、自作拡張（ID が `takashit16833.` で始まるもの）を含めない。自作拡張はそれぞれの正本リポジトリから導入する。
 - 内蔵 Markdown Editor の Rich Links は無効化し、GitHub 等の URL も通常リンクとして Noctis Blue のリンク配色を使う。
 
-- ソースから導入する Noctis Blue（`vscode-noctis-blue`）はホーム直下に取得し、固定コミットではなく最新 `main` を使う。取得には GitHub CLI（`gh auth login`）の認証を使い、HTTPS 経由で clone / pull する。Git の credential helper はコマンド単位で `gh auth git-credential` を指定し、Git のグローバル設定は変更しない。既存 clone は origin が一致し、未コミット変更がなく、現在ブランチが `main` の場合だけ `git pull --ff-only` 相当で更新する。SSH 形式の origin は更新成功後に HTTPS 形式へ切り替える。それ以外は中止し、branch 切り替え・stash・reset を自動実行しない。既存ディレクトリを削除・上書きしない。
+- ソースから導入する Noctis Blue（`vscode-noctis-blue`）はホーム直下に取得し、固定コミットではなく最新 `main` を使う。取得には GitHub CLI の認証を使い、HTTPS 経由で clone / pull する。`gh` は Brewfile から導入し、インストール後に未認証なら対話的に `gh auth login` を実行する（非対話実行なら停止する）。Git の credential helper はコマンド単位で `gh auth git-credential` を指定し、Git のグローバル設定は変更しない。既存 clone は origin が一致し、未コミット変更がなく、現在ブランチが `main` の場合だけ `git pull --ff-only` 相当で更新する。SSH 形式の origin は更新成功後に HTTPS 形式へ切り替える。それ以外は中止し、branch 切り替え・stash・reset を自動実行しない。既存ディレクトリを削除・上書きしない。
+
+- Node.js は Noctis Blue の `@vscode/vsce@4.0.0` に合わせて 22 以上を要求する。Brewfile の Homebrew 版を優先して使い、古ければ `brew upgrade node` で更新する。PATH の変更はインストール処理内に限定する。
 
 ## Terminal
 
