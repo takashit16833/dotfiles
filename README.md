@@ -72,6 +72,22 @@ bash ./install.sh
 }
 ```
 
+エディタやサイドバーなどの背景の透過率も、同じローカル CSS で指定できる。
+
+```css
+html body.theme-dark {
+  --rhb-wallpaper-panel-opacity: 50%;
+  --rhb-wallpaper-sidebar-opacity: 70%;
+  --rhb-wallpaper-block-opacity: 45%;
+}
+```
+
+- `panel-opacity`：エディタなどの主要領域（既定値 83%）。
+- `sidebar-opacity`：左右のサイドバー（既定値 90%）。
+- `block-opacity`：コードブロックやダイアログなど（既定値 45%）。
+
+値を小さくすると背景が透けて壁紙がよく見える。必要な項目だけ指定すればよい。
+
 Obsidian ウィンドウの縦横比で2枚の画像を切り替える場合は、同じローカル CSS に次のように記述する。
 
 ```css
