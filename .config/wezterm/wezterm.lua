@@ -425,14 +425,23 @@ config.key_tables = {
   },
 }
 
--- PC固有のWorkspace設定があれば読み込む。
-local workspace_file = wezterm.home_dir .. "/.config/wezterm-local/local.lua"
+-- ワークスペースの登録内容だけをPC固有の設定として読み込む。
+-- 旧 local.lua は実行しない。起動・切り替え処理はGit管理側が担当する。
+local workspace_file = wezterm.home_dir .. "/.config/wezterm-local/workspaces.lua"
+wezterm.add_to_config_reload_watch_list(workspace_file)
+
+local workspaces = {}
 local file = io.open(workspace_file, "r")
 if file then
   file:close()
-  wezterm.add_to_config_reload_watch_list(workspace_file)
-  dofile(workspace_file)(wezterm, config)
+  workspaces = dofile(workspace_file)
+  assert(type(workspaces) == "table", "workspaces.lua must return a table")
 end
+
+-- 背景の文字部分の透過率は共通設定として維持する。
+config.text_background_opacity = 0.5
+require("modules.workspace").setup(wezterm, config, workspaces)
+require("modules.background").setup(wezterm, config, workspaces)
 
 -- コピーモードの移動キー。
 local act = wezterm.action
