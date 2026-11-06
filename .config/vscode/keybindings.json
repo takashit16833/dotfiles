@@ -5,11 +5,13 @@
     // 他アプリに合わせて Ctrl+PageUp/Down でタブグループ内を移動する。
     {
         "key": "ctrl+pagedown",
-        "command": "workbench.action.nextEditorInGroup"
+        "command": "workbench.action.nextEditorInGroup",
+        "when": "editorTextFocus"
     },
     {
         "key": "ctrl+pageup",
-        "command": "workbench.action.previousEditorInGroup"
+        "command": "workbench.action.previousEditorInGroup",
+        "when": "editorTextFocus"
     },
     // macOS 既定の Cmd+Option+←/→ によるタブ移動を解除する。
     // タブ移動は Ctrl+PageUp/Down に統一する。
