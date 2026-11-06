@@ -519,6 +519,36 @@
   border-color: var(--rhb-blue);
 }
 
+/* TaskNotes edit modal: the plugin marks both actions as mod-warning.
+ * Use their distinct classes to restore legibility without changing Save,
+ * Cancel, or warning buttons in unrelated dialogs. */
+.theme-dark .modal.mod-tasknotes .tn-task-modal__button-bar
+  button.tn-task-modal__archive-button,
+.theme-dark .modal.mod-tasknotes .tn-task-modal__button-bar
+  button.tn-task-modal__delete-button {
+  background-color: var(--rhb-section);
+  border: 1px solid;
+}
+
+.theme-dark .modal.mod-tasknotes .tn-task-modal__button-bar
+  button.tn-task-modal__archive-button {
+  color: var(--rhb-blue-pale);
+  border-color: var(--rhb-blue-soft);
+}
+
+.theme-dark .modal.mod-tasknotes .tn-task-modal__button-bar
+  button.tn-task-modal__delete-button {
+  color: var(--rhb-error);
+  border-color: var(--rhb-error);
+}
+
+.theme-dark .modal.mod-tasknotes .tn-task-modal__button-bar
+  button.tn-task-modal__archive-button:hover,
+.theme-dark .modal.mod-tasknotes .tn-task-modal__button-bar
+  button.tn-task-modal__delete-button:hover {
+  background-color: var(--rhb-quick-focus);
+}
+
 /* ===========================================================
  * Extra syntax fidelity
  * Prism (Reading view) + common CodeMirror token classes
