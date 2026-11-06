@@ -32,7 +32,6 @@ html {
     --rhb-wp-block-code: color-mix(in srgb, #0A1A36 var(--rhb-wallpaper-block-opacity), transparent);
     --rhb-wp-inline-code: color-mix(in srgb, var(--rhb-quick-focus) var(--rhb-wallpaper-block-opacity), transparent);
     --rhb-wp-block-section: color-mix(in srgb, var(--rhb-section) var(--rhb-wallpaper-block-opacity), transparent);
-    --rhb-wp-block-section-strong: color-mix(in srgb, var(--rhb-section-strong) var(--rhb-wallpaper-block-opacity), transparent);
     --rhb-wp-block-panel: color-mix(in srgb, var(--rhb-panel) var(--rhb-wallpaper-block-opacity), transparent);
     --rhb-wp-block-accent: color-mix(in srgb, var(--rhb-blue) var(--rhb-wallpaper-block-opacity), transparent);
     --rhb-wp-block-editor: color-mix(in srgb, var(--rhb-editor) var(--rhb-wallpaper-block-opacity), transparent);
@@ -57,8 +56,6 @@ html {
 
     /* Theme variables used by rendered Markdown and Live Preview. */
     --code-background: var(--rhb-wp-block-code);
-    --table-header-background: var(--rhb-wp-block-section);
-    --table-header-background-hover: var(--rhb-wp-block-section-strong);
     --blockquote-background-color: var(--rhb-wp-block-section);
 
     /* Built-in UI background variables; do not alter text or icon roles. */
@@ -222,23 +219,15 @@ html {
     background-color: var(--rhb-wp-inline-code);
   }
 
-  /* Tables, block quotes and callouts all share the same block opacity. */
+  /* Quotes and callouts keep their translucent backgrounds.
+   * Table headers remain transparent in both wallpaper modes. */
   body.theme-dark :is(
-    .markdown-rendered th,
-    .cm-table-widget th,
     .markdown-rendered blockquote,
     .markdown-source-view.mod-cm6 .HyperMD-quote,
     .markdown-rendered .callout,
     .markdown-source-view .callout
   ) {
     background-color: var(--rhb-wp-block-section);
-  }
-
-  body.theme-dark :is(
-    .markdown-rendered th:hover,
-    .cm-table-widget th:hover
-  ) {
-    background-color: var(--rhb-wp-block-section-strong);
   }
 
   /* Property labels and their text fields share the content-block opacity. */
