@@ -2,16 +2,17 @@
     // ========================================================================
     // 共通：エディタグループ・タブ操作
     // ========================================================================
-    // 他アプリに合わせて Ctrl+PageUp/Down でタブグループ内を移動する。
+    // Ctrl+PageUp/Down でタブグループ内を移動する。
+    // 通常のテキストエディタと内蔵 Markdown Editor の両方で有効にする。
     {
         "key": "ctrl+pagedown",
         "command": "workbench.action.nextEditorInGroup",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus || markdownEditorFocus"
     },
     {
         "key": "ctrl+pageup",
         "command": "workbench.action.previousEditorInGroup",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus || markdownEditorFocus"
     },
     // macOS 既定の Cmd+Option+←/→ によるタブ移動を解除する。
     // タブ移動は Ctrl+PageUp/Down に統一する。
