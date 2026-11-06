@@ -8,3 +8,8 @@ desc = "Quit without changing directory"
 on = "Q"
 run = "quit"
 desc = "Quit and change directory"
+
+[[mgr.prepend_keymap]]
+on = [ "g", "w" ]
+run = "cd ~/workspace"
+desc = "Go to workspace"
