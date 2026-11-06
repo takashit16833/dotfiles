@@ -7,8 +7,9 @@ macOS 用の dotfiles。
 Homebrew をインストールした状態で実行する。新しい Mac で Git や C コンパイラが利用できない場合は、`xcode-select -p` で Xcode Command Line Tools の状態を確認し、未導入なら `xcode-select --install` で導入する。C コンパイラは Emacs の Tree-sitter 文法のビルドに使用する。
 
 ```bash
-git clone https://github.com/takashit16833/dotfiles.git ~/dotfiles
-cd ~/dotfiles
+mkdir -p ~/workspace
+git clone https://github.com/takashit16833/dotfiles.git ~/workspace/dotfiles
+cd ~/workspace/dotfiles
 bash ./install.sh
 ```
 
@@ -37,7 +38,7 @@ Noctis Blue のビルドに必要な Node.js 22 以上を確認する。古い�
 
 テーマ、壁紙、画像切り替え、透過、ぼかしは
 [Noctis Blue](https://github.com/takashit16833/vscode-noctis-blue)
-1つで管理する。初期セットアップでは `~/vscode-noctis-blue` の最新 `main` を取得して導入する。
+1つで管理する。初期セットアップでは `~/workspace/vscode-noctis-blue` の最新 `main` を取得して導入する。
 
 設定の正本は `.config/vscode/settings.json` であり、画像は
 `noctisBlue.wallpaper.image` / `noctisBlue.wallpaper.alternateImage`、
@@ -46,7 +47,7 @@ Noctis Blue のビルドに必要な Node.js 22 以上を確認する。古い�
 手動更新：ワークベンチの読み込み方式が変わる版では、更新前に VS Code で **Noctis Blue: Disable Automatic Appearance** を実行し、**Developer: Reload Window** で解除を確認する。更新後は明示的に再有効化する。
 
 ```bash
-cd ~/vscode-noctis-blue
+cd ~/workspace/vscode-noctis-blue
 git pull --ff-only
 bash ./install.sh
 ```
@@ -141,6 +142,6 @@ GitHub の HTTPS 認証も `~/.gitconfig.local` で `gh` を使う。
 ## Uninstall
 
 ```bash
-cd ~/dotfiles
+cd ~/workspace/dotfiles
 bash ./uninstall.sh
 ```
