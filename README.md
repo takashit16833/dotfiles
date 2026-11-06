@@ -12,7 +12,7 @@ cd ~/dotfiles
 bash ./install.sh
 ```
 
-dotfiles 自体は公開リポジトリなので HTTPS で認証なしに clone できる。自作 VS Code 拡張の取得には GitHub CLI の認証を利用するため、`bash ./install.sh` の実行前に `gh auth login` を済ませる（SSH 鍵は不要）。
+dotfiles 自体は公開リポジトリなので HTTPS で認証なしに clone できる。GitHub CLI（`gh`）は `install.sh` がインストールし、未ログインの場合は途中でブラウザ認証を案内する。SSH 鍵や事前の `gh auth login` は不要。
 
 `install.sh` は `Brewfile` に宣言した CLI / アプリのインストール、設定ファイルの symlink、VS Code extension、Raycast Local Extension などのセットアップを行う。
 
@@ -20,7 +20,7 @@ Emacs 本体、Tree-sitter CLI、Lua Language Server、StyLua は `Brewfile` で
 
 Raycast Local Extension の初回登録では、公式の `ray develop` を短時間だけ利用するため Raycast app が自動で開くことがある。登録後は development process を停止するので、普段の利用時に `npm run dev` を起動しておく必要はない。
 
-既存の Homebrew Node.js が shared library の更新などで実行不能になっている場合は、Raycast Extension のセットアップ前に検出して Node.js を入れ直す。
+Noctis Blue のビルドに必要な Node.js 22 以上を確認する。古い場合は Homebrew 版を更新し、別の Node.js が PATH にあってもインストール処理では Homebrew 版を優先する。
 
 既存の設定ファイルや symlink がある場合、`install.sh` は上書きせず停止する。必要なものを退避してから再実行する。
 
