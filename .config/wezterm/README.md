@@ -22,7 +22,12 @@ cp -n ~/workspace/dotfiles/.config/wezterm/workspaces.example.lua \
 - `Cmd+Shift+P`：登録したワークスペースを選択する。
 - `shortcut` に登録したキー：直接切り替える。
 - 未作成のワークスペースは選択時に指定した `cwd` で作成する。
-- 起動時は WezTerm 標準の `default` のみを使う。
+- `default_workspace`：起動時に開くワークスペース名。省略時は `default`。
+- 起動時にはそのワークスペースだけを開く。作業フォルダは登録した `cwd` を使う。
+
+`workspaces.lua` の `return {` の直下に `default_workspace = "Project",` と
+指定できる。指定する名前は、同じファイル内の `name` と一致させる。
+すでに作成済みのローカル設定も、先頭にこの1行を追加するだけでよい。
 
 `workspaces.lua` の一覧に、必要なものを追加する。背景画像の設定例も
 `workspaces.example.lua` に記載している。画像を設定しなければ通常の背景を使う。
