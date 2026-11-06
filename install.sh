@@ -58,10 +58,16 @@ install_homebrew_packages() {
   info 'ensuring Kitty is current for managed keybindings'
   brew upgrade --cask kitty
 
-  # brew bundle --no-upgrade では、既存 Node と更新済み shared library の組み合わせが
-  # 壊れたまま残ることがある。Raycast Extension の npm install 前に実行可能性を確認し、
-  # 壊れている場合だけ Homebrew の Node を入れ直して依存関係を揃える。
-  info 'checking Node.js runtime'
+  # Noctis Blue の VSIX 作成には Node.js 22 以上が必要。
+  # brew bundle --no-upgrade では古い Node.js が残るため、バージョンも確認する。
+  # 新しいユーザーでも他の Node.js を拾わないよう Homebrew 版を優先する。
+  local node_bin_dir
+  local node_major
+  node_bin_dir="$(brew --prefix node)/bin"
+  export PATH="$node_bin_dir:$PATH"
+  hash -r
+
+  info 'checking Homebrew Node.js runtime'
   if ! node --version >/dev/null 2>&1 || ! npm --version >/dev/null 2>&1; then
     info 'Node.js runtime is broken; reinstalling Homebrew node'
     HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 brew reinstall node
@@ -69,6 +75,14 @@ install_homebrew_packages() {
 
   node --version >/dev/null 2>&1 || fail 'node is still unavailable after Homebrew setup'
   npm --version >/dev/null 2>&1 || fail 'npm is still unavailable after Homebrew setup'
+
+  node_major="$(node -p 'process.versions.node.split(".")[0]')"
+  if (( node_major < 22 )); then
+    info "Homebrew Node.js $(node --version) is too old; upgrading node"
+    brew upgrade node
+    node_major="$(node -p 'process.versions.node.split(".")[0]')"
+  fi
+  (( node_major >= 22 )) || fail "Node.js 22 or newer is required; found $(node --version)"
 }
 
 install_entangled() {
@@ -211,6 +225,25 @@ install_vscode_extensions() {
   fi
 }
 
+# gh は Brewfile でインストールし、必要なら初回認証をここで行う。
+ensure_github_auth() {
+  command -v gh >/dev/null 2>&1 || fail 'GitHub CLI (gh) was not installed by Homebrew'
+
+  if gh auth status --hostname github.com >/dev/null 2>&1; then
+    info 'GitHub CLI is already authenticated'
+    return
+  fi
+
+  # 自動実行時には認証待ちで停止しない。対話できる場合だけブラウザ認証を開始する。
+  [[ -t 0 ]] || fail 'GitHub login is required; run gh auth login and retry'
+
+  info 'signing in to GitHub via GitHub CLI'
+  gh auth login --hostname github.com --git-protocol https --web \
+    || fail 'GitHub CLI login failed'
+  gh auth status --hostname github.com >/dev/null 2>&1 \
+    || fail 'GitHub CLI authentication could not be verified'
+}
+
 install_source_vscode_extension() {
   local repository="$1"
   local directory="$HOME/$repository"
@@ -218,11 +251,6 @@ install_source_vscode_extension() {
   local https_url="https://github.com/takashit16833/$repository.git"
   local origin
   local current_branch
-
-  # SSH 鍵は要求せず、GitHub CLI のログイン情報で HTTPS 認証する。
-  command -v gh >/dev/null 2>&1 || fail "GitHub CLI (gh) is not installed"
-  gh auth status --hostname github.com >/dev/null 2>&1 \
-    || fail "GitHub CLI is not logged in; run gh auth login and retry"
 
   if [[ -e "$directory" || -L "$directory" ]]; then
     [[ -d "$directory" && -d "$directory/.git" ]] \
@@ -411,6 +439,7 @@ main() {
 
   install_wezterm_local_config
   install_homebrew_packages
+  ensure_github_auth
   install_entangled
   install_mermaid_cli
   install_managed_scripts
