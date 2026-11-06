@@ -22,14 +22,14 @@ Chrome / Brave の unpacked extension として読み込む。
 1. `brave://extensions` を開く。
 2. Developer mode を有効にする。
 3. `Load unpacked` を押す。
-4. `~/dotfiles/chrome/youtube-keyboard` を選ぶ。
+4. `~/workspace/dotfiles/chrome/youtube-keyboard` を選ぶ。
 
 ### Chrome
 
 1. `chrome://extensions` を開く。
 2. Developer mode を有効にする。
 3. `Load unpacked` を押す。
-4. `~/dotfiles/chrome/youtube-keyboard` を選ぶ。
+4. `~/workspace/dotfiles/chrome/youtube-keyboard` を選ぶ。
 
 一度読み込めば、ソースを変更したときは Extensions 画面の Reload で反映できる。
 
