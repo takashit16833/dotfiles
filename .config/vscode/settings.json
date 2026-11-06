@@ -1,4 +1,6 @@
 {
+    // すべでの文字を対象にする（規定は前方一致）
+    "quickJump.matchMode": "anywhere",
     // 開いているファイル内の単語を補完候補にする
     "editor.wordBasedSuggestions": "allDocuments",
     // コード部分だけ自動補完する
