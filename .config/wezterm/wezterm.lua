@@ -438,6 +438,16 @@ if file then
   assert(type(workspaces) == "table", "workspaces.lua must return a table")
 end
 
+-- 起動先の名前と作業フォルダもPC固有の定義から取得する。
+-- 未指定の場合はWezTerm標準の default にする。
+config.default_workspace = workspaces.default_workspace or "default"
+for _, workspace in ipairs(workspaces) do
+  if workspace.name == config.default_workspace then
+    config.default_cwd = workspace.cwd
+    break
+  end
+end
+
 -- 背景の文字部分の透過率は共通設定として維持する。
 config.text_background_opacity = 0.5
 require("modules.workspace").setup(wezterm, config, workspaces)
