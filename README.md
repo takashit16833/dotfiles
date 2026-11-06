@@ -37,6 +37,12 @@ Hammerspoon を起動し、アクセシビリティ権限とログイン時の�
 bash ./sync.sh
 ```
 
+## 関連リポジトリ
+
+- [Noctis Blue](https://github.com/takashit16833/vscode-noctis-blue) — VS Code のテーマ・背景画像
+- [QuickJump](https://github.com/takashit16833/QuickJump) — VS Code のカーソル移動
+- [.emacs.d](https://github.com/takashit16833/.emacs.d) — Emacs の設定
+
 ## アンインストール
 
 ```bash
