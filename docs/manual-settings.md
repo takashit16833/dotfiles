@@ -17,6 +17,7 @@ macOS の **システム設定** → **外観** → **スクロールバーを�
 
 ## 各ツールの初回設定
 
+- WezTerm のワークスペース：[WezTerm の README](../.config/wezterm/README.md)
 - VS Code のテーマ・背景画像・透過：[Noctis Blue の README](https://github.com/takashit16833/vscode-noctis-blue#readme)
 - Obsidian の背景画像：[Obsidian CSS の README](../obsidian/css/README.md)
 - YouTube のブラウザ拡張：[YouTube Keyboard Navigator の README](../chrome/youtube-keyboard/README.md)
