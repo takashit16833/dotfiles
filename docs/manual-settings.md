@@ -17,6 +17,7 @@ macOS の **システム設定** → **外観** → **スクロールバーを�
 
 ## 各ツールの初回設定
 
+- Raycast の Script Commands：[Raycast の README](../raycast/README.md)
 - WezTerm のワークスペース：[WezTerm の README](../.config/wezterm/README.md)
 - VS Code のテーマ・背景画像・透過：[Noctis Blue の README](https://github.com/takashit16833/vscode-noctis-blue#readme)
 - Obsidian の背景画像：[Obsidian CSS の README](../obsidian/css/README.md)

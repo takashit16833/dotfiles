@@ -75,6 +75,13 @@
 - Lazygit の diff renderer は `.config/lazygit/config.yml` から `delta --dark` を呼び、縦並び / side-by-side の切替方法は変更しない。
 - Lazygit の `gui.theme` と Delta の独自テーマ指定は管理せず、配色はそれぞれの標準設定に任せる。`delta --dark` は暗い背景向けの動作指定として維持する。
 
+## Raycast
+
+- Script Commands の正本は `raycast/scripts/`。Raycast へのディレクトリ登録は利用者が一度行い、Raycast の内部データベースを書き換えない。
+- サイトごとの起動コマンドは小さく保ち、Chrome の既存タブ検索・前面への切り替えは `raycast/lib/focus-chrome-tab.applescript` に集約する。
+- URL の部分文字列ではなくホスト名とサブドメインの境界で照合する。既存タブの URL は書き換えず、見つからない場合だけ新しいページを開く。
+- Raycast Quicklink の `Open With` は Script Command から参照できないため、現行の YouTube コマンドは Google Chrome に固定する。
+
 ## Local CLI tools
 
 - Homebrew 外で dotfiles が管理する CLI は `$HOME/.local/bin` に置き、`.config/zsh/.zshenv` で同 directory を `PATH` の先頭へ追加する。

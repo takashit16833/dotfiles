@@ -14,13 +14,19 @@ Script Commands や自作 Extension など、通常のテキストファイル�
 
 ## Script Commands
 
-将来的に Script Commands を追加する場合は、次のディレクトリで Git 管理する。
+Raycast で **Settings → Script Commands → Add Script Directory** を開き、次のディレクトリを登録する（初回のみ）。
 
 ```text
 ~/workspace/dotfiles/raycast/scripts
 ```
 
-Raycast 側では、このディレクトリを Script Commands の検索対象として登録する。
+### YouTube
+
+Raycast から `YouTube` を実行すると、Chrome に開いている `youtube.com` のタブへ移動する。動画ページでも移動でき、再読み込みはしない。見つからなければ Chrome で `https://www.youtube.com/` を開く。
+
+- 使用するブラウザは Chrome 固定。既存 Quicklink の `Open With` 設定は引き継がない。
+- 既存の `YouTube` Quicklink とは別コマンド。検索結果が重複する場合は、Raycast の Quicklinks 設定から元の Quicklink を無効化する。
+- 初回実行時に macOS から操作の許可を求められた場合は、Raycast に対して Google Chrome の操作を許可する。
 
 ## Local Extension
 
