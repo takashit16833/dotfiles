@@ -441,7 +441,7 @@ end
 -- 背景の文字部分の透過率は共通設定として維持する。
 config.text_background_opacity = 0.5
 require("modules.workspace").setup(wezterm, config, workspaces)
-require("modules.background").setup(wezterm, config, workspaces)
+require("modules.background").setup(wezterm, workspaces)
 
 -- コピーモードの移動キー。
 local act = wezterm.action
