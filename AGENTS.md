@@ -8,6 +8,12 @@
 
 設計方針、設定の背景、実装上の判断理由、AI が変更時に知るべきルールは README に追加せず、このファイルへ記録する。
 
+- ルートの README は dotfiles 自身のインストール、必須の初回設定、同期、アンインストールに絞る。
+- 個別ツールの設定項目・有効化・更新・解除・不具合対応はルート README に重複記載しない。必要なら、そのツールの README へのリンクだけにする。
+- Obsidian の CSS の使い方は `obsidian/css/README.md`、ブラウザ・macOS の手動設定は `docs/manual-settings.md` にまとめる。
+- Noctis Blue とブラウザ拡張の手順は各ツールの README を正本とする。
+- インストーラの内部実装や管理方針は `AGENTS.md`、利用者向け操作は対応する README に分け、同じ説明を複数箇所で保守しない。
+
 ## Configuration layout
 
 - `XDG_CONFIG_HOME` は `$HOME/.config` に固定する。
