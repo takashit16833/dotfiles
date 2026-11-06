@@ -243,7 +243,7 @@
   --table-header-color: var(--rhb-blue-line-number);
   --table-header-weight: 700;
   --table-row-background-hover: #2759AA20;
-  --table-border-color: #5EAFFF80;
+  --table-border-color: var(--rhb-blue-border-dark);
   --table-text-color: var(--rhb-blue);
   --metadata-background: transparent;
   --metadata-border-color: #5EAFFF80;
@@ -463,6 +463,7 @@
 .theme-dark .markdown-rendered h1,
 .theme-dark .markdown-source-view.mod-cm6.is-live-preview
   .cm-line.HyperMD-header-1 {
+  padding-bottom: 0.15em;
   border-bottom: 1px solid #FFFFFF1C;
 }
 
