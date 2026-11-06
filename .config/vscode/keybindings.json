@@ -39,19 +39,12 @@
     // ========================================================================
     // Markdown：表示切り替え
     // ========================================================================
-    // Cmd+E で Markdown Preview と Text Editor を切り替える。
-    // 内蔵 Markdown Editor からもソースへ切り替えられるようにする。
-    // Markdown Live Preview は切り替え対象に含めない。
+    // Cmd+E で内蔵 Markdown Editor のプレビュー（ロック）と編集可能な表示を切り替える。
+    // Markdown Editor を開いた直後も、本文のクリックなしで切り替えられるようにする。
     {
         "key": "cmd+e",
-        "command": "reopenActiveEditorWith",
-        "args": "vscode.markdown.preview.editor",
-        "when": "editorLangId == markdown && !activeCustomEditorId"
-    },
-    {
-        "key": "cmd+e",
-        "command": "markdown.reopenAsSource",
-        "when": "activeCustomEditorId == 'vscode.markdown.preview.editor' || activeCustomEditorId == 'vscode.markdown.editor'"
+        "command": "markdown.editor.toggleLocked",
+        "when": "activeCustomEditorId == 'vscode.markdown.editor' && !inputFocus"
     },
     // ========================================================================
     // テキストエディタ：補完・スクロール
