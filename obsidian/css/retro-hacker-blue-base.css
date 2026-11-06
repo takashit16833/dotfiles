@@ -48,9 +48,10 @@
   --rhb-cyan: #00CED1;
   /* Requested replacement for all original red/error roles. */
   --rhb-error: #FF4DE1;
-  --rhb-white: #FFFFFF;
-  --rhb-white-soft: #DDF0FF;
+  /* Use Noctis Blue's pale tone wherever the UI formerly used white. */
+  --rhb-white: var(--rhb-blue-pale);
   --rhb-comment: #7C8DD990;
+  --rhb-heading-underline: #FFFFFF1C;
   /* =========================================================
    * Obsidian foundation colors
    * ======================================================= */
@@ -161,7 +162,7 @@
   --nav-item-color: var(--rhb-blue-fg);
   --nav-item-color-hover: var(--rhb-white);
   --nav-item-color-active: var(--rhb-white);
-  --nav-item-color-selected: var(--rhb-white-soft);
+  --nav-item-color-selected: var(--rhb-white);
   --nav-item-background-hover: #2759AA20;
   --nav-item-background-active: #2759AA40;
   --nav-item-background-selected: #2759AA30;
@@ -208,8 +209,8 @@
   --blockquote-color: var(--rhb-blue-fg);
   --blockquote-background-color: var(--rhb-section);
   --blockquote-border-color: var(--rhb-blue);
-  /* Match the subdued border used by Noctis Blue's Markdown Editor. */
-  --hr-color: var(--rhb-blue-border-dark);
+  /* The horizontal rule and H1 underline share the same subtle color. */
+  --hr-color: var(--rhb-heading-underline);
   --list-marker-color: var(--rhb-blue-line-number);
   --list-marker-color-hover: var(--rhb-blue);
   --list-marker-color-collapsed: var(--rhb-blue);
@@ -472,15 +473,15 @@
 /* H1 also has our underline padding and 1px border below its text line. */
 .theme-dark .markdown-source-view.mod-cm6.is-live-preview
   .cm-line.HyperMD-header-1:not(.cm-active)::before {
-  bottom: calc((1lh - 1em) / 2 + 0.15em + 1px);
+  bottom: calc((1lh - 1em) / 2 + 0.15em + 2px);
 }
 
 /* Show the underline on H1 only, in both Reading and Live Preview. */
 .theme-dark .markdown-rendered h1,
 .theme-dark .markdown-source-view.mod-cm6.is-live-preview
   .cm-line.HyperMD-header-1 {
-  padding-bottom: 0.15em;
-  border-bottom: 1px solid #FFFFFF1C;
+  padding-bottom: calc(0.15em + 1px);
+  border-bottom: 1px solid var(--rhb-heading-underline);
 }
 
 .theme-dark .markdown-rendered :is(h2, h3, h4, h5, h6),
