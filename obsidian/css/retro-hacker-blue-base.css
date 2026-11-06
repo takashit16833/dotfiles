@@ -209,7 +209,7 @@
   --blockquote-color: var(--rhb-blue-fg);
   --blockquote-background-color: var(--rhb-section);
   --blockquote-border-color: var(--rhb-blue);
-  /* The horizontal rule and H1 underline share the same subtle color. */
+  /* The horizontal rule and H2 underline share the same subtle color. */
   --hr-color: var(--rhb-heading-underline);
   --list-marker-color: var(--rhb-blue-line-number);
   --list-marker-color-hover: var(--rhb-blue);
@@ -438,17 +438,17 @@
   color: var(--rhb-white);
 }
 
-/* Match Noctis Blue's H1/H2 marker without shifting the heading text.
+/* Match Noctis Blue's H1–H3 marker without shifting the heading text.
  * Live Preview keeps the actual # markers visible while editing a heading. */
-.theme-dark .markdown-rendered :is(h1, h2),
+.theme-dark .markdown-rendered :is(h1, h2, h3),
 .theme-dark .markdown-source-view.mod-cm6.is-live-preview
-  .cm-line:is(.HyperMD-header-1, .HyperMD-header-2) {
+  .cm-line:is(.HyperMD-header-1, .HyperMD-header-2, .HyperMD-header-3) {
   position: relative;
 }
 
-.theme-dark .markdown-rendered :is(h1, h2)::before,
+.theme-dark .markdown-rendered :is(h1, h2, h3)::before,
 .theme-dark .markdown-source-view.mod-cm6.is-live-preview
-  .cm-line:is(.HyperMD-header-1, .HyperMD-header-2):not(.cm-active)::before {
+  .cm-line:is(.HyperMD-header-1, .HyperMD-header-2, .HyperMD-header-3):not(.cm-active)::before {
   content: "";
   position: absolute;
   left: -14px;
@@ -464,29 +464,35 @@
  * Position Live Preview markers from the bottom of the text line instead,
  * so the marker tracks the glyph line without depending on top padding. */
 .theme-dark .markdown-source-view.mod-cm6.is-live-preview
-  .cm-line:is(.HyperMD-header-1, .HyperMD-header-2):not(.cm-active)::before {
+  .cm-line:is(.HyperMD-header-1, .HyperMD-header-2, .HyperMD-header-3):not(.cm-active)::before {
   top: auto;
   bottom: calc((1lh - 1em) / 2);
   transform: none;
 }
 
-/* H1 also has our underline padding and 1px border below its text line. */
+/* H1/H2 have underline padding and a 1px border below the text line. */
 .theme-dark .markdown-source-view.mod-cm6.is-live-preview
-  .cm-line.HyperMD-header-1:not(.cm-active)::before {
+  .cm-line:is(.HyperMD-header-1, .HyperMD-header-2):not(.cm-active)::before {
   bottom: calc((1lh - 1em) / 2 + 0.15em + 2px);
 }
 
-/* Show the underline on H1 only, in both Reading and Live Preview. */
-.theme-dark .markdown-rendered h1,
+/* H2 keeps the former H1 underline; H1 matches VS Code's editor split border. */
+.theme-dark .markdown-rendered :is(h1, h2),
 .theme-dark .markdown-source-view.mod-cm6.is-live-preview
-  .cm-line.HyperMD-header-1 {
+  .cm-line:is(.HyperMD-header-1, .HyperMD-header-2) {
   padding-bottom: calc(0.15em + 1px);
   border-bottom: 1px solid var(--rhb-heading-underline);
 }
 
-.theme-dark .markdown-rendered :is(h2, h3, h4, h5, h6),
+.theme-dark .markdown-rendered h1,
 .theme-dark .markdown-source-view.mod-cm6.is-live-preview
-  .cm-line:is(.HyperMD-header-2, .HyperMD-header-3, .HyperMD-header-4,
+  .cm-line.HyperMD-header-1 {
+  border-bottom-color: var(--rhb-blue-border-dark);
+}
+
+.theme-dark .markdown-rendered :is(h3, h4, h5, h6),
+.theme-dark .markdown-source-view.mod-cm6.is-live-preview
+  .cm-line:is(.HyperMD-header-3, .HyperMD-header-4,
               .HyperMD-header-5, .HyperMD-header-6) {
   border-bottom: none;
 }
