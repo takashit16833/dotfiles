@@ -519,13 +519,14 @@
   border-color: var(--rhb-blue);
 }
 
-/* TaskNotes edit modal: the plugin marks both actions as mod-warning.
- * Use their distinct classes to restore legibility without changing Save,
- * Cancel, or warning buttons in unrelated dialogs. */
+/* TaskNotes task buttons: both Archive and Delete use mod-warning upstream,
+ * while Open note switches to black text on hover via --text-on-accent.
+ * Scope these overrides to the exact actions rather than all warning buttons. */
 .theme-dark .modal.mod-tasknotes .tn-task-modal__button-bar
-  button.tn-task-modal__archive-button,
-.theme-dark .modal.mod-tasknotes .tn-task-modal__button-bar
-  button.tn-task-modal__delete-button {
+  button:is(.tn-task-modal__archive-button, .tn-task-modal__delete-button),
+/* TaskNotes' destructive confirmation uses a separate generic modal. */
+.theme-dark .modal .modal-button-container
+  button.mod-warning.tn-static-background-color-var-color-red-134bc721 {
   background-color: var(--rhb-section);
   border: 1px solid;
 }
@@ -537,16 +538,32 @@
 }
 
 .theme-dark .modal.mod-tasknotes .tn-task-modal__button-bar
-  button.tn-task-modal__delete-button {
+  button.tn-task-modal__delete-button,
+.theme-dark .modal .modal-button-container
+  button.mod-warning.tn-static-background-color-var-color-red-134bc721 {
   color: var(--rhb-error);
   border-color: var(--rhb-error);
 }
 
+/* Keep the Open note label pale against a dark hover/pressed background. */
 .theme-dark .modal.mod-tasknotes .tn-task-modal__button-bar
-  button.tn-task-modal__archive-button:hover,
-.theme-dark .modal.mod-tasknotes .tn-task-modal__button-bar
-  button.tn-task-modal__delete-button:hover {
+  button.tn-task-modal__open-note-button:is(:hover, :active) {
   background-color: var(--rhb-quick-focus);
+  color: var(--rhb-blue-pale);
+  border-color: var(--rhb-blue-soft);
+}
+
+/* Hover tints follow each action's color, without coloring the text dark. */
+.theme-dark .modal.mod-tasknotes .tn-task-modal__button-bar
+  button.tn-task-modal__archive-button:is(:hover, :active) {
+  background-color: color-mix(in srgb, var(--rhb-blue-soft) 18%, var(--rhb-section));
+}
+
+.theme-dark .modal.mod-tasknotes .tn-task-modal__button-bar
+  button.tn-task-modal__delete-button:is(:hover, :active),
+.theme-dark .modal .modal-button-container
+  button.mod-warning.tn-static-background-color-var-color-red-134bc721:is(:hover, :active) {
+  background-color: color-mix(in srgb, var(--rhb-error) 18%, var(--rhb-section));
 }
 
 /* ===========================================================
