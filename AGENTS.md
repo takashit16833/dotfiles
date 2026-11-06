@@ -41,7 +41,7 @@
 - `uninstall.sh` は VS Code の設定 symlink だけを解除し、導入済み extension は削除しない。
 - snippets や Profiles は必要になった時点で追加し、先回りして空の管理対象を増やさない。
 
-- Noctis Blue（`takashit16833.noctis-blue`）は [`vscode-noctis-blue`](https://github.com/takashit16833/vscode-noctis-blue) を唯一の拡張の正本とする。配色・壁紙・乗算・画像切替・領域別透過・ぼかしを一つの VSIX に含む。初期セットアップは `~/vscode-noctis-blue/install.sh` のみを実行する。
+- Noctis Blue（`takashit16833.noctis-blue`）は [`vscode-noctis-blue`](https://github.com/takashit16833/vscode-noctis-blue) を唯一の拡張の正本とする。配色・壁紙・乗算・画像切替・領域別透過・ぼかしを一つの VSIX に含む。初期セットアップは `~/workspace/vscode-noctis-blue/install.sh` のみを実行する。
 - Noctis Blue の `install.sh` は Noctis Blue のインストールだけを担当し、ほかの拡張は変更しない。本体への初回 CSS 適用には明示同意が必要であり、管理済みファイルがあるだけで自動有効化しない。
 - 背景画像設定の正本は `.config/vscode/settings.json` の `noctisBlue.wallpaper.*`。同じ背景設定を別の拡張設定へ重複定義しない。領域背景や配色を `workbench.colorCustomizations` に重複定義しない。
 - `noctisBlue.markdownActiveBlockOpacity` は共有 CSS に対応するアプリ全体の設定であり、ワークスペース別に重複指定しない。Dev Container のファイル所有者は自動変更しない。
@@ -49,7 +49,7 @@
 - `sync.sh` の Marketplace 拡張一覧には、自作拡張（ID が `takashit16833.` で始まるもの）を含めない。自作拡張はそれぞれの正本リポジトリから導入する。
 - 内蔵 Markdown Editor の Rich Links は無効化し、GitHub 等の URL も通常リンクとして Noctis Blue のリンク配色を使う。
 
-- ソースから導入する Noctis Blue（`vscode-noctis-blue`）はホーム直下に取得し、固定コミットではなく最新 `main` を使う。取得には GitHub CLI の認証を使い、HTTPS 経由で clone / pull する。`gh` は Brewfile から導入し、インストール後に未認証なら対話的に `gh auth login` を実行する（非対話実行なら停止する）。Git の credential helper はコマンド単位で `gh auth git-credential` を指定し、Git のグローバル設定は変更しない。既存 clone は origin が一致し、未コミット変更がなく、現在ブランチが `main` の場合だけ `git pull --ff-only` 相当で更新する。SSH 形式の origin は更新成功後に HTTPS 形式へ切り替える。それ以外は中止し、branch 切り替え・stash・reset を自動実行しない。既存ディレクトリを削除・上書きしない。
+- ソースから導入する Noctis Blue（`vscode-noctis-blue`）は `~/workspace` 配下に取得し、固定コミットではなく最新 `main` を使う。取得には GitHub CLI の認証を使い、HTTPS 経由で clone / pull する。`gh` は Brewfile から導入し、インストール後に未認証なら対話的に `gh auth login` を実行する（非対話実行なら停止する）。Git の credential helper はコマンド単位で `gh auth git-credential` を指定し、Git のグローバル設定は変更しない。既存 clone は origin が一致し、未コミット変更がなく、現在ブランチが `main` の場合だけ `git pull --ff-only` 相当で更新する。SSH 形式の origin は更新成功後に HTTPS 形式へ切り替える。それ以外は中止し、branch 切り替え・stash・reset を自動実行しない。既存ディレクトリを削除・上書きしない。
 
 - Node.js は Noctis Blue の `@vscode/vsce@4.0.0` に合わせて 22 以上を要求する。Brewfile の Homebrew 版を優先して使い、古ければ `brew upgrade node` で更新する。PATH の変更はインストール処理内に限定する。
 
