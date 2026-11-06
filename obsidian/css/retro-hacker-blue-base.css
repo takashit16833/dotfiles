@@ -208,7 +208,8 @@
   --blockquote-color: var(--rhb-blue-fg);
   --blockquote-background-color: var(--rhb-section);
   --blockquote-border-color: var(--rhb-blue);
-  --hr-color: #5EAFFF80;
+  /* Match the subdued border used by Noctis Blue's Markdown Editor. */
+  --hr-color: var(--rhb-blue-border-dark);
   --list-marker-color: var(--rhb-blue-line-number);
   --list-marker-color-hover: var(--rhb-blue);
   --list-marker-color-collapsed: var(--rhb-blue);
@@ -237,8 +238,10 @@
    * Tables / metadata / embeds
    * ======================================================= */
   --table-background: transparent;
-  --table-header-background: #001947;
-  --table-header-background-hover: #0A2D63;
+  --table-header-background: transparent;
+  --table-header-background-hover: transparent;
+  --table-header-color: var(--rhb-blue-line-number);
+  --table-header-weight: 700;
   --table-row-background-hover: #2759AA20;
   --table-border-color: #5EAFFF80;
   --table-text-color: var(--rhb-blue);
@@ -434,15 +437,40 @@
   color: var(--rhb-white);
 }
 
-/* Match Org Modern's blue heading symbol without editing Markdown.
- * Live Preview keeps the actual # markers when the heading is being edited. */
-.theme-dark .markdown-rendered :is(h1, h2, h3, h4, h5, h6)::before,
+/* Match Noctis Blue's H1/H2 marker without shifting the heading text.
+ * Live Preview keeps the actual # markers visible while editing a heading. */
+.theme-dark .markdown-rendered :is(h1, h2),
 .theme-dark .markdown-source-view.mod-cm6.is-live-preview
-  .cm-line.HyperMD-header:not(.cm-active)::before {
-  content: "┃";
-  color: var(--rhb-blue-fg);
-  font-weight: normal;
-  margin-right: 0.25em;
+  .cm-line:is(.HyperMD-header-1, .HyperMD-header-2) {
+  position: relative;
+}
+
+.theme-dark .markdown-rendered :is(h1, h2)::before,
+.theme-dark .markdown-source-view.mod-cm6.is-live-preview
+  .cm-line:is(.HyperMD-header-1, .HyperMD-header-2):not(.cm-active)::before {
+  content: "";
+  position: absolute;
+  left: -14px;
+  top: 0.6em;
+  width: 3px;
+  height: 1em;
+  transform: translateY(-50%);
+  background: var(--rhb-blue);
+  border-radius: 999px;
+}
+
+/* Show the underline on H1 only, in both Reading and Live Preview. */
+.theme-dark .markdown-rendered h1,
+.theme-dark .markdown-source-view.mod-cm6.is-live-preview
+  .cm-line.HyperMD-header-1 {
+  border-bottom: 1px solid #FFFFFF1C;
+}
+
+.theme-dark .markdown-rendered :is(h2, h3, h4, h5, h6),
+.theme-dark .markdown-source-view.mod-cm6.is-live-preview
+  .cm-line:is(.HyperMD-header-2, .HyperMD-header-3, .HyperMD-header-4,
+              .HyperMD-header-5, .HyperMD-header-6) {
+  border-bottom: none;
 }
 
 /* ===========================================================
