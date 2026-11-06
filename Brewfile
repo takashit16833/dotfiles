@@ -98,16 +98,3 @@ cask "visual-studio-code"
 # Python製CLIを他のPython環境と分離して管理する。
 brew "pipx"
 
-# --- Emacs / Lua development -----------------------------------------------
-
-# CLI EmacsとTree-sitter文法のビルドに使用する。
-brew "emacs"
-brew "tree-sitter-cli"
-
-# Luaの補完・診断と自動整形に使用する。
-brew "lua-language-server"
-brew "stylua"
-
-# vtermのビルドに使用する。
-brew "cmake"
-brew "libtool"
