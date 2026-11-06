@@ -1,68 +1,25 @@
 [
-    // Cmd+E で Markdown Preview と Text Editor を切り替える。
-    // Markdown Live Preview は切り替え対象に含めない。
+    // ========================================================================
+    // 共通：エディタグループ・タブ操作
+    // ========================================================================
+    // 他アプリに合わせて Ctrl+PageUp/Down でタブグループ内を移動する。
     {
-        "key": "cmd+e",
-        "command": "reopenActiveEditorWith",
-        "args": "vscode.markdown.preview.editor",
-        "when": "editorLangId == markdown && !activeCustomEditorId"
+        "key": "ctrl+pagedown",
+        "command": "workbench.action.nextEditorInGroup"
     },
     {
-        "key": "cmd+e",
-        "command": "markdown.reopenAsSource",
-        "when": "activeCustomEditorId == 'vscode.markdown.preview.editor'"
+        "key": "ctrl+pageup",
+        "command": "workbench.action.previousEditorInGroup"
     },
-    // タブグループが1つだけ
-    // → 右に新しいグループを作って Source を開く
+    // macOS 既定の Cmd+Option+←/→ によるタブ移動を解除する。
+    // タブ移動は Ctrl+PageUp/Down に統一する。
     {
-        "key": "cmd+k v",
-        "command": "runCommands",
-        "when": "activeCustomEditorId == 'vscode.markdown.preview.editor' && !multipleEditorGroups",
-        "args": {
-            "commands": [
-                "workbench.action.splitEditorRight",
-                "markdown.reopenAsSource"
-            ]
-        }
-    },
-    // 複数グループあり ＆ 今いるのが最後ではない
-    // → 右隣の既存グループに Source を開く
-    {
-        "key": "cmd+k v",
-        "command": "runCommands",
-        "when": "activeCustomEditorId == 'vscode.markdown.preview.editor' && multipleEditorGroups && !activeEditorGroupLast",
-        "args": {
-            "commands": [
-                "workbench.action.splitEditorRight",
-                "workbench.action.moveEditorToNextGroup",
-                "markdown.reopenAsSource"
-            ]
-        }
-    },
-    // 複数グループあり ＆ 今いるのが最後
-    // → 左隣の既存グループに Source を開く
-    {
-        "key": "cmd+k v",
-        "command": "runCommands",
-        "when": "activeCustomEditorId == 'vscode.markdown.preview.editor' && multipleEditorGroups && activeEditorGroupLast",
-        "args": {
-            "commands": [
-                "workbench.action.splitEditorLeft",
-                "workbench.action.moveEditorToPreviousGroup",
-                "markdown.reopenAsSource"
-            ]
-        }
-    },
-    // インライン補完を表示させる
-    {
-        "key": "alt+/",
-        "command": "editor.action.triggerSuggest",
-        "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
+        "key": "cmd+alt+right",
+        "command": "-workbench.action.nextEditor"
     },
     {
-        "key": "alt+escape",
-        "command": "-editor.action.triggerSuggest",
-        "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
+        "key": "cmd+alt+left",
+        "command": "-workbench.action.previousEditor"
     },
     // エディタを上のグループへ移動する。
     // Ctrl+Cmd+←/→ の上下版として使う想定。
@@ -76,76 +33,35 @@
         "key": "ctrl+cmd+down",
         "command": "workbench.action.moveEditorToBelowGroup"
     },
-    // Text Marker: カーソル下の単語、または選択範囲をマーク / 解除する。
+    // ========================================================================
+    // Markdown：表示切り替え
+    // ========================================================================
+    // Cmd+E で Markdown Preview と Text Editor を切り替える。
+    // Markdown Live Preview は切り替え対象に含めない。
     {
-        "key": "cmd+k h",
-        "command": "textmarker.toggleHighlight",
-        "when": "editorTextFocus"
-    },
-    // Text Marker: 現在のマークの次の出現箇所へ移動する。
-    {
-        "key": "cmd+f6",
-        "command": "textmarker.goToNextHighlight",
-        "when": "editorTextFocus"
-    },
-    // Text Marker: 現在のマークの前の出現箇所へ移動する。
-    {
-        "key": "shift+cmd+f6",
-        "command": "textmarker.goToPreviousHighlight",
-        "when": "editorTextFocus"
-    },
-    // Text Marker: すべてのマークをまとめて解除する。
-    {
-        "key": "cmd+k shift+h",
-        "command": "textmarker.clearAllHighlight",
-        "when": "editorTextFocus"
-    },
-    // Explorer: 選択中のフォルダ配下（ファイル選択時は同じ階層）に新しいファイルを作成する。
-    // Explorer 以外では VS Code 標準の Cmd+N（Untitled File）をそのまま利用できる。
-    {
-        "key": "cmd+n",
-        "command": "explorer.newFile",
-        "when": "filesExplorerFocus && !inputFocus"
-    },
-    // Explorer: 選択中のフォルダ配下（ファイル選択時は同じ階層）に新しいフォルダを作成する。
-    // Explorer 以外では VS Code 標準の Cmd+Shift+N の挙動を維持する。
-    {
-        "key": "shift+cmd+n",
-        "command": "explorer.newFolder",
-        "when": "filesExplorerFocus && !inputFocus"
-    },
-    // 集中モードに入る
-    {
-        "key": "cmd+m",
-        "command": "runCommands",
-        "when": "!isCenteredLayout",
-        "args": {
-            "commands": [
-                "workbench.action.toggleMaximizeEditorGroup",
-                "workbench.action.toggleCenteredLayout"
-            ]
-        }
-    },
-    // 集中モードから戻る
-    {
-        "key": "cmd+m",
-        "command": "runCommands",
-        "when": "isCenteredLayout",
-        "args": {
-            "commands": [
-                "workbench.action.toggleCenteredLayout",
-                "workbench.action.toggleMaximizeEditorGroup"
-            ]
-        }
-    },
-    // 他アプリに合わせて Ctrl+PageUp/Down でタブグループ内を移動する。
-    {
-        "key": "ctrl+pagedown",
-        "command": "workbench.action.nextEditorInGroup"
+        "key": "cmd+e",
+        "command": "reopenActiveEditorWith",
+        "args": "vscode.markdown.preview.editor",
+        "when": "editorLangId == markdown && !activeCustomEditorId"
     },
     {
-        "key": "ctrl+pageup",
-        "command": "workbench.action.previousEditorInGroup"
+        "key": "cmd+e",
+        "command": "markdown.reopenAsSource",
+        "when": "activeCustomEditorId == 'vscode.markdown.preview.editor'"
+    },
+    // ========================================================================
+    // テキストエディタ：補完・スクロール
+    // ========================================================================
+    // インライン補完を表示させる。
+    {
+        "key": "alt+/",
+        "command": "editor.action.triggerSuggest",
+        "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
+    },
+    {
+        "key": "alt+escape",
+        "command": "-editor.action.triggerSuggest",
+        "when": "editorHasCompletionItemProvider && textInputFocus && !editorReadonly && !suggestWidgetVisible"
     },
     // Option+PageUp/Down は1行スクロール。
     {
@@ -177,55 +93,14 @@
             "by": "halfPage"
         }
     },
-    // タブ移動を Ctrl+PageUp/Down に統一するため、macOS 既定の Cmd+Option+←/→ は解除する。
+    // ========================================================================
+    // Explorer：ファイル操作・移動
+    // ========================================================================
+    // 選択中のフォルダ配下（ファイル選択時は同じ階層）に新しいファイルを作成する。
     {
-        "key": "cmd+alt+right",
-        "command": "-workbench.action.nextEditorInGroup"
-    },
-    {
-        "key": "cmd+alt+left",
-        "command": "-workbench.action.previousEditorInGroup"
-    },
-    // Option+H/J/K/L で隣のタブグループにフォーカスを移す。
-    // エディタ内だけで有効にし、アクセシビリティのヘルプ用キーは維持する。
-    {
-        "key": "alt+h",
-        "command": "workbench.action.focusLeftGroup",
-        "when": "editorFocus && !accessibilityHelpIsShown"
-    },
-    {
-        "key": "alt+j",
-        "command": "workbench.action.focusBelowGroup",
-        "when": "editorFocus && !accessibilityHelpIsShown"
-    },
-    {
-        "key": "alt+k",
-        "command": "workbench.action.focusAboveGroup",
-        "when": "editorFocus && !accessibilityHelpIsShown"
-    },
-    {
-        "key": "alt+l",
-        "command": "workbench.action.focusRightGroup",
-        "when": "editorFocus && !accessibilityHelpIsShown"
-    },
-    {
-        "key": "ctrl+shift+[Semicolon]",
-        "command": "quickJump.jumpTwoCharacters",
-        "when": "editorTextFocus && !quickJump.active"
-    },
-    {
-        "key": "ctrl+alt+[Semicolon]",
-        "command": "-quickJump.jumpTwoCharacters",
-        "when": "editorTextFocus && !quickJump.active"
-    },
-    // tasks.jsonのデフォルトタスク
-    {
-        "key": "f13",
-        "command": "workbench.action.tasks.test"
-    },
-    {
-        "key": "f4",
-        "command": "quicktree.open"
+        "key": "cmd+n",
+        "command": "explorer.newFile",
+        "when": "filesExplorerFocus && !inputFocus"
     },
     // Explorer 内の Cmd+Left で全フォルダを折りたたむ。
     // 修飾キーなしの Left は VS Code 標準の動作のままにする。
@@ -264,5 +139,36 @@
         "key": "cmd+down",
         "command": "list.focusLast",
         "when": "filesExplorerFocus && !inputFocus"
+    },
+    // ========================================================================
+    // パネル：Problems・Output・Terminal などのタブ切り替え
+    // ========================================================================
+    // パネルにフォーカスがあるときだけ Ctrl+PageUp/Down で切り替える。
+    {
+        "key": "ctrl+pagedown",
+        "command": "workbench.action.nextPanelView",
+        "when": "panelFocus"
+    },
+    {
+        "key": "ctrl+pageup",
+        "command": "workbench.action.previousPanelView",
+        "when": "panelFocus"
+    },
+    // ========================================================================
+    // ターミナル：コピー
+    // ========================================================================
+    // テキストが選択されていない場合、直前のコマンドと実行結果をコピーする。
+    {
+        "key": "cmd+c",
+        "command": "workbench.action.terminal.copyLastCommandAndLastCommandOutput",
+        "when": "terminalFocus && !terminalTextSelected"
+    },
+    // ========================================================================
+    // タスク：実行
+    // ========================================================================
+    // tasks.json のデフォルトテストタスク。
+    {
+        "key": "f13",
+        "command": "workbench.action.tasks.test"
     }
 ]
