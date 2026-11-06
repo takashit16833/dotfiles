@@ -1,6 +1,9 @@
 -- 初回インストール時に ~/.config/wezterm-local/workspaces.lua へコピーされる。
 -- 以後はコピー先を編集する。ワークスペースは選択時に作成される。
 return {
+  -- 起動時に使うワークスペース（省略時は "default"）。
+  default_workspace = "default",
+
   {
     name = "default",
     cwd = os.getenv("HOME"),
