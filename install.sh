@@ -4,7 +4,7 @@
 set -euo pipefail
 
 # このスクリプト自身の配置場所を dotfiles のルートとして扱う。
-# ~/dotfiles 以外へ clone しても動作するよう、HOME にパスを固定しない。
+# ~/workspace/dotfiles 以外へ clone しても動作するよう、HOME にパスを固定しない。
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # この dotfiles では XDG_CONFIG_HOME を ~/.config に固定する。
