@@ -3,16 +3,16 @@
     // 共通：エディタグループ・タブ操作
     // ========================================================================
     // Ctrl+PageUp/Down でタブグループ内を移動する。
-    // 通常のテキストエディタと内蔵 Markdown Editor の両方で有効にする。
+    // 内蔵 Markdown Editor は本文にフォーカスがなくても、タブがアクティブなら移動できるようにする。
     {
         "key": "ctrl+pagedown",
         "command": "workbench.action.nextEditorInGroup",
-        "when": "editorTextFocus || markdownEditorFocus"
+        "when": "editorTextFocus || markdownEditorFocus || (activeCustomEditorId == 'vscode.markdown.editor' && !inputFocus)"
     },
     {
         "key": "ctrl+pageup",
         "command": "workbench.action.previousEditorInGroup",
-        "when": "editorTextFocus || markdownEditorFocus"
+        "when": "editorTextFocus || markdownEditorFocus || (activeCustomEditorId == 'vscode.markdown.editor' && !inputFocus)"
     },
     // macOS 既定の Cmd+Option+←/→ によるタブ移動を解除する。
     // タブ移動は Ctrl+PageUp/Down に統一する。
@@ -40,6 +40,7 @@
     // Markdown：表示切り替え
     // ========================================================================
     // Cmd+E で Markdown Preview と Text Editor を切り替える。
+    // 内蔵 Markdown Editor からもソースへ切り替えられるようにする。
     // Markdown Live Preview は切り替え対象に含めない。
     {
         "key": "cmd+e",
@@ -50,7 +51,7 @@
     {
         "key": "cmd+e",
         "command": "markdown.reopenAsSource",
-        "when": "activeCustomEditorId == 'vscode.markdown.preview.editor'"
+        "when": "activeCustomEditorId == 'vscode.markdown.preview.editor' || activeCustomEditorId == 'vscode.markdown.editor'"
     },
     // ========================================================================
     // テキストエディタ：補完・スクロール
