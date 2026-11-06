@@ -29,7 +29,9 @@ EOF
 
 Hammerspoon を起動し、アクセシビリティ権限とログイン時の自動起動を設定する。Docker を使う場合は `colima start` で起動する。
 
-その他の手動操作は [手動設定](docs/manual-settings.md) を参照する。
+Brave を ChatGPT 専用のビューアとして使う場合は、[Brave の設定手順](docs/manual-settings.md#brave-を-chatgpt-ビューアにする) を参照する。Brave の起動時や新しいウィンドウ・タブで ChatGPT を開くための設定をまとめている。
+
+VS Code・Obsidian の外観、ブラウザ拡張、macOS の表示設定は [手動設定](docs/manual-settings.md) を参照する。
 
 ## VS Code 拡張機能の一覧を更新
 
