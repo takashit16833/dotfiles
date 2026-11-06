@@ -80,7 +80,7 @@
 - Script Commands の正本は `raycast/scripts/`。Raycast へのディレクトリ登録は利用者が一度行い、Raycast の内部データベースを書き換えない。
 - サイトごとの起動コマンドは小さく保ち、Chrome の既存タブ検索・前面への切り替えは `raycast/lib/focus-chrome-tab.applescript` に集約する。
 - URL の部分文字列ではなくホスト名とサブドメインの境界で照合する。既存タブの URL は書き換えず、見つからない場合だけ新しいページを開く。
-- Raycast Quicklink の `Open With` は Script Command から参照できないため、現行の YouTube コマンドは Google Chrome に固定する。
+- Raycast Quicklink の `Open With` は Script Command から参照できないため、サイト起動用コマンド（YouTube、Gmail、Google Calendar）は Google Chrome に固定する。
 
 ## Local CLI tools
 

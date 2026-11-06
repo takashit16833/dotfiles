@@ -20,12 +20,18 @@ Raycast で **Settings → Script Commands → Add Script Directory** を開き�
 ~/workspace/dotfiles/raycast/scripts
 ```
 
-### YouTube
+### Web サイト
 
-Raycast から `YouTube` を実行すると、Chrome に開いている `youtube.com` のタブへ移動する。動画ページでも移動でき、再読み込みはしない。見つからなければ Chrome で `https://www.youtube.com/` を開く。
+次のコマンドは Chrome の全ウィンドウから対象サイトのタブを探し、見つかればそのタブへ移動する。URL の末尾が異なっても判定し、ページの再読み込みはしない。見つからなければ新しいタブで開く。
 
-- 使用するブラウザは Chrome 固定。既存 Quicklink の `Open With` 設定は引き継がない。
-- 既存の `YouTube` Quicklink とは別コマンド。検索結果が重複する場合は、Raycast の Quicklinks 設定から元の Quicklink を無効化する。
+| コマンド | 既存タブの判定 | 見つからない場合 |
+|---|---|---|
+| YouTube | `youtube.com` | `https://www.youtube.com/` |
+| Gmail | `mail.google.com` | `https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox` |
+| Google Calendar | `calendar.google.com` | `https://calendar.google.com/calendar/u/0/r` |
+
+- ブラウザは Chrome 固定。元の Quicklink の `Open With` 設定は引き継がない。
+- 既存の Quicklink とは別コマンド。検索結果が重複する場合は、Raycast の Quicklinks 設定から元の Quicklink を無効化する。
 - 初回実行時に macOS から操作の許可を求められた場合は、Raycast に対して Google Chrome の操作を許可する。
 
 ## Local Extension
