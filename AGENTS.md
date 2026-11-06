@@ -63,6 +63,13 @@
 
 ターミナルは WezTerm を使用する。
 
+- WezTerm の共通動作・ワークスペースの切り替え・背景表示の処理は `.config/wezterm/` で Git 管理する。
+- ワークスペース名、cwd、個別キー、背景画像のパスは `~/.config/wezterm-local/workspaces.lua` だけに保存する。
+- `install.sh` は `workspaces.example.lua` を初回だけコピーし、既存のローカル設定は変更しない。
+- 起動時に全ワークスペースを生成せず、選択したものだけ `SwitchToWorkspace` で作る。
+- 旧 `local.lua` は実行しない。インストール・アンインストールとも旧設定を勝手に削除しない。
+- ローカル設定の編集・移行手順は `.config/wezterm/README.md` にまとめる。
+
 ## git-delta
 
 - Lazygit の diff renderer は `.config/lazygit/config.yml` から `delta --dark` を呼び、縦並び / side-by-side の切替方法は変更しない。
