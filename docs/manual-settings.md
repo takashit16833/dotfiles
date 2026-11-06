@@ -2,14 +2,18 @@
 
 `install.sh` だけでは設定されない項目。
 
-## Brave の起動ページを ChatGPT にする
+## Brave を ChatGPT ビューアにする
 
-1. `brave://settings/appearance` で **Show home button** を有効にし、URL を `https://chatgpt.com/` にする。
-2. `brave://settings/getStarted` で次を設定する。
+Brave の起動時、新しいウィンドウ、新しいタブで `https://chatgpt.com/` を開く。設定は Brave 上で手動で行う。
+
+1. `brave://settings/appearance` を開く。
+   - **Show home button** を有効にする。
+   - URL を `https://chatgpt.com/` にする。
+2. `brave://settings/getStarted` を開く。
    - **New Tab Page** → **New tab page shows** → **Homepage**
    - **On startup** → **Open the New Tab page**
 
-起動時、新しいウィンドウ、新しいタブで ChatGPT を開くための設定。
+設定後は、Brave の起動、`Cmd+N`、`Cmd+T` で ChatGPT が開く。
 
 ## スクロールバー
 
