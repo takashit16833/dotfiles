@@ -17,7 +17,7 @@ Script Commands や自作 Extension など、通常のテキストファイル�
 将来的に Script Commands を追加する場合は、次のディレクトリで Git 管理する。
 
 ```text
-~/dotfiles/raycast/scripts
+~/workspace/dotfiles/raycast/scripts
 ```
 
 Raycast 側では、このディレクトリを Script Commands の検索対象として登録する。
@@ -37,7 +37,7 @@ Raycast の `ray build` は production build を作るための command であ�
 Extension のソースを変更して手元で開発するときだけ、以下を実行して development mode を使う。
 
 ```bash
-cd ~/dotfiles/raycast/extension
+cd ~/workspace/dotfiles/raycast/extension
 npm run dev
 ```
 
