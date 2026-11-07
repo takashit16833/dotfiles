@@ -84,9 +84,9 @@
     // Noctis Blue の背景画像の有効・無効
     "noctisBlue.wallpaper.enabled": true,
     // メインの背景画像
-    "noctisBlue.wallpaper.image": "/Users/takashi/workspace/pictures/05.webp",
+    "noctisBlue.wallpaper.image": "/Users/takashi/workspace/pictures/07.jpg",
     // 2枚目の画像（不要なら空文字）
-    "noctisBlue.wallpaper.alternateImage": "/Users/takashi/workspace/pictures/05.webp",
+    "noctisBlue.wallpaper.alternateImage": "/Users/takashi/workspace/pictures/06.jpg",
     // 画像の切り替え方法
     "noctisBlue.wallpaper.switchMode": "orientation",
     // 画像に乗算する色（白なら元画像の色を維持）
@@ -99,7 +99,7 @@
         "minimap": 0.5,
         "tabs": 0.3,
         "breadcrumbs": 0.3,
-        "sidebar": 0.90,
+        "sidebar": 0.85,
         "panel": 0.85,
         "auxiliaryBar": 0.86,
         "chrome": 0.93,
