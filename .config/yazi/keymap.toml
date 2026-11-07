@@ -13,3 +13,10 @@ desc = "Quit and change directory"
 on = [ "g", "w" ]
 run = "cd ~/workspace"
 desc = "Go to workspace"
+
+# カーソル位置がディレクトリならそこでLazygitを起動する。
+# ファイル上または何も選択していない場合は現在のディレクトリを使う。
+[[mgr.prepend_keymap]]
+on = "<A-g>"
+run = 'shell --block -- if [ -d %h ]; then cd %h || exit; fi; lazygit'
+desc = "Open Lazygit in hovered directory"
