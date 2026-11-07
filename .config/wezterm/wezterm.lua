@@ -12,6 +12,7 @@ config.send_composed_key_when_right_alt_is_pressed = false
 -- 選択状態は Emacs と共有し、ファイルの変更を検知して配色を再読み込みする。
 -- 未選択・未対応の名前の場合は、従来の Retro Hacker Blue を使用する。
 local themes = require "themes"
+local smart_copy = require "modules.smart_copy"
 local theme_file = wezterm.home_dir .. "/.config/retro-theme"
 wezterm.add_to_config_reload_watch_list(theme_file)
 
@@ -232,22 +233,13 @@ config.keys = {
     action = wezterm.action.DisableDefaultAssignment,
   },
 
-  -- Cmd+CはWezTermの選択範囲があるときだけOSクリップボードへコピーする。
-  -- 未選択時はLemへCmd+Cを渡したいが、このcallback内でSendKey(CMD+c)を使うと
-  -- Cmd修飾が失われて単なる"c"になることを実機確認済み。
-  -- そのため未選択時だけKKPのCmd+C (CSI 99;9u) を直接送る。
+  -- zshでは選択中は選択範囲、未選択時は直前のコマンドと実行結果をコピーする。
+  -- EmacsなどのTUIには従来どおりCmd+CのKKPシーケンスを送る。
   {
     key = "c",
     mods = "CMD",
     action = wezterm.action_callback(function(window, pane)
-      local selection = window:get_selection_text_for_pane(pane)
-
-      if selection ~= "" then
-        window:perform_action(wezterm.action.CopyTo "Clipboard", pane)
-        window:perform_action(wezterm.action.ClearSelection, pane)
-      else
-        window:perform_action(wezterm.action.SendString "\x1b[99;9u", pane)
-      end
+      smart_copy.copy(wezterm, window, pane)
     end),
   },
 

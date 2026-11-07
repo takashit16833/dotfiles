@@ -32,6 +32,17 @@ cp -n ~/workspace/dotfiles/.config/wezterm/workspaces.example.lua \
 `workspaces.lua` の一覧に、必要なものを追加する。背景画像の設定例も
 `workspaces.example.lua` に記載している。画像を設定しなければ通常の背景を使う。
 
+## 賢いコピー
+
+WezTerm 上の zsh では `Cmd+C` を次のように使い分ける。
+
+- 文字列を選択している場合：選択範囲をコピーする。
+- 未選択の場合：直前のコマンドと実行結果をまとめてコピーする。
+- Emacs や lazygit などの端末アプリ：従来どおりキー入力を渡す。
+
+更新後は新しい zsh を起動する。履歴から消えた古い実行結果や、
+画面を専有するアプリの出力は対象外。
+
 ## 旧設定からの移行
 
 以前の `~/.config/wezterm-local/local.lua` は新しい構成では読み込まない。
