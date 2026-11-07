@@ -9,11 +9,6 @@ on = "Q"
 run = "quit"
 desc = "Quit and change directory"
 
-[[mgr.prepend_keymap]]
-on = [ "g", "w" ]
-run = "cd ~/workspace"
-desc = "Go to workspace"
-
 # カーソル位置がディレクトリならそこでLazygitを起動する。
 # ファイル上または何も選択していない場合は現在のディレクトリを使う。
 [[mgr.prepend_keymap]]

@@ -13,8 +13,6 @@
     "editor.suggest.showWords": true,
     // 近くで使われている単語を少し優先する
     "editor.suggest.localityBonus": true,
-    // Noctis Blue の透過版を標準テーマとして利用する。
-    "workbench.colorTheme": "Noctis Blue Transparent",
     // エディタのフォントサイズ
     "editor.fontSize": 13,
     // エディタのフォント
@@ -84,9 +82,9 @@
     // Noctis Blue の背景画像の有効・無効
     "noctisBlue.wallpaper.enabled": true,
     // メインの背景画像
-    "noctisBlue.wallpaper.image": "/Users/takashi/workspace/pictures/07.jpg",
+    "noctisBlue.wallpaper.image": "/Users/takashi/workspace/pictures/02.jpg",
     // 2枚目の画像（不要なら空文字）
-    "noctisBlue.wallpaper.alternateImage": "/Users/takashi/workspace/pictures/06.jpg",
+    "noctisBlue.wallpaper.alternateImage": "/Users/takashi/workspace/pictures/01.jpg",
     // 画像の切り替え方法
     "noctisBlue.wallpaper.switchMode": "orientation",
     // 画像に乗算する色（白なら元画像の色を維持）
@@ -104,5 +102,6 @@
         "auxiliaryBar": 0.86,
         "chrome": 0.93,
         "gap": 0.80
-    }
+    },
+    "workbench.colorTheme": "Noctis Blue Transparent"
 }
