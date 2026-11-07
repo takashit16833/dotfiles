@@ -161,8 +161,8 @@ if command -v starship >/dev/null 2>&1; then
   add-zsh-hook precmd my_starship_select_config
 fi
 
-# WezTerm の OSC 133 でコマンド入力と出力の範囲を通知する。
-# Starship の初期化後に設定し、VS Code 等のターミナルには適用しない。
+# WezTerm にコマンド入力・実行結果の区切りを通知する。
+# VS Code や tmux など、ほかの環境では有効にしない。
 if [[ ${TERM_PROGRAM-} == WezTerm && -z ${TMUX-} ]]; then
   typeset -gi _wezterm_command_active=0
 
@@ -179,93 +179,12 @@ if [[ ${TERM_PROGRAM-} == WezTerm && -z ${TMUX-} ]]; then
     _wezterm_command_active=0
   }
 
-  PROMPT=
-if [[ "$INSIDE_EMACS" == "vterm" ]]; then
-  my_vterm_prompt_end() {
-    printf '\e]51;A%s@%s:%s\e\\' "$USER" "$(hostname)" "$PWD"
-  }
-
-  PROMPT=$PROMPT'%{$(my_vterm_prompt_end)%}'
-fi
-
-# Haskell
-export PATH="$HOME/.ghcup/bin:$PATH"
-export PATH="$HOME/.cabal/bin:$PATH"
-
-# lem
-export PATH="$HOME/common-lisp/lem:$PATH"
-
-# macOS 26ではSDK 27のリンクエラーを回避する。
-if [[ "$OSTYPE" == darwin* ]]; then
-  export SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk
-fi
-%{\e]133;P;k=i\a%}'"$PROMPT"
-if [[ "$INSIDE_EMACS" == "vterm" ]]; then
-  my_vterm_prompt_end() {
-    printf '\e]51;A%s@%s:%s\e\\' "$USER" "$(hostname)" "$PWD"
-  }
-
-  PROMPT=$PROMPT'%{$(my_vterm_prompt_end)%}'
-fi
-
-# Haskell
-export PATH="$HOME/.ghcup/bin:$PATH"
-export PATH="$HOME/.cabal/bin:$PATH"
-
-# lem
-export PATH="$HOME/common-lisp/lem:$PATH"
-
-# macOS 26ではSDK 27のリンクエラーを回避する。
-if [[ "$OSTYPE" == darwin* ]]; then
-  export SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk
-fi
-%{\e]133;B\a%}'
-  PROMPT2=
-if [[ "$INSIDE_EMACS" == "vterm" ]]; then
-  my_vterm_prompt_end() {
-    printf '\e]51;A%s@%s:%s\e\\' "$USER" "$(hostname)" "$PWD"
-  }
-
-  PROMPT=$PROMPT'%{$(my_vterm_prompt_end)%}'
-fi
-
-# Haskell
-export PATH="$HOME/.ghcup/bin:$PATH"
-export PATH="$HOME/.cabal/bin:$PATH"
-
-# lem
-export PATH="$HOME/common-lisp/lem:$PATH"
-
-# macOS 26ではSDK 27のリンクエラーを回避する。
-if [[ "$OSTYPE" == darwin* ]]; then
-  export SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk
-fi
-%{\e]133;P;k=s\a%}'"$PROMPT2"
-if [[ "$INSIDE_EMACS" == "vterm" ]]; then
-  my_vterm_prompt_end() {
-    printf '\e]51;A%s@%s:%s\e\\' "$USER" "$(hostname)" "$PWD"
-  }
-
-  PROMPT=$PROMPT'%{$(my_vterm_prompt_end)%}'
-fi
-
-# Haskell
-export PATH="$HOME/.ghcup/bin:$PATH"
-export PATH="$HOME/.cabal/bin:$PATH"
-
-# lem
-export PATH="$HOME/common-lisp/lem:$PATH"
-
-# macOS 26ではSDK 27のリンクエラーを回避する。
-if [[ "$OSTYPE" == darwin* ]]; then
-  export SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk
-fi
-%{\e]133;B\a%}'
+  PROMPT=$'%{\e]133;P;k=i\a%}'"$PROMPT"$'%{\e]133;B\a%}'
+  PROMPT2=$'%{\e]133;P;k=s\a%}'"$PROMPT2"$'%{\e]133;B\a%}'
   autoload -Uz add-zsh-hook
   add-zsh-hook preexec wezterm_semantic_preexec
   add-zsh-hook precmd wezterm_semantic_precmd
 fi
-
 # vtermにプロンプトの終端を通知する。
 if [[ "$INSIDE_EMACS" == "vterm" ]]; then
   my_vterm_prompt_end() {
