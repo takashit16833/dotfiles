@@ -476,7 +476,7 @@
   bottom: calc((1lh - 1em) / 2 + 0.15em + 2px);
 }
 
-/* H2 keeps the former H1 underline; H1 matches VS Code's editor split border. */
+/* H2 keeps the former H1 underline; H1 uses the brighter Noctis Blue muted tone. */
 .theme-dark .markdown-rendered :is(h1, h2),
 .theme-dark .markdown-source-view.mod-cm6.is-live-preview
   .cm-line:is(.HyperMD-header-1, .HyperMD-header-2) {
@@ -487,7 +487,7 @@
 .theme-dark .markdown-rendered h1,
 .theme-dark .markdown-source-view.mod-cm6.is-live-preview
   .cm-line.HyperMD-header-1 {
-  border-bottom-color: var(--rhb-blue-border-dark);
+  border-bottom-color: var(--rhb-blue-line-number);
 }
 
 .theme-dark .markdown-rendered :is(h3, h4, h5, h6),
