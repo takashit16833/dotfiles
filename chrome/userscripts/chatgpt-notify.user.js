@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ChatGPT Response Complete Notification
 // @namespace    local
-// @version      1.2.0
+// @version      1.3.0
 // @description  ChatGPTの回答完了をHammerspoonへ通知する
 // @match        https://chatgpt.com/*
 // @grant        GM_xmlhttpRequest
@@ -43,10 +43,6 @@
     return `${text.slice(0, PREVIEW_LENGTH)}…`;
   }
 
-  function isTabFocused() {
-    return document.visibilityState === 'visible' && document.hasFocus();
-  }
-
   function notifyCompletion() {
     GM_xmlhttpRequest({
       method: 'POST',
@@ -57,7 +53,6 @@
       data: JSON.stringify({
         title: document.title.trim(),
         preview: truncate(getLastUserMessage()),
-        tabFocused: isTabFocused(),
       }),
     });
   }

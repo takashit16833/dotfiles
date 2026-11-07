@@ -42,9 +42,7 @@ function M.start()
 
       local payload = decodePayload(body)
 
-      if not payload.tabFocused then
-        showCompletionAlert(payload)
-      end
+      showCompletionAlert(payload)
 
       return "ok", 200, {
         ["Content-Type"] = "text/plain",

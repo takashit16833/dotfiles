@@ -6,7 +6,7 @@ Tampermonkey で使うユーザースクリプトを管理する。
 
 `chatgpt-notify.user.js` は ChatGPT の回答生成完了を検知し、localhost の Hammerspoon HTTP server へ通知する。
 
-Hammerspoon 側では通知元の ChatGPT タブがフォーカスされている場合は何もせず、別タブや別アプリを操作している場合だけ、スレッド名と直前の質問冒頭を `hs.alert` で 3 秒表示する。
+ChatGPT タブのフォーカス状態に関係なく、回答が完了するたびにスレッド名と直前の質問冒頭を `hs.alert` で 3 秒表示し、通知音を鳴らす。
 
 ### Setup
 
