@@ -94,7 +94,7 @@
     "terminal.integrated.enableImages": true,
     // Noctis Blue の領域別透過
     "noctisBlue.opacity": {
-        "editor": 0.88,
+        "editor": 0.80,
         "gutter": 0.5,
         "minimap": 0.5,
         "tabs": 0.3,
@@ -103,6 +103,6 @@
         "panel": 0.85,
         "auxiliaryBar": 0.86,
         "chrome": 0.93,
-        "gap": 0.91
+        "gap": 0.80
     }
 }
