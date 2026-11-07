@@ -163,7 +163,7 @@ fi
 
 # WezTerm の OSC 133 でコマンド入力と出力の範囲を通知する。
 # Starship の初期化後に設定し、VS Code 等のターミナルには適用しない。
-if [[ \${TERM_PROGRAM-} == WezTerm && -z \${TMUX-} ]]; then
+if [[ ${TERM_PROGRAM-} == WezTerm && -z ${TMUX-} ]]; then
   typeset -gi _wezterm_command_active=0
 
   wezterm_semantic_preexec() {
