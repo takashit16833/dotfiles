@@ -21,3 +21,10 @@
     navigate = true
     side-by-side = false
     line-numbers = true
+
+# Lazygit の競合解消メニューから VS Code のマージエディタを開く。
+[merge]
+    tool = vscode
+
+[mergetool "vscode"]
+    cmd = code --wait --merge \"$REMOTE\" \"$LOCAL\" \"$BASE\" \"$MERGED\"
