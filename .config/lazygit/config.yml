@@ -1,4 +1,9 @@
 # Lazygit のユーザー設定。
+
+# e で選択ファイルを VS Code に開く（ターミナル・Yazi・VS Code 拡張で共通）。
+os:
+  editPreset: vscode
+
 #
 # diff 表示は git-delta の縦並び / 横並びの2種類を用意し、
 # Lazygit 標準の `|` キーで用途に応じて切り替える。
