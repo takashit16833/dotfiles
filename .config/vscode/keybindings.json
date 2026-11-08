@@ -3,16 +3,16 @@
     // 共通：エディタグループ・タブ操作
     // ========================================================================
     // Ctrl+PageUp/Down でタブグループ内を移動する。
-    // 内蔵 Markdown Editor は本文にフォーカスがなくても、タブがアクティブなら移動できるようにする。
+    // 内蔵 Markdown Editor と Lazygit for VSCode のターミナルエディタでも有効にする。
     {
         "key": "ctrl+pagedown",
         "command": "workbench.action.nextEditorInGroup",
-        "when": "editorTextFocus || markdownEditorFocus || (activeCustomEditorId == 'vscode.markdown.editor' && !inputFocus)"
+        "when": "editorTextFocus || markdownEditorFocus || (activeCustomEditorId == 'vscode.markdown.editor' && !inputFocus) || (terminalEditorFocus && lazygitFocus)"
     },
     {
         "key": "ctrl+pageup",
         "command": "workbench.action.previousEditorInGroup",
-        "when": "editorTextFocus || markdownEditorFocus || (activeCustomEditorId == 'vscode.markdown.editor' && !inputFocus)"
+        "when": "editorTextFocus || markdownEditorFocus || (activeCustomEditorId == 'vscode.markdown.editor' && !inputFocus) || (terminalEditorFocus && lazygitFocus)"
     },
     // macOS 既定の Cmd+Option+←/→ によるタブ移動を解除する。
     // タブ移動は Ctrl+PageUp/Down に統一する。
