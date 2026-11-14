@@ -12,9 +12,11 @@ Git 管理外の `obsidian/css/retro-hacker-blue-wallpaper-local.css` を作成�
 
 ```css
 :root {
-  --rhb-wallpaper-image: url("画像のURL");
+  --rhb-wallpaper-image: url("~/Pictures/wallpaper.jpg");
 }
 ```
+
+`~/` はホームディレクトリを表す。HTTP(S) の画像 URL も指定できる。画像ファイル自体を変更した場合は、Obsidian のコマンドパレットから `Config Layer: Refresh shared configuration` を実行する。
 
 ## 背景の不透明度
 
