@@ -67,6 +67,11 @@ end
 
 -- Workspaceとウィンドウ比率に対応した背景を作成する。
 local function make_background(workspaces, workspace_name, portrait)
+  -- ローカル設定で無効にした場合、全ワークスペースの背景画像を表示しない。
+  if workspaces.background_enabled == false then
+    return nil
+  end
+
   local workspace = find_workspace(workspaces, workspace_name)
 
   local settings = workspace and workspace.background
