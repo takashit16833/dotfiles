@@ -32,6 +32,10 @@ cp -n ~/workspace/dotfiles/.config/wezterm/workspaces.example.lua \
 `workspaces.lua` の一覧に、必要なものを追加する。背景画像の設定例も
 `workspaces.example.lua` に記載している。画像を設定しなければ通常の背景を使う。
 
+背景画像をまとめて無効にするには、`return {` の直下に
+`background_enabled = false,` を追加する。`true` または省略時は有効。
+全ワークスペース共通の設定なので、個別の背景画像設定を削除する必要はない。
+
 ## 賢いコピー
 
 WezTerm 上の zsh では `Cmd+C` を次のように使い分ける。
