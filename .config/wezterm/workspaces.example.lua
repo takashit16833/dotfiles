@@ -4,6 +4,9 @@ return {
   -- 起動時に使うワークスペース（省略時は "default"）。
   default_workspace = "default",
 
+  -- 全ワークスペースの背景画像を切り替える（false で無効、省略時は有効）。
+  background_enabled = true,
+
   {
     name = "default",
     cwd = os.getenv("HOME"),
