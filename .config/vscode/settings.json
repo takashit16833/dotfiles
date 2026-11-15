@@ -103,5 +103,5 @@
         "chrome": 0.93,
         "gap": 0.80
     },
-    "workbench.colorTheme": "Noctis Blue Transparent"
+    "security.workspace.trust.untrustedFiles": "open"
 }
