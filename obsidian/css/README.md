@@ -5,7 +5,7 @@
 Obsidian の **Config Layer** で CSS を有効にする。Obsidian の外観は「デフォルト」テーマ、配色はダークモードを使用する。
 
 - **Retro Hacker Blue**：`retro-hacker-blue-base.css` を有効にし、`noctis-blue-one-dark.css` は無効にする。
-- **Noctis Blue One Dark**：`retro-hacker-blue-base.css` と `noctis-blue-one-dark.css` を両方有効にする。One Dark 側は共通の装飾を残したまま配色を上書きする。
+- **Noctis Blue One Dark**：`retro-hacker-blue-base.css` と `noctis-blue-one-dark.css` を両方有効にする。One Dark 側は共通の装飾を残し、文章の色を落ち着いた青系へ変更する。H1〜H3 の左縦線と H1・H2 の下線も使用できる。
 
 背景画像も使う場合は、どちらの配色でも `retro-hacker-blue-wallpaper.css` と `retro-hacker-blue-wallpaper-local.css` を追加で有効にする。従来の壁紙設定は共通で使用でき、Noctis Blue One Dark の背景色は `#161C28`、カーソルと操作の青は `#5EAFFF`、赤系は `#FF4DE1` になる。
 
