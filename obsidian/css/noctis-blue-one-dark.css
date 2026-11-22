@@ -58,7 +58,7 @@ body.theme-dark {
   --background-modifier-active-hover: color-mix(in srgb, var(--rhb-blue) 25%, transparent);
   --background-modifier-border-hover: color-mix(in srgb, var(--rhb-blue) 50%, transparent);
   --background-modifier-success: color-mix(in srgb, var(--rhb-blue) 25%, transparent);
-  --text-normal: var(--rhb-blue);
+  --text-normal: var(--rhb-blue-pale);
   --text-muted: var(--rhb-blue-fg);
   --text-faint: color-mix(in srgb, var(--rhb-blue-fg) 65%, transparent);
   --text-on-accent: var(--rhb-editor);
@@ -73,7 +73,7 @@ body.theme-dark {
   --nav-item-background-selected: color-mix(in srgb, var(--rhb-blue) 18%, transparent);
   --nav-indentation-guide-color: color-mix(in srgb, var(--rhb-border-soft) 50%, transparent);
 
-  /* Keep long-form Markdown readable; vibrant One Dark roles belong to code. */
+  /* Pale body text; emphasis uses the deeper blue so it stays distinct. */
   --inline-title-color: var(--rhb-blue-pale);
   --h1-color: var(--rhb-blue-pale);
   --h2-color: var(--rhb-blue-pale);
@@ -81,8 +81,8 @@ body.theme-dark {
   --h4-color: var(--rhb-blue-pale);
   --h5-color: var(--rhb-blue-pale);
   --h6-color: var(--rhb-blue-pale);
-  --bold-color: var(--rhb-blue-pale);
-  --italic-color: var(--rhb-blue-soft);
+  --bold-color: var(--rhb-blue);
+  --italic-color: var(--rhb-blue);
   --link-color: var(--rhb-blue);
   --link-color-hover: var(--rhb-blue-pale);
   --link-external-color: var(--rhb-blue);
@@ -126,6 +126,14 @@ body.theme-dark {
   --graph-node-unresolved: color-mix(in srgb, var(--rhb-blue) 35%, transparent);
 }
 
+
+/* The shared Retro Hacker Blue base makes inline code bright blue.
+ * In One Dark, use the same blue as emphasis instead of pale-like soft blue.
+ * Keep the original inline-code background, spacing, and typography. */
+body.theme-dark .markdown-rendered code:not(pre code),
+body.theme-dark .cm-inline-code:not(.cm-formatting) {
+  color: var(--rhb-blue);
+}
 
 /* Retro Hacker Blue's heading markers: identical placement in reading and
  * Live Preview, with One Dark's muted underline colors. Keep this in the
