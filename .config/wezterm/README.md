@@ -47,7 +47,7 @@ printf '%s\n' 'noctis-blue-one-dark' > ~/.config/wezterm-local/theme
 ```
 
 背景は One Dark 寄りの `#161C28`、基本文字は Noctis Blue の
-`pale`（`#A6CAFF`）、カーソルと赤系は `#FF4DE1` を使う。
+`pale`（`#A6CAFF`）、カーソルは青の `#5EAFFF`、赤系はサイバーピンクの `#FF4DE1` を使う。
 元の選択へ戻すには、上で作成した `~/.config/wezterm-local/theme` を削除する。
 
 ```bash
