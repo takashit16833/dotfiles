@@ -78,9 +78,9 @@ return {
   ["noctis-blue-one-dark"] = {
     foreground = "#A6CAFF",
     background = "#161C28",
-    cursor_bg = "#FF4DE1",
+    cursor_bg = "#5EAFFF",
     cursor_fg = "#161C28",
-    cursor_border = "#FF4DE1",
+    cursor_border = "#5EAFFF",
     selection_fg = "#A6CAFF",
     selection_bg = "#354866",
     scrollbar_thumb = "#526681",
