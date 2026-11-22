@@ -74,4 +74,41 @@ return {
       inactive_tab_edge = "rgba(0, 0, 0, 0)",
     },
   },
+  -- One Dark 寄りの穏やかな背景に、Noctis Blue の pale とサイバーピンクを合わせる。
+  ["noctis-blue-one-dark"] = {
+    foreground = "#A6CAFF",
+    background = "#202733",
+    cursor_bg = "#FF4DE1",
+    cursor_fg = "#202733",
+    cursor_border = "#FF4DE1",
+    selection_fg = "#A6CAFF",
+    selection_bg = "#354866",
+    scrollbar_thumb = "#526681",
+    split = "#41526A",
+    ansi = {
+      "#202733", "#FF4DE1", "#7ED9B5", "#FFA500",
+      "#5EAFFF", "#966CCA", "#87CEEB", "#A6CAFF",
+    },
+    brights = {
+      "#61708E", "#FF80EB", "#7ED9B5", "#FFD700",
+      "#7CBEFF", "#B07CFF", "#00FFFF", "#D7E9FF",
+    },
+    tab_bar = {
+      background = "rgba(0, 0, 0, 0)",
+      active_tab = {
+        bg_color = "#2B3646",
+        fg_color = "#A6CAFF",
+        intensity = "Bold",
+      },
+      inactive_tab = {
+        bg_color = "#242E3D",
+        fg_color = "#8290B1",
+      },
+      inactive_tab_hover = {
+        bg_color = "#304059",
+        fg_color = "#A6CAFF",
+      },
+      inactive_tab_edge = "rgba(0, 0, 0, 0)",
+    },
+  },
 }
