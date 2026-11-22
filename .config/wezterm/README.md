@@ -43,7 +43,7 @@ cp -n ~/workspace/dotfiles/.config/wezterm/workspaces.example.lua \
 
 ```bash
 mkdir -p ~/.config/wezterm-local
-printf '%s\\n' 'noctis-blue-one-dark' > ~/.config/wezterm-local/theme
+printf '%s\n' 'noctis-blue-one-dark' > ~/.config/wezterm-local/theme
 ```
 
 背景は One Dark 寄りの `#202733`、基本文字は Noctis Blue の
