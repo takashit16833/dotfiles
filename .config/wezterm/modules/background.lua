@@ -66,7 +66,7 @@ local function find_workspace(workspaces, name)
 end
 
 -- Workspaceとウィンドウ比率に対応した背景を作成する。
-local function make_background(workspaces, workspace_name, portrait)
+local function make_background(workspaces, workspace_name, portrait, base_background)
   -- ローカル設定で無効にした場合、全ワークスペースの背景画像を表示しない。
   if workspaces.background_enabled == false then
     return nil
@@ -118,7 +118,7 @@ local function make_background(workspaces, workspace_name, portrait)
   return {
     {
       source = {
-        Color = "#010111",
+        Color = base_background,
       },
 
       width = "100%",
@@ -129,7 +129,7 @@ local function make_background(workspaces, workspace_name, portrait)
   }
 end
 
-function M.setup(wezterm, workspaces)
+function M.setup(wezterm, workspaces, base_background)
   -- 起動時は WezTerm 標準の背景を使い、ワークスペースごとに切り替える。
   local function update_background(window)
     local overrides = window:get_config_overrides() or {}
@@ -138,7 +138,7 @@ function M.setup(wezterm, workspaces)
     -- 正方形も縦長用画像として扱う。
     local portrait = dimensions.pixel_width <= dimensions.pixel_height
 
-    local background = make_background(workspaces, window:active_workspace(), portrait)
+    local background = make_background(workspaces, window:active_workspace(), portrait, base_background)
 
     local current = overrides.background
 
