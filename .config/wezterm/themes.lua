@@ -77,16 +77,16 @@ return {
   -- One Dark 寄りの穏やかな背景に、Noctis Blue の pale とサイバーピンクを合わせる。
   ["noctis-blue-one-dark"] = {
     foreground = "#A6CAFF",
-    background = "#202733",
+    background = "#1B2230",
     cursor_bg = "#FF4DE1",
-    cursor_fg = "#202733",
+    cursor_fg = "#1B2230",
     cursor_border = "#FF4DE1",
     selection_fg = "#A6CAFF",
     selection_bg = "#354866",
     scrollbar_thumb = "#526681",
     split = "#41526A",
     ansi = {
-      "#202733", "#FF4DE1", "#7ED9B5", "#FFA500",
+      "#1B2230", "#FF4DE1", "#7ED9B5", "#FFA500",
       "#5EAFFF", "#966CCA", "#87CEEB", "#A6CAFF",
     },
     brights = {
