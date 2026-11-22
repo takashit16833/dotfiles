@@ -11,6 +11,8 @@ Obsidian の **Config Layer** で CSS を有効にする。Obsidian の外観は
 
 背景画像を使わない場合は、ローカル壁紙 CSS を無効にする。配色だけを戻すには `noctis-blue-one-dark.css` を無効にすればよい。
 
+dotfiles を更新した後は、Obsidian のコマンドパレットから **Config Layer: Refresh shared configuration** を実行して CSS を更新する。
+
 ## 背景画像
 
 Git 管理外の `obsidian/css/retro-hacker-blue-wallpaper-local.css` を作成する。
