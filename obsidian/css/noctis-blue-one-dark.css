@@ -3,11 +3,11 @@
  *
  * Enable together with retro-hacker-blue-base.css in Config Layer.
  * The base supplies the observed Obsidian/Markdown/Mermaid selectors;
- * this layer changes only the color roles, leaving layouts and decorations intact.
+ * this layer changes color roles and preserves the original heading markers.
  * Do not enable another color-variant layer at the same time.
  *
- * Role mapping follows Atom One Dark: pale normal text, pink red/variables/tags,
- * purple keywords, green strings, blue functions/cursor, cyan built-ins/links.
+ * Code keeps One Dark roles (pink red/variables/tags, purple keywords,
+ * green strings, blue functions/cursor); prose stays in subdued blues.
  * Colors come from the Noctis Blue palette (VS Code / WezTerm).
  */
 body.theme-dark {
@@ -58,7 +58,7 @@ body.theme-dark {
   --background-modifier-active-hover: color-mix(in srgb, var(--rhb-blue) 25%, transparent);
   --background-modifier-border-hover: color-mix(in srgb, var(--rhb-blue) 50%, transparent);
   --background-modifier-success: color-mix(in srgb, var(--rhb-blue) 25%, transparent);
-  --text-normal: var(--rhb-blue-pale);
+  --text-normal: var(--rhb-blue);
   --text-muted: var(--rhb-blue-fg);
   --text-faint: color-mix(in srgb, var(--rhb-blue-fg) 65%, transparent);
   --text-on-accent: var(--rhb-editor);
@@ -73,27 +73,27 @@ body.theme-dark {
   --nav-item-background-selected: color-mix(in srgb, var(--rhb-blue) 18%, transparent);
   --nav-indentation-guide-color: color-mix(in srgb, var(--rhb-border-soft) 50%, transparent);
 
-  /* Atom One Dark Markdown roles, not the previous all-blue markup. */
-  --inline-title-color: var(--rhb-error);
-  --h1-color: var(--rhb-error);
-  --h2-color: var(--rhb-error);
-  --h3-color: var(--rhb-error);
-  --h4-color: var(--rhb-error);
-  --h5-color: var(--rhb-error);
-  --h6-color: var(--rhb-error);
-  --bold-color: var(--rhb-orange);
-  --italic-color: var(--rhb-purple-bright);
-  --link-color: var(--rhb-cyan);
+  /* Keep long-form Markdown readable; vibrant One Dark roles belong to code. */
+  --inline-title-color: var(--rhb-blue-pale);
+  --h1-color: var(--rhb-blue-pale);
+  --h2-color: var(--rhb-blue-pale);
+  --h3-color: var(--rhb-blue-pale);
+  --h4-color: var(--rhb-blue-pale);
+  --h5-color: var(--rhb-blue-pale);
+  --h6-color: var(--rhb-blue-pale);
+  --bold-color: var(--rhb-blue-pale);
+  --italic-color: var(--rhb-blue-soft);
+  --link-color: var(--rhb-blue);
   --link-color-hover: var(--rhb-blue-pale);
-  --link-external-color: var(--rhb-cyan);
+  --link-external-color: var(--rhb-blue);
   --link-external-color-hover: var(--rhb-blue-pale);
-  --link-unresolved-color: color-mix(in srgb, var(--rhb-cyan) 60%, transparent);
-  --link-unresolved-decoration-color: color-mix(in srgb, var(--rhb-cyan) 35%, transparent);
-  --tag-color: var(--rhb-error);
+  --link-unresolved-color: color-mix(in srgb, var(--rhb-blue) 60%, transparent);
+  --link-unresolved-decoration-color: color-mix(in srgb, var(--rhb-blue) 35%, transparent);
+  --tag-color: var(--rhb-blue-soft);
   --tag-color-hover: var(--rhb-blue-pale);
-  --tag-background: color-mix(in srgb, var(--rhb-error) 15%, transparent);
-  --tag-background-hover: color-mix(in srgb, var(--rhb-error) 25%, transparent);
-  --blockquote-color: var(--rhb-orange);
+  --tag-background: color-mix(in srgb, var(--rhb-blue) 15%, transparent);
+  --tag-background-hover: color-mix(in srgb, var(--rhb-blue) 25%, transparent);
+  --blockquote-color: var(--rhb-blue);
   --blockquote-background-color: var(--rhb-section);
   --blockquote-border-color: var(--rhb-blue);
   --list-marker-color: var(--rhb-blue-fg);
@@ -124,6 +124,62 @@ body.theme-dark {
   --metadata-input-background-active: color-mix(in srgb, var(--rhb-blue) 12%, transparent);
   --graph-node: var(--rhb-blue-fg);
   --graph-node-unresolved: color-mix(in srgb, var(--rhb-blue) 35%, transparent);
+}
+
+
+/* Retro Hacker Blue's heading markers: identical placement in reading and
+ * Live Preview, with One Dark's muted underline colors. Keep this in the
+ * variant so its headings survive a switch of Config Layer snippets. */
+body.theme-dark .markdown-rendered :is(h1, h2, h3),
+body.theme-dark .markdown-source-view.mod-cm6.is-live-preview
+  .cm-line:is(.HyperMD-header-1, .HyperMD-header-2, .HyperMD-header-3) {
+  position: relative;
+}
+
+body.theme-dark .markdown-rendered :is(h1, h2, h3)::before,
+body.theme-dark .markdown-source-view.mod-cm6.is-live-preview
+  .cm-line:is(.HyperMD-header-1, .HyperMD-header-2, .HyperMD-header-3):not(.cm-active)::before {
+  content: "";
+  position: absolute;
+  left: -14px;
+  top: 0.6em;
+  width: 3px;
+  height: 1em;
+  transform: translateY(-50%);
+  background: var(--rhb-blue);
+  border-radius: 999px;
+}
+
+body.theme-dark .markdown-source-view.mod-cm6.is-live-preview
+  .cm-line:is(.HyperMD-header-1, .HyperMD-header-2, .HyperMD-header-3):not(.cm-active)::before {
+  top: auto;
+  bottom: calc((1lh - 1em) / 2);
+  transform: none;
+}
+
+body.theme-dark .markdown-source-view.mod-cm6.is-live-preview
+  .cm-line:is(.HyperMD-header-1, .HyperMD-header-2):not(.cm-active)::before {
+  bottom: calc((1lh - 1em) / 2 + 0.15em + 2px);
+}
+
+body.theme-dark .markdown-rendered :is(h1, h2),
+body.theme-dark .markdown-source-view.mod-cm6.is-live-preview
+  .cm-line:is(.HyperMD-header-1, .HyperMD-header-2) {
+  padding-bottom: calc(0.15em + 1px);
+  border-bottom: 1px solid var(--rhb-heading-underline);
+}
+
+body.theme-dark .markdown-rendered h1,
+body.theme-dark .markdown-source-view.mod-cm6.is-live-preview
+  .cm-line.HyperMD-header-1 {
+  border-bottom-color: var(--rhb-blue-border-dark);
+}
+
+body.theme-dark .markdown-rendered :is(h3, h4, h5, h6),
+body.theme-dark .markdown-source-view.mod-cm6.is-live-preview
+  .cm-line:is(.HyperMD-header-3, .HyperMD-header-4,
+              .HyperMD-header-5, .HyperMD-header-6) {
+  border-bottom: none;
 }
 
 /* Only the few hard-coded backgrounds that cannot follow the base variables
