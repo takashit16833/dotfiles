@@ -1,0 +1,193 @@
+/*
+ * Noctis Blue One Dark for Obsidian.
+ *
+ * Enable together with retro-hacker-blue-base.css in Config Layer.
+ * The base supplies the observed Obsidian/Markdown/Mermaid selectors;
+ * this layer changes only the color roles, leaving layouts and decorations intact.
+ * Do not enable another color-variant layer at the same time.
+ *
+ * Role mapping follows Atom One Dark: pale normal text, pink red/variables/tags,
+ * purple keywords, green strings, blue functions/cursor, cyan built-ins/links.
+ * Colors come from the Noctis Blue palette (VS Code / WezTerm).
+ */
+body.theme-dark {
+  /* Background and shared UI color roles. */
+  --rhb-editor: #161C28;
+  --rhb-sidebar: #181F2B;
+  --rhb-deep: #1D2635;
+  --rhb-titlebar-inactive: #1D2635;
+  --rhb-panel: #222D3C;
+  --rhb-ribbon: #222D3C;
+  --rhb-status: #1D2635;
+  --rhb-section: #243247;
+  --rhb-section-strong: #34465F;
+  --rhb-command-active: #34465F;
+  --rhb-quick-focus: #34465F;
+  --rhb-code-block: #1F2A3A;
+
+  --rhb-blue: #5EAFFF;
+  --rhb-blue-fg: #8290B1;
+  --rhb-blue-soft: #7CBEFF;
+  --rhb-blue-pale: #A6CAFF;
+  --rhb-blue-string: #7ED9B5;
+  --rhb-blue-string-semantic: #7ED9B5;
+  --rhb-blue-function: #5EAFFF;
+  --rhb-blue-operator: #A6CAFF;
+  --rhb-blue-punctuation: #A6CAFF;
+  --rhb-blue-line-number: #8290B1;
+  --rhb-blue-deep: #34465F;
+  --rhb-blue-border-dark: #3A4B64;
+  --rhb-border-subtle: #3A4B6470;
+  --rhb-border-soft: #5EAFFF41;
+  --rhb-purple: #966CCA;
+  --rhb-purple-bright: #B07CFF;
+  --rhb-yellow: #FFD700;
+  --rhb-orange: #FFA500;
+  --rhb-cyan: #00CED1;
+  --rhb-error: #FF4DE1;
+  --rhb-white: var(--rhb-blue-pale);
+  --rhb-comment: #8290B1;
+  --rhb-heading-underline: #3A4B6466;
+
+  /* The original CSS defines some foundation values as literal colors. */
+  --color-base-35: #34465F;
+  --color-base-40: #5EAFFF;
+  --color-green: #7ED9B5;
+  --background-modifier-box-shadow: color-mix(in srgb, var(--rhb-editor) 20%, transparent);
+  --background-modifier-hover: color-mix(in srgb, var(--rhb-blue) 12%, transparent);
+  --background-modifier-active-hover: color-mix(in srgb, var(--rhb-blue) 25%, transparent);
+  --background-modifier-border-hover: color-mix(in srgb, var(--rhb-blue) 50%, transparent);
+  --background-modifier-success: color-mix(in srgb, var(--rhb-blue) 25%, transparent);
+  --text-normal: var(--rhb-blue-pale);
+  --text-muted: var(--rhb-blue-fg);
+  --text-faint: color-mix(in srgb, var(--rhb-blue-fg) 65%, transparent);
+  --text-on-accent: var(--rhb-editor);
+  --text-selection: #354866A6;
+  --caret-color: var(--rhb-blue);
+  --interactive-hover: color-mix(in srgb, var(--rhb-blue) 25%, transparent);
+  --titlebar-text-color: color-mix(in srgb, var(--rhb-blue-fg) 50%, transparent);
+  --tab-container-background: #202B3B;
+  --tab-text-color: var(--rhb-blue-fg);
+  --nav-item-background-hover: color-mix(in srgb, var(--rhb-blue) 12%, transparent);
+  --nav-item-background-active: color-mix(in srgb, var(--rhb-blue) 25%, transparent);
+  --nav-item-background-selected: color-mix(in srgb, var(--rhb-blue) 18%, transparent);
+  --nav-indentation-guide-color: color-mix(in srgb, var(--rhb-border-soft) 50%, transparent);
+
+  /* Atom One Dark Markdown roles, not the previous all-blue markup. */
+  --inline-title-color: var(--rhb-error);
+  --h1-color: var(--rhb-error);
+  --h2-color: var(--rhb-error);
+  --h3-color: var(--rhb-error);
+  --h4-color: var(--rhb-error);
+  --h5-color: var(--rhb-error);
+  --h6-color: var(--rhb-error);
+  --bold-color: var(--rhb-orange);
+  --italic-color: var(--rhb-purple-bright);
+  --link-color: var(--rhb-cyan);
+  --link-color-hover: var(--rhb-blue-pale);
+  --link-external-color: var(--rhb-cyan);
+  --link-external-color-hover: var(--rhb-blue-pale);
+  --link-unresolved-color: color-mix(in srgb, var(--rhb-cyan) 60%, transparent);
+  --link-unresolved-decoration-color: color-mix(in srgb, var(--rhb-cyan) 35%, transparent);
+  --tag-color: var(--rhb-error);
+  --tag-color-hover: var(--rhb-blue-pale);
+  --tag-background: color-mix(in srgb, var(--rhb-error) 15%, transparent);
+  --tag-background-hover: color-mix(in srgb, var(--rhb-error) 25%, transparent);
+  --blockquote-color: var(--rhb-orange);
+  --blockquote-background-color: var(--rhb-section);
+  --blockquote-border-color: var(--rhb-blue);
+  --list-marker-color: var(--rhb-blue-fg);
+
+  /* Obsidian exposes syntax roles as built-in --code-* variables.
+   * One Dark uses pink for variables/tags, blue for functions, green for
+   * strings, purple for keywords, orange for constants and pale for operators.
+   * The CodeMirror variable token has no corresponding standard --code-* role,
+   * so no speculative internal selector is added. */
+  --code-normal: var(--rhb-blue-pale);
+  --code-comment: var(--rhb-comment);
+  --code-function: var(--rhb-blue-function);
+  --code-important: var(--rhb-error);
+  --code-keyword: var(--rhb-purple-bright);
+  --code-operator: var(--rhb-blue-pale);
+  --code-property: var(--rhb-blue-pale);
+  --code-punctuation: var(--rhb-blue-pale);
+  --code-string: var(--rhb-blue-string);
+  --code-tag: var(--rhb-error);
+  --code-value: var(--rhb-orange);
+
+  --table-header-color: var(--rhb-blue-fg);
+  --table-text-color: var(--rhb-blue-pale);
+  --table-row-background-hover: color-mix(in srgb, var(--rhb-blue) 12%, transparent);
+  --metadata-border-color: color-mix(in srgb, var(--rhb-blue) 50%, transparent);
+  --metadata-label-text-color: var(--rhb-blue-fg);
+  --metadata-input-text-color: var(--rhb-blue-pale);
+  --metadata-input-background-active: color-mix(in srgb, var(--rhb-blue) 12%, transparent);
+  --graph-node: var(--rhb-blue-fg);
+  --graph-node-unresolved: color-mix(in srgb, var(--rhb-blue) 35%, transparent);
+}
+
+/* Only the few hard-coded backgrounds that cannot follow the base variables
+ * need overrides. Adding body increases specificity regardless of snippet order. */
+body.theme-dark .markdown-source-view.mod-cm6 .cm-line.cm-active,
+body.theme-dark .markdown-source-view.mod-cm6 .cm-activeLine {
+  background-color: color-mix(in srgb, #202B3B 75%, transparent);
+  box-shadow:
+    inset 1px 0 0 color-mix(in srgb, var(--rhb-border-subtle) 75%, transparent),
+    inset -1px 0 0 color-mix(in srgb, var(--rhb-border-subtle) 75%, transparent);
+}
+
+body.theme-dark .markdown-source-view.mod-cm6 .cm-selectionBackground,
+body.theme-dark .markdown-source-view.mod-cm6.cm-focused .cm-selectionBackground,
+body.theme-dark .markdown-source-view.mod-cm6 .cm-content ::selection,
+body.theme-dark .markdown-rendered ::selection {
+  background-color: var(--text-selection);
+}
+
+body.theme-dark .cm-searchMatch {
+  background-color: color-mix(in srgb, var(--rhb-blue) 24%, transparent);
+  outline: 1px solid color-mix(in srgb, var(--rhb-blue) 24%, transparent);
+}
+
+body.theme-dark .cm-searchMatch.cm-searchMatch-selected {
+  background-color: color-mix(in srgb, var(--rhb-blue) 32%, transparent);
+  outline-color: var(--rhb-blue);
+}
+
+body.theme-dark :is(.nav-folder-title:hover, .nav-file-title:hover,
+                     .tree-item-self:hover, .suggestion-item:hover,
+                     .vertical-tab-nav-item:hover) {
+  background-color: color-mix(in srgb, var(--rhb-blue) 12%, transparent);
+}
+
+body.theme-dark :is(.nav-file-title.is-active, .tree-item-self.is-active,
+                     .vertical-tab-nav-item.is-active) {
+  background-color: color-mix(in srgb, var(--rhb-blue) 25%, transparent);
+}
+
+body.theme-dark :is(.prompt-input, .search-input-container input,
+                     input[type="text"], input[type="search"]) {
+  color: var(--rhb-blue-pale);
+}
+
+body.theme-dark :is(input, textarea)::placeholder {
+  color: var(--rhb-blue-fg);
+}
+
+body.theme-dark :is(.markdown-rendered pre,
+                     .markdown-source-view.mod-cm6 .HyperMD-codeblock) {
+  border-color: var(--rhb-border-soft);
+}
+
+body.theme-dark :is(.mermaid, .mermaid-zoom-modal-wrapper)
+  :is(.cluster rect, .statediagram-cluster rect,
+      .classGroup .namespace rect) {
+  fill: color-mix(in srgb, var(--rhb-panel) 60%, transparent) !important;
+}
+
+body.theme-dark :is(.mermaid, .mermaid-zoom-modal-wrapper) .er.attributeBoxOdd {
+  fill: var(--rhb-section) !important;
+}
+
+body.theme-dark :is(.mermaid, .mermaid-zoom-modal-wrapper) .er.attributeBoxEven {
+  fill: var(--rhb-panel) !important;
+}
