@@ -11,6 +11,7 @@
 - ルートの README は dotfiles 自身のインストール、必須の初回設定、同期、アンインストールに絞る。
 - 個別ツールの設定項目・有効化・更新・解除・不具合対応はルート README に重複記載しない。必要なら、そのツールの README へのリンクだけにする。
 - Obsidian の CSS の使い方は `obsidian/css/README.md`、ブラウザ・macOS の手動設定は `docs/manual-settings.md` にまとめる。
+- Obsidian の共有ショートカットは `obsidian/hotkeys.json` が共通の正本。OS 別の差分は Config Layer の `hotkeys.<process.platform>.json` で上書きする。Mac 専用 `obsidian/hotkeys.darwin.json` では、左サイドバーを Command+B、太字を Command+Shift+B に設定し、Windows は共通設定の Alt+B（左サイドバー）と Ctrl+B（太字）を維持する。共通ファイルの `Mod+B` をサイドバー用へ変更すると Windows の Ctrl+B と競合するため行わない。
 - Obsidian の CSS は `obsidian/css/` を正本に、Config Layer から有効化する。既存の `retro-hacker-blue-base.css` は共通の装飾・UI構造も含むため変更せず、One Dark 版は `noctis-blue-one-dark.css` を追加で有効にして文章の配色を切り替える。長文本文は `pale`（`#A6CAFF`）、太字・斜体・インラインコードは青（`#5EAFFF`）に分ける。コードブロックの構文色では One Dark の役割を維持する。H1〜H3 の左縦線と H1・H2 の下線は既存の形・位置を One Dark 側にも明示し、共通 CSS の読み込み順に影響されず維持する。適用順に依存しないよう、上書き側は `body.theme-dark` を使い、既存の `.theme-dark` より詳細度を上げる。壁紙は従来の共通 CSS を使い、コードブロック色は `--rhb-code-block` を参照する。
 - Noctis Blue とブラウザ拡張の手順は各ツールの README を正本とする。
 - インストーラの内部実装や管理方針は `AGENTS.md`、利用者向け操作は対応する README に分け、同じ説明を複数箇所で保守しない。
