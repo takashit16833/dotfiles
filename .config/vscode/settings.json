@@ -84,7 +84,7 @@
     // メインの背景画像
     "noctisBlue.wallpaper.image": "/Users/takashi/workspace/pictures/02.jpg",
     // 2枚目の画像（不要なら空文字）
-    "noctisBlue.wallpaper.alternateImage": "/Users/takashi/workspace/pictures/01.jpg",
+    "noctisBlue.wallpaper.alternateImage": "/Users/takashi/workspace/pictures/05.webp",
     // 画像の切り替え方法
     "noctisBlue.wallpaper.switchMode": "orientation",
     // 画像に乗算する色（白なら元画像の色を維持）
@@ -103,5 +103,6 @@
         "chrome": 0.93,
         "gap": 0.80
     },
-    "security.workspace.trust.untrustedFiles": "open"
+    "security.workspace.trust.untrustedFiles": "open",
+    "workbench.colorTheme": "Noctis Blue Transparent"
 }
