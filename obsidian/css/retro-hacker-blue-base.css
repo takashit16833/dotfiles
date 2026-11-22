@@ -27,6 +27,7 @@
   --rhb-section-strong: #0A2D63;
   --rhb-command-active: #002C52;
   --rhb-quick-focus: #052A59;
+  --rhb-code-block: #0A1A36;
   --rhb-blue: #5EAFFF;
   --rhb-blue-fg: #4C9EEB;
   --rhb-blue-soft: #7CBEFF;
@@ -223,7 +224,7 @@
    * Code syntax
    * Mapped from retro-hacker-blue tokenColors.
    * ======================================================= */
-  --code-background: #0A1A36;
+  --code-background: var(--rhb-code-block);
   --code-normal: var(--rhb-blue);
   --code-comment: var(--rhb-comment);
   --code-function: var(--rhb-blue-function);
