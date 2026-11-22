@@ -36,6 +36,32 @@ cp -n ~/workspace/dotfiles/.config/wezterm/workspaces.example.lua \
 `background_enabled = false,` を追加する。`true` または省略時は有効。
 全ワークスペース共通の設定なので、個別の背景画像設定を削除する必要はない。
 
+## WezTerm だけ配色を切り替える
+
+通常は Emacs と共有する `~/.config/retro-theme` の選択を使う。
+新しい **Noctis Blue One Dark** 配色を WezTerm だけで試すには、次を実行する。
+
+```bash
+mkdir -p ~/.config/wezterm-local
+printf '%s\\n' 'noctis-blue-one-dark' > ~/.config/wezterm-local/theme
+```
+
+背景は One Dark 寄りの `#202733`、基本文字は Noctis Blue の
+`pale`（`#A6CAFF`）、カーソルと赤系は `#FF4DE1` を使う。
+元の選択へ戻すには、上で作成した `~/.config/wezterm-local/theme` を削除する。
+
+```bash
+rm ~/.config/wezterm-local/theme
+```
+
+この切り替えは Emacs のテーマ選択を変更しない。WezTerm は設定ファイルの
+変更を検知して再読み込みする。背景画像を使用している場合は、画像が配色の
+見え方に影響するため、単色背景で比較する場合は `workspaces.lua` の
+`background_enabled = false` を指定する。
+
+WezTerm 側で変更するのは端末の基本色と ANSI 16色であり、端末内のアプリが
+独自に指定した構文色はアプリ側の設定に従う。
+
 ## 賢いコピー
 
 WezTerm 上の zsh では `Cmd+C` を次のように使い分ける。
