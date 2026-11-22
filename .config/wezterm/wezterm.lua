@@ -36,6 +36,23 @@ if selected_theme == "retro-one-dark" then
   selected_theme = "one-dark-blue"
 end
 
+-- Emacs と共有する選択は維持し、WezTerm だけ試す場合はローカル指定を優先する。
+-- ファイルを削除するか空にすると、共有テーマの選択に戻る。
+local wezterm_theme_file = wezterm.home_dir .. "/.config/wezterm-local/theme"
+wezterm.add_to_config_reload_watch_list(wezterm_theme_file)
+local override_file = io.open(wezterm_theme_file, "r")
+if override_file then
+  local override_name = (override_file:read("*l") or ""):match("^%s*(.-)%s*$")
+  override_file:close()
+  if override_name ~= "" then
+    if themes[override_name] then
+      selected_theme = override_name
+    else
+      wezterm.log_warn("Unknown WezTerm theme: " .. override_name)
+    end
+  end
+end
+
 local colors = themes[selected_theme] or themes["retro-hacker-blue"]
 local background = colors.background
 local tab_bar_transparent = colors.tab_bar.background
@@ -443,7 +460,7 @@ end
 -- 背景の文字部分の透過率は共通設定として維持する。
 config.text_background_opacity = 0.5
 require("modules.workspace").setup(wezterm, config, workspaces)
-require("modules.background").setup(wezterm, workspaces)
+require("modules.background").setup(wezterm, workspaces, background)
 
 -- コピーモードの移動キー。
 local act = wezterm.action
