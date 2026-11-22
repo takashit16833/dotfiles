@@ -69,6 +69,7 @@
 - 起動時に全ワークスペースを生成せず、選択したものだけ `SwitchToWorkspace` で作る。
 - 旧 `local.lua` は実行しない。インストール・アンインストールとも旧設定を勝手に削除しない。
 - ローカル設定の編集・移行手順は `.config/wezterm/README.md` にまとめる。
+- `noctis-blue-one-dark` は One Dark の色の役割を維持し、Noctis Blue のパレットに置き換える。カーソルの背景色・枠線は青系 `#5EAFFF`、赤系 ANSI 色は `#FF4DE1` として分離する。従来の2テーマは変更しない。
 
 ## git-delta
 
