@@ -11,6 +11,7 @@
 - ルートの README は dotfiles 自身のインストール、必須の初回設定、同期、アンインストールに絞る。
 - 個別ツールの設定項目・有効化・更新・解除・不具合対応はルート README に重複記載しない。必要なら、そのツールの README へのリンクだけにする。
 - Obsidian の CSS の使い方は `obsidian/css/README.md`、ブラウザ・macOS の手動設定は `docs/manual-settings.md` にまとめる。
+- Obsidian の CSS は `obsidian/css/` を正本に、Config Layer から有効化する。既存の `retro-hacker-blue-base.css` は共通の装飾・UI構造も含むため変更せず、One Dark 版は `noctis-blue-one-dark.css` を追加で有効にして配色の役割だけ切り替える。適用順に依存しないよう、上書き側は `body.theme-dark` を使い、既存の `.theme-dark` より詳細度を上げる。壁紙は従来の共通 CSS を使い、コードブロック色は `--rhb-code-block` を参照する。
 - Noctis Blue とブラウザ拡張の手順は各ツールの README を正本とする。
 - インストーラの内部実装や管理方針は `AGENTS.md`、利用者向け操作は対応する README に分け、同じ説明を複数箇所で保守しない。
 
