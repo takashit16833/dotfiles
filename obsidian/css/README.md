@@ -2,9 +2,14 @@
 
 ## 有効化
 
-Obsidian の Config Layer で `retro-hacker-blue-base.css` を有効にする。背景画像も使う場合は `retro-hacker-blue-wallpaper.css` と `retro-hacker-blue-wallpaper-local.css` も有効にする。
+Obsidian の **Config Layer** で CSS を有効にする。Obsidian の外観は「デフォルト」テーマ、配色はダークモードを使用する。
 
-背景画像を使わない場合、ローカル CSS を無効にする。
+- **Retro Hacker Blue**：`retro-hacker-blue-base.css` を有効にし、`noctis-blue-one-dark.css` は無効にする。
+- **Noctis Blue One Dark**：`retro-hacker-blue-base.css` と `noctis-blue-one-dark.css` を両方有効にする。One Dark 側は共通の装飾を残したまま配色を上書きする。
+
+背景画像も使う場合は、どちらの配色でも `retro-hacker-blue-wallpaper.css` と `retro-hacker-blue-wallpaper-local.css` を追加で有効にする。従来の壁紙設定は共通で使用でき、Noctis Blue One Dark の背景色は `#161C28`、カーソルと操作の青は `#5EAFFF`、赤系は `#FF4DE1` になる。
+
+背景画像を使わない場合は、ローカル壁紙 CSS を無効にする。配色だけを戻すには `noctis-blue-one-dark.css` を無効にすればよい。
 
 ## 背景画像
 
