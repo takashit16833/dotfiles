@@ -84,24 +84,24 @@
     // メインの背景画像
     "noctisBlue.wallpaper.image": "/Users/takashi/workspace/pictures/02.jpg",
     // 2枚目の画像（不要なら空文字）
-    "noctisBlue.wallpaper.alternateImage": "/Users/takashi/workspace/pictures/05.webp",
+    "noctisBlue.wallpaper.alternateImage": "/Users/takashi/workspace/pictures/01.jpg",
     // 画像の切り替え方法
     "noctisBlue.wallpaper.switchMode": "orientation",
     // 画像に乗算する色（白なら元画像の色を維持）
-    "noctisBlue.wallpaper.tint": "#7085B0",
+    "noctisBlue.wallpaper.tint": "#ffffff",
     "terminal.integrated.enableImages": true,
     // Noctis Blue の領域別透過
     "noctisBlue.opacity": {
-        "editor": 0.80,
-        "gutter": 0.5,
-        "minimap": 0.5,
+        "editor": 0.95,
+        "gutter": 0.95,
+        "minimap": 0.95,
         "tabs": 0.3,
         "breadcrumbs": 0.3,
-        "sidebar": 0.85,
-        "panel": 0.85,
+        "sidebar": 0.95,
+        "panel": 0.95,
         "auxiliaryBar": 0.86,
-        "chrome": 0.93,
-        "gap": 0.80
+        "chrome": 0.95,
+        "gap": 0.95
     },
     "security.workspace.trust.untrustedFiles": "open",
     "workbench.colorTheme": "Noctis Blue One Dark"
